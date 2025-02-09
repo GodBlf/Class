@@ -21,6 +21,43 @@ srcPos：源数组的起始位置（从该位置开始复制）。
 dest：目标数组（将元素复制到这个数组）。
 destPos：目标数组的起始位置（复制到目标数组的哪个位置）。
 length：要复制的元素个数。
+### StringBuilder类
+相较于String来说，处理速度更快，所以处理字符串的时候一般使用StringBuilder，最后再通过toString()方法转为字符串
+常见的 add  remove  set  get 方法
+```java
+// 构建一个值为str的可变字符串【也可传空参数】
+StringBuilder(String str)
+// 返回索引i位置的字符
+charAt(int i)
+// 返回此字符串的长度
+length()
+// 在此字符串追加str【参数为StringBuilder也可以】
+append(String str)
+// 在index处插入字符数组c【c也可以是单个字符或者其他类型】
+insert(int index, char[] c)	
+// 将char的子数组【下标offset开始，长度len】追加到此字符串
+append(char[] str, int offset, int len)	
+// 移除此序列从start到end-1的字符串
+delete(int start, int end)	
+// 移除指定索引上的字符
+deleteCharAt(int index)	
+// 将指定索引处的字符替换为ch
+setCharAt(int index, char ch)	
+// 将此字符串反转
+reverse()			
+// 返回此字符串从start开始至length-1结束的String
+substring(int start)		
+// 返回此字符串从start开始至end-1结束的String
+substring(int start, int end)	
+// 返回此序列中的String表示形式
+toString()		
+
+// lastIndexOf有类似用法👇
+// 返回子字符串第一次出现的索引
+indexOf(String str)		
+// 同上，从指定位置查找
+indexOf(String str, int fromIndex)
+```
 ### Math 类
 - Math.min()  
 Math.max 同理

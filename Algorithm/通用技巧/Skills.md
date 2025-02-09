@@ -3,7 +3,7 @@
 # Tips
 ## 指针(地址)的思想去考率类和对象
 ## 递归思想 while !:
-while(!boudary case){update;}  一直更新直到边界条件;
+while(!boudary case){update;}  一直更新直到边界条件;__]边界条件 抵达不在执行后续代码
 经典例子  while(b!=0){gcd(a,b)=gcd(b,a mod b) update;}
 # 数组索引
 index+1 = num(index) 指定索引右一位为到此索引的元素个数  
@@ -79,9 +79,33 @@ int main(){
 	}
 }
 ```
+## 判断素数
+final 优化
+1. Math.sqrt(n) 
+2. 6k+-1;
+```java
+// 判断素数的方法，已知1不是素数，在主函数中去除1即可
+public static boolean isPrimeNumber(int n) {
+		if (n == 2 || n == 3) {
+			return true;
+		}
+		if ((n - 1) % 6 == 0 || (n + 1) % 6 == 0) {
+			// 当前可能是素数
+			for (int i = 2; i <= Math.sqrt(n); i++) {
+				if (n % i == 0) {
+					return false;
+				}
+			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+```
 ## 质分解
 奇数的奇数分解一定是素分解
-```
+```c
 #include <stdio.h>
 
 // 函数：质因数分解
