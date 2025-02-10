@@ -2,10 +2,189 @@
 与java有关的语法  API 题目等;数据结构 算法具体的知识 与之有关的技巧不写入;
 # Java Grammar and API
 ## Grammar
+### 格式化输出
+格式化输出是指在打印数据时，以特定的格式将数据展示出来，通常包括数字的精度控制、宽度控制、对齐方式、填充字符等内容。在 C 语言和 Java 中，格式化输出的功能通过 `printf` 和 `System.out.printf` 来实现。尽管两者的语法略有差异，但它们遵循类似的格式化规则。
+
+###### 1. 基本格式
+
+**格式化字符串的基本结构**：
+```
+%[flags][width][.precision][length]specifier
+```
+
+其中，各个部分的含义如下：
+- `%`：格式化输出的标志。
+- `[flags]`：可选的标志，用来控制对齐、填充等。
+- `[width]`：输出的最小宽度。如果输出的内容小于该宽度，会使用空格（或其他填充字符）填充。
+- `[.precision]`：小数点后的位数（对于浮点数），或者最大字符数（对于字符串）。
+- `[length]`：控制数据长度，通常用来控制类型（例如 `l` 表示长整型）。
+- `specifier`：数据类型的标识符（如 `%d` 表示整数，`%f` 表示浮动点数，`%s` 表示字符串）。
+
+###### 2. 格式说明符
+%-10.2f  简单明了
+不同的数据类型有不同的格式说明符。在 C 语言和 Java 中，常见的格式说明符包括：
+
+- **整数**：
+  - `%d` 或 `%i`：打印十进制整数（`int` 类型）
+  - `%o`：打印八进制整数
+  - `%x`：打印十六进制整数（小写字母）
+  - `%X`：打印十六进制整数（大写字母）
+  
+- **浮动点数**：
+  - `%f`：打印浮动点数（标准浮动点格式）
+  - `%e` 或 `%E`：打印科学计数法格式
+  - `%g` 或 `%G`：自动选择 `%f` 或 `%e` 格式，取决于数字的大小和精度
+
+- **字符与字符串**：
+  - `%c`：打印单个字符
+  - `%s`：打印字符串
+
+- **其他**：
+  - `%%`：打印 `%` 字符
+
+###### 3. 格式化标志符
+
+格式化字符串还可以包含一系列标志，来控制输出的方式：
+
+- **对齐**：
+  - 默认情况下，数字和字符串是右对齐的。如果想要左对齐，可以使用 `-`：
+    - `%-10d`：将整数左对齐，并且宽度为 10 个字符。
+  
+- **填充字符**：
+  - 默认使用空格填充输出，但可以通过指定 `0` 来使用 `0` 填充：
+    - `%010d`：输出整数时，宽度为 10 位，不足的地方使用 `0` 填充。
+  
+- **正负号**：
+  - `+`：输出时强制显示正号或负号。例如：
+    - `%+d`：即使数字是正数，也会显示正号。
+  
+- **空格**：
+  - 在正数前添加空格，负数前显示负号。例如：
+    - `% d`：对于正数前会加空格，负数前会加负号。
+  
+- **精度**：
+  - 精度用于控制小数点后面的位数：
+    - `%0.2f`：输出浮动点数时，保留两位小数。
+    - `%10.2f`：输出浮动点数时，宽度为 10 位，小数点后保留 2 位，前面会填充空格或 `0`。
+
+###### 4. 示例
+
+######## 基本格式化
+```c
+##include <stdio.h>
+
+int main() {
+    int a = 123;
+    float b = 3.14159;
+    char c = 'A';
+    char str[] = "Hello, World!";
+
+    // 整数
+    printf("Integer: %d\n", a); // 输出: Integer: 123
+
+    // 浮动点数
+    printf("Float: %.2f\n", b); // 输出: Float: 3.14
+
+    // 字符
+    printf("Char: %c\n", c);    // 输出: Char: A
+
+    // 字符串
+    printf("String: %s\n", str); // 输出: String: Hello, World!
+    
+    return 0;
+}
+```
+
+######## 精度控制
+```c
+##include <stdio.h>
+
+int main() {
+    float b = 3.14159;
+    
+    // 保留两位小数
+    printf("Float with 2 decimals: %.2f\n", b); // 输出: Float with 2 decimals: 3.14
+    
+    return 0;
+}
+```
+
+######## 宽度和对齐
+```c
+##include <stdio.h>
+
+int main() {
+    int a = 123;
+    
+    // 宽度 10，右对齐（默认）
+    printf("Right aligned: [%10d]\n", a); // 输出: Right aligned: [       123]
+    
+    // 宽度 10，左对齐
+    printf("Left aligned: [%-10d]\n", a); // 输出: Left aligned: [123       ]
+    
+    // 宽度 10，填充 0
+    printf("Zero-padded: [%010d]\n", a);  // 输出: Zero-padded: [0000000123]
+    
+    return 0;
+}
+```
+
+######## 多个变量
+```c
+##include <stdio.h>
+
+int main() {
+    int a = 42;
+    float b = 3.1415;
+    char c = 'X';
+
+    // 多个变量
+    printf("Integer: %d, Float: %.2f, Char: %c\n", a, b, c); 
+    // 输出: Integer: 42, Float: 3.14, Char: X
+
+    return 0;
+}
+```
+
+###### 5. Java 中的 `System.out.printf`
+
+Java 的 `System.out.printf` 基本遵循与 C 语言相同的规则。区别在于：
+- 在 Java 中，浮点数默认为 `double`，如果要输出 `float` 类型需要在数值后加 `f`。
+- Java 的 `printf` 方法更严格地要求数据类型与格式符号匹配，否则会抛出异常。
+
+######## Java 示例：
+```java
+public class Main {
+    public static void main(String[] args) {
+        int a = 123;
+        double b = 3.14159;
+        char c = 'A';
+        String str = "Hello, World!";
+
+        // 整数
+        System.out.printf("Integer: %d\n", a); // 输出: Integer: 123
+
+        // 浮动点数
+        System.out.printf("Float: %.2f\n", b); // 输出: Float: 3.14
+
+        // 字符
+        System.out.printf("Char: %c\n", c);    // 输出: Char: A
+
+        // 字符串
+        System.out.printf("String: %s\n", str); // 输出: String: Hello, World!
+    }
+}
+```
+
+###### 6. 总结
+
+格式化输出是一种强大的工具，可以让你以精确和可控的方式展示数据。无论是在 C 语言还是 Java 中，都可以通过格式化字符串来实现对输出的精细控制。掌握格式化输出的基本语法和技巧，可以让你的程序输出更加清晰、整洁、符合预期。
+### 
 - java定义需要四段 声明  public static int binarySearch(int[] arr,int x){};   public abstract void move();
 - interface 和 抽象方法 接口是子集不同的方法 抽象方法是子集中共有的方法  public abstract void f();
 - static 静态修饰符 常用于辅助方法和辅助类 与类中的变量无关联 静态(孤立的);  
 如 Arrays.sort(int[]) 静态方法不是类的方法是函数
+判断需不需要static 就看需不需要外部实例化对象;
 - 函数式接口: Consumer<Integer> comsumer ;consumer.accept()接受参数 **并调用函数**
 lambda表达式简化函数  (E args)->{sout(args);}
 ## API
@@ -539,14 +718,69 @@ class Solution {
 
 ```
 # 递归
-``` java
-void f(Node node){
-	if(node==null){ // boundary case
-		return;      
+## 反向打印
+## 二分查找
+```java
+public static int binarySearch(int[] arr,int tg,int min,int max){
+	min=0;max=arr.length-1;
+	// boundary case
+	if(min==max){
+		return min;
 	}
-	f(node.next);  //update
+
+	int mid=(max+min)/2;
+	if(tg>arr[mid]){
+		return binarySearch(arr,tg,mid+1,max);
+	}else if(tg<arr[mid]){
+		return binarySearch(arr,tg,min,mid-1);
+	}else{
+		return binarySearch(arr,tg,min,mid);
+	}
 }
 ```
+## 冒泡排序
+```java
+public static void boubbleSort(int[] arr,int n) { //n is update args
+	// boundary case
+			if(n==1) {
+				return;
+			}
+			int flag=0;
+			for(int i=0;i<n-1;i++) {
+				if(arr[i]>arr[i+1]) {
+					int temp=arr[i];
+					arr[i]=arr[i+1];
+					arr[i+1]=temp;
+					flag=1;
+				}
+			}
+			if(flag==0) {
+				return;
+			}
+			
+			boubbleSort(arr,n-1);
+		}
+```
+## 插入排序
+```java
+
+```
+
+## 斐波那契递归
+```java
+	//斐波那契递归
+		public static int fabo(int n,int[] memo) {
+			if(memo[n]!=-1) {
+				return memo[n];
+			}
+			int x=fabo(n-1,memo);
+			int y=fabo(n-2,memo);
+			memo[n]=x+y;
+			return x+y;
+		}
+```
+
+## 
 # 队列 
 
 # 栈 
@@ -565,3 +799,56 @@ public class HashTable{
 
 }
 ```
+
+
+# 排序
+
+
+# 图
+概念 vertex edge 度 入度 出度 权 路径 连通图
+
+
+# 字符串
+# 字符串题目
+## 高精度加法 洛谷P1601
+```java
+import java.util.Scanner;
+
+public class HighPrecisionAdditionString {
+
+    /**
+     * 字符串形式的大数加法
+     * @param num1 数字字符串1
+     * @param num2 数字字符串2
+     * @return 两个大数相加的结果
+     */
+    public static String add(String num1, String num2) {
+        // 创建 StringBuilder 用于存储结果（反向存储）
+        StringBuilder result = new StringBuilder();
+
+        int i = num1.length() - 1;
+        int j = num2.length() - 1;
+        int carry = 0;  // 进位
+
+        // 当两个数字还有未处理的位数或仍然存在进位时，继续计算
+        while (!(i<0 && j<0 && carry==0)) {// boundary case 仔细思考这个边界条件  或者改为while(!(i<0 && j<0)) if(carry==1) {sb.append(carry+"")};后边再判断boundary case
+			
+            int digit1 = i >= 0 ? num1.charAt(i) - '0' : 0;  // 如果没数字则认为是 0
+            int digit2 = j >= 0 ? num2.charAt(j) - '0' : 0;  // 如果没数字则认为是 0
+
+            int sum = digit1 + digit2 + carry;
+            result.append(sum % 10);  // 取个位，添加到结果中
+            carry = sum / 10;         // 计算进位值
+
+            // 移动指针
+            i--;
+            j--;
+        }
+
+        // 由于结果是反向存储的，所以需要反转后返回
+        return result.reverse().toString();
+    }
+
+}
+```
+
