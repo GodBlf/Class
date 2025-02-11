@@ -1,0 +1,2 @@
+ctlr+shift + / 全部折叠
+ctrl + shift + * 全部展开
