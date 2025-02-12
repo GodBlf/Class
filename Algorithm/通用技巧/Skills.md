@@ -1,10 +1,25 @@
+[TOC]  
+
 # ReadMe
 算法 数据结构 方面的注意事项 技巧 和数学有关的技巧等(Tips)不是具体的知识;实际编程语言的Tips不写入
 # Tips
 ## 指针(地址)的思想去考率类和对象
 ## 递归思想 while !:
-while(!boudary case){update;}  一直更新直到边界条件;__]边界条件 抵达不在执行后续代码
+- while(!boudary case){update;}  一直更新直到边界条件;__]边界条件 抵达不在执行后续代码
 经典例子  while(b!=0){gcd(a,b)=gcd(b,a mod b) update;}
+- 递归
+```java
+public static int f(int n){
+    if(n==0){
+        return 1;
+    }
+    return n*f(n-1);
+}
+```
+boundary case是n==0时 update的是 参数n 是[__ 这种形式;   summary : while! 是__]   if 是[__  while 和 if 判断boundarycase可以混合使用
+流程是 
+1. 先递 {{{{{}}}}}
+2. 后归 {n*{n*{n*{n*{boundary case}}}}} --> {n*x} 通过内存角度考虑;
 # 数组索引
 index+1 = num(index) 指定索引右一位为到此索引的元素个数  
 
@@ -18,7 +33,7 @@ index+1 = num(index) 指定索引右一位为到此索引的元素个数
 ## 数组可以考虑成 正半轴,元素索引的右边一位就是前边所有元素的个数,例如{4,3,5,567,4}索引(2,5) 右边一共3个元素 size-index 就是index前边所有元素的个数;
 ## new
 对某个对象进行操作的时候,最好把结果弄到一个new的对象上例如矩阵转置结果,new在一个新矩阵里否则原矩阵操作困难;
-```
+```c
 #include<stdio.h>
 
 int main(){
@@ -59,13 +74,14 @@ int main(){
 
 ## temp
 交换两个数需用道中间变量temp;
-## if 最好要有 else 否则 没返回值error
+## if 最好要有 else 否则 没返回值error 如果没有else 变相相当于 下边代码就是else里的
 ## arr[i++] 可以实现数组后缀添加;
 
 
 
 
 # 数论("%"(mod) and /) 
+
 ## 进制(mod)
 - 10进制转2进制;
 ```c
