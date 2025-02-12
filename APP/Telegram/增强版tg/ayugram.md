@@ -3,6 +3,135 @@ https://github.com/AyuGram
 https://duangks.com/archives/164/
 
 以下是界面内容的中文翻译：
+以下是 Telegram 偏好设置（AyuGram Preferences）的中文翻译：
+
+### **幽灵模式 (Ghost essentials)**
+- **幽灵模式 5/5** （已启用）
+  - ✅ 不读消息
+  - ✅ 不读故事
+  - ✅ 不发送在线状态
+  - ✅ 不发送输入状态
+  - ✅ 自动离线
+
+- **交互时阅读 (Read on Interact)** （已启用）
+  - 发送新消息或点击反应时自动将消息标记为已读。
+
+- **定时发送消息 (Schedule Messages)** （已禁用）
+  - 自动延迟发送消息约 12 秒或更长时间（适用于媒体）。以这种方式发送消息不会显示在线状态。  
+  - **请勿在网络不稳定的情况下使用。**
+
+### **无声发送 (Send without Sound)** （已禁用）
+- 自动发送消息时不播放声音。
+
+### **间谍模式 (Spy essentials)**
+- ✅ 保存已删除消息
+- ✅ 保存编辑历史
+- ✅ 在机器人对话中保存消息
+
+### **消息过滤 (Message Filters)**
+- 🚫 隐藏来自被封锁用户的消息（未启用）
+
+### **实用功能 (Useful features)**
+- ✅ 禁用广告
+- 🚫 禁用故事（未启用）
+- 🚫 禁用自定义背景（未启用）
+- 🚫 禁用彩色回复（未启用）
+
+### **相似频道 (Disable Similar Channels)**
+- ✅ 折叠相似频道
+- 🚫 隐藏相似频道标签（未启用）
+
+### **其他**
+- 🚫 禁用通知延迟（未启用）
+- ✅ 本地 Telegram Premium（已启用）
+
+### **自定义 (Customization)**
+- 多种图标样式可供选择。
+
+这份翻译忠实于界面内容，让你可以轻松理解每个功能的用途！😊
+
+以下是 Telegram 偏好设置（AyuGram Preferences）的中文翻译：
+
+---
+
+### **界面自定义**
+- **使用图标替换 (Replace with Icons β)** ✅ （已启用）
+- **删除标记 (Deleted Mark)** 🧹
+- **编辑标记 (Edited Mark)** _edited_
+- **最近使用的贴纸数量 (Recent Stickers Count)** 100
+- **宽消息倍率 (Wide Messages Multiplier)** 1.00
+
+---
+
+### **通知 & 选项**
+- **隐藏通知计数 (Hide Notification Counters)** ❌ （未启用）
+- **隐藏通知徽章 (Hide Notification Badge)** ❌ （未启用）
+- **隐藏"所有聊天"标签 (Hide "All Chats" Tab)** ❌ （未启用）
+- **频道底部按钮 (Channel Bottom Button)** _Discuss_
+- **显示用户 ID (Show Peer ID)** _Bot API_
+- **显示消息秒数 (Show Message Seconds)** ❌ （未启用）
+- **显示消息截图 (Show Message Shot)** ✅ （已启用）
+
+---
+
+### **上下文菜单元素**
+- **表情反应面板 (Reactions Panel)** _显示_
+- **查看次数面板 (Views Panel)** _显示_
+- **隐藏 (Hide)** _隐藏_
+- **用户消息 (User Messages)** _扩展菜单_
+- **详细信息 (Details)** _扩展菜单_
+- _(按住 CTRL 或 SHIFT 并右键点击消息以显示扩展菜单)_
+
+---
+
+### **消息字段元素**
+- **附件 (Attach)** ✅ （已启用）
+- **命令 (Commands)** ✅ （已启用）
+- **自毁时间 (TTL)** ✅ （已启用）
+- **表情 (Emoji)** ✅ （已启用）
+- **语音 (Voice)** ✅ （已启用）
+
+---
+
+### **消息字段弹出窗口**
+- **附件 (Attach)** ✅ （已启用）
+- **表情 (Emoji)** ✅ （已启用）
+
+---
+
+### **抽屉元素**
+- **本地阅读 (Read on Local)** ❌ （未启用）
+- **服务器阅读 (Read on Server)** ✅ （已启用）
+- **幽灵模式 (Ghost Mode)** ✅ （已启用）
+- **主播模式 (Streamer Mode)** ❌ （未启用）
+
+---
+
+### **托盘元素**
+- **启用幽灵模式 (Enable Ghost Mode)** ✅ （已启用）
+- **启用主播模式 (Enable Streamer Mode)** ❌ （未启用）
+
+---
+
+### **字体设置**
+- **等宽字体 (Monospace Font)** _默认_
+
+---
+
+### **Web 视图**
+- **伪装客户端为 Android (Spoof Client as Android)** ❌ （未启用）
+- **放大窗口 (Bigger Window)** 0/2
+
+---
+
+### **确认操作**
+- **确认发送贴纸 (For Stickers)** ❌ （未启用）
+- **确认发送 GIF (For GIFs)** ❌ （未启用）
+- **确认发送语音消息 (For Voice Messages)** ❌ （未启用）
+
+---
+
+这些设置可以帮助你优化 Telegram 体验，提供更多隐私和定制功能！😊
 
 **AyuGram 偏好设置**
 
@@ -52,3 +181,4 @@ https://duangks.com/archives/164/
 - **显示消息截图**  
 
 如需进一步帮助，请告诉我！
+

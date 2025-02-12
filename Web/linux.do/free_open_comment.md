@@ -1,3 +1,5 @@
+linux.do 
+tg group:https://t.me/ja_netfilter_group
 Free Open Comment 
 自由开源评论
 这种论坛或者别的 里面的资源非常多 
