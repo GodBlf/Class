@@ -66,7 +66,8 @@ decimal  binary octal hexadecimal   10 2 8 16
 0   八进制
 0b  二进制    
 16= 0x1 = 020  
-
+## 输入
+scanf处理不了 空格和回车  getchar 逐步处理字符;
 
 # 老翁凯C语言
 
