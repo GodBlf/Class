@@ -20,7 +20,7 @@ boundary case是n==0时 update的是 参数n 是[__ 这种形式;   summary : wh
 流程是 
 1. 先递 {{{{{}}}}}
 2. 后归 {n*{n*{n*{n*{boundary case}}}}} --> {n*x} 通过内存角度考虑;
-# 数组索引
+## 数组索引
 index+1 = num(index) 指定索引右一位为到此索引的元素个数  
 
 可以考虑为  0,1,2,3,4,5,...,n,n_length ;  
@@ -74,7 +74,7 @@ int main(){
 
 ## temp
 交换两个数需用道中间变量temp;
-## if 最好要有 else 否则 没返回值error 如果没有else 变相相当于 下边代码就是else里的
+## if 最好要有 else 否则 没返回值error 如果没有else 有if return 变相相当于 下边代码就是else里的
 ## arr[i++] 可以实现数组后缀添加;
 
 
