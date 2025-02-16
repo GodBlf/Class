@@ -86,7 +86,7 @@ int main(){
 
 ## temp
 交换两个数需用道中间变量temp;
-## if 最好要有 else 否则 没返回值error 如果没有else 有if return 变相相当于 下边代码就是else里的
+## 函数如果if里有return 最后也一定要return 否则会有warningif 最好要有 else 否则 没返回值error 如果没有else 有if return 变相相当于 下边代码就是else里的
 ## arr[i++] 
 可以实现数组后缀添加;这就是迭代器Iterator的原理 循环完以后正好 为数组个数n;
 
