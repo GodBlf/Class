@@ -1050,3 +1050,40 @@ public class Main {
 
 
 
+
+# 排序
+## 计数排序
+构造n的数组 数组下标就是计数;然后按照计数将数组下标展开;
+![alt text](image-2.png)
+```c
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<math.h>
+int main(){
+	int n=0,m=0,arr[1001]={0};
+	scanf("%d %d",&n,&m);
+	int temp=0;
+	for(int i=0;i<m;i++){
+		scanf("%d",&temp);
+		arr[temp]++;
+	}
+	for(int i=1;i<=n;i++){
+		for(int j=0;j<arr[i];j++){
+			printf("%d ",i);
+		}
+	}
+	
+}
+```
+## 简单比较排序
+### 选择排序(数组顺序排序)
+按照索引每次选择最小的
+![alt text](image-3.png)
+### 冒泡排序
+
+### 插入排序
+## 快速排序
+[Node \Class\Java\JavaStudy\Java 快速排序及优化策略.md]()
+
+
