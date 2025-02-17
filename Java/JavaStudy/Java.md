@@ -125,7 +125,7 @@ public class Other {
 ### Collections
 ##### Collections.sort
 Collections.sort(Collectiong arr , new Comparator(){@Override public int compare(Object o1,Object o2){}});
-重写比较方法 参数为arr中的相邻两元素 >0 是交换 <=0是不交换;
+重写比较方法 参数为arr中的相邻两元素 1 是交换 -1是不交换;
 
 ### BigInteger
 用eclipse自带的现场学
