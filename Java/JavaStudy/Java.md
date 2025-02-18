@@ -3,15 +3,23 @@
 与java有关的语法  API 题目等;数据结构 算法具体的知识 与之有关的技巧不写入;
 # Java Grammar and API
 ## Grammar
+### 引用数据类型本质是指针
+所以 拷贝ArrayList等引用数据类型
+得 Object<E> o1 =new Object<E>();
+Object<E> o2 =new Object<E>(o1);  构造方法中填入要拷贝的对象
+eg.  ArrayList<Integer> arr=new ArrayList<>();
+ArrayList<Integer> arr1=new ArrayList<>(arr);
+因为指针所以  让arr1=arr仅是让指针指向同一个不是copy;
 ### 格式化输出
 Node \Class\Java\JavaStudy\格式化输出.txt
-
-###
-- java定义需要四段 声明  public static int binarySearch(int[] arr,int x){};   public abstract void move();
-- interface 和 抽象方法 接口是子集不同的方法 抽象方法是子集中共有的方法  public abstract void f();
+### static
+Node \Class\Java\JavaStudy\static内部类.md
 - static 静态修饰符 常用于辅助方法和辅助类 与类中的变量无关联 静态(孤立的);  
 如 Arrays.sort(int[]) 静态方法不是类的方法是函数
 判断需不需要static 就看需不需要外部实例化对象;
+###
+- java定义需要四段 声明  public static int binarySearch(int[] arr,int x){};   public abstract void move();
+- interface 和 抽象方法 接口是子集不同的方法 抽象方法是子集中共有的方法  public abstract void f();
 - 函数式接口: Consumer<Integer> comsumer ;consumer.accept()接受参数 **并调用函数**
 lambda表达式简化函数  (E args)->{sout(args);}
 - getClass() 获得对象的类int等基本数据类型可以(Object)强制类型转换然后.getClass获得其对应包装类的类型
@@ -719,12 +727,19 @@ public static void boubbleSort(int[] arr,int n) { //n is update args
 ```
 
 ## 
+
+
+
 # 队列 
-
+## 环形数组
+tail指针是sentry哨兵指针
+![alt text](image-6.png)
 # 栈 
- 
+top指针是sentry指针;
 # 堆
-
+找父节点 (i-1)>>1 
+找子节点 2i+1 2i+2
+最后一个非叶节点 size/2-1;
 # 二叉树 
 
 # 哈希表
@@ -739,11 +754,21 @@ public class HashTable{
 ```
 
 
-# 排序
-
-
 # 图
 概念 vertex edge 度 入度 出度 权 路径 连通图
+- 图的表示 :
+1. 邻接矩阵
+   A B C D
+A  0 1 1 0
+B  1 0 0 1
+C  1 0 0 1
+D  0 1 1 0
+2. 邻接表
+A->B ->C
+B ->A ->D
+C->A ->D
+D->B ->C
+
 
 
 # 字符串
@@ -809,6 +834,17 @@ public class HighPrecisionAdditionString {
 ```
 
 
+
+
+
+# 算法思想
+- Divide and Conquer 
+- Dynamic Programming
+- Greedy
+- Backtracking
+- Search
+- 枚举
+- 
 # 模拟
 # 模拟题目
 ## P1042
@@ -915,6 +951,23 @@ int main(){
 ### 冒泡排序
 
 ### 插入排序
+记住插入排序元素怎么移动的
+```java
+int [] arr= {4,3,2,1};
+			for(int i=1;i<4;i++) {
+				int flag=arr[i];int j=i-1;
+				while(true) {
+					if(j<0 || arr[j]<=flag) {
+						break;
+					}
+					arr[j+1]=arr[j];
+					j--;
+				}
+				arr[j+1]=flag;
+				
+			}
+
+```
 ## 快速排序
 [Node \Class\Java\JavaStudy\Java 快速排序及优化策略.md](https://github.com/GodBlf/Class/blob/main/Java/JavaStudy/Java%20%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E5%8F%8A%E4%BC%98%E5%8C%96%E7%AD%96%E7%95%A5.md)
 
@@ -936,7 +989,209 @@ arr[right]=temp;//   最后再把pivot换到i处;
 
 ```
 
-## Arrays.sort  和  Collections(arr , new Comparator<Student>(){@Override public int compare(Student s1,Student s2){}})
+## Arrays.sort  和  Collections.sort
+Arrays.sort(arrays , new Comparator<Student>(){@Override public int compare(Student s1,Student s2){}})  对数组排序
+Collectiongs(list, new Comparator<Student>(){@Override public int compare(Student s1,Student s2){}}) 	对动态数组排序
 Node  \Class\Java\JavaStudy\生日排序算法实现.md
+
+
+# 枚举
+- 枚举经典题目数正方形还是长方形 按照边长枚举 每次枚举  是上边滑动到底和下边滑动到底的乘积;
+```java
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        // 注意：题目给的是棋盘的行数和列数，即单元格数。
+        // 若输入为 n, m，则棋盘有 n 行 m 列，对应的横线数为 n+1，竖线数为 m+1。
+        int a = sc.nextInt();
+        int b = sc.nextInt();
+        sc.close();
+        int n = a + 1; // 横线数
+        int m = b + 1; // 竖线数
+
+        long squareCount = 0;    // 正方形总数
+        long nonSquareCount = 0; // 长方形（非正方形）的总数
+
+        // 枚举横向距离 d（行差）和竖向距离 w（列差）
+        for (int d = 1; d < n; d++) {
+            for (int w = 1; w < m; w++) {
+                long count = (long)(n - d) * (m - w);
+                if (d == w) {
+                    squareCount += count;
+                } else {
+                    nonSquareCount += count;
+                }
+            }
+        }
+        System.out.println(squareCount + " " + nonSquareCount);
+    }
+}
+
+```
+## 子集枚举
+![alt text](image-7.png)
+用2进制表示n个元素的集合中元素存在状态 从0000 到 1111 共有2^n个元素  1<<n;
+第i个元素元素可表示为  1<<i  
+交集 : &
+并集: |
+补集: ((1<<n)-1) ^ 
+包含: (|)&&(&)
+判断第j位是否有元素 i&(1<<j)!=0;
+## 排列枚举
+递归生成决策树
+```java
+
+public static void dfs(String str,ArrayList<Integer> arr) {
+    	if(arr.size()==0) {
+    		System.out.println(str);
+    	}
+    	
+    	for(int i=0;i<arr.size();i++) {
+    		int temp=arr.get(i);
+    		ArrayList<Integer> newArr=new ArrayList<Integer>(arr);
+    		newArr.remove(i);
+    		dfs(str+temp,newArr);    // 用副本的方式实现回溯
+    		
+    	}
+    	
+    }
+//更能表达递归回溯的是
+public static void dfs(String str,ArrayList<Integer> arr) {
+    	if(arr.size()==0) {
+    		System.out.println(str);
+    	}
+    	
+    	for(int i=0;i<arr.size();i++) {
+    		int temp=arr.get(i);
+    		arr.remove(i);
+    		
+    		str=str+temp;
+    		dfs(str,arr);
+    		
+			//回溯到原来的状态,为什么可以;因为把递归里的 dfs() 看作 {{{{{return}}}}}  在最外层remov(i) 再 add(i) 相当于每个栈归时都能-1+1 回到原来状态;
+     		StringBuilder sb=new StringBuilder(str);
+    		sb.deleteCharAt(sb.length()-1);
+    		str=sb.toString();    
+    		arr.add(i,temp);
+    	}
+    	
+    }
+
+```
+
+# 数论
+## 进制转换 
+小技巧 将二进制拆分成4个一组不够的补零    1111 1111  就是十六进制的FF
+例如 2 -> 8;
+- to 10 从0开始遍历 sum=sum*original + temp  而不是从个位开始遍历,
+![alt text](image-4.png)
+也可以按照公式进行遍历
+- 10 to  先判断0  然后再用while if 不断mod boundary case是x==0;
+```java
+public class Main {
+	    //主方法
+	public static void main(String[] args) {
+			Scanner sc=new Scanner(System.in);
+			//主方法开始
+			
+			//构造映射列表
+			char [] list = new char[16];
+			for(int i=0;i<10;i++) {
+				list[i]=(char)('0'+i);
+			}
+			for(int i=10;i<16;i++) {
+				list[i]=(char)('A'+i-10);
+			}
+			int original =sc.nextInt();
+			String x=sc.next();
+			int tg=sc.nextInt();
+			System.out.println(ten2Tg(original2Ten(x, original),tg,list));
+			
+			//主方法结束
+		}
+	public static int original2Ten(String x, int original) {
+	    if (x.equals("0")) { 																	//注意// 字符串比较需要用 equals
+	        return 0;
+	    }
+
+	    int sum = 0;
+	    for (int i = 0; i < x.length(); i++) { 												// 注意从零开始遍历才是正确转换到10进制
+	        char c = x.charAt(i);
+	        int temp;
+
+	        if (c >= '0' && c <= '9') {
+	            temp = c - '0'; // 处理 0-9
+	        } else if (c >= 'A' && c <= 'Z') {
+	            temp = c - 'A' + 10; // 处理 A-Z
+	        } else if (c >= 'a' && c <= 'z') {
+	            temp = c - 'a' + 10; // 处理 a-z（可选，看需求）
+	        } else {
+	            throw new IllegalArgumentException("Invalid character in number: " + c);
+	        }
+
+	        if (temp >= original) { // 确保字符值在合法进制范围内
+	            throw new IllegalArgumentException("Digit out of range for base " + original + ": " + c);
+	        }
+
+	        sum = sum * original + temp; // 累加计算
+	    }
+	    return sum;
+	}
+
+
+		
+		
+		//十进制转换目标进制;
+		public static String ten2Tg(int x,int tg,char[] list) {
+			
+			StringBuilder sb=new StringBuilder();
+			if(x==0) {																						//注意判断边界条件0;
+				return "0";
+			}
+			while(true) {
+				if(x==0) {
+					break;
+				}
+				sb.append(list[x%tg]+"");
+				x=x/tg;
+			}
+			return sb.reverse().toString();
+		}
+```
+### 小数进制转换
+![alt text](image-5.png)
+
+## 2进制讨论(补码)
+计算机擅长加法  所以 0-000 是0开头的0代表正号
+1-111是-1 开头的1代表负号 然后考虑计算机擅长加法所以 1111+1=0000 所以1111是-1
+然后1000->1111,0000,-> 0111  排列起来就是所有能表示的 +-2^3 这些数;
+
+## 位运算
+& | ^ ~  <<  >>  >>>
+&: 相当于乘法  1&0=0 1&1=1 0&0=0;
+|: 相当于加法  1|0=1 1|1=10(1) 0|0=0;
+所以例如取出某二进制数的后16位  n&0xFFFF
+### 应用
+- <<n  二进制表示右移n位;相当于乘了2^n;
+- >>n  二进制表示左移n位,相当于整除了2^n;
+-a=(~ a+1)
+检查奇偶性：使用 a & 1 来检查一个整数是否为奇数（如果结果为 1，则为奇数）。
+交换两个数：可以通过 XOR 运算交换两个数的值，例如：
+java
+Copy code
+int a = 5, b = 3;
+a = a ^ b;
+b = a ^ b;
+a = a ^ b;
+计算最大公约数：使用位运算可以高效地计算两个数的最大公约数。
+位运算的性能很高，因为它们直接操作硬件级别的二进制位，不需要复杂的计算。
+## 整除
+(a+b+c)%d=(((a+b)%d)+c)%d  *乘法类似
+
+
+
+
 
 
