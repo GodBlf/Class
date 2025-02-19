@@ -768,7 +768,73 @@ A->B ->C
 B ->A ->D
 C->A ->D
 D->B ->C
+## java类
+```java
+//图节点
+public class Vertex {
+		public String name;
+		public ArrayList<Edge> edges=new ArrayList<Edge>
+		();//边集合
+		public boolean visited=false;
+		public Vertex() {}
 
+		public Vertex(String name) {
+			super();
+			this.name = name;
+		}
+		
+		
+}
+//图的边
+public class Edge {	
+		public int weight;
+		public Vertex Linked; //指向那个节点
+		
+		public Edge() {}
+
+		public Edge(int weight, Vertex linked) {
+			super();
+			this.weight = weight;
+			Linked = linked;
+		}
+		
+		
+		
+
+}
+```
+## dfs
+```java
+public static void dfs(Vertex v) {
+    // boundary case：如果传入的顶点为 null 或者已经访问过，则直接返回
+    if (v == null || v.visited) {
+        return;
+    }
+    
+    // 标记当前顶点为已访问
+    v.visited = true;
+    System.out.println(v.name);
+    
+    // 遍历所有相邻的顶点，并递归调用dfs
+    for (int i = 0; i < v.edges.size(); i++) {						//和全排列的决策树,快速排序的左右部分类似  多分支用for循环每个循环以i为基准看作单分支进行递归编写
+        dfs(v.edges.get(i).linked);
+    }
+}
+//dfs算法
+    public static void dfs(ArrayList<Vertex> dfsArr,Vertex v){
+        if(v==null || v.visited==true){
+            return ;
+        }
+
+        dfsArr.add(v);								// 考虑是否需要回溯通过if逻辑判断
+        v.visited=true;								//这里 else严格限制 仅是没被遍历到的add进数组所以不用回溯;
+        for(Edge e:v.arr){
+            dfs(dfsArr,e.linked);
+        }
+
+    }
+
+```
 
 
 # 字符串

@@ -5,20 +5,36 @@
 # Tips
 ## 指针(地址)的思想去考率类和对象
 ## 递归思想:
-- 递归
-```java
-public static int f(int n){
-    if(n==0){                   //boundary case bc的选取最好用<>号 抛弃 == !=  ...
-        return 1;               //考虑回溯等操作的时候可以把 f(n-1)考虑成 {{{{{return}}}}};
+- 递归树
+![alt text](7113268cadc2876214b893736260c100.jpg)
+递归是对递归树的遍历
+   - 递归树性质:
+root 是原问题n
+非根节点 是子问题 n-i;
+leaf节点是base case 最小子问题 0;
+遍历到叶子节点则return 
+普通语句可视作叶子节点;
+在root节点的i位置增加叶子节点则所有非叶子节点都在i位置增加相同的非叶子节点;
+
+通过stack(栈)的角度考虑 {}开一个就相当于进栈 {}->{}->{}->...->{}->return  
+最后return 再依次出栈;{}<-{}<-{}<-...<-{}<-return
+栈前语句进栈执行栈后语句出栈执行;
+- 模板
+```c
+void f(int n){      // 问题n  根节点;
+    if(n==boundary case){
+        return;      // 判断子问题是否为叶子节点 是就原路返回 return  如果不是void函数则带着返回值返回;
     }
-    return n*f(n-1);
+
+    leaves;
+    f(n-i);        // 生成树 子问题n-i;
+    ...             // 可以是叶子节点也可以是非叶子节点
+    leaves;
+
 }
+
 ```
-使用
-流程是 
-1. 先递 {{{{{}}}}}
-2. 后归 {n*{n*{n*{n*{boundary case}}}}} --> {n*x} 通过内存角度考虑;
-- 迭代式递归 
+- 迭代式
 while if形式的 判断边界条件 [__ 然后不断更新至边界条件;
 ```java
 while(true){
@@ -31,7 +47,12 @@ while(true){
 while(!boundary case) 等价于 while if(boundary case) break;
 if() return  等价于  if else
 
-
+## 指针参数の函数设计
+翁恺c语言讲过
+void f(int * arr,int x){};
+比int * f(int x){}好
+例如public static void dfs(ArrayList<Vertex> arr,Vertex v)
+比 public static ArrayList<Vertex> dfs(Vertex v) 好
 ## 数组索引
 index+1 = num(index) 指定索引右一位为到此索引的元素个数  
 
