@@ -4,36 +4,84 @@
 算法 数据结构 方面的注意事项 技巧 和数学有关的技巧等(Tips)不是具体的知识;实际编程语言的Tips不写入
 # Tips
 ## 指针(地址)的思想去考率类和对象
+- java中类,对象都是指针
+- 双指针,多指针等
+
 ## 递归思想:
 - 递归树
 ![alt text](7113268cadc2876214b893736260c100.jpg)
 递归是对递归树的遍历
    - 递归树性质:
-root 是原问题n
-非根节点 是子问题 n-i;
+root 是原问题(n)
+!root node 是子问题(n-i) 子问题状态is up to 父问题状态
 leaf节点是base case 最小子问题 0;
-遍历到叶子节点则return 
+return 等价于 叶子节点 return 也可以视作语句
 普通语句可视作叶子节点;
-在root节点的i位置增加叶子节点则所有非叶子节点都在i位置增加相同的非叶子节点;
+在任意的!leaf node 的i位置 添加语句将对所有!leaf node i位置添加语句
+在任意leaf node 的i位置 添加语句将对所有!leaf node i位置添加语句
 
-通过stack(栈)的角度考虑 {}开一个就相当于进栈 {}->{}->{}->...->{}->return  
-最后return 再依次出栈;{}<-{}<-{}<-...<-{}<-return
-栈前语句进栈执行栈后语句出栈执行;
 - 模板
+构建递归树 只能在顶层对root节点进行加入叶子节点来操作;
 ```c
-void f(int n){      // 问题n  根节点;
-    if(n==boundary case){
-        return;      // 判断子问题是否为叶子节点 是就原路返回 return  如果不是void函数则带着返回值返回;
+
+        //root
+void f(int n){      //根节点--确定问题状态(n) (括号里的代表状态)
+
+    //leaf
+    if(n==boundary case){  //确定叶子节点--确定base问题状态;
+        return;                                                  // 判断子问题是否为叶子节点 是就原路返回return 如果不是void函数则带着返回值返回;
     }
+    //branch
+    leaves;             //a语句
+    ...
+    f(n-i);             // 分支--子问题的状态(n-i);
+    f(n-j);            
+    ...                                                   
+    leaves;             //b语句
 
-    leaves;
-    f(n-i);        // 生成树 子问题n-i;
-    ...             // 可以是叶子节点也可以是非叶子节点
-    leaves;
-
+    return             //这个可视作语句 若是带值返回则出栈变为值
 }
 
 ```
+- 具体操作
+用简单的问题模拟问题n
+先看底层再看顶层 根据node的 状态和返回值设计语句a,b;
+![alt text](21d4c2695663666489169375fa69e737.jpg)
+```java
+public static int[] arr;
+
+    public static void main(String[] args) {
+            int n=5;
+            arr=new int [n+1];
+            Arrays.fill(arr,-1);
+            arr[0]=1;arr[1]=1;
+            f(n);
+        for (int i : arr) {
+            System.out.println(i);
+        }
+    }
+    public static void f(int n){
+        if(n==1 || n==0){
+            return;
+        }
+        if(arr[n]!=-1){
+            return;
+        }
+
+        f(n-1);
+        f(n-2);
+
+        arr[n]=arr[n-1]+arr[n-2];
+
+
+    }
+```
+
+- 带值返回
+例如 int f(int n)  栈pop弹出的时候变成值携带返回
+- 回溯
+每个子问题的状态参量要一致  例如 f(n-1) 相当于n1=n-1 n-1的子问题的状态参量是n1 
+而 n=n-1 f(n)  此时n表示的状态参量与子问题n不一致需要回溯 及 在生成树末尾添加++ 返回时++将状态一致;
 - 迭代式
 while if形式的 判断边界条件 [__ 然后不断更新至边界条件;
 ```java
@@ -47,12 +95,7 @@ while(true){
 while(!boundary case) 等价于 while if(boundary case) break;
 if() return  等价于  if else
 
-## 指针参数の函数设计
-翁恺c语言讲过
-void f(int * arr,int x){};
-比int * f(int x){}好
-例如public static void dfs(ArrayList<Vertex> arr,Vertex v)
-比 public static ArrayList<Vertex> dfs(Vertex v) 好
+
 ## 数组索引
 index+1 = num(index) 指定索引右一位为到此索引的元素个数  
 
@@ -68,7 +111,17 @@ index+1 = num(index) 指定索引右一位为到此索引的元素个数
 例如在快速排序的时候 i指针就是i左边的都是小于pivot的 最后再将pivot插入sentry中;
 数据结构也常用sentry ;
 
-
+## 指针参数の函数设计
+翁恺c语言讲过
+- void f(int * arr,int x){}; java中 可以设计public static int[] arr;静态变量代替这个;
+比int * f(int x){}好 
+例如public static void dfs(ArrayList<Vertex> arr,Vertex v)
+比 public static ArrayList<Vertex> dfs(Vertex v) 好
+- 参数是变量的时候在出栈的时候会销毁
+所以在回溯的时候变量可以指针不可以
+而需要传递不变量的时候可以传递一个指针例如:
+使用数组或对象传递 cnt
+如果你不想改变函数签名，可以使用一个数组或对象来保存 cnt，这样就能通过引用传递 cnt 的值了。
 
 ## 数组可以考虑成 正半轴,元素索引的右边一位就是前边所有元素的个数,例如{4,3,5,567,4}索引(2,5) 右边一共3个元素 size-index 就是index前边所有元素的个数;
 ## new

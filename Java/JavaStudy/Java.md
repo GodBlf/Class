@@ -1135,7 +1135,8 @@ public static void dfs(String str,ArrayList<Integer> arr) {
     		
     		str=str+temp;
     		dfs(str,arr);
-    		
+    		// 因为子问题的状态是指针 要保持子问题的状态一致所以要回溯
+			
 			//回溯到原来的状态,为什么可以;因为把递归里的 dfs() 看作 {{{{{return}}}}}  在最外层remov(i) 再 add(i) 相当于每个栈归时都能-1+1 回到原来状态;
      		StringBuilder sb=new StringBuilder(str);
     		sb.deleteCharAt(sb.length()-1);
@@ -1144,6 +1145,40 @@ public static void dfs(String str,ArrayList<Integer> arr) {
     	}
     	
     }
+
+```
+
+
+
+# 递归
+## 递归树
+## 多路递归构造和memo优化
+```java
+
+import java.util.Arrays;
+
+public class Main1 {
+
+    public static void main(String[] args) {
+        int n=4;
+        int[] cache=new int[n+1] ;
+        Arrays.fill(cache,-1);
+        cache[0] =1;cache[1]=1;
+        System.out.println(f(n,cache));
+    }
+    public static int  f(int n,int[] cache){
+        if(cache[n] != -1){                   			//如果节点在数组里已经记录则它是叶子节点
+            return cache[n];
+        }
+        int x=f(n-1,cache);
+        int y=f(n-2,cache);
+        cache[n]=x+y;
+        return cache[n];								// 仅代表返回时候携带的值 对递归树无额外贡献;
+
+    }
+
+}
+
 
 ```
 

@@ -1,5 +1,8 @@
 # ReadMe
 完全备战转专业考试用的;
+
+int a = 0, b = 0, c = 0, d = 0;
+
 # 算法
 ## 冒泡算法
 ```C
@@ -45,7 +48,7 @@ int ef(int arr[],int n,int tg){
 
 # c primer plus
 oop 是一门哲学,对语言建模适应问题,
-
+数组大小不能用变量声明数组大小不能用变量声明数组大小不能用变量声明数组大小不能用变量声明数组大小不能用变量声明数组大小不能用变量声明
 学调试代码,插入printf()监测变量的值
 
 C的6种语句
@@ -66,8 +69,16 @@ decimal  binary octal hexadecimal   10 2 8 16
 0   八进制
 0b  二进制    
 16= 0x1 = 020  
+
+## 取整
+ceil  floor  round
 ## 输入
-scanf处理不了 空格和回车  getchar 逐步处理字符;
+scanf处理不了 空格和回车  getchar 逐步处理字符; fgets(str,sizeof(str),stdin) 整行输入 和java的 reader.readline()一样;
+
+## 字符串
+strlen  strcmp
+## math
+fabs()
 
 # 老翁凯C语言
 
@@ -341,6 +352,119 @@ double 用%lf  %lf 也能整数输入
 
 
 # xmuoj题目
+学习用类 qsort进行排序
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int digitSum(int x) {
+    int sum = 0;
+    while (x) {
+        sum += x % 10;
+        x /= 10;
+    }
+    return sum;
+}
+
+typedef struct {
+    int value;  // 原始数字
+    int dsum;   // 数字和
+} Number;
+
+int cmp(const void *a, const void *b) {
+    Number *n1 = (Number *)a;
+    Number *n2 = (Number *)b;
+    
+    // 首先比较数字和
+    if (n1->dsum != n2->dsum)
+        return n1->dsum - n2->dsum;
+    // 数字和相同则比较数字本身
+    return n1->value - n2->value;
+}
+
+int main() {
+    int n, m;
+    scanf("%d", &n);
+    scanf("%d", &m);
+    
+    Number *arr = (Number *)malloc(n * sizeof(Number));
+    
+    for (int i = 0; i < n; i++) {
+        arr[i].value = i + 1;
+        arr[i].dsum = digitSum(i + 1);
+    }
+    
+    qsort(arr, n, sizeof(Number), cmp);
+    
+    // 注意 m 是从 1 开始计数，数组下标从 0 开始
+    printf("%d\n", arr[m - 1].value);
+    
+    free(arr);
+    return 0;
+}
+
+```
+
+ACW3768统计字符串中连续的x
+```c
+#include <stdio.h>
+
+int main() {
+    int n;
+    scanf("%d", &n);
+    
+    char arr[n+1];  // +1 to accommodate null terminator
+    // Read the string
+    scanf("%s", arr);
+    
+    int sum = 0;  // To store the number of deletions
+    int count = 0;  // To count consecutive 'x'
+
+    for (int i = 0; i < n; i++) {
+        if (arr[i] == 'x') {
+            count++;  // Increment count for consecutive 'x'
+            if (count > 2) {
+                sum++;  // If more than 2 'x' in a row, increment deletion count
+            }
+        } else {
+            count = 0;  // Reset count if the character is not 'x'
+        }
+    }
+
+    printf("%d", sum);
+    return 0;
+}
+
+```
+XMU2034 http://xmuoj.com/problem/XMU2034
+## GW026
+#include<math.h>
+#include<stdio.h>
+int main(){
+	int M=5,T=0,N=2,X=10;
+	scanf("%d %d %d",&M,&N,&X);
+	while(1){
+		int xuyao=ceil((double)M/2);
+		if(xuyao>X){
+			break;
+		}else{
+			T=M;X=X-xuyao;
+		}
+		
+		if(T/N==0){
+			break;
+		}else{
+			N+=T/N;T=0;
+		}
+		
+	}
+	printf("%d",N);
+	
+}
+
+两个边界条件
+
+
 
 # 复习提单
 ## 洛谷
