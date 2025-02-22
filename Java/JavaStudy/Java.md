@@ -24,7 +24,8 @@ Node \Class\Java\JavaStudy\static内部类.md
 lambda表达式简化函数  (E args)->{sout(args);}
 - getClass() 获得对象的类int等基本数据类型可以(Object)强制类型转换然后.getClass获得其对应包装类的类型
 '9'-'0'是int 类型;
-- 
+- equals方法重写 一般的类equals 是比较指针地址是否一样 重写以后就会比较类中成员变量的值是否相同;
+- 建议不要用增强for 因为在遍历类数组的时候 for(Studen s:arr) 此时的s是类的一个副本不能直接影响arr中的对象;
 ### 作用域
 在 Java 中，如果一个变量、方法或类没有显式声明 `public`、`protected` 或 `private`，那么它的默认作用范围是 **包级私有（package-private）**，也称为 **默认访问权限（default access modifier）**。
 
@@ -127,6 +128,13 @@ public class Other {
 
 这样可以控制类的访问权限，使其在 **同一包内可见，包外不可见**，从而提高封装性。
 ## API
+
+
+
+
+
+
+
 ### Arrays类
 - Arrays.sort(int [] arr); 将数组arr 升序排列 
 - Arrays.binarySearch(int[] arr,int tg); 
@@ -189,6 +197,15 @@ Math.max 同理
 
 
 
+
+
+
+
+
+
+
+
+
 # Tips
 
 -  add remove set get
@@ -199,6 +216,75 @@ set 索引改元素
 get 查 元素 查索引
 - 空方法 结束可以直接 return 返回;
 
+
+-------------------------------------------------------------------------------------
+
+# 数据结构API
+- 数据结构satck queue等就是个Cache 临时存储数据用的
+
+## Comparator<E> 接口
+- 匿名内部类:对于接口的实例化
+new可以生成类的对象不能生成接口的对象因为接口里边没有成员变量仅是其他类的方法
+尽享传递一个接口的时候可以使用匿名内部类
+new Interface<E>(){
+	@Override
+	重写方法
+}
+相当于创造了一个实现这个接口的对象 
+
+- 使用情况:需要进行排序的常见如sort(arr,new Comparator<E>(){}),new PriorityQueue<E>(new Comparator<E>(){})
+
+- 用法:
+new一个匿名内部类重写compare方法,compare方法是以升序为基准return 0 1 -1, 1为o1>o2  0为o1=o2  -1为o1<o2
+可以简单理解为1是改变两者排序 -1是不改变两者排序
+- 多重比较
+```java
+new Comparator<E>(){
+	@Override
+	public int compare(E o1,E o2){
+		if(o1.height!=o2.height){
+			return o1.height-o2.height;
+		}else{
+			if(o1.age!=o2.age){
+				return Integer.compare(o1.age,o2.age);  //利用很多类都提供的compare方法BigInteger Integer
+			}else{
+				return -1;
+			}
+		}
+	}
+};
+```
+
+## Arrays
+- Arrays.sort()
+- Arrays.fill()
+## E[] 
+
+## Collections
+Collections.sort()
+
+## ArrayList<E>
+
+## LinkedList<E> and ArrayDeque<E>
+
+### Queue
+
+### Stack
+
+
+## PriorityQueue<E>
+- 基于heap堆实现
+- 可用Comparator<E>接口对元素进行优先级比较;
+
+## HashSet
+- 哈希表 值对N集的映射
+
+## HashMap
+- 键值对的集合 将键做成哈希表 值链到键下边;
+
+
+
+-------------------------------------------------------------------------------------
 # 二分查找
 数组升序排列;
 设置min max两个索引指针 根据mid 和 target比较进行更新 
@@ -285,6 +371,13 @@ java.util.Arrays中的 Arrays.binarySearch(数组,值);
 二分查找为 O(logn)
 ## 空间复杂度
 内存占用大小
+
+
+
+
+
+
+
 
 # 数组 
 N自然数集->数据的映射(和哈希值相反)
@@ -725,7 +818,51 @@ public static void boubbleSort(int[] arr,int n) { //n is update args
 			return x+y;
 		}
 ```
+## BigInteger Recursion
+```java
+package  luogu;
 
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class Main {
+    public static BigInteger[] arr;
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        //start
+        int n = sc.nextInt();
+        arr=new BigInteger[n+1];
+        Arrays.fill(arr,null);
+        arr[0]=new BigInteger("1");
+        arr[1]=new BigInteger("1");
+        System.out.println(f(n));
+
+        //end
+    }
+
+    //fabo
+        //root
+    public static BigInteger f(int n){
+        //leaf
+        if(arr[n]!=null){
+            return arr[n];
+        }
+
+        //branch
+        BigInteger x=f(n-1);
+        BigInteger y=f(n-2);
+
+        arr[n]=x.add(y);
+
+        return arr[n];
+
+
+    }
+}
+
+```
 ## 
 
 
@@ -755,7 +892,8 @@ public class HashTable{
 
 
 # 图
-概念 vertex edge 度 入度 出度 权 路径 连通图
+## 概念
+- vertex edge 度 入度 出度 权 路径 连通图
 - 图的表示 :
 1. 邻接矩阵
    A B C D
@@ -803,7 +941,7 @@ public class Edge {
 
 }
 ```
-## dfs
+## dfs 递归实现
 ```java
 public static void dfs(Vertex v) {
     // boundary case：如果传入的顶点为 null 或者已经访问过，则直接返回
@@ -835,6 +973,75 @@ public static void dfs(Vertex v) {
     }
 
 ```
+
+## Queue Stack实现dfs bfs
+
+![alt text](297d7a378426f79c7b359c2d92b17481.jpg)
+- 可以通过Tree来考虑 出节点就往数据结构中push or offer 子节点;
+visited = true 相当于已经进入过数据结构了'
+- Queue->bfs树  Stack->dfs树
+- Stack可以实现没有return 递归 因为dfs树和递归树相似;
+- stack queue 相当于Cache 寄存器;
+
+```java
+//dfs stack
+    public static void dfsStack(Vertex v) {
+        LinkedList<Vertex> stack = new LinkedList<>();		//LinkedList 是链表实现  ArrayDeque是数组实现;
+
+        // 入栈时标记为已访问
+        v.visited = true;
+        
+        stack.push(v);
+
+        while (!stack.isEmpty()) {
+            Vertex pop = stack.pop();
+            // 对 pop 节点不需要再次标记了
+            System.out.println(pop.name);
+            // 注意：如果希望延迟打印，可以在出栈时打印，但推荐把标记放在入栈时
+            for (Edge e : pop.arr) {
+                if (!e.linked.visited) {
+                    e.linked.visited = true; // 入栈时立即标记
+
+                    stack.push(e.linked);
+                }
+            }
+        }
+    }
+
+//bfs algorithm
+    public static void bfs(Vertex v) {
+        LinkedList<Vertex> queue = new LinkedList<>();   ////LinkedList 是链表实现  ArrayDeque是数组实现;
+        v.visited = true;
+        queue.offer(v);
+          // 初始化时就标记起始节点为已访问
+
+        while (!queue.isEmpty()) {
+            Vertex poll = queue.poll();  // 从队列中取出一个节点
+
+            // 访问该节点
+
+            System.out.println(poll.name);  // 打印当前节点的名字
+
+            // 遍历当前节点的邻接边
+            for (Edge e : poll.arr) {
+                if (!e.linked.visited) {  // 只有在未访问的节点才加入队列
+                    e.linked.visited = true;  // 标记为已访问
+                    queue.offer(e.linked);  // 将邻接节点加入队列
+                }
+            }
+        }
+    }
+```
+
+
+
+
+
+# Greedy
+## 排队接水问题
+
+## 选考试问题
+
 
 
 # 字符串
@@ -1170,7 +1377,7 @@ public class Main1 {
         if(cache[n] != -1){                   			//如果节点在数组里已经记录则它是叶子节点
             return cache[n];
         }
-        int x=f(n-1,cache);
+        int x=f(n-1,cache);								//也可以把 cache变成 public static int [] cache 然后再main中初始化
         int y=f(n-2,cache);
         cache[n]=x+y;
         return cache[n];								// 仅代表返回时候携带的值 对递归树无额外贡献;

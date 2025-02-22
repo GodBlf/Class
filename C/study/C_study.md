@@ -47,6 +47,8 @@ int ef(int arr[],int n,int tg){
 ```
 
 # c primer plus
+## tips
+- 注意(double)除法   注意 int 还是double
 oop 是一门哲学,对语言建模适应问题,
 数组大小不能用变量声明数组大小不能用变量声明数组大小不能用变量声明数组大小不能用变量声明数组大小不能用变量声明数组大小不能用变量声明
 学调试代码,插入printf()监测变量的值
@@ -71,10 +73,10 @@ decimal  binary octal hexadecimal   10 2 8 16
 16= 0x1 = 020  
 
 ## 取整
-ceil  floor  round
+ceil  floor  round round必配(double)
 ## 输入
 scanf处理不了 空格和回车  getchar 逐步处理字符; fgets(str,sizeof(str),stdin) 整行输入 和java的 reader.readline()一样;
-
+while(scanf!=EOF)来控制输入;
 ## 字符串
 strlen  strcmp
 ## math
