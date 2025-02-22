@@ -26,6 +26,7 @@ lambda表达式简化函数  (E args)->{sout(args);}
 '9'-'0'是int 类型;
 - equals方法重写 一般的类equals 是比较指针地址是否一样 重写以后就会比较类中成员变量的值是否相同;
 - 建议不要用增强for 因为在遍历类数组的时候 for(Studen s:arr) 此时的s是类的一个副本不能直接影响arr中的对象;
+- ArrayList<Integer> arr1=new ArrayList<>(arr);可用这种方法对对象进行复制
 ### 作用域
 在 Java 中，如果一个变量、方法或类没有显式声明 `public`、`protected` 或 `private`，那么它的默认作用范围是 **包级私有（package-private）**，也称为 **默认访问权限（default access modifier）**。
 
@@ -246,7 +247,7 @@ new Comparator<E>(){
 			return o1.height-o2.height;
 		}else{
 			if(o1.age!=o2.age){
-				return Integer.compare(o1.age,o2.age);  //利用很多类都提供的compare方法BigInteger Integer
+				return Integer.compare(o1.age,o2.age);  //利用很多类都提供的compare方法BigInteger Integer 也都提供 x.compareTo(y)这俩一样后者常有因为前者是静态方法;
 			}else{
 				return -1;
 			}
@@ -942,6 +943,7 @@ public class Edge {
 }
 ```
 ## dfs 递归实现
+- 不如栈实现时间短因为栈实现没返回;
 ```java
 public static void dfs(Vertex v) {
     // boundary case：如果传入的顶点为 null 或者已经访问过，则直接返回
@@ -1033,8 +1035,205 @@ visited = true 相当于已经进入过数据结构了'
     }
 ```
 
+## Dijkstra PriorityQueue<E>+Greedy
+和 bfs dfs 相反 poll出来再判断visited;
+```java
+public static void dijkstra(Vertex source, List<Vertex> vertices) {
+        // 初始化源点距离为0，其它点距离默认 Integer.MAX_VALUE（在顶点构造时已经设置）
+        source.distance = 0;
+        
+        // 创建优先级队列，按照距离进行排序
+        PriorityQueue<Vertex> pq = new PriorityQueue<>(new Comparator<Vertex>() {
+            @Override
+            public int compare(Vertex v1, Vertex v2) {
+                return v1.distance - v2.distance;
+            }
+        });
+        pq.offer(source);
+        
+        // 只在从队列中取出时标记 visited，这样可以保证每个节点的最短距离都已经确定
+        while (!pq.isEmpty()) {
+            Vertex current = pq.poll();
+            
+            // 如果该节点已经确定了最短距离，则跳过（这是 lazy deletion 的一种方法）
+            if (current.visited) {
+                continue;
+            }
+            current.visited = true;
+            
+            // 遍历所有邻边进行松弛操作
+            for (Edge edge : current.edges) {
+                Vertex neighbor = edge.linked;
+                // 如果访问不到或者已经访问过最短路径，则尝试松弛
+                if (!neighbor.visited) {
+                    int newDist = current.distance + edge.weight;
+                    if (newDist < neighbor.distance) {
+                        neighbor.distance = newDist;
+                        neighbor.prev = current;
+                        // 由于距离更新，将该节点加入队列
+                        pq.offer(neighbor);
+                    }
+                }
+            }
+        }
+    }
+
+```
 
 
+
+
+# 图题目
+## P1551 亲戚 洛谷
+
+```java
+package qinqi;
+
+import Tu.Edge;
+import Tu.Test;
+import Tu.Vertex;
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Main {
+    public static boolean panduan=false;
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+        int p = sc.nextInt();
+        Vertex [] arr=new Vertex[n];
+        for(int i=0;i<n;i++){
+            arr[i]=new Vertex(i);
+        }
+        for(int i=0;i<m;i++){
+            int v1=sc.nextInt()-1;
+            int v2=sc.nextInt()-1;
+            Edge e1=new Edge(arr[v2]);
+            Edge e2=new Edge(arr[v1]);
+
+            arr[v1].edges.add(e1);
+            arr[v2].edges.add(e2);
+
+        }
+
+        for(int i=0;i<p;i++){
+            resetVisited(arr);
+            int p1=sc.nextInt()-1;
+            int p2=sc.nextInt()-1;
+            dfsStack(arr[p1],arr[p2]);
+            if(panduan){
+                System.out.println("Yes");
+            }else{
+                System.out.println("No");
+            }
+            panduan=false;
+        }
+
+
+
+    }
+
+    public static void dfsStack(Vertex v,Vertex tg){
+        ArrayDeque<Vertex> cache =new ArrayDeque<>();
+        cache.push(v);
+        v.visited=true;
+        while(!cache.isEmpty()){
+            Vertex pop=cache.pop();
+            if(pop.name== tg.name){
+                panduan=true;
+                return ;
+            }
+            for(Edge e:pop.edges){
+                Vertex temp=e.linked;
+                if(temp.visited){
+                    continue;
+                }else{
+                    cache.push(temp);
+                    temp.visited=true;
+                }
+            }
+
+        }
+
+    }
+    public static void bfs(Vertex v,Vertex tg){
+        ArrayDeque<Vertex> cache=new ArrayDeque<>();
+        cache.offer(v);
+        v.visited=true;
+        while(!cache.isEmpty()){
+            Vertex poll=cache.poll();
+            if(poll.name==tg.name){
+                panduan=true;
+                return;
+            }
+            for(Edge e:poll.edges){
+                if(e.linked.visited==true){
+                    continue;
+                }else{
+                    e.linked.visited=true;
+                    cache.offer(e.linked);
+                }
+            }
+
+        }
+
+
+    }
+
+
+    public static void resetVisited(Vertex[] arr) {
+        for (Vertex vertex : arr) {
+            vertex.visited = false;
+        }
+    }
+
+    public static void dfs(Vertex v,Vertex tg){
+        if(v.visited==true){
+            return;
+        }
+        v.visited=true;
+        int temp=v.name;
+        if(temp==tg.name){
+            panduan=true;
+        }
+        for(Edge e:v.edges){
+            if(e.linked.visited==true){
+                continue;
+            }else{
+                dfs(e.linked,tg);
+            }
+        }
+        v.visited=false;
+        return;
+
+    }
+
+
+    public static class Vertex{
+        public int name;
+        public ArrayList<Edge> edges=new ArrayList<>();
+        public boolean visited=false;
+        public Vertex(int name){
+            this.name=name;
+        }
+
+    }
+
+    public static class Edge{
+        public Vertex linked;
+
+        public Edge(Vertex linked){
+            this.linked=linked;
+        }
+
+
+    }
+}
+
+```
 
 
 # Greedy
