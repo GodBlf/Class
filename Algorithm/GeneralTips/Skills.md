@@ -3,6 +3,8 @@
 # ReadMe
 算法 数据结构 方面的注意事项 技巧 和数学有关的技巧等(Tips)不是具体的知识;实际编程语言的Tips不写入
 # Tips
+## 通过Tree来考虑数据结构和算法
+- 例如bfs 和 dfs 的queue stack实现,递归.递归树遍历;
 ## 指针(地址)的思想去考率类和对象
 - java中类,对象都是指针
 - 双指针,多指针等
@@ -96,6 +98,60 @@ while(!boundary case) 等价于 while if(boundary case) break;
 if() return  等价于  if else
 
 
+
+
+
+## if/else
+![alt text](1aa00cfeb4f84a6f7dfad89a36cd2c10.jpg)
+![alt text](4258aee49f7139b2b3a2469eff118ebe.jpg)
+1. 单if结构 判断结构  看图
+2. if , else,else if 遇到{return / continue/ break...} 叶子结构 不汇合;
+3. if/else/else if 为分支结构 **最终必汇合到顺序结构**
+例题素分解
+```c
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+void sufenjie(int n){
+	printf("%d=",n);
+	if(n%2==0){
+		while(1){
+			if(n==2){
+				printf("%d",2);
+				return;
+			}
+			if(n%2!=0){
+				break;
+			}
+			n=n/2;
+			printf("%d*",2);
+		}
+	}
+	
+	for(int i=3;i<=n;i+=2){
+		if(n%i!=0){
+			continue;
+		}
+		while(1){
+				if(n/i==1){
+			printf("%d",i);
+			return;
+		}
+		if(n%i!=0){
+			break;
+		}
+		n=n/i;
+		printf("%d*",i);
+		}
+	}
+} 
+int main(){
+	sufenjie(6);
+}
+```
+
+
+
 ## 数组索引
 index+1 = num(index) 指定索引右一位为到此索引的元素个数  
 
@@ -105,11 +161,24 @@ index+1 = num(index) 指定索引右一位为到此索引的元素个数
 
 
 
+## Cache数据结构
+- dfs bfs dijkstra都是 dad out child in的过程
+- 节点in or out cache 时候标记为ture相应的 进入 或者拉出的时候判断是否需要continue
+- 将第一个节点压入(offer/push)cache来启动
+- 父节点拉出(poll/pop),符合要求的子节点进入(push/offer)cache再进行操作;
+
+
+
 ## flag标记变量
+- cnt flag 等等
+
+
 ## sentry 哨兵指针
 扫雷的外围一圈0;字符串""都起到辅助作用;
 例如在快速排序的时候 i指针就是i左边的都是小于pivot的 最后再将pivot插入sentry中;
 数据结构也常用sentry ;
+## Cache
+stack queue priorityqueue 等在bfs dfs等算法中起到cache 临时存储数据的作用;
 
 ## 指针参数の函数设计
 翁恺c语言讲过
@@ -124,6 +193,9 @@ index+1 = num(index) 指定索引右一位为到此索引的元素个数
 如果你不想改变函数签名，可以使用一个数组或对象来保存 cnt，这样就能通过引用传递 cnt 的值了。
 
 ## 数组可以考虑成 正半轴,元素索引的右边一位就是前边所有元素的个数,例如{4,3,5,567,4}索引(2,5) 右边一共3个元素 size-index 就是index前边所有元素的个数;
+
+
+
 ## new
 对某个对象进行操作的时候,最好把结果弄到一个new的对象上例如矩阵转置结果,new在一个新矩阵里否则原矩阵操作困难;
 ```c
@@ -166,10 +238,9 @@ int main(){
 ```
 
 ## temp
-交换两个数需用道中间变量temp;
-## if/else
-- if else 可以和递归一样化二叉树来考虑
-- 函数如果if里有return 最后也一定要return 否则会有warningif 最好要有 else 否则 没返回值error 如果没有else 有if return 变相相当于 下边代码就是else里的
+- 交换两个数需用道中间变量temp;
+- a=a^b;b=a^b;a=a^b;
+
 ## arr[i++] 
 可以实现数组后缀添加;这就是迭代器Iterator的原理 循环完以后正好 为数组个数n;
 
