@@ -104,10 +104,11 @@ if() return  等价于  if else
 ## if/else
 ![alt text](1aa00cfeb4f84a6f7dfad89a36cd2c10.jpg)
 ![alt text](4258aee49f7139b2b3a2469eff118ebe.jpg)
-1. 单if结构 判断结构  看图
+1. 单if结构 短路结构  看图
 2. if , else,else if 遇到{return / continue/ break...} 叶子结构 不汇合;
 3. if/else/else if 为分支结构 **最终必汇合到顺序结构**
-例题素分解
+4. 先考虑分支结构再考虑叶子结构和短路结构 来简化代码分支;
+### 例题素分解
 ```c
 #include<stdio.h>
 #include<stdlib.h>
@@ -240,10 +241,66 @@ int main(){
 ## temp
 - 交换两个数需用道中间变量temp;
 - a=a^b;b=a^b;a=a^b;
+- int temp=a;
+		a=(int)((a+b)-abs(a-b))/2;
+		b=(int)((temp+b)+abs(temp-b))/2;
+
 
 ## arr[i++] 
 可以实现数组后缀添加;这就是迭代器Iterator的原理 循环完以后正好 为数组个数n;
+## dx dy
+- int[] dx={0,-1,1,0,0};
+- int[] dy={-1,0,0,1,0};
+http://xmuoj.com/problem/GW033
 
+```c
+#include<string.h>
+#include<stdio.h>
+#include<math.h>
+#include<stdlib.h>
+
+int main(){
+	int di[]={0,-1,1,0,0};
+	int dj[]={-1,0,0,1,0};
+	int n;int m;
+	int arr[101][101];
+	int newArr[101][101];
+	scanf("%d %d",&n,&m);
+	for(int i=0;i<n;i++){
+		for(int j=0;j<m;j++){
+		
+			scanf("%d",&arr[i][j]);
+				if(j==0 || j==m-1 || i==0 || i==n-1){
+				newArr[i][j]=arr[i][j];
+			}
+		}
+	}
+	
+	for(int i=1;i<n-1;i++ ){
+		for(int j=1;j<m-1;j++){
+			int sum=0;
+			for(int k=0;k<5;k++){
+				sum+=arr[i+di[k]][j+dj[k]];
+			}
+			newArr[i][j]=round((double)sum/5);
+		}
+	}
+	
+	for(int i=0;i<n;i++){
+		
+		for(int j=0;j<m;j++){
+			if(j==m-1){
+				printf("%d",newArr[i][j]);
+				
+			}
+			else printf("%d ",newArr[i][j]);
+			if(j==m-1) printf("\n");
+		}
+	}
+	return 0;
+	
+}
+```
 ## 打表法
 
 

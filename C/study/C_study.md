@@ -1,8 +1,20 @@
 # ReadMe
 完全备战转专业考试用的;
-
+![alt text](image-7.png)这个代表 上一个运行还没有结束把上一个终端关掉即可;
 int a = 0, b = 0, c = 0, d = 0;
+xmuoj 数字末尾不能有空格
+c语言不能 int arr[n];所以可以设置一个最大值 或者 int * arr= (int *)malloc(n*sizeof(int));
 
+- 注意double老是出错
+int compare(const void* o1, const void* o2) {
+    double a = *(const double*)o1;
+    double b = *(const double*)o2;
+    if (a < b)
+        return -1;
+    else if (a > b)
+        return 1;
+    return 0;
+}
 # 算法
 ## 冒泡算法
 ```C
@@ -77,10 +89,14 @@ ceil  floor  round round必配(double)
 ## 输入
 scanf处理不了 空格和回车  getchar 逐步处理字符; fgets(str,sizeof(str),stdin) 整行输入 和java的 reader.readline()一样;
 while(scanf!=EOF)来控制输入;
+- fgets(str,n,stdin) ab abc \n   "ab abc \n\0"   如果只读3个 "ab\0"
+去掉\n  可以  str[strcspn(str,'\n')]=\0;
 ## 字符串
-strlen  strcmp
+strlen  
+- strcmp
+strcmp(str1,str2) 1 前者greater  0一样大 -1 后者大 和 比较函数一样;
 ## math
-fabs()
+fabs()double abs () int
 
 # 老翁凯C语言
 
@@ -354,7 +370,117 @@ double 用%lf  %lf 也能整数输入
 
 
 # xmuoj题目
-学习用类 qsort进行排序
+## dydx
+http://xmuoj.com/problem/GW033
+#include<string.h>
+#include<stdio.h>
+#include<math.h>
+#include<stdlib.h>
+
+int main(){
+	int di[]={0,-1,1,0,0};
+	int dj[]={-1,0,0,1,0};
+	int n;int m;
+	int arr[101][101];
+	int newArr[101][101];
+	scanf("%d %d",&n,&m);
+	for(int i=0;i<n;i++){
+		for(int j=0;j<m;j++){
+		
+			scanf("%d",&arr[i][j]);
+				if(j==0 || j==m-1 || i==0 || i==n-1){
+				newArr[i][j]=arr[i][j];
+			}
+		}
+	}
+	
+	for(int i=1;i<n-1;i++ ){
+		for(int j=1;j<m-1;j++){
+			int sum=0;
+			for(int k=0;k<5;k++){
+				sum+=arr[i+di[k]][j+dj[k]];
+			}
+			newArr[i][j]=round((double)sum/5);
+		}
+	}
+	
+	for(int i=0;i<n;i++){
+		
+		for(int j=0;j<m;j++){
+			if(j==m-1){
+				printf("%d",newArr[i][j]);
+				
+			}
+			else printf("%d ",newArr[i][j]);
+			if(j==m-1) printf("\n");
+		}
+	}
+	return 0;
+	
+}
+
+## http://xmuoj.com/problem/GW043字符串处理
+```java
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    char str[101];
+    int length;
+    int index;
+} String;
+
+int compare1(const void *o1, const void *o2) {
+    String *s1 = (String *)o1;
+    String *s2 = (String *)o2;
+    if (s1->length != s2->length) {
+        return s2->length - s1->length; // Descending order for longest
+    }
+    return s1->index - s2->index; // Ascending order by index
+}
+
+int compare2(const void *o1, const void *o2) {
+    String *s1 = (String *)o1;
+    String *s2 = (String *)o2;
+    if (s1->length != s2->length) {
+        return s1->length - s2->length; // Ascending order for shortest
+    }
+    return s1->index - s2->index; // Ascending order by index
+}
+
+int main() {
+    char input[20001]; // To hold the entire input line
+    fgets(input, sizeof(input), stdin); // Read the line of input
+    int n = 1001;
+
+    String *arr = (String *)malloc(n * sizeof(String));
+    int cnt = 0;
+
+    char *token = strtok(input, " ,"); // Split input by space or comma
+    while (token != NULL) {
+        strcpy(arr[cnt].str, token); // Copy the word into the struct
+        arr[cnt].length = strlen(token); // Calculate the length of the word
+        arr[cnt].index = cnt; // Store the word's index position
+        cnt++;
+        token = strtok(NULL, " ,");
+    }
+
+    // Sort for the longest word
+    qsort(arr, cnt, sizeof(String), compare1);
+    printf("%s\n", arr[0].str); // The first longest word
+
+    // Sort for the shortest word
+    qsort(arr, cnt, sizeof(String), compare2);
+    printf("%s\n", arr[0].str); // The first shortest word
+
+    free(arr);
+    return 0;
+}
+
+```
+
+## 学习用类 qsort进行排序
 ```c
 #include <stdio.h>
 #include <stdlib.h>
@@ -407,6 +533,70 @@ int main() {
 
 ```
 
+## 前缀和初见
+```c
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<math.h>
+int isRun(int x) {
+    if ((x % 4 == 0 && x % 100 != 0) || (x % 400 == 0)) {
+        return 1;  // 是闰年
+    } else {
+        return 0;  // 不是闰年
+    }
+}
+int main(){
+	//
+	int runY[13]={0,31,29,31,30,31,30,31,31,30,31,30,31};
+	int pingY[13]={0,31,28,31,30,31,30,31,31,30,31,30,31};
+	int runyear[13];int pingyear[13];
+	int sum1=0;int sum2=0;
+	for(int i=0;i<13;i++){
+		sum1=sum1+runY[i];
+		runyear[i]=sum1;
+		sum2=sum2+pingY[i];
+		pingyear[i]=sum2;
+		
+	}
+	int year; int month;int day;
+	while(scanf("%d/%d/%d",&year,&month,&day)!=EOF){
+		if(isRun(year)){
+			printf("%d\n",runyear[month-1]+day);
+		}else{
+			printf("%d\n",pingyear[month-1]+day);
+		}
+	}
+	
+	
+}
+```
+
+
+## 打表法
+http://xmuoj.com/problem/GW035
+```c
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+
+int main(){
+		int n=0;scanf("%d",&n);
+		int arr[1000002]={0};
+		arr[1]=1;arr[2]=2;
+		for(int i=3;i<=1000001;i++){
+			arr[i]=(arr[i-1]*2+arr[i-2])%32767;
+		}
+		for(int i=0;i<n;i++){
+			int k=0;scanf("%d",&k);
+			printf("%d\n",arr[k]);
+		}
+	
+	
+}
+```
+
+
 ACW3768统计字符串中连续的x
 ```c
 #include <stdio.h>
@@ -439,7 +629,7 @@ int main() {
 
 ```
 XMU2034 http://xmuoj.com/problem/XMU2034
-## GW026
+## GW026 雇佣兵
 #include<math.h>
 #include<stdio.h>
 int main(){
@@ -468,8 +658,10 @@ int main(){
 
 
 
+
+
+
 # 复习提单
 ## 洛谷
 P1888
 P5707
-## xmuoj
