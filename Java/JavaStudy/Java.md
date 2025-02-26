@@ -17,6 +17,36 @@ Node \Class\Java\JavaStudy\static内部类.md
 - static 静态修饰符 常用于辅助方法和辅助类 与类中的变量无关联 静态(孤立的);  
 如 Arrays.sort(int[]) 静态方法不是类的方法是函数
 判断需不需要static 就看需不需要外部实例化对象;
+- 构造方法可使用静态方法进行成员变量计算;
+``` java
+class Item {
+    private double price; //价格;
+    private int quantity;  //数量
+    private double unitValue; //单价
+
+    // 将 unitValue 改为静态方法
+    public static double unitValue(double price, int quantity) {
+        return price / quantity;
+    }
+
+    // 修改构造函数，将 unitValue 的结果传递给构造函数
+    public Item(double price, int quantity) {
+        this.price = price;
+        this.quantity = quantity;
+        this.unitValue = Item.unitValue(price, quantity);  // 使用静态方法计算 unitValue
+    }
+
+    public double getUnitValue() {
+        return unitValue;
+    }
+
+    @Override
+    public String toString() {
+        return "Item{price=" + price + ", quantity=" + quantity + ", unitValue=" + unitValue + "}";
+    }
+}
+
+```
 ###
 - java定义需要四段 声明  public static int binarySearch(int[] arr,int x){};   public abstract void move();
 - interface 和 抽象方法 接口是子集不同的方法 抽象方法是子集中共有的方法  public abstract void f();
@@ -915,6 +945,12 @@ public class Vertex {
 		public ArrayList<Edge> edges=new ArrayList<Edge>
 		();//边集合
 		public boolean visited=false;
+
+		//dijkstra
+		public int distance=Integer.MAX_VALUE ;
+		public Vertex prev;
+
+
 		public Vertex() {}
 
 		public Vertex(String name) {
@@ -1037,6 +1073,8 @@ visited = true 相当于已经进入过数据结构了'
 
 ## Dijkstra PriorityQueue<E>+Greedy
 和 bfs dfs 相反 poll出来再判断visited;
+Vertex要加入 public int distance and public Vertex prev;
+两重贪心;
 ```java
 public static void dijkstra(Vertex source, List<Vertex> vertices) {
         // 初始化源点距离为0，其它点距离默认 Integer.MAX_VALUE（在顶点构造时已经设置）
@@ -1051,34 +1089,74 @@ public static void dijkstra(Vertex source, List<Vertex> vertices) {
         });
         pq.offer(source);
         
-        // 只在从队列中取出时标记 visited，这样可以保证每个节点的最短距离都已经确定
+        // 只在从队列中取出时标记 visited，poll后代表已经确定这个节点的最短路径了'
         while (!pq.isEmpty()) {
             Vertex current = pq.poll();
             
             // 如果该节点已经确定了最短距离，则跳过（这是 lazy deletion 的一种方法）
-            if (current.visited) {
-                continue;
-            }
+			//还真有可能队列中有多个相同的节点直接跳过;
+
+			//优化
+            // if (current.visited) {  
+            //     continue;
+            // }
             current.visited = true;
             
-            // 遍历所有邻边进行松弛操作
+            // 遍历所有邻边
             for (Edge edge : current.edges) {
                 Vertex neighbor = edge.linked;
-                // 如果访问不到或者已经访问过最短路径，则尝试松弛
-                if (!neighbor.visited) {
+               
+				//还真有可能指向vistited的节点
+
+				//优化
+                // if (!neighbor.visited) {       
                     int newDist = current.distance + edge.weight;
-                    if (newDist < neighbor.distance) {
+                    if (newDist < neighbor.distance) {  //未改变的不加入队列因为有别的路更短 Greedy;//叶子节点就是未改变的不加入priorityqueue
                         neighbor.distance = newDist;
                         neighbor.prev = current;
                         // 由于距离更新，将该节点加入队列
                         pq.offer(neighbor);
                     }
-                }
+                //}
             }
         }
     }
 
 ```
+
+
+## BellmanFord算法
+- dijkstra没法判断负数边的情况可以用这个
+- 遍历每条边n-1次 数学上可证明 
+- 每次更新起点和终点的distance;
+- 没法处理负数环的结构;
+```java
+public static void bellmanFord(ArrayList<Vertex>vertices) {
+    	vertices.get(0).distance=0;
+    	for(int i=0;i<vertices.size()-1;i++) {
+    		for(Vertex start:vertices ) {
+    			if(start.distance==Integer.MAX_VALUE) {  //叶子结构 如果是无穷就跳过
+    				continue;
+    			}
+    			for(Edge e:start.edges) {
+    				Vertex end=e.linked;
+    				int temp=start.distance+e.weight;
+    				if(temp>end.distance) {
+    					continue;
+    				}
+    				end.distance=temp;
+    				end.prev=start;
+    				
+    				
+    			}
+    		}
+    	}
+    	
+    }
+```
+
+
+## Floyd算法
 
 
 
@@ -1237,11 +1315,293 @@ public class Main {
 
 
 # Greedy
-## 排队接水问题
+- 寻找最优解:适用范围;
 
+## 排队接水问题
 ## 选考试问题
 
+## Huffman编码
 
+
+
+# Dynam Programming
+## Fibonacci dp
+### recursion memo
+```java
+public class Main{
+	public static HashMap<Integer,BigInteger> memo=new HashMap<>();
+
+	public static BigInteger fibonacci(int n){
+		if(memo.containsKey(n)){
+			return memo.get(n);
+		}
+
+		BigInteger ret=fibonacci(n-1).add(fibonacci(n-2));
+		memo.put(n,ret);
+		return ret;
+	}
+}
+
+```
+### fibonacci 迭代
+
+### 类Fibonaccileetcode62 走格子问题
+
+## 0-1bag problem
+```java
+package leetcode;
+
+import java.util.Arrays;
+import java.util.stream.IntStream;
+
+public class KnapsackProblem {
+    /*
+        1. n个物品都是固体，有重量和价值
+        2. 现在你要取走不超过 10克 的物品
+        3. 每次可以不拿或全拿，问最高价值是多少
+
+            编号 重量(g)  价值(元)                        简称
+            1   4       1600           黄金一块   400    A
+            2   8       2400           红宝石一粒 300    R
+            3   5       30             白银一块         S
+            0   1       1_000_000      钻石一粒          D
+        1_001_630
+
+        1_002_400
+     */
+
+    /*
+        1   2   3   4   5   6   7   8   9   10
+                    a
+                    a               r
+                    a               r
+        d               da          da  dr  dr
+     */
+
+    static class Item {
+        int index;
+        String name;
+        int weight;
+        int value;
+
+        public Item(int index, String name, int weight, int value) {
+            this.index = index;
+            this.name = name;
+            this.weight = weight;
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return "Item(" + name + ")";
+        }
+    }
+    public static int[][] memo;
+    public static Item[] items;
+    public static void main(String[] args) {
+
+         items = new Item[]{
+                new Item(1, "黄金", 4, 1600),
+                new Item(2, "宝石", 8, 2400),
+                new Item(3, "白银", 5, 30),
+                new Item(4, "钻石", 1, 10_000),
+        };
+         int capacity = 11;
+         int n=4;
+        memo =new int[n][capacity];
+        //初始化memo;
+        for(int i=0;i<n;i++){
+            Arrays.fill(memo[i],-1);
+        }
+        for(int i=0;i<capacity;i++){
+            if(capacity>=items[n-1].weight){
+                memo[n-1][i]=items[n-1].value;
+            }else{
+                memo[n-1][i]=0;
+            }
+        }
+
+
+        System.out.println(bagRecur(0, 10));
+    }
+
+	//递归实现
+    public static int bagRecur(int index,int capacity){
+        if(index==items.length-1){
+            return memo[index][capacity];
+        }
+        if(memo[index][capacity]!=-1){
+            return memo[index][capacity];
+        }
+
+        if(capacity<items[index].weight){
+            return bagRecur(index+1,capacity);
+        }
+		//max相当于 Fibonacci中的加号运算;
+        int ret =Math.max(bagRecur(index+1,capacity),items[index].value+bagRecur(index+1,capacity-items[index].weight));
+        memo[index][capacity] = ret;
+        return ret;
+
+    }
+    static int select(Item[] items, int total) {
+        int[][] dp = new int[items.length][total + 1];
+        print(dp);
+        Item item0 = items[0];
+        for (int j = 0; j < total + 1; j++) {
+            if (j >= item0.weight) {
+                dp[0][j] = item0.value;
+            }
+        }
+        print(dp);
+        for (int i = 1; i < dp.length; i++) {
+            Item item = items[i];
+            for (int j = 1; j < total + 1; j++) {
+                // x: 上一次同容量背包的最大价值
+                int x = dp[i - 1][j];
+                if (j >= item.weight) {
+                    // j-item.weight: 当前背包容量-这次物品重量=剩余背包空间
+                    // y: 剩余背包空间能装下的最大价值 + 这次物品价值
+                    int y = dp[i - 1][j - item.weight] + item.value;
+                    dp[i][j] = Integer.max(x, y);
+                } else {
+                    dp[i][j] = x;
+                }
+            }
+            print(dp);
+        }
+        return dp[dp.length - 1][total];
+    }
+
+    static void print(int[][] dp) {
+        System.out.println("   " + "-".repeat(63));
+        Object[] array = IntStream.range(0, dp[0].length + 1).boxed().toArray();
+        System.out.printf(("%5d ".repeat(dp[0].length)) + "%n", array);
+        for (int[] d : dp) {
+            array = Arrays.stream(d).boxed().toArray();
+            System.out.printf(("%5d ".repeat(d.length)) + "%n", array);
+        }
+    }
+}
+
+```
+## 完全背包problem
+![alt text](image-8.png)和0-1背包的区别
+完全背包问题子问题的证明
+![alt text](9495d65529c910ba37fdf7e8439a611d.jpg)
+```java
+
+package leetcode;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.stream.IntStream;
+
+public class KnapsackProblem {
+    static class Item {
+        int index;
+        String name;
+        int weight;
+        int value;
+
+        public Item(int index, String name, int weight, int value) {
+            this.index = index;
+            this.name = name;
+            this.weight = weight;
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return "Item(" + name + ")";
+        }
+    }
+    public static Item[] items;
+    public static int[][] memo;
+    public static void main(String[] args) {
+            items = new Item[]{
+                new Item(1, "青铜", 2, 3),    // c
+                new Item(2, "白银", 3, 4),    // s
+                new Item(3, "黄金", 4, 7),    // a
+        };
+            Arrays.sort(items,new Comparator<Item>() {
+                @Override
+                public int compare(Item o1, Item o2) {
+                    return o2.weight - o1.weight;
+                }
+            });
+            memo=new int[3][7];
+            //init memo
+        for(int i=0;i<3;i++){
+            Arrays.fill(memo[i],-1);
+
+        }
+        for(int i=0;i<7;i++){
+            memo[2][i]=i/items[2].weight*items[2].value;
+        }
+        System.out.println(bagRecur(0, 6));
+    }
+	//递归,
+    public static int bagRecur(int index ,int c ) {
+        if (memo[index][c] != -1) {
+            return memo[index][c];
+        }
+
+        if (items[index].weight > c) {
+            return bagRecur(index + 1, c);
+        }
+		//注意状态转移方程 考虑先放入一个;
+        int ret = Math.max(bagRecur(index + 1, c), bagRecur(index, c - items[index].weight) + items[index].value);
+        memo[index][c] = ret;
+        return ret;
+    
+    }
+
+    /*
+            0   1   2   3   4   5   6
+        1   0   0   c   c   cc  cc  ccc
+        2   0   0   c   s   cc  cs  ccc
+        3   0   0   c   s   a   a   ac
+     */
+
+    private static int select(Item[] items, int total) {
+        int[][] dp = new int[items.length][total + 1];
+        Item item0 = items[0];
+        for (int j = 0; j < total + 1; j++) {
+            if (j >= item0.weight) {
+                dp[0][j] = dp[0][j - item0.weight] + item0.value;
+            }
+        }
+        print(dp);
+        for (int i = 1; i < items.length; i++) {
+            Item item = items[i];
+            for (int j = 1; j < total + 1; j++) {
+                // x: 上一次同容量背包的最大价值
+                int x = dp[i - 1][j];
+                if (j >= item.weight) {
+                    // j-item.weight: 当前背包容量-这次物品重量=剩余背包空间
+                    // y: 剩余背包空间能装下的最大价值 + 这次物品价值
+                    int y = dp[i][j - item.weight] + item.value;
+                    dp[i][j] = Integer.max(x, y);
+                } else {
+                    dp[i][j] = x;
+                }
+            }
+            print(dp);
+        }
+        return dp[dp.length - 1][total];
+    }
+
+    static void print(int[][] dp) {
+        System.out.println("   " + "-".repeat(63));
+        Object[] array = IntStream.range(0, dp[0].length + 1).boxed().toArray();
+        System.out.printf(("%5d ".repeat(dp[0].length)) + "%n", array);
+        for (int[] d : dp) {
+            array = Arrays.stream(d).boxed().toArray();
+            System.out.printf(("%5d ".repeat(d.length)) + "%n", array);
+        }
+    }
+}
+```
+- 找零钱问题,切钢条问题也是这个完全背包问题;
 
 # 字符串
 ## 输入

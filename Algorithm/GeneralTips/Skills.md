@@ -104,10 +104,31 @@ if() return  等价于  if else
 ## if/else
 ![alt text](1aa00cfeb4f84a6f7dfad89a36cd2c10.jpg)
 ![alt text](4258aee49f7139b2b3a2469eff118ebe.jpg)
-1. 单if结构 短路结构  看图
-2. if , else,else if 遇到{return / continue/ break...} 叶子结构 不汇合;
-3. if/else/else if 为分支结构 **最终必汇合到顺序结构**
-4. 先考虑分支结构再考虑叶子结构和短路结构 来简化代码分支;
+Object state divide and choose 对对象状态的分划和选择,对象可以是变量,序偶等,例如a>b相当于(a,b)的state;选择某个状态就在假设某个状态成立下进行后续操作;
+Priority sequence
+- Vertex.visited
+    if(v.visited==true){
+
+    }else{
+
+    }
+- public int compare(Integer i1,Integer i2){
+        if(i1.age!=i2.age){
+
+        }
+        else{}
+        if(i1.name != i2.age){
+
+        }else{
+
+        }
+}
+```java
+//1. 单if结构 短路结构  看图
+//2. if , else,else if 遇到{return / continue/ break...} 叶子结构 不汇合;
+//3. if/else/else if 为分支结构 **最终必汇合到顺序结构**
+//4. 先考虑分支结构再考虑叶子结构和短路结构 来简化代码分支;
+```
 ### 例题素分解
 ```c
 #include<stdio.h>
@@ -606,19 +627,6 @@ int main() {
 1. 输入的数必须是正整数，代码中已做简单的输入检查。
 2. 如果需要支持更大的数，建议使用 64 位整数（`long long`）。
 
-## 判断素数
-判断素数用开方优化 mod 一定要考虑边界条件 2等
-```int jug(int ipt){
-	if(ipt==2) return 1;
-	int flag=0;
-	for(int i=2;i<=sqrt(ipt);i++){
-		if(ipt % i==0) return 0;
-		else{continue;
-	}
-	}return 1;
-} 
-```
-还有一种 6k+-1的算法太难先不学  
 
 
 
@@ -627,7 +635,9 @@ int main() {
 
 
 
----
+
+## mod运算满足加法和乘法的分配率;
+
 
 
 
