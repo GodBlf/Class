@@ -1,178 +1,97 @@
 [TOC]
 # ReadMe
 与java有关的语法  API 题目等;数据结构 算法具体的知识 与之有关的技巧不写入;
-# Java Grammar and API
-## Grammar
-### 引用数据类型本质是指针
-所以 拷贝ArrayList等引用数据类型
-得 Object<E> o1 =new Object<E>();
-Object<E> o2 =new Object<E>(o1);  构造方法中填入要拷贝的对象
-eg.  ArrayList<Integer> arr=new ArrayList<>();
-ArrayList<Integer> arr1=new ArrayList<>(arr);
-因为指针所以  让arr1=arr仅是让指针指向同一个不是copy;
-### 格式化输出
-Node \Class\Java\JavaStudy\格式化输出.txt
-### static
-Node \Class\Java\JavaStudy\static内部类.md
-- static 静态修饰符 常用于辅助方法和辅助类 与类中的变量无关联 静态(孤立的);  
-如 Arrays.sort(int[]) 静态方法不是类的方法是函数
-判断需不需要static 就看需不需要外部实例化对象;
-- 构造方法可使用静态方法进行成员变量计算;
-``` java
-class Item {
-    private double price; //价格;
-    private int quantity;  //数量
-    private double unitValue; //单价
 
-    // 将 unitValue 改为静态方法
-    public static double unitValue(double price, int quantity) {
-        return price / quantity;
-    }
-
-    // 修改构造函数，将 unitValue 的结果传递给构造函数
-    public Item(double price, int quantity) {
-        this.price = price;
-        this.quantity = quantity;
-        this.unitValue = Item.unitValue(price, quantity);  // 使用静态方法计算 unitValue
-    }
-
-    public double getUnitValue() {
-        return unitValue;
-    }
-
-    @Override
-    public String toString() {
-        return "Item{price=" + price + ", quantity=" + quantity + ", unitValue=" + unitValue + "}";
-    }
-}
-
-```
-###
-- java定义需要四段 声明  public static int binarySearch(int[] arr,int x){};   public abstract void move();
-- interface 和 抽象方法 接口是子集不同的方法 抽象方法是子集中共有的方法  public abstract void f();
-- 函数式接口: Consumer<Integer> comsumer ;consumer.accept()接受参数 **并调用函数**
-lambda表达式简化函数  (E args)->{sout(args);}
-- getClass() 获得对象的类int等基本数据类型可以(Object)强制类型转换然后.getClass获得其对应包装类的类型
-'9'-'0'是int 类型;
-- equals方法重写 一般的类equals 是比较指针地址是否一样 重写以后就会比较类中成员变量的值是否相同;
-- 建议不要用增强for 因为在遍历类数组的时候 for(Studen s:arr) 此时的s是类的一个副本不能直接影响arr中的对象;
-- ArrayList<Integer> arr1=new ArrayList<>(arr);可用这种方法对对象进行复制
-### 作用域
-在 Java 中，如果一个变量、方法或类没有显式声明 `public`、`protected` 或 `private`，那么它的默认作用范围是 **包级私有（package-private）**，也称为 **默认访问权限（default access modifier）**。
-
-#### 作用范围划分：
-##### 1. **类的作用范围**
-   - **类的默认权限**：如果一个类没有显式声明 `public` 或 `private`，那么它是 **包级私有** 的，即 **仅限于同一个包（package）中的类可以访问**。
-   - **例子**：
-     ```java
-     class MyClass {  // 没有 public，作用范围是 package-private
-         void sayHello() {
-             System.out.println("Hello");
-         }
-     }
-     ```
-   - 只有 **相同包中的类** 可以访问 `MyClass`，但其他包的类无法访问它。
-
-##### 2. **变量的作用范围**
-   - **实例变量、类变量（成员变量）**
-     - 没有显式声明 `public`、`protected` 或 `private` 的变量默认为 **包级私有（package-private）**。
-     - 只有 **相同包中的类** 才能访问这些变量，其他包的类无法访问。
-   - **示例**：
-     ```java
-     class Test {
-         int x = 10;  // package-private 变量，仅当前包内可访问
-     }
-     ```
-
-##### 3. **方法的作用范围**
-   - **方法的默认权限**
-     - 如果方法未声明 `public`、`protected` 或 `private`，则它的访问权限也是 **包级私有**。
-     - 仅 **同一包内的类** 可以调用该方法，包外的类无法访问。
-   - **示例**：
-     ```java
-     class Test {
-         void display() {  // package-private 方法，仅当前包内可访问
-             System.out.println("Hello, World!");
-         }
-     }
-     ```
-
-#### **总结：默认访问权限（package-private）的特点**
-| 访问修饰符 | 本类 | 同包类 | 子类 | 其他包 |
-|-----------|------|--------|------|--------|
-| `public`  | ✅  | ✅  | ✅  | ✅  |
-| `protected` | ✅ | ✅ | ✅（即使不在同包中，也可以通过继承访问） | ❌ |
-| （默认，不写） | ✅ | ✅ | ❌ | ❌ |
-| `private` | ✅ | ❌ | ❌ | ❌ |
-
-##### **package-private（默认权限）适用场景**
-- 适用于 **不希望类、变量、方法被外部包访问，但允许在同一个包内使用** 的情况。
-- 常用于 **工具类、内部实现逻辑、封装的一部分**，防止不必要的访问。
-
----
-
-#### **示例代码**
-```java
-package mypackage;
-
-class DefaultClass { // 作用范围：mypackage 内部可访问
-    int value = 100; // package-private 变量
-    void show() { // package-private 方法
-        System.out.println("Value: " + value);
-    }
-}
-```
-
-```java
-package mypackage;
-
-public class Main {
-    public static void main(String[] args) {
-        DefaultClass obj = new DefaultClass(); // 可以访问
-        obj.show(); // 允许访问
-        System.out.println(obj.value); // 允许访问
-    }
-}
-```
-
-```java
-package otherpackage; // 不同包
-
-import mypackage.DefaultClass;
-
-public class Other {
-    public static void main(String[] args) {
-        // DefaultClass obj = new DefaultClass(); // ❌ 编译错误，无法访问
-        // obj.show(); // ❌ 编译错误
-    }
-}
-```
-**在 `otherpackage` 中，`DefaultClass` 是不可见的，无法实例化或调用方法。**
-
----
-
-#### **结论**
-如果在 Java 中不声明 `public`、`protected` 或 `private`：
-1. **类的作用范围**：包级私有（只能在同一个包内访问）。
-2. **变量的作用范围**：包级私有（同包内的类可以访问）。
-3. **方法的作用范围**：包级私有（同包内的类可以调用）。
-
-这样可以控制类的访问权限，使其在 **同一包内可见，包外不可见**，从而提高封装性。
 ## API
+### I/O 
+- Bufferedreader PrintWriter StringTokenizer
+- 造一个fastreader类
+```java
+public class FastReader {
+    BufferedReader br;
+    StringTokenizer st;
 
+    // 构造函数中初始化 BufferedReader 和一个空的 StringTokenizer
+    public FastReader() {
+        br = new BufferedReader(new InputStreamReader(System.in));
+        st = new StringTokenizer(""); // 初始一个空的 StringTokenizer
+    }
 
+    // 返回下一个输入项（以空白字符分隔）
+    public String next() {
+        // 只判断 StringTokenizer 中是否还有 token
+        while (!st.hasMoreTokens()) {
+            try {
+                String line = br.readLine();
+                // 这里如果输入结束，可以选择返回 null 或者抛出异常，依据具体需求决定
+                if (line == null) {
+                    return null;
+                }
+                st = new StringTokenizer(line);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return st.nextToken();
+    }
 
+    // 读取下一个 int 数值
+    public int nextInt() {
+        return Integer.parseInt(next());
+    }
 
+    // 读取下一个 long 数值
+    public long nextLong() {
+        return Long.parseLong(next());
+    }
 
+    // 读取下一个 double 数值
+    public double nextDouble() {
+        return Double.parseDouble(next());
+    }
 
+    // 读取整行数据
+    public String nextLine() {
+        String str = "";
+        try {
+            // 如果当前 StringTokenizer 中仍有未读数据，可以先将剩余部分返回；
+            // 否则直接读取下一行
+            if (st.hasMoreTokens()) {
+                str = st.nextToken("\n");
+            } else {
+                str = br.readLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return str;
+    }
+}
 
-### Arrays类
-- Arrays.sort(int [] arr); 将数组arr 升序排列 
-- Arrays.binarySearch(int[] arr,int tg); 
-### Collections
-##### Collections.sort
-Collections.sort(Collectiong arr , new Comparator(){@Override public int compare(Object o1,Object o2){}});
-重写比较方法 参数为arr中的相邻两元素 1 是交换 -1是不交换;
+```
+- printwriter  原理是 把结构全输出到流中 最后out.flush()再一次性打印到控制台;
+嫌麻烦可以不用类
+```java
+        //全都初始化好 输入输出和分词器
+        PrintWriter out=new PrintWriter(new OutputStreamWriter(System.out));
+        BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st=new StringTokenizer("");
+        int [] [] arr=new int[2][3];
+                for (int i   = 0; i <2 ; i++) {
+                    String line = reader.readLine();
+                    st=new StringTokenizer(line);
+                    for(int j=0;j<3;j++){
+                        arr[i][j]=Integer.parseInt(st.nextToken());
+                    }
+                }
+
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 3; j++) {
+                out.println(arr[i][j]);
+            }
+        }
+        out.flush();
+```
 
 ### BigInteger
 用eclipse自带的现场学
@@ -185,7 +104,7 @@ srcPos：源数组的起始位置（从该位置开始复制）。
 dest：目标数组（将元素复制到这个数组）。
 destPos：目标数组的起始位置（复制到目标数组的哪个位置）。
 length：要复制的元素个数。
-### StringBuilder类
+### StringBuilder/String类
 相较于String来说，处理速度更快，所以处理字符串的时候一般使用StringBuilder，最后再通过toString()方法转为字符串
 常见的 add  remove  set  get 方法
 ```java
@@ -222,6 +141,10 @@ indexOf(String str)
 // 同上，从指定位置查找
 indexOf(String str, int fromIndex)
 ```
+
+### Integer Double 等
+- .parseInt .valueOf
+
 ### Math 类
 - Math.min()  
 Math.max 同理
@@ -237,6 +160,17 @@ Math.max 同理
 
 
 
+
+
+
+### Arrays类
+- Arrays.sort(int [] arr); 将数组arr 升序排列 
+- Arrays.binarySearch(int[] arr,int tg); 
+### Collections
+##### Collections.sort
+Collections.sort(Collectiong arr , new Comparator(){@Override public int compare(Object o1,Object o2){}});
+重写比较方法 参数为arr中的相邻两元素 1 是交换 -1是不交换;
+
 # Tips
 
 -  add remove set get
@@ -250,8 +184,20 @@ get 查 元素 查索引
 
 -------------------------------------------------------------------------------------
 
-# 数据结构API
+# 集合API
 - 数据结构satck queue等就是个Cache 临时存储数据用的
+## 方法大纲
+### 元素
+- add put
+- remove delete poll pop
+- set 
+- contains indexof 
+### 子集
+- sub
+- 
+### 全集
+- equals
+- keySet entrySet 
 
 ## Comparator<E> 接口
 - 匿名内部类:对于接口的实例化
@@ -289,11 +235,12 @@ new Comparator<E>(){
 ## Arrays
 - Arrays.sort()
 - Arrays.fill()
+
 ## E[] 
 
 ## Collections
 Collections.sort()
-
+binarySearch()  找不到返回 -(index+1);
 ## ArrayList<E>
 
 ## LinkedList<E> and ArrayDeque<E>
@@ -307,6 +254,38 @@ Collections.sort()
 - 基于heap堆实现
 - 可用Comparator<E>接口对元素进行优先级比较;
 
+## MonotonicQueue<E>
+```java
+package tools;
+
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.util.ArrayDeque;
+import java.util.LinkedList;
+
+//单调递减队列
+public class MonotonicQueue {
+        ArrayDeque<Integer> deque=new ArrayDeque<>();
+
+        void offer(int element){
+            //null合并逻辑;
+            while(!deque.isEmpty() && element>deque.peekLast()){  //注意是> 不是>=  贪心思想;
+                deque.pollLast();
+            }
+            deque.offerLast(element);
+        }
+
+        void poll(){
+            deque.pollFirst();
+        }
+
+        int peek(){
+            return deque.peekFirst();
+        }
+}
+
+```
+
 ## HashSet
 - 哈希表 值对N集的映射
 
@@ -316,6 +295,8 @@ Collections.sort()
 
 
 -------------------------------------------------------------------------------------
+
+
 # 二分查找
 数组升序排列;
 设置min max两个索引指针 根据mid 和 target比较进行更新 
@@ -1070,6 +1051,7 @@ visited = true 相当于已经进入过数据结构了'
         }
     }
 ```
+## 拓扑排序
 
 ## Dijkstra PriorityQueue<E>+Greedy
 和 bfs dfs 相反 poll出来再判断visited;
@@ -1157,7 +1139,73 @@ public static void bellmanFord(ArrayList<Vertex>vertices) {
 
 
 ## Floyd算法
+![alt text](f2432e5828fa903cffb48492baeeaca0.jpg)
+```java
 
+ public static void floyd(ArrayList<Vertex> arr, int[][] distance, Vertex[][] prev) {
+        HashMap<Vertex,Integer> map=new HashMap<>();
+        //init
+        for (int i = 0; i < arr.size(); i++) {
+            map.clear();
+            for (Edge edge : arr.get(i).edges) {
+                map.put(edge.linked,edge.weight);
+            }
+            for (int j = 0; j < arr.size(); j++) {
+                if(i==j){
+                    distance[i][j]=0;
+                    continue;
+                }
+                if(map.containsKey(arr.get(j))){
+                    distance[i][j]=map.get(arr.get(j));
+                    prev[i][j]= arr.get(i);
+                }else{
+                    distance[i][j]=Integer.MAX_VALUE;
+                }
+
+            }
+        }
+
+        // jielu
+        for(int k = 0; k< arr.size(); k++){
+
+            for (int i = 0; i < arr.size(); i++) {
+
+                for (int j = 0; j < arr.size(); j++) {
+                    if(i==k || j==k || i==j){
+                        continue;
+                    }else{}
+                    int a= distance[i][k];int b= distance[k][j];
+                    if(distance[i][k] == Integer.MAX_VALUE || distance[k][j]==Integer.MAX_VALUE){
+                        continue;
+                    }else{}
+                    if(a+b< distance[i][j]){
+                        distance[i][j]=a+b;
+                        prev[i][j]= prev[k][j];
+                    }else{}
+                }
+            }
+        }
+    }
+
+    //打印路径
+    for (int i = 0; i < arr.size(); i++) {
+            for (int k = 0; k < arr.size(); k++) { //技术细节: 循环变量不能更改;
+                int j=k;
+                LinkedList<String> cache=new LinkedList<>();
+
+                cache.push(arr.get(j).name);
+
+                while (j!=i){
+
+                    cache.push(prev[i][j].name);
+                    j=arr.indexOf(prev[i][j]);
+                }
+
+                System.out.println(cache);
+            }
+        }
+
+```
 
 
 
@@ -1325,6 +1373,8 @@ public class Main {
 
 
 # Dynam Programming
+recursion+memo -> 直接从base case开始解决;
+可以优化
 ## Fibonacci dp
 ### recursion memo
 ```java
@@ -1343,10 +1393,167 @@ public class Main{
 }
 
 ```
-### fibonacci 迭代
+### fibonacci dp
+```java
+public static int fibonacci(int n){
+    int[] dp=new int[n+1];
+    dp[0]=1;dp[1]=1;
+    if(n==0 || n==1){
+        return 1;
+    }
+
+
+    for(int i=2;i<=n;i++){
+        dp[i]=dp[i-1]+dp[i-2];
+    }
+    return dp[n];
+
+    //降维
+    //dp[] 直接将为dp1 dp2;
+}
+```
+
 
 ### 类Fibonaccileetcode62 走格子问题
+```java
+//dp二维表
+public int f(int m,int n){
+    int[][] dp=new int[m][n];
+    for(int i=0;i<m;i++){
+        dp[i][0]=1;
 
+    }
+    for(int i=1;i<n;i++){
+        dp[0][i]=1;
+    }
+    for(int i=1;i<m;i++){
+        for(int j=1;j<n;j++){
+            dp[i][j] = dp[i-1][j]+ dp[i][j-1];
+        }
+    }
+    return dp[m-1][n-1];
+}
+//优化降维
+public int f(int m,int n){
+   int[] dp=new int[n]
+   for(int j=0;j<n;j++){
+    dp[j]=1;
+   }
+   dp[0]=1;
+   for(int i=1;j<m;j++){
+    dp[j]=dp[j]+dp[j-1];
+   }
+
+}
+
+```
+
+
+## 01背包问题
+![alt text](image-9.png)
+```java
+public static int  select(Item[] items,int total){
+    int[][] dp = new int[items.length][total + 1];
+       
+        Item item0 = items[0];
+        for (int j = 0; j < total + 1; j++) {
+            if (j >= item0.weight) {
+                dp[0][j] = item0.value;
+            }
+        }
+        
+        for (int i = 1; i < dp.length; i++) {
+            Item item = items[i];
+            for (int j = 1; j < total + 1; j++) {
+                // x: 上一次同容量背包的最大价值
+                int x = dp[i - 1][j];
+                if (j >= item.weight) {
+                    // j-item.weight: 当前背包容量-这次物品重量=剩余背包空间
+                    // y: 剩余背包空间能装下的最大价值 + 这次物品价值
+                    int y = dp[i - 1][j - item.weight] + item.value;
+                    dp[i][j] = Integer.max(x, y);
+                } else {
+                    dp[i][j] = x;
+                }
+            }
+            
+        }
+        return dp[dp.length - 1][total];
+}
+//降维优化
+```java
+static int select(Item[] items, int total) {
+    int[] dp = new int[total + 1];
+    for (Item item : items) {
+        for (int j = total; j > 0; j--) {
+            if (j >= item.weight) { // 装得下
+                dp[j] = Integer.max(dp[j], item.value + dp[j - item.weight]);
+            }
+        }
+        System.out.println(Arrays.toString(dp));
+    }
+    return dp[total];
+}
+```
+注意：内层循环需要倒序，否则 dp[j - item.weight] 的结果会被提前覆盖
+
+
+
+
+
+## 完全背包
+![alt text](9495d65529c910ba37fdf7e8439a611d.jpg)
+```java
+private static int select(Item[] items, int total) {
+        int[][] dp = new int[items.length][total + 1];
+        Item item0 = items[0];
+        for (int j = 0; j < total + 1; j++) {
+            if (j >= item0.weight) {
+                dp[0][j] = dp[0][j - item0.weight] + item0.value;
+            }
+        }
+        print(dp);
+        for (int i = 1; i < items.length; i++) {
+            Item item = items[i];            
+            for (int j = 1; j < total + 1; j++) {
+                // x: 上一次同容量背包的最大价值
+            	int x = dp[i - 1][j];
+                if (j >= item.weight) {
+                    // j-item.weight: 当前背包容量-这次物品重量=剩余背包空间
+                    // y: 剩余背包空间能装下的最大价值 + 这次物品价值
+                    int y = dp[i][j - item.weight] + item.value;
+                    dp[i][j] = Integer.max(x, y);
+                } else {
+                    dp[i][j] = x;
+                }
+            }
+            print(dp);
+        }
+        return dp[dp.length - 1][total];
+    }
+```
+```java
+private static int select(Item[] items, int total) {
+    int[] dp = new int[total + 1];
+    for (Item item : items) {
+        for (int j = 0; j < total + 1; j++) {
+            if (j >= item.weight) {
+                dp[j] = Integer.max(dp[j], dp[j - item.weight] + item.value);
+            }
+        }
+        System.out.println(Arrays.toString(dp));
+    }
+    return dp[total];
+}
+``` 
+这个是正序;
+### 零钱兑换问题
+和完全背包一样,技术细节:凑不到目标钱数就是total+1
+所以数组初始化都成total+1
+
+
+
+````
 ## 0-1bag problem
 ```java
 package leetcode;
@@ -1602,6 +1809,10 @@ public class KnapsackProblem {
 }
 ```
 - 找零钱问题,切钢条问题也是这个完全背包问题;
+```
+
+
+
 
 # 字符串
 ## 输入
@@ -2060,5 +2271,69 @@ a = a ^ b;
 
 
 
+
+
+
+````
+# 多指针
+
+
+# 滑动窗口
+用单调队列
+力扣239
+```java
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import  java.util.*;
+import java.lang.*;
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        ArrayList<Integer> arr=new ArrayList<>();
+        MonotonicQueue queue=new MonotonicQueue();
+        int left=0;
+        //init
+        for(int i=0;i<k;i++){
+            queue.offer(nums[i]);
+        }
+        arr.add(queue.peek());
+        //技术细节:右指针右移 只有三种情况新来的大 左指针大 中间的大 
+        //一个一个讨论,新来的大直接单调队列把其他的都干死了
+        //左指针大就得移除了
+        //中间的大没影响;
+        for(int i=k;i<nums.length;i++){
+            queue.offer(nums[i]);
+            if(queue.peek()==nums[left]){
+                queue.queue.pollFirst();
+            }
+            left++;
+            arr.add(queue.peek());
+        }
+        int[] arrNew=new int[arr.size()];
+        for (int i = 0; i < arr.size(); i++) {
+            arrNew[i]=arr.get(i);
+        }
+        return arrNew;
+    }
+    
+}
+
+class MonotonicQueue{
+    ArrayDeque<Integer> queue =new ArrayDeque<>();
+    int peek(){
+        return queue.peekFirst();
+    }
+    void poll(){
+        queue.pollFirst();
+    }
+
+    void offer(int element){
+        while(!queue.isEmpty() && element>queue.peekLast() ){
+            queue.pollLast();
+        }
+        queue.offerLast(element);
+    }
+}
+```
 
 

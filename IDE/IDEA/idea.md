@@ -16,13 +16,13 @@
 # 快捷键
 0. ctrl z  ctrl shift z  ctrl c x v  ctrl /
 1. ctrl d  alt+shift+↑↓;
-2. fori  forr(逆序)   .for  .fori  .forr;
+2. .var  .if
+3. fori  forr(逆序)   .for  .fori  .forr;
 例如对一个list集合的遍历  list.for  ; 
 1. sout souf
 2.  ctrl alt shift t   与 ctrl alt t 包围代码
 3.  alt + enter 快速修改;
 4.  alt 拖拽; alt j
 5. shift + shift
-6. .var  .if
-7. f2  or  shift f2
-8. f11 shift f11 书签
+6. f2  or  shift f2
+7. f11 shift f11 书签

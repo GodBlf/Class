@@ -8,6 +8,23 @@ eg.  ArrayList<Integer> arr=new ArrayList<>();
 ArrayList<Integer> arr1=new ArrayList<>(arr);
 因为指针所以  让arr1=arr仅是让指针指向同一个不是copy;
 
+### static
+Node \Class\Java\JavaStudy\static内部类.md
+- 类的不是对象的
+- 可简单理解为 划分为静态区和非静态区 !static -> static 
+具体内存图
+![alt text](image-10.png)
+静态和非静态是两个世界的 非静态可以调用非静态和静态的变量方法,静态只能调用静态的;(在没有访问修饰符的前提下);
+- 工具方法 共享变量 工具类(工具箱)
+
+```c
+//- 判断需不需要static 就看需不需要外部实例化对象;辅助功能;
+//- static 静态修饰符 常用于辅助方法和辅助类 与类中的变量无关联 静态(孤立的);  
+//如 Arrays.sort(int[]) 
+//- 构造方法可使用静态方法进行成员变量计算;
+```
+
+
 ### 格式化输出
 Node \Class\Java\JavaStudy\格式化输出.txt
 
@@ -22,13 +39,25 @@ string类型已经重写好了能够直接使用;
 ### 增强for
 建议不要用增强for 因为在遍历类数组的时候 for(Studen s:arr) 此时的s是类的一个副本不能直接影响arr中的对象;
 
-### static
-Node \Class\Java\JavaStudy\static内部类.md
-- 判断需不需要static 就看需不需要外部实例化对象;辅助功能;
-- static 静态修饰符 常用于辅助方法和辅助类 与类中的变量无关联 静态(孤立的);  
-如 Arrays.sort(int[]) 
-- 构造方法可使用静态方法进行成员变量计算;
 
+### 构造方法
+```java
+class Student{
+    //成员变量default值,不赋值默认null
+    int age;
+    int height=1;
+    double pingjun;
+    //构造方法初始化
+    Student(int age){
+        this.age=age;
+        this.pingjun=average(this.age,this.height);
+    }
+
+    static double average(int age,int height){
+        return (double) height/age;
+    }
+}
+```
 ### 成员变量和局部变量
 局部变量是方法或者{} 代码块栈中的 栈消失也跟着消失,
 成员变量和接口方法组成类 是结构框架 所以得用public 等修饰,它不会消失
@@ -72,6 +101,8 @@ lambda表达式简化函数  (E args)->{sout(args);}
 - ArrayList<Integer> arr1=new ArrayList<>(arr);可用这种方法对对象进行复制
 
 ### 作用域
+
+
 在 Java 中，如果一个变量、方法或类没有显式声明 `public`、`protected` 或 `private`，那么它的默认作用范围是 **包级私有（package-private）**，也称为 **默认访问权限（default access modifier）**。
 
 #### 作用范围划分：
