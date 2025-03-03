@@ -233,14 +233,14 @@ new Comparator<E>(){
 ```
 
 ## Arrays
-- Arrays.sort()
+- Arrays.sort()  比Collectiong的更底层能够排指定range的 可以将collecions toArray转换为数组
 - Arrays.fill()
-
+- Arrays.binarySearch() 找到就是最左边的 找不到就是  -(极限+1);可以取abs()-1;
 ## E[] 
 
 ## Collections
-Collections.sort()
-binarySearch()  找不到返回 -(index+1);
+Collections.sort() 比arrays的能操作的空间更少;
+binarySearch()  找不到返回 -(index+1);同arrays.binarySearch
 ## ArrayList<E>
 
 ## LinkedList<E> and ArrayDeque<E>
@@ -285,6 +285,7 @@ public class MonotonicQueue {
 }
 
 ```
+
 
 ## HashSet
 - 哈希表 值对N集的映射
@@ -2275,10 +2276,17 @@ a = a ^ b;
 
 
 ````
-# 多指针
+# 双指针
+## 盛水最多的容器
+两个指针 贪心每次移动少的
+## 两数之和 
+大了左移 小了右移
+## 三数之和
 
 
-# 滑动窗口
+
+# 单调队列和栈
+## 滑动窗口
 用单调队列
 力扣239
 ```java
@@ -2335,5 +2343,51 @@ class MonotonicQueue{
     }
 }
 ```
+
+## 借雨水
+单调栈力扣42
+```java
+package  leetcode;
+
+import java.util.ArrayDeque;
+import java.lang.*;
+class Solution {
+    public int trap(int[] height) {
+        int ret=0;
+        ArrayDeque<Zhuzi> stack=new ArrayDeque<>();
+
+        for (int i = 0; i < height.length; i++) {
+            while(!stack.isEmpty() && height[i]>stack.peek().height){   //技术细节: 贪心
+                Zhuzi pop = stack.pop();
+                if(stack.isEmpty()){   //技术细节: 空的化就不用借了直接break;
+                    continue;
+                }
+                Zhuzi peek = stack.peek();
+                int min = Math.min(height[i], peek.height);
+                ret+=(min-pop.height)*(i-peek.index-1);
+
+            }
+            stack.push(new Zhuzi(height[i],i));
+        }
+        return ret;
+    }
+
+    public static void main(String[] args) {
+        System.out.println("d");
+    }
+}
+
+class Zhuzi {
+    int height;
+    int index;
+    Zhuzi(int height, int index){
+        this.height=height;
+        this.index=index;
+    }
+    Zhuzi(){}
+
+}
+```
+
 
 

@@ -2,12 +2,37 @@
 
 # ReadMe
 算法 数据结构 方面的注意事项 技巧 和数学有关的技巧等(Tips)不是具体的知识;实际编程语言的Tips不写入
+# Algorithm
+
+## Recursion
+用memo进行优化;
+### dp
+dp表
+降维
+### dc
+
+### bt
+
+## DynamicPrograming
+
+## BackTracking
+
+## Cache
+out in
+### Queue
+### Stack
+### PriorityQueue
+### MonotonicQueue MonotonicStack
+
+
+
 # Tips
 ## 通过Tree来考虑数据结构和算法
 - 例如bfs 和 dfs 的queue stack实现,递归.递归树遍历;
 ## 指针(地址)的思想去考率类和对象
-- java中类,对象都是指针
-- 双指针,多指针等
+new Object<>() 构造方法生成的对象是一个地址
+让后 Object<> var =new Object<>() 这个var是指向这个地址的指针
+因为指针所以  让arr1=arr仅是让指针指向同一个不是copy;
 
 ## 递归思想:
 - 递归树
@@ -31,7 +56,8 @@ void f(int n){      //根节点--确定问题状态(n) (括号里的代表状态
 
     //leaf
     if(n==boundary case){  //确定叶子节点--确定base问题状态;
-        return;                                                  // 判断子问题是否为叶子节点 是就原路返回return 如果不是void函数则带着返回值返回;
+        return;             //注意叶子节点可以在任意地方只要是return前边没有f()造栈语句的就是叶子节点                                 
+                          // 判断子问题是否为叶子节点 是就原路返回return 如果不是void函数则带着返回值返回;
     }
     //branch
     leaves;             //a语句
@@ -98,13 +124,27 @@ while(!boundary case) 等价于 while if(boundary case) break;
 if() return  等价于  if else
 
 
+## Cache数据结构
+- dfs bfs dijkstra都是 dad out child in的过程
+- 节点in or out cache 时候标记为ture相应的 进入 或者拉出的时候判断是否需要continue
+- 将第一个节点压入(offer/push)cache来启动
+- 父节点拉出(poll/pop),符合要求的子节点进入(push/offer)cache再进行操作;
+
+
+
+
+## 状态与回溯
+- 目前遇到的状态栈,int n ,
+- 基本数据类型因为是副本自动回溯
+- 引用数据类型手动回溯;
+
 
 
 
 ## if/else
 ![alt text](1aa00cfeb4f84a6f7dfad89a36cd2c10.jpg)
 ![alt text](4258aee49f7139b2b3a2469eff118ebe.jpg)
-Object state divide and choose 对对象状态的分划和选择,对象可以是变量,序偶等,例如a>b相当于(a,b)的state;选择某个状态就在假设某个状态成立下进行后续操作;
+Object state divide and choose 对对象状态的分划和选择,对象可以是变量,序偶等,例如a>b相当于(a,b)的state;选择某个状态就在假设某个状态成立下进行后续操作;注意合并逻辑
 Priority sequence
 - Vertex.visited
     if(v.visited==true){
@@ -173,6 +213,34 @@ int main(){
 ```
 
 
+## null 
+- 要考虑null空的情况很多时候都有空这个边界条件
+## 合并逻辑
+- 减少if嵌套用逻辑量词&&||来合并逻辑
+- 先想操作,然后直接while
+在操作数据结构中通常数据结构为null的时候就会报错所以
+在循环操作的时候直接 while(!cache.isEmpty() || ...){}来操作
+既能减少嵌套if 又能防止null异常;
+```java
+public class MonotonicQueue {
+        ArrayDeque<Integer> deque=new ArrayDeque<>();
+
+        void offer(int element){
+            while(!deque.isEmpty() && element>=deque.peekLast()){  //合并逻辑;
+                deque.pollLast();
+            }
+            deque.offerLast(element);
+        }
+
+        void poll(){
+            deque.pollFirst();
+        }
+
+        int peek(){
+            return deque.peekFirst();
+        }
+}
+```
 
 ## 数组索引
 index+1 = num(index) 指定索引右一位为到此索引的元素个数  
@@ -181,13 +249,6 @@ index+1 = num(index) 指定索引右一位为到此索引的元素个数
 - System.arrarycopy(arr1,start1,arr1,start2,arr1.length-start1)  这里的length-start1 就是剩余的元素个数
 - for(int i=0;i<n;i++) 这个循环次数是n  用数学角度考虑就是 [0,n) 就是 [0,n-1] n-1+1 就是n个元素;
 
-
-
-## Cache数据结构
-- dfs bfs dijkstra都是 dad out child in的过程
-- 节点in or out cache 时候标记为ture相应的 进入 或者拉出的时候判断是否需要continue
-- 将第一个节点压入(offer/push)cache来启动
-- 父节点拉出(poll/pop),符合要求的子节点进入(push/offer)cache再进行操作;
 
 
 
@@ -202,7 +263,7 @@ index+1 = num(index) 指定索引右一位为到此索引的元素个数
 ## Cache
 stack queue priorityqueue 等在bfs dfs等算法中起到cache 临时存储数据的作用;
 
-## 指针参数の函数设计
+## 指针参数の函数设计 int[] arr=new int[1];
 翁恺c语言讲过
 - void f(int * arr,int x){}; java中 可以设计public static int[] arr;静态变量代替这个;
 比int * f(int x){}好 

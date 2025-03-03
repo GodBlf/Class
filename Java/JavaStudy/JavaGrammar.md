@@ -91,15 +91,6 @@ class Item {
 
 ```
 
-###
-- java定义需要四段 声明  public static int binarySearch(int[] arr,int x){};   public abstract void move();
-- interface 和 抽象方法 接口是子集不同的方法 抽象方法是子集中共有的方法  public abstract void f();
-- 函数式接口: Consumer<Integer> comsumer ;consumer.accept()接受参数 **并调用函数**
-lambda表达式简化函数  (E args)->{sout(args);}
-- getClass() 获得对象的类int等基本数据类型可以(Object)强制类型转换然后.getClass获得其对应包装类的类型
-'9'-'0'是int 类型;
-- ArrayList<Integer> arr1=new ArrayList<>(arr);可用这种方法对对象进行复制
-
 ### 作用域
 
 
@@ -204,8 +195,16 @@ public class Other {
 
 这样可以控制类的访问权限，使其在 **同一包内可见，包外不可见**，从而提高封装性。
 
-
-
+###
+- java定义需要四段 声明  public static int binarySearch(int[] arr,int x){};   public abstract void move();
+- interface 和 抽象方法 接口是子集不同的方法 抽象方法是子集中共有的方法  public abstract void f();
+- 函数式接口: Consumer<Integer> comsumer ;consumer.accept()接受参数 **并调用函数**
+lambda表达式简化函数  (E args)->{sout(args);}
+- getClass() 获得对象的类int等基本数据类型可以(Object)强制类型转换然后.getClass获得其对应包装类的类型
+'9'-'0'是int 类型;
+- ArrayList<Integer> arr1=new ArrayList<>(arr);可用这种方法对对象进行复制
+- 方法重写 抽象方法必须重写 default 可选重写;
+- 方法重载
 
 
 
