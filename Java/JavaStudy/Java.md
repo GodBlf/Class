@@ -4,7 +4,7 @@
 
 ## API
 ### I/O 
-- Bufferedreader PrintWriter StringTokenizer
+- Bufferedreader PrintWriter StringTokenizer .split
 - 造一个fastreader类
 ```java
 public class FastReader {
@@ -70,7 +70,8 @@ public class FastReader {
 
 ```
 - printwriter  原理是 把结构全输出到流中 最后out.flush()再一次性打印到控制台;
-嫌麻烦可以不用类
+# 嫌麻烦可以不用类
+注意if(line == null || line.isEmpty()){break;} line可能是空字符 操蛋玩意也要
 ```java
         //全都初始化好 输入输出和分词器
         PrintWriter out=new PrintWriter(new OutputStreamWriter(System.out));
@@ -78,7 +79,7 @@ public class FastReader {
         StringTokenizer st=new StringTokenizer("");
         int [] [] arr=new int[2][3];
                 for (int i   = 0; i <2 ; i++) {
-                    String line = reader.readLine();
+                    String line = reader.readLine();//注意
                     st=new StringTokenizer(line);
                     for(int j=0;j<3;j++){
                         arr[i][j]=Integer.parseInt(st.nextToken());
@@ -297,7 +298,42 @@ public class MonotonicQueue {
 
 -------------------------------------------------------------------------------------
 
+# 2进制和位运算
+## 2进制讨论(补码)
+- 计算机擅长加法 所以补码满足加法逻辑 所以 0-000 是0开头的0代表正号
+1-111是-1 开头的1代表负号 然后考虑计算机擅长加法所以 1111+1=0000 所以1111是-1
+然后1000->1111,0000,-> 0111  排列起来就是所有能表示的 +-2^3 这些数;
+- 整数映射 有符号,四位 0111表示2^3-1;然后依次映射;
+## 位运算
+& | ^ ~  <<  >>  >>>(无符号右移0来补充)
+- ~:取反 
+相反数:~a+1 注意负数最小数没有相反数 eg:1000 -> 0111+1->1000 还是它自己
+- &: 有0则0,相当于乘法  1&0=0 1&1=1 0&0=0; 
+- |: 有1则1,相当于单进位加法  1|0=1 1|1=10(1) 0|0=0;
+- ^: 相同则0 取补集; 无进位相加
+所以例如取出某二进制数的后16位  n&0xFFFF
+### 应用
+- <<n  二进制表示右移n位;相当于乘了2^n;
+- >>n  二进制表示左移n位,相当于整除了2^n;
+- int n  n& 1<<i 可取出n二进制下第i位的数;
 
+
+检查奇偶性：使用 a & 1 来检查一个整数是否为奇数（如果结果为 1，则为奇数）。
+交换两个数：可以通过 XOR 运算交换两个数的值，例如：
+java
+Copy code
+int a = 5, b = 3;
+a = a ^ b;
+b = a ^ b;
+a = a ^ b;
+计算最大公约数：使用位运算可以高效地计算两个数的最大公约数。
+位运算的性能很高，因为它们直接操作硬件级别的二进制位，不需要复杂的计算。
+
+## ^ 异或运算
+- 无进位相加
+- 满足交换结合律
+- n^n=0  n^0=n;
+- 补集 A包含于C  补集就是 C^A   a^b=c   a^b^b=c^b  a^0=c^b a=c^b;
 # 二分查找
 数组升序排列;
 设置min max两个索引指针 根据mid 和 target比较进行更新 
@@ -1554,7 +1590,7 @@ private static int select(Item[] items, int total) {
 
 
 
-````
+
 ## 0-1bag problem
 ```java
 package leetcode;
@@ -1875,20 +1911,13 @@ public class HighPrecisionAdditionString {
     }
 
 }
-```
 
 
 
 
 
-# 算法思想
-- Divide and Conquer 
-- Dynamic Programming
-- Greedy
-- Backtracking
-- Search
-- 枚举
-- 
+
+
 # 模拟
 # 模拟题目
 ## P1042
@@ -2242,30 +2271,7 @@ public class Main {
 ### 小数进制转换
 ![alt text](image-5.png)
 
-## 2进制讨论(补码)
-计算机擅长加法  所以 0-000 是0开头的0代表正号
-1-111是-1 开头的1代表负号 然后考虑计算机擅长加法所以 1111+1=0000 所以1111是-1
-然后1000->1111,0000,-> 0111  排列起来就是所有能表示的 +-2^3 这些数;
 
-## 位运算
-& | ^ ~  <<  >>  >>>
-&: 相当于乘法  1&0=0 1&1=1 0&0=0;
-|: 相当于加法  1|0=1 1|1=10(1) 0|0=0;
-所以例如取出某二进制数的后16位  n&0xFFFF
-### 应用
-- <<n  二进制表示右移n位;相当于乘了2^n;
-- >>n  二进制表示左移n位,相当于整除了2^n;
--a=(~ a+1)
-检查奇偶性：使用 a & 1 来检查一个整数是否为奇数（如果结果为 1，则为奇数）。
-交换两个数：可以通过 XOR 运算交换两个数的值，例如：
-java
-Copy code
-int a = 5, b = 3;
-a = a ^ b;
-b = a ^ b;
-a = a ^ b;
-计算最大公约数：使用位运算可以高效地计算两个数的最大公约数。
-位运算的性能很高，因为它们直接操作硬件级别的二进制位，不需要复杂的计算。
 ## 整除
 (a+b+c)%d=(((a+b)%d)+c)%d  *乘法类似
 
@@ -2276,6 +2282,227 @@ a = a ^ b;
 
 
 ````
+
+
+
+
+# 回溯
+- cache+recur 
+- 状态是基本数据类型f(int n) 是局部变量自动回溯,
+- 当状态是引用数据类型(指针)必须手动回溯
+## 全排列
+recur+cache+
+状态是visited 和stack来储存;
+```java
+class Main {
+    public static void main(String[] args) {
+        int n=3;
+        int[] arr={1,2,3};
+        boolean[] visited=new boolean[n];
+        Arrays.fill(visited,false);
+        ArrayDeque<Integer> stack=new ArrayDeque<>();
+        dfs(stack,arr,visited);
+    }
+
+    static  void dfs(ArrayDeque<Integer> stack, int [] arr, boolean[] visited){
+        if(stack.size()==arr.length){
+            System.out.println(stack);
+            return ;
+        }
+        for (int i = 0; i < arr.length; i++) {
+            if(visited[i]==true){
+                continue;
+
+            }
+            
+            stack.push(arr[i]);
+            visited[i]=true;
+            dfs(stack,arr,visited);
+            visited[i]=false;
+            stack.pop();
+        }
+    }
+
+}
+
+```
+## 无重复全排列
+先将数组排列,判断要是重复的就跳过
+```java
+class Main {
+    public static void main(String[] args) {
+        int n=3;
+        int[] arr={1,1,3};
+        boolean[] visited=new boolean[n];
+        Arrays.fill(visited,false);
+        ArrayDeque<Integer> stack=new ArrayDeque<>();
+        dfs(stack,arr,visited);
+    }
+
+    static  void dfs(ArrayDeque<Integer> stack, int [] arr, boolean[] visited){
+        if(stack.size()==arr.length){
+            System.out.println(stack);
+            return ;
+        }
+        for (int i = 0; i < arr.length; i++) {
+            if(visited[i]==true){
+                continue;
+
+            }
+            if(i!=0 && arr[i]==arr[i-1] && !visited[i-1]){  //这是判断语句一定要留意null ,
+                                                        //技术细节:1,1',3要满足前一个相等且要被访问过;
+                continue;
+            }
+            stack.push(arr[i]);
+            visited[i]=true;
+            dfs(stack,arr,visited);
+            visited[i]=false;
+            stack.pop();
+        }
+    }
+
+}
+
+```
+## 组合
+- 从全排列修改即可
+- 有n个元素组合 以i元素开头的时候仅需递归i+1往后的就行
+例如 1,2,3 选2个  (1,2)(1,3) (2,3)
+- 对递归的branch来说后续不够个数的直接continue 剪枝;
+```java
+package ache;
+
+import javax.swing.*;
+import java.net.http.HttpConnectTimeoutException;
+import java.util.*;
+
+class Main {
+    public static void main(String[] args) {
+        int n=5;
+        int[] arr={1,2,3,4,5};
+        boolean[] visited=new boolean[n];
+        Arrays.fill(visited,false);
+        ArrayDeque<Integer> stack=new ArrayDeque<>();
+        dfs(stack,arr,visited,3);
+    }
+
+    static  void dfs(ArrayDeque<Integer> stack, int [] arr, boolean[] visited,int target) {
+        if (stack.size() == target) {
+            System.out.println(stack);
+            return;
+        }
+        if (stack.isEmpty()) {
+            for (int i = 0; i < arr.length; i++) {
+                if (visited[i] == true) {
+                    continue;
+
+                }
+                if (i != 0 && arr[i] == arr[i - 1] && !visited[i - 1]) {
+                    continue;
+                }
+                stack.push(arr[i]);
+                visited[i] = true;
+                dfs(stack, arr, visited, target);
+                visited[i] = false;
+                stack.pop();
+            }
+        } else {
+            int i1 = Arrays.binarySearch(arr, stack.peek());
+            for (int i = i1+1; i < arr.length; i++) {  // 技术细节:仅从i1+1即可
+                if (visited[i] == true) {
+                    continue;
+                }
+                if(arr.length-i<target-stack.size()){   //技术细节:减枝
+                    continue;
+                }
+                if (i != 0 && arr[i] == arr[i - 1] && !visited[i - 1]) {
+                    continue;
+                }
+                stack.push(arr[i]);
+                visited[i] = true;
+                if((arr.length-i1)<target- stack.size()){
+                    visited[i] = false;
+                    stack.pop();
+                    return ;
+                }
+                dfs(stack, arr, visited, target);
+                visited[i] = false;
+                stack.pop();
+            }
+        }
+
+    }}
+
+
+```
+
+## 无重复组合
+同理无重复排列即可
+
+## N皇后问题
+- 简单的递归加回溯;
+技术细节:
+- 左右斜线冲突的映射是i+j and n-1-(i-j);通过解析几何
+```java
+package leetcode;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+class Solution {
+    static char[][] qipan;
+    static boolean[] lieChongtu;
+    static boolean[] zuoChongtu;
+    static boolean[] youChongtu;
+    static List<List<String>> result;
+    public List<List<String>> solveNQueens(int n) {
+         result=new ArrayList<>();
+        qipan=new char[n][n];
+        for (int i = 0; i < qipan.length; i++) {
+            Arrays.fill(qipan[i],'.');
+        }
+        lieChongtu=new boolean[n];
+        zuoChongtu=new boolean[2*n-1];
+        youChongtu=new boolean[2*n-1];
+
+            dfs(0,n);
+            return result;
+    }
+
+    static void dfs(int i,int n){
+        if(i==n){
+            toret(qipan);
+            return;
+        }
+
+        for (int j = 0; j <n ; j++) {
+            if(lieChongtu[j] || zuoChongtu[j+i] || youChongtu[n-1-(i-j)]){  //判断冲突;
+                continue;
+            }
+            qipan[i][j]='Q';
+            lieChongtu[j]= zuoChongtu[i+j]=youChongtu[n-1-i+j]=true;
+            dfs(i+1,n);
+            qipan[i][j]='.';
+            lieChongtu[j]= zuoChongtu[i+j]=youChongtu[n-1-i+j]=false;
+        }
+        return ;
+
+
+    }
+    static void toret(char[][] ret){
+        ArrayList<String> al=new ArrayList<>();
+        for (int i = 0; i < ret.length; i++) {
+            al.add(String.valueOf(ret[i]));
+        }
+        result.add(al);
+    }
+}
+```
+
+
+
+
 # 双指针
 ## 盛水最多的容器
 两个指针 贪心每次移动少的
