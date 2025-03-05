@@ -1,8 +1,8 @@
 [TOC]
-# ReadMe
+## ReadMe
 与java有关的语法  API 题目等;数据结构 算法具体的知识 与之有关的技巧不写入;
 
-## API
+# API
 ### I/O 
 - Bufferedreader PrintWriter StringTokenizer .split
 - 造一个fastreader类
@@ -70,7 +70,7 @@ public class FastReader {
 
 ```
 - printwriter  原理是 把结构全输出到流中 最后out.flush()再一次性打印到控制台;
-# 嫌麻烦可以不用类
+#### 嫌麻烦可以不用类
 注意if(line == null || line.isEmpty()){break;} line可能是空字符 操蛋玩意也要
 ```java
         //全都初始化好 输入输出和分词器
@@ -319,13 +319,7 @@ public class MonotonicQueue {
 
 
 检查奇偶性：使用 a & 1 来检查一个整数是否为奇数（如果结果为 1，则为奇数）。
-交换两个数：可以通过 XOR 运算交换两个数的值，例如：
-java
-Copy code
-int a = 5, b = 3;
-a = a ^ b;
-b = a ^ b;
-a = a ^ b;
+
 计算最大公约数：使用位运算可以高效地计算两个数的最大公约数。
 位运算的性能很高，因为它们直接操作硬件级别的二进制位，不需要复杂的计算。
 
@@ -334,7 +328,33 @@ a = a ^ b;
 - 满足交换结合律
 - n^n=0  n^0=n;
 - 补集 A包含于C  补集就是 C^A   a^b=c   a^b^b=c^b  a^0=c^b a=c^b;
-# 二分查找
+
+### 应用
+- 一个树奇数次其他所有数都是偶数次  
+aa b cccc dd   直接求xor和 就是b;
+- 一个区间A中缺失了某个数字b
+补集直接  原区间元素的xor和是c    a^b=c  a^b^b=c^b   a=c^b
+- 交换两个数：可以通过 XOR 运算交换两个数的值，例如：
+java
+Copy code
+int a = 5, b = 3;
+a = a ^ b;
+b = a ^ b;
+a = a ^ b;
+- brian 算法 n&(-n)可以取得某个数二进制最右边的1
+这个算法很常用
+-
+
+-
+
+
+
+# 二分搜索
+- 技术细节
+严格的<> 和严格的<=> 如果arr[mid]<tg left一定是mid+1  
+如果啊让人arr[mid]==tg  那么right=mid 不能加一
+峰值二分同理   
+
 数组升序排列;
 设置min max两个索引指针 根据mid 和 target比较进行更新 
 两个指针相向收缩
@@ -368,10 +388,11 @@ public static int ef(int [] arr,int tg) {
 		int flag;
 		int min=0;int max=arr.length-1;
 		while(max!=min) {
-			int mid = (max+min)/2;
+			int mid = (max+min)>>1;
 			if(tg==arr[mid]) {
 				flag=mid;
 				max=mid;   //注意 是闭区间不需要-1;
+                            //可以把这个答案记录下来
 			}else if(tg>arr[mid]) {
 				min=mid+1;
 			}else {
@@ -393,7 +414,7 @@ public static int ef(int [] arr,int tg) {
 		int flag;
 		int min=0;int max=arr.length-1;
 		while(max!=min) {
-			int mid = (max+min)/2;
+			int mid = (max+min)>>1;
 			if(tg==arr[mid]) {
 				flag=mid;
 				max=mid;   //注意 是闭区间不需要-1;
@@ -408,22 +429,68 @@ public static int ef(int [] arr,int tg) {
 ```
 
 java.util.Arrays中的 Arrays.binarySearch(数组,值);
+这个要是没找到返回-(极限index+1);可以 abs(return)-1就是极限值;
+
+## 二分峰值问题
+找到数组中的一个峰值即可
+![alt text](image-12.png)
+罗尔种植定理
+```java
+
+		public static int findPeakElement(int[] arr) {
+			int n = arr.length;
+			if (arr.length == 1) {
+				return 0;
+			}
+			if (arr[0] > arr[1]) {
+				return 0;
+			}
+			if (arr[n - 1] > arr[n - 2]) {
+				return n - 1;
+			}
+			int l = 1, r = n - 2, m = 0, ans = -1; //指针皆为上升的对象//技术细节:二分查找皆为严格<>,
+
+			while (l <= r) {
+				m = (l + r) / 2;
+				if (arr[m - 1] > arr[m]) {
+					r = m - 1;
+				} else if (arr[m] < arr[m + 1]) {
+					l = m + 1;
+				} else {
+					ans = m;
+					break;
+				}
+			}
+			return ans;
+		}
+```
+
+## 二分答案
+
 
 ## 优化
 1. /2优化改为 >>>1 无符号右移运算防止加起来溢出;
 2. mid 取值可以用别的测度代替 如连续测度等
+
+
+
 # 复杂度
 1. 最差执行情况
 2. 每句执行时间相同为1;
 ## 时间复杂度
 大O表示法 O(n) logn O(nlogn) n^2...是f(n)的等价无穷大
 二分查找为 O(logn)
+- 调和级数收敛于 log n;如希尔排序很多时间复杂度都是nlogn
 ## 空间复杂度
 内存占用大小
 
 
 
 
+
+# 数据结构与算法引言
+- 数据结构分为 连续结构和跳转结构 数组和链表就是基本数据结构;
+- 算法分为硬计算和软计算  数学建模大量使用软计算;
 
 
 
@@ -540,10 +607,15 @@ int[][] array=new int[n][m];
 
 
 # 链表
+- 技术细节:
+- 多指针;
+- 哨兵节点
 3(head)->2->1->0->null
 单向链表 最后指向null;null<-双向链表->null;循环节点 头尾相连
 哨兵节点:null不存数据
 注意 boundary case 有头尾 和空指针;
+- 循环终止条件p.next==null;
+- node temp=p;p=p.next;
 ## 性能
 随机访问:ingdex查找O(n)
 插入删除: 单向头O(1) 尾O(n)  双向头就是尾  中间=查找时间+O(1)
@@ -805,116 +877,54 @@ class Solution {
 }
 
 ```
-# 递归
-## 反向打印
-## 二分查找
-```java
-public static int binarySearch(int[] arr,int tg,int min,int max){
-	min=0;max=arr.length-1;
-	// boundary case
-	if(min==max){
-		return min;
-	}
-
-	int mid=(max+min)/2;
-	if(tg>arr[mid]){
-		return binarySearch(arr,tg,mid+1,max);
-	}else if(tg<arr[mid]){
-		return binarySearch(arr,tg,min,mid-1);
-	}else{
-		return binarySearch(arr,tg,min,mid);
-	}
-}
-```
-## 冒泡排序
-```java
-public static void boubbleSort(int[] arr,int n) { //n is update args
-	// boundary case
-			if(n==1) {
-				return;
-			}
-			int flag=0;
-			for(int i=0;i<n-1;i++) {
-				if(arr[i]>arr[i+1]) {
-					int temp=arr[i];
-					arr[i]=arr[i+1];
-					arr[i+1]=temp;
-					flag=1;
-				}
-			}
-			if(flag==0) {
-				return;
-			}
-			
-			boubbleSort(arr,n-1);
-		}
-```
-## 插入排序
+## 两数相加力扣2t
 ```java
 
-```
 
-## 斐波那契递归
-```java
-	//斐波那契递归
-		public static int fabo(int n,int[] memo) {
-			if(memo[n]!=-1) {
-				return memo[n];
-			}
-			int x=fabo(n-1,memo);
-			int y=fabo(n-2,memo);
-			memo[n]=x+y;
-			return x+y;
-		}
-```
-## BigInteger Recursion
-```java
-package  luogu;
-
-import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
+import java.util.List;
 
-public class Main {
-    public static BigInteger[] arr;
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode head =new ListNode(Integer.MAX_VALUE,null);
+        ListNode p=head;
+        ListNode p1=l1;
+        ListNode p2=l2;
+        int carray=0;
+        while(p1!=null || p2!=null){
+            int p1val;int p2val;
+            if(p1==null){
+                p1val=0;
+            }else{
+                p1val=p1.val;
+                p1=p1.next;
+            }if(p2==null){
+                p2val=0;
+            }else{
+                 p2val=p2.val;
+                 p2=p2.next;
+            }
+            int sum=p1val+p2val+carray;
+            carray=sum/10;
+            ListNode listNode = new ListNode(sum % 10, null);
+            p.next=listNode;
+            p=listNode;
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        //start
-        int n = sc.nextInt();
-        arr=new BigInteger[n+1];
-        Arrays.fill(arr,null);
-        arr[0]=new BigInteger("1");
-        arr[1]=new BigInteger("1");
-        System.out.println(f(n));
-
-        //end
-    }
-
-    //fabo
-        //root
-    public static BigInteger f(int n){
-        //leaf
-        if(arr[n]!=null){
-            return arr[n];
         }
+        if(carray!=0){
+            ListNode listNode = new ListNode(carray, null);
+            p.next=listNode;
 
-        //branch
-        BigInteger x=f(n-1);
-        BigInteger y=f(n-2);
-
-        arr[n]=x.add(y);
-
-        return arr[n];
-
+        }
+        return head.next;
 
     }
 }
 
+
+
 ```
-## 
-
-
 
 # 队列 
 ## 环形数组
@@ -922,11 +932,56 @@ tail指针是sentry哨兵指针
 ![alt text](image-6.png)
 # 栈 
 top指针是sentry指针;
+## 最小栈
+![alt text](image-14.png)
+用两个栈来实现;
+```java
+class MinStack {
+    ArrayDeque<Integer> stack1=new ArrayDeque<>();
+    ArrayDeque<Integer> stack2=new ArrayDeque<>();
+    
+    /** initialize your data structure here. */
+    public MinStack() {
+
+    }
+
+    public void push(int x) {
+        if(stack1.isEmpty() || stack2.peek()>x){
+            stack1.push(x);
+            stack2.push(x);
+        }else{
+            stack1.push(x);
+            stack2.push(stack2.peek());
+        }
+    }
+
+    public void pop() {
+        stack1.pop();
+        stack2.pop();
+    }
+
+    public int top() {
+            return stack1.peek();
+    }
+
+    public int getMin() {
+            return  stack2.peek();
+    }
+}
+
+```
 # 堆
 找父节点 (i-1)>>1 
 找子节点 2i+1 2i+2
 最后一个非叶节点 size/2-1;
+
 # 二叉树 
+- 先序遍历
+
+- 后序
+
+- 中序
+
 
 # 哈希表
 数据的哈希值到N的映射
@@ -2616,5 +2671,118 @@ class Zhuzi {
 }
 ```
 
+
+
+
+
+
+# 递归
+## 反向打印
+## 二分查找
+```java
+public static int binarySearch(int[] arr,int tg,int min,int max){
+	min=0;max=arr.length-1;
+	// boundary case
+	if(min==max){
+		return min;
+	}
+
+	int mid=(max+min)/2;
+	if(tg>arr[mid]){
+		return binarySearch(arr,tg,mid+1,max);
+	}else if(tg<arr[mid]){
+		return binarySearch(arr,tg,min,mid-1);
+	}else{
+		return binarySearch(arr,tg,min,mid);
+	}
+}
+```
+## 冒泡排序
+```java
+public static void boubbleSort(int[] arr,int n) { //n is update args
+	// boundary case
+			if(n==1) {
+				return;
+			}
+			int flag=0;
+			for(int i=0;i<n-1;i++) {
+				if(arr[i]>arr[i+1]) {
+					int temp=arr[i];
+					arr[i]=arr[i+1];
+					arr[i+1]=temp;
+					flag=1;
+				}
+			}
+			if(flag==0) {
+				return;
+			}
+			
+			boubbleSort(arr,n-1);
+		}
+```
+## 插入排序
+```java
+
+```
+
+## 斐波那契递归
+```java
+	//斐波那契递归
+		public static int fabo(int n,int[] memo) {
+			if(memo[n]!=-1) {
+				return memo[n];
+			}
+			int x=fabo(n-1,memo);
+			int y=fabo(n-2,memo);
+			memo[n]=x+y;
+			return x+y;
+		}
+```
+## BigInteger Recursion
+```java
+package  luogu;
+
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class Main {
+    public static BigInteger[] arr;
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        //start
+        int n = sc.nextInt();
+        arr=new BigInteger[n+1];
+        Arrays.fill(arr,null);
+        arr[0]=new BigInteger("1");
+        arr[1]=new BigInteger("1");
+        System.out.println(f(n));
+
+        //end
+    }
+
+    //fabo
+        //root
+    public static BigInteger f(int n){
+        //leaf
+        if(arr[n]!=null){
+            return arr[n];
+        }
+
+        //branch
+        BigInteger x=f(n-1);
+        BigInteger y=f(n-2);
+
+        arr[n]=x.add(y);
+
+        return arr[n];
+
+
+    }
+}
+
+```
+## 
 
 
