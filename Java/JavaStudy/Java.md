@@ -975,14 +975,119 @@ class MinStack {
 找子节点 2i+1 2i+2
 最后一个非叶节点 size/2-1;
 
-# 二叉树 
-- 先序遍历
+# 二叉树
+## 递归遍历
+超级简单 
+```java
+static void dfs(TreeNode node){
+    if(node==null){
+        return ;
+    }
+    //在这sout就是先序遍历
+    dfs(node.left);
+    //在这就是中序
+    dfs(node.right);
+    //在这就是后;
+    return;
+}
+```
+## cache遍历
+通过两个标志指针来模拟递归过程;
+以后序遍历为模板
+### 后序
+```Java
+public class Solution {
+    public List<Integer> postorderTraversal(TreeNode root) {
+        ArrayList<Integer> result=new ArrayList<>();
+        ArrayDeque<TreeNode> cache=new ArrayDeque<>();
+        TreeNode head=root;
+        TreeNode pop=null;   //标记指针标记上一个弹出的元素;
 
-- 后序
+        while(true){
+            if(head==null && cache.isEmpty()){
+                break;
+            }
+            if(head!=null){
+                cache.push(head);
+                head=head.left;
+            }else{   // null是叶子节点 return;
+                TreeNode peek = cache.peek();
+                if(peek.right==pop || peek.right==null){  //如果右子树是null或者已被弹出直接return
+                    pop = cache.pop();  //标记
+                    result.add(pop.val);
+                }else{
+                    head=peek.right;        //否则head标记为right然后继续进栈;
+                }
+            }
 
-- 中序
+        }
+
+        return result;
+    }
+}
+```
+### 中序列
+```Java
+public class Solution {
+    public List<Integer> postorderTraversal(TreeNode root) {
+        ArrayList<Integer> result=new ArrayList<>();
+        ArrayDeque<TreeNode> cache=new ArrayDeque<>();
+        TreeNode head=root;
+        TreeNode pop=null;
+
+        while(true){
+            if(head==null && cache.isEmpty()){
+                break;
+            }
+            if(head!=null){
+                cache.push(head);
+                head=head.left;
+            }else{
+                //中序不用pop来判断是否return直接return即可;
+                pop=cache.pop();
+                result.add(pop.val);
+                if(pop.right!=null){
+                    head=pop.right;
+                }
+            }
+
+        }
+
+        return result;
+    }
+}
+
+```
+
+### 先序
+和图的深度优先遍历一样
+模拟递归方法就直接遍历到就add 用中序改
+```java
+public static void preOrder(TreeNode head) {
+		if (head != null) {
+			Stack<TreeNode> stack = new Stack<>();
+			stack.push(head);
+			while (!stack.isEmpty()) {
+				head = stack.pop();
+				System.out.print(head.val + " ");
+				if (head.right != null) {
+					stack.push(head.right);
+				}
+				if (head.left != null) {
+					stack.push(head.left);
+				}
+			}
+			System.out.println();
+		}
+	}
+```
+
+# 递归
+## master公式
+- 规模相同的子状态;
 
 
+### 
 # 哈希表
 数据的哈希值到N的映射
 ## 哈希值
