@@ -236,7 +236,7 @@ new Comparator<E>(){
 ## Arrays
 - Arrays.sort()  比Collectiong的更底层能够排指定range的 可以将collecions toArray转换为数组
 - Arrays.fill()
-- Arrays.binarySearch() 找到就是最左边的 找不到就是  -(极限+1);可以取abs()-1;
+- Arrays.binarySearch() 找到不是左边的需要再往左遍历才能找到 找不到就是  -(极限+1);可以取abs()-1;
 ## E[] 
 
 ## Collections
@@ -290,6 +290,10 @@ public class MonotonicQueue {
 
 ## HashSet
 - 哈希表 值对N集的映射
+
+## TreeSet
+- 有序表 重写equals  hashcode方法
+- 一般无重复集合
 
 ## HashMap
 - 键值对的集合 将键做成哈希表 值链到键下边;
@@ -970,10 +974,81 @@ class MinStack {
 }
 
 ```
+
+
 # 堆
+![alt text](image-18.png)
 找父节点 (i-1)>>1 
 找子节点 2i+1 2i+2
 最后一个非叶节点 size/2-1;
+填坑
+## 优先级队列
+- 底层是heap堆结构
+详见api
+## 常见题目
+### 合并有序链表
+
+### 最大重合线段数量
+```java
+
+import java.io.*;
+import java.util.*;
+
+// 注意类名必须为 Main, 不要有任何 package xxx 信息
+public class Main {
+    public static void main(String[] args) throws IOException {
+        PrintWriter out=new PrintWriter(new OutputStreamWriter(System.out));
+        StringTokenizer st=new StringTokenizer("");
+        BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
+        String line = reader.readLine();
+        st=new StringTokenizer(line);
+        int n= Integer.parseInt(st.nextToken());
+        int[][] arr=new int[n][2];
+        for (int i = 0; i < n; i++) {
+            String line1 = reader.readLine();
+            st=new StringTokenizer(line1);
+            int a= Integer.parseInt(st.nextToken());
+            int b= Integer.parseInt(st.nextToken());
+            arr[i][0]=a;arr[i][1]=b;
+
+        }
+        Arrays.sort(arr, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return o1[0]-o2[0];
+            }
+        });
+        //堆结构
+        PriorityQueue<Integer> cache=new PriorityQueue<>(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o1-o2;
+            }
+        });
+        int result=0;
+        for (int[] ints : arr) {
+            //注意null
+            //没有冲到的就弹出
+            while(!(cache.isEmpty() || ints[0]<cache.peek())){
+
+                cache.poll();
+            }
+            cache.offer(ints[1]);
+            if(cache.size()>result){
+                result=cache.size();
+            }
+        }
+        out.println(result);
+
+
+        out.flush();
+        out.close();
+    }
+}
+
+```
+
+### 
 
 # 二叉树
 ## 递归遍历
@@ -1083,11 +1158,128 @@ public static void preOrder(TreeNode head) {
 ```
 
 # 递归
+- 仅有logn级别的程序能够使用递归因为2^n 的幂级数很大!
 ## master公式
 - 规模相同的子状态;
+![alt text](image-15.png)
+## 归并排序
+- ![alt text](image-16.png)
+logn级别的递归
+master 公式 可得O(nlogn);
+```java
+class Solution {
+    static int[] arr=new int[50001];
+    static int[] help=new int[50001];
+    public int[] sortArray(int[] nums) {
+            mergeSort(0,nums.length-1);
+            return nums;
+    }
+    static void mergeSort(int l,int r){
+        if(l==r){
+            return;
+        }
+        int m=(l+r)>>>1;
+        mergeSort(l,m);
+        mergeSort(m+1,r);
+        merge(l,r,m);
+        return;
+    }
+
+    static void merge(int l,int r,int m){
+        int a=l;
+        int b=m+1;
+        int i=l;
+        while (!(a>m || b>r)){
+            help[i++]= arr[a]<=arr[b] ? arr[a++] : arr[b++];
+        }
+        while(!(a>m)){
+            help[i++]=arr[a++];
+        }
+        while (!(b>r)){
+            help[i++]=arr[b++];
+        }
+
+        //调用系统级别api
+        System.arraycopy(help,l,arr,l,r-l+1);
+    }
+}
+```
+## 归并分治
+将暴力n^2 通过二分变为 nlogn
+![alt text](image-17.png)
+- 能不能变成二分解决
+- 递归过程是不是有跨左右的过程
+- 嵌入归并排序是否变简单;进行排序统计
+
+一般按照图都得嵌套归并排序
+### 小和
+```java
+public static long merge(int l, int m, int r) {
+		// 统计部分 双指针统计优化;
+		long ans = 0;
+		for (int j = m + 1, i = l, sum = 0; j <= r; j++) {
+			while (i <= m && arr[i] <= arr[j]) {
+				sum += arr[i++];
+			}
+			ans += sum;
+		}
+		// 正常merge
+		int i = l;
+		int a = l;
+		int b = m + 1;
+		while (a <= m && b <= r) {
+			help[i++] = arr[a] <= arr[b] ? arr[a++] : arr[b++];
+		}
+		while (a <= m) {
+			help[i++] = arr[a++];
+		}
+		while (b <= r) {
+			help[i++] = arr[b++];
+		}
+		for (i = l; i <= r; i++) {
+			arr[i] = help[i];
+		}
+		return ans;
+	}
+```
+
+### 反转对
+```java
+public static int merge(int[] arr, int l, int m, int r) {
+		// 统计部分
+		int ans = 0;
+		for (int i = l, j = m + 1; i <= m; i++) {
+			while (j <= r && (long) arr[i] > (long) arr[j] * 2) {
+				j++;
+			}
+			ans += j - m - 1;
+		}
+		// 正常merge
+		int i = l;
+		int a = l;
+		int b = m + 1;
+		while (a <= m && b <= r) {
+			help[i++] = arr[a] <= arr[b] ? arr[a++] : arr[b++];
+		}
+		while (a <= m) {
+			help[i++] = arr[a++];
+		}
+		while (b <= r) {
+			help[i++] = arr[b++];
+		}
+		for (i = l; i <= r; i++) {
+			arr[i] = help[i];
+		}
+		return ans;
+	}
+```
+
+## 快速排序
+
+## 快速分治
 
 
-### 
+
 # 哈希表
 数据的哈希值到N的映射
 ## 哈希值
@@ -2201,26 +2393,6 @@ int [] arr= {4,3,2,1};
 			}
 
 ```
-## 快速排序
-[Node \Class\Java\JavaStudy\Java 快速排序及优化策略.md](https://github.com/GodBlf/Class/blob/main/Java/JavaStudy/Java%20%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E5%8F%8A%E4%BC%98%E5%8C%96%E7%AD%96%E7%95%A5.md)
-
-双指针进行分治
-```java
-int i=0;
-for(int j=0;j<right-1;j++){
-	if(arr[j]<pivot){
-		int temp=arr[i];
-		arr[i]=arr[j];
-		arr[j]=temp;
-		i++               //i指针是pivot 左边都是<pivot的
-	}
-}
-int temp=arr[i];
-arr[i]=pivot;
-arr[right]=temp;//   最后再把pivot换到i处;
-
-
-```
 
 ## Arrays.sort  和  Collections.sort
 Arrays.sort(arrays , new Comparator<Student>(){@Override public int compare(Student s1,Student s2){}})  对数组排序
@@ -2436,12 +2608,14 @@ public class Main {
 (a+b+c)%d=(((a+b)%d)+c)%d  *乘法类似
 
 
+# 字符串
+## KMP
 
 
 
 
 
-````
+
 
 
 
@@ -2507,9 +2681,9 @@ class Main {
         for (int i = 0; i < arr.length; i++) {
             if(visited[i]==true){
                 continue;
-
+            
             }
-            if(i!=0 && arr[i]==arr[i-1] && !visited[i-1]){  //这是判断语句一定要留意null ,
+            if(i!=0 && arr[i]==arr[i-1] rrr&& !visited[i-1]){  //这是判断语句一定要留意null ,
                                                         //技术细节:1,1',3要满足前一个相等且要被访问过;
                 continue;
             }
@@ -2891,3 +3065,30 @@ public class Main {
 ## 
 
 
+
+
+
+
+
+# dustbin
+
+## 快速排序
+[Node \Class\Java\JavaStudy\Java 快速排序及优化策略.md](https://github.com/GodBlf/Class/blob/main/Java/JavaStudy/Java%20%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E5%8F%8A%E4%BC%98%E5%8C%96%E7%AD%96%E7%95%A5.md)
+
+双指针进行分治
+```java
+int i=0;
+for(int j=0;j<right-1;j++){
+	if(arr[j]<pivot){
+		int temp=arr[i];
+		arr[i]=arr[j];
+		arr[j]=temp;
+		i++               //i指针是pivot 左边都是<pivot的
+	}
+}
+int temp=arr[i];
+arr[i]=pivot;
+arr[right]=temp;//   最后再把pivot换到i处;
+
+
+```

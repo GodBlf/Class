@@ -95,9 +95,12 @@ while(scanf!=EOF)来控制输入;
 strlen  
 - strcmp
 strcmp(str1,str2) 1 前者greater  0一样大 -1 后者大 和 比较函数一样;
+- memset
 ## math
 fabs()double abs () int
-
+## 数组
+memset
+## time;
 # 老翁凯C语言
 
 关系运算高于赋值低于算数运算

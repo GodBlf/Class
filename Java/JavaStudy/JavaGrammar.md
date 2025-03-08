@@ -1,7 +1,26 @@
 # Java Grammar 
 ## Grammar
 ### 引用数据类型本质是指针
-所以 拷贝ArrayList等引用数据类型
+new Object<>() 构造方法生成的对象是一个地址
+让后 Object<> var =new Object<>() 这个var是指向这个地址的指针
+因为指针所以  让arr1=arr仅是让指针指向同一个不是copy;
+#### 指针副本
+##### 方法的形参
+![alt text](image-13.png)
+void g(p){
+    p=null
+}
+p=new Object<>():
+g(p)
+具体过程: g(p'=p){p'=null};如图所示栈区域有生成了个指针指向堆区域的对象
+##### 增强for
+增强for 每次返回的是副本
+- 基本数据类型 副本无法对原对象修改
+- 引用数据类型:1.对对象地址又加了个指针,![alt text](image-11.png) 2.可以通过副本指针来修改对象的值3. 如果赋值是把新的指针指向别的对象;
+
+### 对象的copy
+- ArrayList<Integer> arr1=new ArrayList<>(arr);可用这种方法对对象进行复制
+- 所以 拷贝ArrayList等引用数据类型
 得 Object<E> o1 =new Object<E>();
 Object<E> o2 =new Object<E>(o1);  构造方法中填入要拷贝的对象
 eg.  ArrayList<Integer> arr=new ArrayList<>();
@@ -35,9 +54,7 @@ Node \Class\Java\JavaStudy\刷题多个类同文件和静态内部类.md
 因为java中对象都是指针所以==只能比较地址哈希值也是按照地址哈希的,equals也只能比较地址相同吗
 所以重写这两个方法可以使得equals按照对象的成员变量进行比较,hashcode按照成员变量进行哈希
 string类型已经重写好了能够直接使用;
-
-### 增强for
-建议不要用增强for 因为在遍历类数组的时候 for(Studen s:arr) 此时的s是类的一个副本不能直接影响arr中的对象;
+在建立hashmap 和 调用比较应该重写方法;
 
 
 ### 构造方法
@@ -202,7 +219,7 @@ public class Other {
 lambda表达式简化函数  (E args)->{sout(args);}
 - getClass() 获得对象的类int等基本数据类型可以(Object)强制类型转换然后.getClass获得其对应包装类的类型
 '9'-'0'是int 类型;
-- ArrayList<Integer> arr1=new ArrayList<>(arr);可用这种方法对对象进行复制
+
 - 方法重写 抽象方法必须重写 default 可选重写;
 - 方法重载
 

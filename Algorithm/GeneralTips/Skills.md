@@ -223,10 +223,32 @@ int main(){
 - 要考虑null空的情况很多时候都有空这个边界条件
 ## 合并逻辑
 - 减少if嵌套用逻辑量词&&||来合并逻辑
-- 先想操作,然后直接while
+## while和priority sequence
+先想操作,然后直接while
 在操作数据结构中通常数据结构为null的时候就会报错所以
 在循环操作的时候直接 while(!cache.isEmpty() || ...){}来操作
 既能减少嵌套if 又能防止null异常;
+- 归并排序
+```java
+static void merge(int l,int r,int m){
+        int a=l;
+        int b=m+1;
+        int i=l;
+        while (!(a>m || b>r)){
+            help[i++]= arr[a]<=arr[b] ? arr[a++] : arr[b++];
+        }
+        while(!(a>m)){
+            help[i++]=arr[a++];
+        }
+        while (!(b>r)){
+            help[i++]=arr[b++];
+        }
+
+        //调用系统级别api
+        System.arraycopy(help,l,arr,l,r-l+1);
+    }
+
+```
 ```java
 public class MonotonicQueue {
         ArrayDeque<Integer> deque=new ArrayDeque<>();
@@ -247,6 +269,70 @@ public class MonotonicQueue {
         }
 }
 ```
+## 善用三元运算符 ? :
+
+## 多指针
+### 双指针统计(归并)
+将两部分排序
+n^2的统计通过排序变为n
+```java
+// 统计部分
+		long ans = 0;
+		for (int j = m + 1, i = l, sum = 0; j <= r; j++) {
+			while (i <= m && arr[i] <= arr[j]) {
+				sum += arr[i++];
+			}
+			ans += sum;
+		}
+```
+### 多指针划分(快速)
+<的在a左边 大于的在b右边
+```java
+public static void partition2(int[] arr, int l, int r, int x) {
+		first = l;
+		last = r;
+		int i = l;
+		while (i <= last) {
+			if (arr[i] == x) {
+				i++;
+			} else if (arr[i] < x) {
+				swap(arr, first++, i++);
+			} else {
+				swap(arr, i, last--); //i不变因为交换过来的还没有遍历;
+			}
+		}
+	}
+```
+### 双指针状态(二叉树模拟递归遍历)
+```java
+TreeNode head=node;
+TreeNode pop=null;
+ArrayDeque<TreeNode> cache=...;
+static void dfs(TreeNode node){
+     while(true){
+            if(head==null && cache.isEmpty()){
+                break;
+            }
+            if(head!=null){
+                cache.push(head);
+                head=head.left;
+            }else{   // null是叶子节点 return;
+                TreeNode peek = cache.peek();
+                if(peek.right==pop || peek.right==null){  //如果右子树是null或者已被弹出直接return
+                    pop = cache.pop();  //标记
+                    result.add(pop.val);
+                }else{
+                    head=peek.right;        //否则head标记为right然后继续进栈;
+                }
+            }
+
+        }
+}
+```
+
+
+
+
 
 ## 数组索引
 index+1 = num(index) 指定索引右一位为到此索引的元素个数  
