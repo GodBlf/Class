@@ -172,18 +172,7 @@ Math.max 同理
 Collections.sort(Collectiong arr , new Comparator(){@Override public int compare(Object o1,Object o2){}});
 重写比较方法 参数为arr中的相邻两元素 1 是交换 -1是不交换;
 
-# Tips
 
--  add remove set get
-任何数据结构都应该提供增删改查的方法
-add 末尾加入 中间插入
-remove 索引删除 元素删除
-set 索引改元素
-get 查 元素 查索引
-- 空方法 结束可以直接 return 返回;
-
-
--------------------------------------------------------------------------------------
 
 # 集合API
 - 数据结构satck queue等就是个Cache 临时存储数据用的
@@ -298,9 +287,132 @@ public class MonotonicQueue {
 ## HashMap
 - 键值对的集合 将键做成哈希表 值链到键下边;
 
-
-
+- getOrDefault(key,value) 有就返回get没有就设置初始值;
 -------------------------------------------------------------------------------------
+# 前缀和
+- 连续函数中的积分离散数组中的前缀和
+## 子数组问题
+![alt text](image-19.png)
+开头设置哨兵节点 真实位置映射到为+1
+```java
+public NumArray(int[] nums) {
+			sum = new int[nums.length + 1];
+			for (int i = 1; i <= nums.length; i++) {
+				sum[i] = sum[i - 1] + nums[i - 1];
+			}
+		}
+
+		public int sumRange(int left, int right) {
+			return sum[right + 1] - sum[left];
+		}
+	}
+
+```
+- 子数组一定连续
+## 最长子数组
+```java
+public static int compute() {
+		map.clear();
+		// 重要 : 0这个前缀和，一个数字也没有的时候，就存在了
+		map.put(0, -1);
+		int ans = 0;
+		for (int i = 0, sum = 0; i < n; i++) {
+			sum += arr[i];
+			if (map.containsKey(sum - aim)) {
+				ans = Math.max(ans, i - map.get(sum - aim));
+			}
+			if (!map.containsKey(sum)) {   // 如果有了就不用添加了;
+				map.put(sum, i);
+			}
+		}
+		return ans;
+	}
+```
+- 子数组次数就把上题的value改为次数即可
+## 子数组01转换
+力扣1124 将数组转换成1,-1在前缀和;
+```java
+public static int longestWPI(int[] hours) {
+		// 某个前缀和，最早出现的位置
+		HashMap<Integer, Integer> map = new HashMap<>();
+		// 0这个前缀和，最早出现在-1，一个数也没有的时候
+		map.put(0, -1);
+		int ans = 0;
+		for (int i = 0, sum = 0; i < hours.length; i++) {
+			sum += hours[i] > 8 ? 1 : -1;
+			if (sum > 0) {
+				ans = i + 1;
+			} else {
+				// sum <= 0
+				if (map.containsKey(sum - 1)) {
+					ans = Math.max(ans, i - map.get(sum - 1));
+				}
+			}
+			if (!map.containsKey(sum)) {
+				map.put(sum, i);
+			}
+		}
+		return ans;
+	}
+```
+## 子数组和同余原理
+用同余原理可以构造前缀余数和;
+- 力扣1590
+```java
+public static int minSubarray(int[] nums, int p) {
+		// 整体余数
+		int mod = 0;
+		for (int num : nums) {
+			mod = (mod + num) % p;
+		}
+		if (mod == 0) {
+			return 0;
+		}
+		// key : 前缀和%p的余数
+		// value : 最晚出现的位置
+		HashMap<Integer, Integer> map = new HashMap<>();
+		map.put(0, -1);
+		int ans = Integer.MAX_VALUE;
+		for (int i = 0, cur = 0, find; i < nums.length; i++) {
+			// 0...i这部分的余数
+			cur = (cur + nums[i]) % p;
+			find = cur >= mod ? (cur - mod) : (cur + p - mod);
+			// find = (cur + p - mod) % p;
+			if (map.containsKey(find)) {
+				ans = Math.min(ans, i - map.get(find));
+			}
+			map.put(cur, i);
+		}
+		return ans == nums.length ? -1 : ans;
+	}
+```
+## 子数组和状态压缩
+- 力扣1371
+将五个元素抽象成2进制的五个位置
+前缀和就是^无进位加法;int[32] map;就是哈希表
+.
+
+# 差分
+- 连续函数的微分dy 可以看作数组上的差分;
+- 力扣1109经典差分
+```java
+class Solution {
+    public int[] corpFlightBookings(int[][] bookings, int n) {
+        int[] arr=new int[n+2];
+        for(int i=0;i<bookings.length;i++){
+            arr[bookings[i][0]]+=bookings[i][2];
+            arr[bookings[i][1]+1]-=bookings[i][2];
+        }
+        int[] ans=new int[n];
+        for(int i=1;i<=n;i++){
+            arr[i]=arr[i]+arr[i-1];
+            ans[i-1]=arr[i];
+        }
+        return ans;
+    }
+}
+```
+
 
 # 2进制和位运算
 ## 2进制讨论(补码)
@@ -351,130 +463,6 @@ a = a ^ b;
 
 -
 
-
-
-# 二分搜索
-- 技术细节
-严格的<> 和严格的<=> 如果arr[mid]<tg left一定是mid+1  
-如果啊让人arr[mid]==tg  那么right=mid 不能加一
-峰值二分同理   
-
-数组升序排列;
-设置min max两个索引指针 根据mid 和 target比较进行更新 
-两个指针相向收缩
-因为 两个指针+-1 最后肯定相等  boundary case是max==min 
-
-```java
-public static int ef(int [] arr,int tg) {
-		int min=0;int max=arr.length-1;
-		while(max!=min) {
-			int mid = (max+min)/2;
-			if(tg==arr[mid]) {
-                max=mid;
-                min=mid;
-			}else if(tg>arr[mid]) {
-				min=mid+1;
-			}else {
-				max=mid-1;
-			}
-		}
-		if(arr[min]==tg) {
-			return min;
-		}else {
-			return -1;
-		}
-	}
-```
-
-输出最左边的目标值leftMost
-```java
-public static int ef(int [] arr,int tg) {
-		int flag;
-		int min=0;int max=arr.length-1;
-		while(max!=min) {
-			int mid = (max+min)>>1;
-			if(tg==arr[mid]) {
-				flag=mid;
-				max=mid;   //注意 是闭区间不需要-1;
-                            //可以把这个答案记录下来
-			}else if(tg>arr[mid]) {
-				min=mid+1;
-			}else {
-				max=mid-1;
-			}
-		}
-		if(arr[min]==tg) {
-			return min;
-		}else {
-			return -1;
-		}
-	}
-```
-最右边的类似;
-
-lefMost 可以在未找到tg时候 返回tg的极限值 如{1,2,3,5}找4返回 索引3
-```java
-public static int ef(int [] arr,int tg) {
-		int flag;
-		int min=0;int max=arr.length-1;
-		while(max!=min) {
-			int mid = (max+min)>>1;
-			if(tg==arr[mid]) {
-				flag=mid;
-				max=mid;   //注意 是闭区间不需要-1;
-			}else if(tg>arr[mid]) {
-				min=mid+1;
-			}else {
-				max=mid-1;
-			}
-		}
-		return min;
-	}
-```
-
-java.util.Arrays中的 Arrays.binarySearch(数组,值);
-这个要是没找到返回-(极限index+1);可以 abs(return)-1就是极限值;
-
-## 二分峰值问题
-找到数组中的一个峰值即可
-![alt text](image-12.png)
-罗尔种植定理
-```java
-
-		public static int findPeakElement(int[] arr) {
-			int n = arr.length;
-			if (arr.length == 1) {
-				return 0;
-			}
-			if (arr[0] > arr[1]) {
-				return 0;
-			}
-			if (arr[n - 1] > arr[n - 2]) {
-				return n - 1;
-			}
-			int l = 1, r = n - 2, m = 0, ans = -1; //指针皆为上升的对象//技术细节:二分查找皆为严格<>,
-
-			while (l <= r) {
-				m = (l + r) / 2;
-				if (arr[m - 1] > arr[m]) {
-					r = m - 1;
-				} else if (arr[m] < arr[m + 1]) {
-					l = m + 1;
-				} else {
-					ans = m;
-					break;
-				}
-			}
-			return ans;
-		}
-```
-
-## 二分答案
-
-
-## 优化
-1. /2优化改为 >>>1 无符号右移运算防止加起来溢出;
-2. mid 取值可以用别的测度代替 如连续测度等
 
 
 
@@ -796,15 +784,22 @@ public Node get(int index){
 ### 环形链表
 head->...->head  单向 
 head<->...<->head 双向
-# 链表题目
-## tips
+
+## 多指针链表
+### 寻找交点
+
+### 快慢指针
+
+
+## 链表题目
+### tips
 - 防止空指针,例如p3.val p3如果为null则空指针 所以要 p3!=null p.next!=null
 - 多指针控制
 - 设置哨兵头节点防止error
-## 反转链表
+### 反转链表
 - 构造新链表,以此遍历去出旧链表中的元素add进新链表
 - 构造新的head->null 遍历旧链表 将每个元素依次add进去
-## 删除指定元素
+### 删除指定元素
 ``` java
 class Solution {
     public ListNode removeElements(ListNode head, int val) {
@@ -829,7 +824,7 @@ class Solution {
 }
 
 ```
-## 删除倒数索引元素
+### 删除倒数索引元素
 双指针方法
 ```java
 class Solution {
@@ -848,7 +843,7 @@ class Solution {
     }
 }
 ```
-## 链表去重
+### 链表去重
 ```java
 class Solution {
     public ListNode deleteDuplicates(ListNode head) {
@@ -881,7 +876,7 @@ class Solution {
 }
 
 ```
-## 两数相加力扣2t
+### 两数相加力扣2t
 ```java
 
 
@@ -975,6 +970,126 @@ class MinStack {
 
 ```
 
+# 单调队列和栈
+## 滑动窗口
+用单调队列
+力扣239
+```java
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import  java.util.*;
+import java.lang.*;
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        ArrayList<Integer> arr=new ArrayList<>();
+        MonotonicQueue queue=new MonotonicQueue();
+        int left=0;
+        //init
+        for(int i=0;i<k;i++){
+            queue.offer(nums[i]);
+        }
+        arr.add(queue.peek());
+        //技术细节:右指针右移 只有三种情况新来的大 左指针大 中间的大 
+        //一个一个讨论,新来的大直接单调队列把其他的都干死了
+        //左指针大就得移除了
+        //中间的大没影响;
+        for(int i=k;i<nums.length;i++){
+            queue.offer(nums[i]);
+            if(queue.peek()==nums[left]){
+                queue.queue.pollFirst();
+            }
+            left++;
+            arr.add(queue.peek());
+        }
+        int[] arrNew=new int[arr.size()];
+        for (int i = 0; i < arr.size(); i++) {
+            arrNew[i]=arr.get(i);
+        }
+        return arrNew;
+    }
+    
+}
+
+class MonotonicQueue{
+    ArrayDeque<Integer> queue =new ArrayDeque<>();
+    int peek(){
+        return queue.peekFirst();
+    }
+    void poll(){
+        queue.pollFirst();
+    }
+
+    void offer(int element){
+        while(!queue.isEmpty() && element>queue.peekLast() ){
+            queue.pollLast();
+        }
+        queue.offerLast(element);
+    }
+}
+```
+
+## 借雨水
+单调栈力扣42
+```java
+package  leetcode;
+
+import java.util.ArrayDeque;
+import java.lang.*;
+class Solution {
+    public int trap(int[] height) {
+        int ret=0;
+        ArrayDeque<Zhuzi> stack=new ArrayDeque<>();
+
+        for (int i = 0; i < height.length; i++) {
+            while(!stack.isEmpty() && height[i]>stack.peek().height){   //技术细节: 贪心
+                Zhuzi pop = stack.pop();
+                if(stack.isEmpty()){   //技术细节: 空的化就不用借了直接break;
+                    continue;
+                }
+                Zhuzi peek = stack.peek();
+                int min = Math.min(height[i], peek.height);
+                ret+=(min-pop.height)*(i-peek.index-1);
+
+            }
+            stack.push(new Zhuzi(height[i],i));
+        }
+        return ret;
+    }
+
+    public static void main(String[] args) {
+        System.out.println("d");
+    }
+}
+
+class Zhuzi {
+    int height;
+    int index;
+    Zhuzi(int height, int index){
+        this.height=height;
+        this.index=index;
+    }
+    Zhuzi(){}
+
+}
+```
+
+
+
+# 哈希表
+数据的哈希值到N的映射
+## 哈希值
+
+```java
+public class HashTable{
+
+
+}
+```
+
+
+
+# 树
 
 # 堆
 ![alt text](image-18.png)
@@ -1067,7 +1182,7 @@ static void dfs(TreeNode node){
 }
 ```
 ## cache遍历
-通过两个标志指针来模拟递归过程;
+通过两个标志状态指针来模拟递归过程;
 以后序遍历为模板
 ### 后序
 ```Java
@@ -1157,139 +1272,9 @@ public static void preOrder(TreeNode head) {
 	}
 ```
 
-# 递归
-- 仅有logn级别的程序能够使用递归因为2^n 的幂级数很大!
-## master公式
-- 规模相同的子状态;
-![alt text](image-15.png)
-## 归并排序
-- ![alt text](image-16.png)
-logn级别的递归
-master 公式 可得O(nlogn);
-```java
-class Solution {
-    static int[] arr=new int[50001];
-    static int[] help=new int[50001];
-    public int[] sortArray(int[] nums) {
-            mergeSort(0,nums.length-1);
-            return nums;
-    }
-    static void mergeSort(int l,int r){
-        if(l==r){
-            return;
-        }
-        int m=(l+r)>>>1;
-        mergeSort(l,m);
-        mergeSort(m+1,r);
-        merge(l,r,m);
-        return;
-    }
 
-    static void merge(int l,int r,int m){
-        int a=l;
-        int b=m+1;
-        int i=l;
-        while (!(a>m || b>r)){
-            help[i++]= arr[a]<=arr[b] ? arr[a++] : arr[b++];
-        }
-        while(!(a>m)){
-            help[i++]=arr[a++];
-        }
-        while (!(b>r)){
-            help[i++]=arr[b++];
-        }
+# 数据结构设计题目
 
-        //调用系统级别api
-        System.arraycopy(help,l,arr,l,r-l+1);
-    }
-}
-```
-## 归并分治
-将暴力n^2 通过二分变为 nlogn
-![alt text](image-17.png)
-- 能不能变成二分解决
-- 递归过程是不是有跨左右的过程
-- 嵌入归并排序是否变简单;进行排序统计
-
-一般按照图都得嵌套归并排序
-### 小和
-```java
-public static long merge(int l, int m, int r) {
-		// 统计部分 双指针统计优化;
-		long ans = 0;
-		for (int j = m + 1, i = l, sum = 0; j <= r; j++) {
-			while (i <= m && arr[i] <= arr[j]) {
-				sum += arr[i++];
-			}
-			ans += sum;
-		}
-		// 正常merge
-		int i = l;
-		int a = l;
-		int b = m + 1;
-		while (a <= m && b <= r) {
-			help[i++] = arr[a] <= arr[b] ? arr[a++] : arr[b++];
-		}
-		while (a <= m) {
-			help[i++] = arr[a++];
-		}
-		while (b <= r) {
-			help[i++] = arr[b++];
-		}
-		for (i = l; i <= r; i++) {
-			arr[i] = help[i];
-		}
-		return ans;
-	}
-```
-
-### 反转对
-```java
-public static int merge(int[] arr, int l, int m, int r) {
-		// 统计部分
-		int ans = 0;
-		for (int i = l, j = m + 1; i <= m; i++) {
-			while (j <= r && (long) arr[i] > (long) arr[j] * 2) {
-				j++;
-			}
-			ans += j - m - 1;
-		}
-		// 正常merge
-		int i = l;
-		int a = l;
-		int b = m + 1;
-		while (a <= m && b <= r) {
-			help[i++] = arr[a] <= arr[b] ? arr[a++] : arr[b++];
-		}
-		while (a <= m) {
-			help[i++] = arr[a++];
-		}
-		while (b <= r) {
-			help[i++] = arr[b++];
-		}
-		for (i = l; i <= r; i++) {
-			arr[i] = help[i];
-		}
-		return ans;
-	}
-```
-
-## 快速排序
-
-## 快速分治
-
-
-
-# 哈希表
-数据的哈希值到N的映射
-## 哈希值
-
-```java
-public class HashTable{
-
-
-}
-```
 
 
 # 图
@@ -1598,8 +1583,8 @@ public static void bellmanFord(ArrayList<Vertex>vertices) {
 
 
 
-# 图题目
-## P1551 亲戚 洛谷
+## 图题目
+### P1551 亲戚 洛谷
 
 ```java
 package qinqi;
@@ -1760,8 +1745,489 @@ public class Main {
 ## Huffman编码
 
 
+# 递归
+- 仅有logn级别的程序能够使用递归因为2^n 的幂级数很大!
+## master公式
+- 规模相同的子状态;
+![alt text](image-15.png)
+## 归并排序
+- ![alt text](image-16.png)
+logn级别的递归
+master 公式 可得O(nlogn);
+```java
+class Solution {
+    static int[] arr=new int[50001];
+    static int[] help=new int[50001];
+    public int[] sortArray(int[] nums) {
+            mergeSort(0,nums.length-1);
+            return nums;
+    }
+    static void mergeSort(int l,int r){
+        if(l==r){
+            return;
+        }
+        int m=(l+r)>>>1;
+        mergeSort(l,m);
+        mergeSort(m+1,r);
+        merge(l,r,m);
+        return;
+    }
 
-# Dynam Programming
+    static void merge(int l,int r,int m){
+        int a=l;
+        int b=m+1;
+        int i=l;
+        while (!(a>m || b>r)){
+            help[i++]= arr[a]<=arr[b] ? arr[a++] : arr[b++];
+        }
+        while(!(a>m)){
+            help[i++]=arr[a++];
+        }
+        while (!(b>r)){
+            help[i++]=arr[b++];
+        }
+
+        //调用系统级别api
+        System.arraycopy(help,l,arr,l,r-l+1);
+    }
+}
+```
+## 归并分治
+将暴力n^2 通过二分变为 nlogn
+![alt text](image-17.png)
+- 能不能变成二分解决
+- 递归过程是不是有跨左右的过程
+- 嵌入归并排序是否变简单;进行排序统计
+
+一般按照图都得嵌套归并排序
+### 小和
+```java
+public static long merge(int l, int m, int r) {
+		// 统计部分 双指针统计优化;
+		long ans = 0;
+		for (int j = m + 1, i = l, sum = 0; j <= r; j++) {
+			while (i <= m && arr[i] <= arr[j]) {
+				sum += arr[i++];
+			}
+			ans += sum;
+		}
+		// 正常merge
+		int i = l;
+		int a = l;
+		int b = m + 1;
+		while (a <= m && b <= r) {
+			help[i++] = arr[a] <= arr[b] ? arr[a++] : arr[b++];
+		}
+		while (a <= m) {
+			help[i++] = arr[a++];
+		}
+		while (b <= r) {
+			help[i++] = arr[b++];
+		}
+		for (i = l; i <= r; i++) {
+			arr[i] = help[i];
+		}
+		return ans;
+	}
+```
+
+### 反转对
+```java
+public static int merge(int[] arr, int l, int m, int r) {
+		// 统计部分
+		int ans = 0;
+		for (int i = l, j = m + 1; i <= m; i++) {
+			while (j <= r && (long) arr[i] > (long) arr[j] * 2) {
+				j++;
+			}
+			ans += j - m - 1;
+		}
+		// 正常merge
+		int i = l;
+		int a = l;
+		int b = m + 1;
+		while (a <= m && b <= r) {
+			help[i++] = arr[a] <= arr[b] ? arr[a++] : arr[b++];
+		}
+		while (a <= m) {
+			help[i++] = arr[a++];
+		}
+		while (b <= r) {
+			help[i++] = arr[b++];
+		}
+		for (i = l; i <= r; i++) {
+			arr[i] = help[i];
+		}
+		return ans;
+	}
+```
+
+## 快速排序
+
+## 快速分治
+
+## 二分搜索
+- 可视为logn级别的递归;
+- 技术细节
+严格的<> 和严格的<=> 如果arr[mid]<tg left一定是mid+1  
+如果啊让人arr[mid]==tg  那么right=mid 不能加一
+峰值二分同理   
+
+数组升序排列;
+设置min max两个索引指针 根据mid 和 target比较进行更新 
+两个指针相向收缩
+因为 两个指针+-1 最后肯定相等  boundary case是max==min 
+
+```java
+public static int ef(int [] arr,int tg) {
+		int min=0;int max=arr.length-1;
+		while(max!=min) {
+			int mid = (max+min)/2;
+			if(tg==arr[mid]) {
+                max=mid;
+                min=mid;
+			}else if(tg>arr[mid]) {
+				min=mid+1;
+			}else {
+				max=mid-1;
+			}
+		}
+		if(arr[min]==tg) {
+			return min;
+		}else {
+			return -1;
+		}
+	}
+```
+
+输出最左边的目标值leftMost
+```java
+public static int ef(int [] arr,int tg) {
+		int flag;
+		int min=0;int max=arr.length-1;
+		while(max!=min) {
+			int mid = (max+min)>>1;
+			if(tg==arr[mid]) {
+				flag=mid;
+				max=mid;   //注意 是闭区间不需要-1;
+                            //可以把这个答案记录下来
+			}else if(tg>arr[mid]) {
+				min=mid+1;
+			}else {
+				max=mid-1;
+			}
+		}
+		if(arr[min]==tg) {
+			return min;
+		}else {
+			return -1;
+		}
+	}
+```
+最右边的类似;
+
+lefMost 可以在未找到tg时候 返回tg的极限值 如{1,2,3,5}找4返回 索引3
+```java
+public static int ef(int [] arr,int tg) {
+		int flag;
+		int min=0;int max=arr.length-1;
+		while(max!=min) {
+			int mid = (max+min)>>1;
+			if(tg==arr[mid]) {
+				flag=mid;
+				max=mid;   //注意 是闭区间不需要-1;
+			}else if(tg>arr[mid]) {
+				min=mid+1;
+			}else {
+				max=mid-1;
+			}
+		}
+		return min;
+	}
+```
+
+java.util.Arrays中的 Arrays.binarySearch(数组,值);
+这个要是没找到返回-(极限index+1);可以 abs(return)-1就是极限值;
+
+### 二分峰值问题
+找到数组中的一个峰值即可
+![alt text](image-12.png)
+罗尔种植定理
+```java
+
+		public static int findPeakElement(int[] arr) {
+			int n = arr.length;
+			if (arr.length == 1) {
+				return 0;
+			}
+			if (arr[0] > arr[1]) {
+				return 0;
+			}
+			if (arr[n - 1] > arr[n - 2]) {
+				return n - 1;
+			}
+			int l = 1, r = n - 2, m = 0, ans = -1; //指针皆为上升的对象//技术细节:二分查找皆为严格<>,
+
+			while (l <= r) {
+				m = (l + r) / 2;
+				if (arr[m - 1] > arr[m]) {
+					r = m - 1;
+				} else if (arr[m] < arr[m + 1]) {
+					l = m + 1;
+				} else {
+					ans = m;
+					break;
+				}
+			}
+			return ans;
+		}
+```
+
+### 二分答案
+
+
+### 优化
+1. /2优化改为 >>>1 无符号右移运算防止加起来溢出;
+2. mid 取值可以用别的测度代替 如连续测度等
+
+
+
+
+
+
+
+## 回溯 
+- cache+recur 
+- 状态是基本数据类型f(int n) 是局部变量自动回溯,
+- 当状态是引用数据类型(指针)必须手动回溯
+### 字符串子序列
+```java
+	public static void f1(char[] s, int i, StringBuilder path, HashSet<String> set) {
+		if (i == s.length) {
+			set.add(path.toString());
+		} else {
+			path.append(s[i]); // 加到路径中去
+			f1(s, i + 1, path, set);
+			path.deleteCharAt(path.length() - 1); // 从路径中移除
+			f1(s, i + 1, path, set);
+		}
+	}
+```
+### 全排列
+recur+cache+
+状态是visited 和stack来储存;
+```java
+class Main {
+    public static void main(String[] args) {
+        int n=3;
+        int[] arr={1,2,3};
+        boolean[] visited=new boolean[n];
+        Arrays.fill(visited,false);
+        ArrayDeque<Integer> stack=new ArrayDeque<>();
+        dfs(stack,arr,visited);
+    }
+
+    static  void dfs(ArrayDeque<Integer> stack, int [] arr, boolean[] visited){
+        if(stack.size()==arr.length){
+            System.out.println(stack);
+            return ;
+        }
+        for (int i = 0; i < arr.length; i++) {
+            if(visited[i]==true){
+                continue;
+
+            }
+            
+            stack.push(arr[i]);
+            visited[i]=true;
+            dfs(stack,arr,visited);
+            visited[i]=false;
+            stack.pop();
+        }
+    }
+
+}
+
+```
+### 无重复全排列
+先将数组排列,判断要是重复的就跳过
+```java
+class Main {
+    public static void main(String[] args) {
+        int n=3;
+        int[] arr={1,1,3};
+        boolean[] visited=new boolean[n];
+        Arrays.fill(visited,false);
+        ArrayDeque<Integer> stack=new ArrayDeque<>();
+        dfs(stack,arr,visited);
+    }
+
+    static  void dfs(ArrayDeque<Integer> stack, int [] arr, boolean[] visited){
+        if(stack.size()==arr.length){
+            System.out.println(stack);
+            return ;
+        }
+        for (int i = 0; i < arr.length; i++) {
+            if(visited[i]==true){
+                continue;
+            
+            }
+            if(i!=0 && arr[i]==arr[i-1] rrr&& !visited[i-1]){  //这是判断语句一定要留意null ,
+                                                        //技术细节:1,1',3要满足前一个相等且要被访问过;
+                continue;
+            }
+            stack.push(arr[i]);
+            visited[i]=true;
+            dfs(stack,arr,visited);
+            visited[i]=false;
+            stack.pop();
+        }
+    }
+
+}
+
+```
+### 组合
+- 从全排列修改即可
+- 有n个元素组合 以i元素开头的时候仅需递归i+1往后的就行
+例如 1,2,3 选2个  (1,2)(1,3) (2,3)
+- 对递归的branch来说后续不够个数的直接continue 剪枝;
+```java
+package ache;
+
+import javax.swing.*;
+import java.net.http.HttpConnectTimeoutException;
+import java.util.*;
+
+class Main {
+    public static void main(String[] args) {
+        int n=5;
+        int[] arr={1,2,3,4,5};
+        boolean[] visited=new boolean[n];
+        Arrays.fill(visited,false);
+        ArrayDeque<Integer> stack=new ArrayDeque<>();
+        dfs(stack,arr,visited,3);
+    }
+
+    static  void dfs(ArrayDeque<Integer> stack, int [] arr, boolean[] visited,int target) {
+        if (stack.size() == target) {
+            System.out.println(stack);
+            return;
+        }
+        if (stack.isEmpty()) {
+            for (int i = 0; i < arr.length; i++) {
+                if (visited[i] == true) {
+                    continue;
+
+                }
+                if (i != 0 && arr[i] == arr[i - 1] && !visited[i - 1]) {
+                    continue;
+                }
+                stack.push(arr[i]);
+                visited[i] = true;
+                dfs(stack, arr, visited, target);
+                visited[i] = false;
+                stack.pop();
+            }
+        } else {
+            int i1 = Arrays.binarySearch(arr, stack.peek());
+            for (int i = i1+1; i < arr.length; i++) {  // 技术细节:仅从i1+1即可
+                if (visited[i] == true) {
+                    continue;
+                }
+                if(arr.length-i<target-stack.size()){   //技术细节:减枝
+                    continue;
+                }
+                if (i != 0 && arr[i] == arr[i - 1] && !visited[i - 1]) {
+                    continue;
+                }
+                stack.push(arr[i]);
+                visited[i] = true;
+                if((arr.length-i1)<target- stack.size()){
+                    visited[i] = false;
+                    stack.pop();
+                    return ;
+                }
+                dfs(stack, arr, visited, target);
+                visited[i] = false;
+                stack.pop();
+            }
+        }
+
+    }}
+
+
+```
+
+### 无重复组合
+同理无重复排列即可
+
+### N皇后问题
+- 简单的递归加回溯;
+技术细节:
+- 左右斜线冲突的映射是i+j and n-1-(i-j);通过解析几何
+```java
+package leetcode;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+class Solution {
+    static char[][] qipan;
+    static boolean[] lieChongtu;
+    static boolean[] zuoChongtu;
+    static boolean[] youChongtu;
+    static List<List<String>> result;
+    public List<List<String>> solveNQueens(int n) {
+         result=new ArrayList<>();
+        qipan=new char[n][n];
+        for (int i = 0; i < qipan.length; i++) {
+            Arrays.fill(qipan[i],'.');
+        }
+        lieChongtu=new boolean[n];
+        zuoChongtu=new boolean[2*n-1];
+        youChongtu=new boolean[2*n-1];
+
+            dfs(0,n);
+            return result;
+    }
+
+    static void dfs(int i,int n){
+        if(i==n){
+            toret(qipan);
+            return;
+        }
+
+        for (int j = 0; j <n ; j++) {
+            if(lieChongtu[j] || zuoChongtu[j+i] || youChongtu[n-1-(i-j)]){  //判断冲突;
+                continue;
+            }
+            qipan[i][j]='Q';
+            lieChongtu[j]= zuoChongtu[i+j]=youChongtu[n-1-i+j]=true;
+            dfs(i+1,n);
+            qipan[i][j]='.';
+            lieChongtu[j]= zuoChongtu[i+j]=youChongtu[n-1-i+j]=false;
+        }
+        return ;
+
+
+    }
+    static void toret(char[][] ret){
+        ArrayList<String> al=new ArrayList<>();
+        for (int i = 0; i < ret.length; i++) {
+            al.add(String.valueOf(ret[i]));
+        }
+        result.add(al);
+    }
+}
+```
+
+
+
+
+
+# DP
 recursion+memo -> 直接从base case开始解决;
 可以优化
 ## Fibonacci dp
@@ -2222,127 +2688,6 @@ BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 ## String
 ""+3 == "3"  善用字符串的+运算符;  ((char)42)+""+1  思考 ((char)42)+1+""的区别
 ## StringBuilder
-# 字符串题目
-## 高精度加法 洛谷P1601
-```java
-import java.util.Scanner;
-
-public class HighPrecisionAdditionString {
-
-    /**
-     * 字符串形式的大数加法
-     * @param num1 数字字符串1
-     * @param num2 数字字符串2
-     * @return 两个大数相加的结果
-     */
-    public static String add(String num1, String num2) {
-        // 创建 StringBuilder 用于存储结果（反向存储）
-        StringBuilder result = new StringBuilder();
-
-        int i = num1.length() - 1;
-        int j = num2.length() - 1;
-        int carry = 0;  // 进位
-
-        // 当两个数字还有未处理的位数或仍然存在进位时，继续计算
-        while (!(i<0 && j<0 && carry==0)) {// boundary case 仔细思考这个边界条件  或者改为while(!(i<0 && j<0)) if(carry==1) {sb.append(carry+"")};后边再判断boundary case
-			
-            int digit1 = i >= 0 ? num1.charAt(i) - '0' : 0;  // 如果没数字则认为是 0
-            int digit2 = j >= 0 ? num2.charAt(j) - '0' : 0;  // 如果没数字则认为是 0
-
-            int sum = digit1 + digit2 + carry;
-            result.append(sum % 10);  // 取个位，添加到结果中
-            carry = sum / 10;         // 计算进位值
-
-            // 移动指针
-            i--;
-            j--;
-        }
-
-        // 由于结果是反向存储的，所以需要反转后返回
-        return result.reverse().toString();
-    }
-
-}
-
-
-
-
-
-
-
-# 模拟
-# 模拟题目
-## P1042
-```java
-import java.util.*;
-import java.math.*;
-import java.lang.*;
-import java.io.*;
-public class Main {
-	    //主方法
-		public static void main(String[] args) throws IOException {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-			StringBuilder sb=new StringBuilder();
-			String line ;
-			while(true) {
-				line =reader.readLine();
-				if (line==null) {
-					break;
-				}
-				sb.append(line);
-			}
-			
-			ArrayList<Integer> arr=new ArrayList<Integer>();
-			for(int i=0;i<sb.length();i++) {
-				if(sb.charAt(i)=='E') {
-					break;
-				}
-				if(sb.charAt(i)!='W' && sb.charAt(i)!='L') {
-					continue;
-				}
-				if(sb.charAt(i)=='W') {
-					arr.add(1);
-				}else {
-					arr.add(0);
-				}
-				
-			}
-			int w=0;int l=0;
-			for(int i=0;i<arr.size();i++) {
-				if(arr.get(i)==1) {
-					w++;
-				}else {                                                    //注意这的boundary case 逻辑关系再w++之后;
-					l++;
-				}
-				if(Math.max(w, l)>=11 && Math.abs(w-l)>=2) {
-					System.out.println(w+":"+l);
-					w=0;l=0;
-				}
-				
-				
-			}
-			System.out.println(w+":"+l);
-			System.out.println("");
-			for(int i=0;i<arr.size();i++) {
-					if(arr.get(i)==1) {
-					w++;
-				}else {
-					l++;
-				}
-				if(Math.max(w, l)>=21 && Math.abs(w-l)>=2) {
-					System.out.println(w+":"+l);
-					w=0;l=0;
-				}
-			
-				
-			}
-			System.out.println(w+":"+l);
-			return;
-		}}
-```
-
-
-
 
 # 排序
 ## 计数排序
@@ -2489,37 +2834,6 @@ public static void dfs(String str,ArrayList<Integer> arr) {
 
 
 
-# 递归
-## 递归树
-## 多路递归构造和memo优化
-```java
-
-import java.util.Arrays;
-
-public class Main1 {
-
-    public static void main(String[] args) {
-        int n=4;
-        int[] cache=new int[n+1] ;
-        Arrays.fill(cache,-1);
-        cache[0] =1;cache[1]=1;
-        System.out.println(f(n,cache));
-    }
-    public static int  f(int n,int[] cache){
-        if(cache[n] != -1){                   			//如果节点在数组里已经记录则它是叶子节点
-            return cache[n];
-        }
-        int x=f(n-1,cache);								//也可以把 cache变成 public static int [] cache 然后再main中初始化
-        int y=f(n-2,cache);
-        cache[n]=x+y;
-        return cache[n];								// 仅代表返回时候携带的值 对递归树无额外贡献;
-
-    }
-
-}
-
-
-```
 
 # 数论
 ## 进制转换 
@@ -2603,9 +2917,15 @@ public class Main {
 ### 小数进制转换
 ![alt text](image-5.png)
 
-
-## 整除
-(a+b+c)%d=(((a+b)%d)+c)%d  *乘法类似
+## gcd llm
+- gcd(a,b)=gcd(b,a%b); 递归知道右边位置为0;
+- llm(a,b)=a*b/gcd(a,b);
+## 同余原理
+- (a+b+c)%d=(((a+b)%d)+c)%d=((a%d+b%d)%d+c%d)%d *乘法类似
+- 每次运算都可以选择mod或者不mod
+(b-a)%m = (b-a+m%m)%m=(b%m-a%m+m)%m
+- 负余数=m+负余数
+负数可以+m转换为整数再mod
 
 
 # 字符串
@@ -2619,225 +2939,130 @@ public class Main {
 
 
 
-
-# 回溯
-- cache+recur 
-- 状态是基本数据类型f(int n) 是局部变量自动回溯,
-- 当状态是引用数据类型(指针)必须手动回溯
-## 全排列
-recur+cache+
-状态是visited 和stack来储存;
+## 字符串题目
+### 高精度加法 洛谷P1601
 ```java
-class Main {
-    public static void main(String[] args) {
-        int n=3;
-        int[] arr={1,2,3};
-        boolean[] visited=new boolean[n];
-        Arrays.fill(visited,false);
-        ArrayDeque<Integer> stack=new ArrayDeque<>();
-        dfs(stack,arr,visited);
-    }
+import java.util.Scanner;
 
-    static  void dfs(ArrayDeque<Integer> stack, int [] arr, boolean[] visited){
-        if(stack.size()==arr.length){
-            System.out.println(stack);
-            return ;
-        }
-        for (int i = 0; i < arr.length; i++) {
-            if(visited[i]==true){
-                continue;
+public class HighPrecisionAdditionString {
 
-            }
-            
-            stack.push(arr[i]);
-            visited[i]=true;
-            dfs(stack,arr,visited);
-            visited[i]=false;
-            stack.pop();
+    /**
+     * 字符串形式的大数加法
+     * @param num1 数字字符串1
+     * @param num2 数字字符串2
+     * @return 两个大数相加的结果
+     */
+    public static String add(String num1, String num2) {
+        // 创建 StringBuilder 用于存储结果（反向存储）
+        StringBuilder result = new StringBuilder();
+
+        int i = num1.length() - 1;
+        int j = num2.length() - 1;
+        int carry = 0;  // 进位
+
+        // 当两个数字还有未处理的位数或仍然存在进位时，继续计算
+        while (!(i<0 && j<0 && carry==0)) {// boundary case 仔细思考这个边界条件  或者改为while(!(i<0 && j<0)) if(carry==1) {sb.append(carry+"")};后边再判断boundary case
+			
+            int digit1 = i >= 0 ? num1.charAt(i) - '0' : 0;  // 如果没数字则认为是 0
+            int digit2 = j >= 0 ? num2.charAt(j) - '0' : 0;  // 如果没数字则认为是 0
+
+            int sum = digit1 + digit2 + carry;
+            result.append(sum % 10);  // 取个位，添加到结果中
+            carry = sum / 10;         // 计算进位值
+
+            // 移动指针
+            i--;
+            j--;
         }
+
+        // 由于结果是反向存储的，所以需要反转后返回
+        return result.reverse().toString();
     }
 
 }
 
-```
-## 无重复全排列
-先将数组排列,判断要是重复的就跳过
+
+
+
+
+
+
+## 模拟
+## 模拟题目
+### P1042
 ```java
-class Main {
-    public static void main(String[] args) {
-        int n=3;
-        int[] arr={1,1,3};
-        boolean[] visited=new boolean[n];
-        Arrays.fill(visited,false);
-        ArrayDeque<Integer> stack=new ArrayDeque<>();
-        dfs(stack,arr,visited);
-    }
-
-    static  void dfs(ArrayDeque<Integer> stack, int [] arr, boolean[] visited){
-        if(stack.size()==arr.length){
-            System.out.println(stack);
-            return ;
-        }
-        for (int i = 0; i < arr.length; i++) {
-            if(visited[i]==true){
-                continue;
-            
-            }
-            if(i!=0 && arr[i]==arr[i-1] rrr&& !visited[i-1]){  //这是判断语句一定要留意null ,
-                                                        //技术细节:1,1',3要满足前一个相等且要被访问过;
-                continue;
-            }
-            stack.push(arr[i]);
-            visited[i]=true;
-            dfs(stack,arr,visited);
-            visited[i]=false;
-            stack.pop();
-        }
-    }
-
-}
-
-```
-## 组合
-- 从全排列修改即可
-- 有n个元素组合 以i元素开头的时候仅需递归i+1往后的就行
-例如 1,2,3 选2个  (1,2)(1,3) (2,3)
-- 对递归的branch来说后续不够个数的直接continue 剪枝;
-```java
-package ache;
-
-import javax.swing.*;
-import java.net.http.HttpConnectTimeoutException;
 import java.util.*;
-
-class Main {
-    public static void main(String[] args) {
-        int n=5;
-        int[] arr={1,2,3,4,5};
-        boolean[] visited=new boolean[n];
-        Arrays.fill(visited,false);
-        ArrayDeque<Integer> stack=new ArrayDeque<>();
-        dfs(stack,arr,visited,3);
-    }
-
-    static  void dfs(ArrayDeque<Integer> stack, int [] arr, boolean[] visited,int target) {
-        if (stack.size() == target) {
-            System.out.println(stack);
-            return;
-        }
-        if (stack.isEmpty()) {
-            for (int i = 0; i < arr.length; i++) {
-                if (visited[i] == true) {
-                    continue;
-
-                }
-                if (i != 0 && arr[i] == arr[i - 1] && !visited[i - 1]) {
-                    continue;
-                }
-                stack.push(arr[i]);
-                visited[i] = true;
-                dfs(stack, arr, visited, target);
-                visited[i] = false;
-                stack.pop();
-            }
-        } else {
-            int i1 = Arrays.binarySearch(arr, stack.peek());
-            for (int i = i1+1; i < arr.length; i++) {  // 技术细节:仅从i1+1即可
-                if (visited[i] == true) {
-                    continue;
-                }
-                if(arr.length-i<target-stack.size()){   //技术细节:减枝
-                    continue;
-                }
-                if (i != 0 && arr[i] == arr[i - 1] && !visited[i - 1]) {
-                    continue;
-                }
-                stack.push(arr[i]);
-                visited[i] = true;
-                if((arr.length-i1)<target- stack.size()){
-                    visited[i] = false;
-                    stack.pop();
-                    return ;
-                }
-                dfs(stack, arr, visited, target);
-                visited[i] = false;
-                stack.pop();
-            }
-        }
-
-    }}
-
-
-```
-
-## 无重复组合
-同理无重复排列即可
-
-## N皇后问题
-- 简单的递归加回溯;
-技术细节:
-- 左右斜线冲突的映射是i+j and n-1-(i-j);通过解析几何
-```java
-package leetcode;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-class Solution {
-    static char[][] qipan;
-    static boolean[] lieChongtu;
-    static boolean[] zuoChongtu;
-    static boolean[] youChongtu;
-    static List<List<String>> result;
-    public List<List<String>> solveNQueens(int n) {
-         result=new ArrayList<>();
-        qipan=new char[n][n];
-        for (int i = 0; i < qipan.length; i++) {
-            Arrays.fill(qipan[i],'.');
-        }
-        lieChongtu=new boolean[n];
-        zuoChongtu=new boolean[2*n-1];
-        youChongtu=new boolean[2*n-1];
-
-            dfs(0,n);
-            return result;
-    }
-
-    static void dfs(int i,int n){
-        if(i==n){
-            toret(qipan);
-            return;
-        }
-
-        for (int j = 0; j <n ; j++) {
-            if(lieChongtu[j] || zuoChongtu[j+i] || youChongtu[n-1-(i-j)]){  //判断冲突;
-                continue;
-            }
-            qipan[i][j]='Q';
-            lieChongtu[j]= zuoChongtu[i+j]=youChongtu[n-1-i+j]=true;
-            dfs(i+1,n);
-            qipan[i][j]='.';
-            lieChongtu[j]= zuoChongtu[i+j]=youChongtu[n-1-i+j]=false;
-        }
-        return ;
-
-
-    }
-    static void toret(char[][] ret){
-        ArrayList<String> al=new ArrayList<>();
-        for (int i = 0; i < ret.length; i++) {
-            al.add(String.valueOf(ret[i]));
-        }
-        result.add(al);
-    }
-}
+import java.math.*;
+import java.lang.*;
+import java.io.*;
+public class Main {
+	    //主方法
+		public static void main(String[] args) throws IOException {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+			StringBuilder sb=new StringBuilder();
+			String line ;
+			while(true) {
+				line =reader.readLine();
+				if (line==null) {
+					break;
+				}
+				sb.append(line);
+			}
+			
+			ArrayList<Integer> arr=new ArrayList<Integer>();
+			for(int i=0;i<sb.length();i++) {
+				if(sb.charAt(i)=='E') {
+					break;
+				}
+				if(sb.charAt(i)!='W' && sb.charAt(i)!='L') {
+					continue;
+				}
+				if(sb.charAt(i)=='W') {
+					arr.add(1);
+				}else {
+					arr.add(0);
+				}
+				
+			}
+			int w=0;int l=0;
+			for(int i=0;i<arr.size();i++) {
+				if(arr.get(i)==1) {
+					w++;
+				}else {                                                    //注意这的boundary case 逻辑关系再w++之后;
+					l++;
+				}
+				if(Math.max(w, l)>=11 && Math.abs(w-l)>=2) {
+					System.out.println(w+":"+l);
+					w=0;l=0;
+				}
+				
+				
+			}
+			System.out.println(w+":"+l);
+			System.out.println("");
+			for(int i=0;i<arr.size();i++) {
+					if(arr.get(i)==1) {
+					w++;
+				}else {
+					l++;
+				}
+				if(Math.max(w, l)>=21 && Math.abs(w-l)>=2) {
+					System.out.println(w+":"+l);
+					w=0;l=0;
+				}
+			
+				
+			}
+			System.out.println(w+":"+l);
+			return;
+		}}
 ```
 
 
 
 
 # 双指针
+- 双指针状态 双指针统计 双指针划分;
 ## 盛水最多的容器
 两个指针 贪心每次移动少的
 ## 两数之和 
@@ -2846,116 +3071,65 @@ class Solution {
 
 
 
-# 单调队列和栈
-## 滑动窗口
-用单调队列
-力扣239
+
+
+
+
+# dustbin
+## 递归
+### 递归树
+### 多路递归构造和memo优化
 ```java
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import  java.util.*;
-import java.lang.*;
-class Solution {
-    public int[] maxSlidingWindow(int[] nums, int k) {
-        ArrayList<Integer> arr=new ArrayList<>();
-        MonotonicQueue queue=new MonotonicQueue();
-        int left=0;
-        //init
-        for(int i=0;i<k;i++){
-            queue.offer(nums[i]);
-        }
-        arr.add(queue.peek());
-        //技术细节:右指针右移 只有三种情况新来的大 左指针大 中间的大 
-        //一个一个讨论,新来的大直接单调队列把其他的都干死了
-        //左指针大就得移除了
-        //中间的大没影响;
-        for(int i=k;i<nums.length;i++){
-            queue.offer(nums[i]);
-            if(queue.peek()==nums[left]){
-                queue.queue.pollFirst();
-            }
-            left++;
-            arr.add(queue.peek());
-        }
-        int[] arrNew=new int[arr.size()];
-        for (int i = 0; i < arr.size(); i++) {
-            arrNew[i]=arr.get(i);
-        }
-        return arrNew;
-    }
-    
-}
+import java.util.Arrays;
 
-class MonotonicQueue{
-    ArrayDeque<Integer> queue =new ArrayDeque<>();
-    int peek(){
-        return queue.peekFirst();
-    }
-    void poll(){
-        queue.pollFirst();
-    }
-
-    void offer(int element){
-        while(!queue.isEmpty() && element>queue.peekLast() ){
-            queue.pollLast();
-        }
-        queue.offerLast(element);
-    }
-}
-```
-
-## 借雨水
-单调栈力扣42
-```java
-package  leetcode;
-
-import java.util.ArrayDeque;
-import java.lang.*;
-class Solution {
-    public int trap(int[] height) {
-        int ret=0;
-        ArrayDeque<Zhuzi> stack=new ArrayDeque<>();
-
-        for (int i = 0; i < height.length; i++) {
-            while(!stack.isEmpty() && height[i]>stack.peek().height){   //技术细节: 贪心
-                Zhuzi pop = stack.pop();
-                if(stack.isEmpty()){   //技术细节: 空的化就不用借了直接break;
-                    continue;
-                }
-                Zhuzi peek = stack.peek();
-                int min = Math.min(height[i], peek.height);
-                ret+=(min-pop.height)*(i-peek.index-1);
-
-            }
-            stack.push(new Zhuzi(height[i],i));
-        }
-        return ret;
-    }
+public class Main1 {
 
     public static void main(String[] args) {
-        System.out.println("d");
+        int n=4;
+        int[] cache=new int[n+1] ;
+        Arrays.fill(cache,-1);
+        cache[0] =1;cache[1]=1;
+        System.out.println(f(n,cache));
     }
+    public static int  f(int n,int[] cache){
+        if(cache[n] != -1){                   			//如果节点在数组里已经记录则它是叶子节点
+            return cache[n];
+        }
+        int x=f(n-1,cache);								//也可以把 cache变成 public static int [] cache 然后再main中初始化
+        int y=f(n-2,cache);
+        cache[n]=x+y;
+        return cache[n];								// 仅代表返回时候携带的值 对递归树无额外贡献;
+
+    }
+
 }
 
-class Zhuzi {
-    int height;
-    int index;
-    Zhuzi(int height, int index){
-        this.height=height;
-        this.index=index;
-    }
-    Zhuzi(){}
 
-}
 ```
 
+## 快速排序
+[Node \Class\Java\JavaStudy\Java 快速排序及优化策略.md](https://github.com/GodBlf/Class/blob/main/Java/JavaStudy/Java%20%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E5%8F%8A%E4%BC%98%E5%8C%96%E7%AD%96%E7%95%A5.md)
+
+双指针进行分治
+```java
+int i=0;
+for(int j=0;j<right-1;j++){
+	if(arr[j]<pivot){
+		int temp=arr[i];
+		arr[i]=arr[j];
+		arr[j]=temp;
+		i++               //i指针是pivot 左边都是<pivot的
+	}
+}
+int temp=arr[i];
+arr[i]=pivot;
+arr[right]=temp;//   最后再把pivot换到i处;
 
 
+```
 
-
-
-# 递归
+## 递归
 ## 反向打印
 ## 二分查找
 ```java
@@ -3070,25 +3244,3 @@ public class Main {
 
 
 
-# dustbin
-
-## 快速排序
-[Node \Class\Java\JavaStudy\Java 快速排序及优化策略.md](https://github.com/GodBlf/Class/blob/main/Java/JavaStudy/Java%20%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E5%8F%8A%E4%BC%98%E5%8C%96%E7%AD%96%E7%95%A5.md)
-
-双指针进行分治
-```java
-int i=0;
-for(int j=0;j<right-1;j++){
-	if(arr[j]<pivot){
-		int temp=arr[i];
-		arr[i]=arr[j];
-		arr[j]=temp;
-		i++               //i指针是pivot 左边都是<pivot的
-	}
-}
-int temp=arr[i];
-arr[i]=pivot;
-arr[right]=temp;//   最后再把pivot换到i处;
-
-
-```

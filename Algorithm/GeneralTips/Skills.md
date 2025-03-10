@@ -271,7 +271,7 @@ public class MonotonicQueue {
 ```
 ## 善用三元运算符 ? :
 
-## 多指针
+## 双指针
 ### 双指针统计(归并)
 将两部分排序
 n^2的统计通过排序变为n
@@ -285,7 +285,7 @@ n^2的统计通过排序变为n
 			ans += sum;
 		}
 ```
-### 多指针划分(快速)
+### 双指针划分(快速)
 <的在a左边 大于的在b右边
 ```java
 public static void partition2(int[] arr, int l, int r, int x) {
