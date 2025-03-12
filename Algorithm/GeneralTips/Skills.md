@@ -137,16 +137,6 @@ if() return  等价于  if else
 - 父节点拉出(poll/pop),符合要求的子节点进入(push/offer)cache再进行操作;
 
 
-
-
-## 状态与回溯
-- 目前遇到的状态栈,int n ,
-- 基本数据类型因为是副本自动回溯
-- 引用数据类型手动回溯;
-
-
-
-
 ## if/else
 ![alt text](1aa00cfeb4f84a6f7dfad89a36cd2c10.jpg)
 ![alt text](4258aee49f7139b2b3a2469eff118ebe.jpg)
@@ -221,13 +211,14 @@ int main(){
 
 ## null 
 - 要考虑null空的情况很多时候都有空这个边界条件
+- 在操作数据结构中通常数据结构为null的时候就会报错所以
 ## 合并逻辑
 - 减少if嵌套用逻辑量词&&||来合并逻辑
 ## while和priority sequence
-先想操作,然后直接while
-在操作数据结构中通常数据结构为null的时候就会报错所以
+先想操作,然后直接while()后边补充边界判断 可以ifbreak 或者 !();
 在循环操作的时候直接 while(!cache.isEmpty() || ...){}来操作
 既能减少嵌套if 又能防止null异常;
+- 二叉树遍历
 - 归并排序
 ```java
 static void merge(int l,int r,int m){
@@ -271,8 +262,19 @@ public class MonotonicQueue {
 ```
 ## 善用三元运算符 ? :
 
-## 双指针
-### 双指针统计(归并)
+
+## 状态与回溯
+- 目前遇到的状态栈,int n ,
+- 基本数据类型因为是副本自动回溯
+- 引用数据类型手动回溯;
+
+
+## 指针技巧
+
+### 不回退指针
+- no back nb指针
+- 例如将数组排序,kmp算法等,A-Bproblem,滑动窗口
+#### 双指针统计(归并)
 将两部分排序
 n^2的统计通过排序变为n
 ```java
@@ -285,7 +287,9 @@ n^2的统计通过排序变为n
 			ans += sum;
 		}
 ```
-### 双指针划分(快速)
+### 划分指针
+- 用指针划分区域
+#### 三指针划分(快速)
 <的在a左边 大于的在b右边
 ```java
 public static void partition2(int[] arr, int l, int r, int x) {
@@ -303,7 +307,8 @@ public static void partition2(int[] arr, int l, int r, int x) {
 		}
 	}
 ```
-### 双指针状态(二叉树模拟递归遍历)
+### 状态指针
+- 例如(二叉树模拟递归遍历)  用指针标记是否return的状态;
 ```java
 TreeNode head=node;
 TreeNode pop=null;
@@ -331,6 +336,11 @@ static void dfs(TreeNode node){
 ```
 
 
+
+## 状态与回溯
+- 目前遇到的状态栈,int n ,
+- 基本数据类型因为是副本自动回溯
+- 引用数据类型手动回溯;
 
 
 

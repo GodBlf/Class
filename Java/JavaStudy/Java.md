@@ -147,19 +147,8 @@ indexOf(String str, int fromIndex)
 - .parseInt .valueOf
 
 ### Math 类
-- Math.min()  
+- Math.min()  返回最大最小可以不用if判断直接max函数
 Math.max 同理
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -289,7 +278,12 @@ public class MonotonicQueue {
 
 - getOrDefault(key,value) 有就返回get没有就设置初始值;
 -------------------------------------------------------------------------------------
-# 前缀和
+# 前缀和 和 差分
+- 积分和微分![alt text](ae5962a3977788b63e6dd4a6ffd14118.jpg)
+- sentry 二维和一维 补充哨兵节点
+- 容斥原理;
+
+## 前缀和
 - 连续函数中的积分离散数组中的前缀和
 ## 子数组问题
 ![alt text](image-19.png)
@@ -392,7 +386,9 @@ public static int minSubarray(int[] nums, int p) {
 前缀和就是^无进位加法;int[32] map;就是哈希表
 .
 
-# 差分
+## 差分
+![alt text](ae5962a3977788b63e6dd4a6ffd14118.jpg)
+差分方程就是微分函数;
 - 连续函数的微分dy 可以看作数组上的差分;
 - 力扣1109经典差分
 ```java
@@ -412,6 +408,22 @@ class Solution {
     }
 }
 ```
+## 等差数列差分
+arr[r]+=s
+arr[r+1]+=d-s
+arr[l+1]-=d-e
+arr[l+2]+=e 
+通过两次微分离散函数可以得到
+## 二维前缀和
+- 二维积分  →→  ↓↓ all 行积分 再 all列积分
+
+
+
+# 滑动窗口
+- 用两个不回退指针来表示滑动窗口
+## 209. 长度最小的子数组力扣
+不满足就左窗口移动;
+
 
 
 # 2进制和位运算
@@ -1278,6 +1290,7 @@ public static void preOrder(TreeNode head) {
 
 
 # 图
+- 可以直接在vertex类中定义一些变量例如 visited prev distance...用oop思想简化结构;
 ## 概念
 - vertex edge 度 入度 出度 权 路径 连通图
 - 图的表示 :
@@ -1333,6 +1346,48 @@ public class Edge {
 
 }
 ```
+- 链式前向星星(比赛减少空间);
+
+## 拓扑排序
+- 按照依赖顺序 排序 先排入度为0的点,然后去掉边更新入度,再排0的点;
+- 用统计数量判断是否有环;
+```java
+class Vertex{
+    int name;
+    ArrayList<Edge> edges;
+    //
+    boolean visited;
+    //
+    int indegree;
+    //
+    int distance=Integer.MAX_VALUE;
+    Vertex prev;
+
+}
+```
+ArrayList<Vertex> arr 是所有节点的集合
+- 对所有边进行遍历找出入度为0的点加入队列
+```java
+for v:arr
+for e:v.edges
+e.Vertex.indegree++;
+
+ArrayDeque cache;
+for v:arr;
+v.indegree==0 cache.offer(v);
+
+poll=cache.poll;
+for e:poll.edges
+e.Vertex.indegree--
+if indegree==0;cache.offer(indegree);
+
+```
+- 统计poll的数量如果!=n 那就是有环直接return null;
+
+
+## 最小生成树;
+
+
 ## dfs 递归实现
 - 不如栈实现时间短因为栈实现没返回;
 ```java
@@ -1425,7 +1480,7 @@ visited = true 相当于已经进入过数据结构了'
         }
     }
 ```
-## 拓扑排序
+
 
 ## Dijkstra PriorityQueue<E>+Greedy
 和 bfs dfs 相反 poll出来再判断visited;
@@ -2930,6 +2985,10 @@ public class Main {
 
 # 字符串
 ## KMP
+- ![alt text](image-20.png)
+- 
+### next数组
+
 
 
 
