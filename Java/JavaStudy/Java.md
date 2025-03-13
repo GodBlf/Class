@@ -1289,6 +1289,60 @@ public static void preOrder(TreeNode head) {
 
 
 
+# 并查集
+![alt text](image-21.png)
+![alt text](image-22.png)
+- 图的最小生成树 Kruscal算法需要
+- find isSameSet union
+- 用栈模拟递归实现扁平化
+- 小挂大
+## java类实现
+```java
+class UnionFind{
+    int[] father;
+    int[] size;
+    //init
+    UnionFind(int n){
+        father=new int[n];
+        size=new int[n];
+        for (int i = 0; i < n; i++) {
+            father[i]=i;
+            size[i]=1;
+        }
+    }
+    //
+    int find(int n){
+        ArrayDeque<Integer> stack=new ArrayDeque<>();
+        int i=n;
+        while(!(i==father[i])){
+            stack.push(i);
+            i=father[i];
+        }
+        //bianpinghua
+        while(!stack.isEmpty()){
+            Integer pop = stack.pop();
+            father[pop]=i;
+        }
+        return i;
+    }
+    void union(int a,int b){
+        int fa = find(a);
+        int fb=find(b);
+        if(size[fa]>=size[fb]){
+            size[fa]+=size[fb];
+            father[fb]=fa;
+        }else{
+            size[fb]+=size[fa];
+            father[fa]=fb;
+        }
+    }
+    boolean isSameSet(int a,int b){
+        return find(a)==find(b);
+    }
+
+}
+
+```
 # 图
 - 可以直接在vertex类中定义一些变量例如 visited prev distance...用oop思想简化结构;
 ## 概念

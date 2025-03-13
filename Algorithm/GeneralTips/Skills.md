@@ -216,6 +216,7 @@ int main(){
 - 减少if嵌套用逻辑量词&&||来合并逻辑
 ## while和priority sequence
 先想操作,然后直接while()后边补充边界判断 可以ifbreak 或者 !();
+如果需要循环指标i一定要先把这个写出来!!!!!!;
 在循环操作的时候直接 while(!cache.isEmpty() || ...){}来操作
 既能减少嵌套if 又能防止null异常;
 - 二叉树遍历
