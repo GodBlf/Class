@@ -215,6 +215,7 @@ int main(){
 ## 合并逻辑
 - 减少if嵌套用逻辑量词&&||来合并逻辑
 ## while和priority sequence
+先操作再说
 先想操作,然后直接while()后边补充边界判断 可以ifbreak 或者 !();
 如果需要循环指标i一定要先把这个写出来!!!!!!;
 在循环操作的时候直接 while(!cache.isEmpty() || ...){}来操作
@@ -271,10 +272,40 @@ public class MonotonicQueue {
 
 
 ## 指针技巧
+### 记忆指针
+- memo point
+- 例如(二叉树模拟递归遍历)  用指针记忆是否return的状态;
+```java
+TreeNode head=node;
+TreeNode pop=null;
+ArrayDeque<TreeNode> cache=...;
+static void dfs(TreeNode node){
+     while(true){
+            if(head==null && cache.isEmpty()){
+                break;
+            }
+            if(head!=null){
+                cache.push(head);
+                head=head.left;
+            }else{   // null是叶子节点 return;
+                TreeNode peek = cache.peek();
+                if(peek.right==pop || peek.right==null){  //如果右子树是null或者已被弹出直接return
+                    pop = cache.pop();  //标记
+                    result.add(pop.val);
+                }else{
+                    head=peek.right;        //否则head标记为right然后继续进栈;
+                }
+            }
+
+        }
+}
+```
+- 还如二分查找中记忆上个>=tg的答案实现寻找最左侧目标值;
 
 ### 不回退指针
 - no back nb指针
-- 例如将数组排序,kmp算法等,A-Bproblem,滑动窗口
+- 例如将数组排序,kmp算法等,A-Bproblem,滑动窗口,供暖器
+
 #### 双指针统计(归并)
 将两部分排序
 n^2的统计通过排序变为n
@@ -307,33 +338,6 @@ public static void partition2(int[] arr, int l, int r, int x) {
 			}
 		}
 	}
-```
-### 状态指针
-- 例如(二叉树模拟递归遍历)  用指针标记是否return的状态;
-```java
-TreeNode head=node;
-TreeNode pop=null;
-ArrayDeque<TreeNode> cache=...;
-static void dfs(TreeNode node){
-     while(true){
-            if(head==null && cache.isEmpty()){
-                break;
-            }
-            if(head!=null){
-                cache.push(head);
-                head=head.left;
-            }else{   // null是叶子节点 return;
-                TreeNode peek = cache.peek();
-                if(peek.right==pop || peek.right==null){  //如果右子树是null或者已被弹出直接return
-                    pop = cache.pop();  //标记
-                    result.add(pop.val);
-                }else{
-                    head=peek.right;        //否则head标记为right然后继续进栈;
-                }
-            }
-
-        }
-}
 ```
 
 

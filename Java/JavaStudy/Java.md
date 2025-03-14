@@ -95,7 +95,10 @@ public class FastReader {
 ```
 
 ### BigInteger
-用eclipse自带的现场学
+- 底层逻辑是字符串转成高精度
+- 用一个数组位置代表数字的一位高精度
+- 可完全视为数字 运算用其自带的库函数就行;
+- 因为是用多余空间进行高精度所以如果不超过位数不要用biginteger否则空间时间会很高
 ### System类
 - System.arraycopy() 是 Java 中一个非常常用的用于数组拷贝的静态方法。它的作用是将源数组中的一部分或全部元素复制到目标数组中的指定位置。这个方法是系统级的，因此执行效率比较高。
 public static void arraycopy(Object src, int srcPos, Object dest, int destPos, int length)
@@ -233,6 +236,53 @@ binarySearch()  找不到返回 -(index+1);同arrays.binarySearch
 - 基于heap堆实现
 - 可用Comparator<E>接口对元素进行优先级比较;
 
+## FindUnion
+并查集好用且常用;
+```java
+class FindUnion{
+    int[] father;
+    int[] size;
+    FindUnion(int n){
+        father=new int[n];
+        size=new int[n];
+        for(int i=0;i<n;i++){
+            father[i]=i;
+            size[i]=1;
+        }
+    }
+    int find(int n){
+        int i=n;
+        ArrayDeque<Integer> stack=new ArrayDeque<>();
+        while(!(i==father[i])){
+            stack.push(i);
+            i=father[i];
+        }
+        while(!stack.isEmpty){
+            int pop=stack.pop();
+            father[pop]=i;
+        }
+        return i;
+    }
+    void union(int a,int b){
+        fa=find(a);
+        fb=find(b);
+        if(fa!=fb){
+            if(size[a]>=size[b]){
+                father[fb]=fa;
+                size[fa]+=size[fb];
+            }else{
+                father[fa]=fb;
+                size[fb]+=size[fa];
+            }
+        }
+    }
+    boolean isSameSet(int a,int b){
+        return find(a)==find(b);
+    }
+}
+```
+
+
 ## MonotonicQueue<E>
 ```java
 package tools;
@@ -273,10 +323,38 @@ public class MonotonicQueue {
 - 有序表 重写equals  hashcode方法
 - 一般无重复集合
 
-## HashMap
-- 键值对的集合 将键做成哈希表 值链到键下边;
-
+## HashMap/TreeMap
+同理set;
+- 键值对的集合 将键做成哈希表 值链到键下边;所以TreeMap中插入比较器时候只能对键排序
+- map中的对象是Map.Entry<*,*>
 - getOrDefault(key,value) 有就返回get没有就设置初始值;
+
+## Graph
+```java
+class Vertex{
+    int name;
+    ArrayList<Edge> edges=new ArrayList<>();
+    //
+    boolean visited;
+    //
+    int indegree;
+    //
+    int distance
+    Vertex prev;
+    Vertex(int name){
+        this.name=name;
+    }
+}
+class Edge{
+    int weight;
+    // Vertex from Vertex to
+    Vertex link;
+    Edge(int weight,Vertex link){
+        this.weight=weight;
+        this.link=link;
+    }
+}
+```
 -------------------------------------------------------------------------------------
 # 前缀和 和 差分
 - 积分和微分![alt text](ae5962a3977788b63e6dd4a6ffd14118.jpg)
@@ -423,7 +501,18 @@ arr[l+2]+=e
 - 用两个不回退指针来表示滑动窗口
 ## 209. 长度最小的子数组力扣
 不满足就左窗口移动;
-
+# 指针
+## 不回退指针
+https://leetcode.cn/problems/sort-array-by-parity-ii/description/
+盛水最多的容器
+供暖器
+救生艇
+- 将数组排序实现不回退
+## 快慢指针
+- 数组中仅有一个重复的数字找出来
+- 可把数组抽象成一个链表,然后这个链表就有环了所以可以通过快慢指针来做
+- 证明用同余定理
+- 相遇后都用慢的速度让一个指针回到起始点
 
 
 # 2进制和位运算
@@ -474,6 +563,448 @@ a = a ^ b;
 -
 
 -
+
+
+# 递归
+- 递归可以看做对递归树的dfs 深搜
+- 仅有logn级别的程序能够使用递归因为2^n 的幂级数很大!
+
+
+## master公式
+- 规模相同的子状态;
+![alt text](image-15.png)
+## 归并排序
+- ![alt text](image-16.png)
+logn级别的递归
+master 公式 可得O(nlogn);
+```java
+class Solution {
+    static int[] arr=new int[50001];
+    static int[] help=new int[50001];
+    public int[] sortArray(int[] nums) {
+            mergeSort(0,nums.length-1);
+            return nums;
+    }
+    static void mergeSort(int l,int r){
+        if(l==r){
+            return;
+        }
+        int m=(l+r)>>>1;
+        mergeSort(l,m);
+        mergeSort(m+1,r);
+        merge(l,r,m);
+        return;
+    }
+
+    static void merge(int l,int r,int m){
+        int a=l;
+        int b=m+1;
+        int i=l;
+        while (!(a>m || b>r)){
+            help[i++]= arr[a]<=arr[b] ? arr[a++] : arr[b++];
+        }
+        while(!(a>m)){
+            help[i++]=arr[a++];
+        }
+        while (!(b>r)){
+            help[i++]=arr[b++];
+        }
+
+        //调用系统级别api
+        System.arraycopy(help,l,arr,l,r-l+1);
+    }
+}
+```
+## 归并分治
+将暴力n^2 通过二分变为 nlogn
+![alt text](image-17.png)
+- 能不能变成二分解决
+- 递归过程是不是有跨左右的过程
+- 嵌入归并排序是否变简单;进行排序统计
+
+一般按照图都得嵌套归并排序
+### 小和
+```java
+public static long merge(int l, int m, int r) {
+		// 统计部分 双指针统计优化;
+		long ans = 0;
+		for (int j = m + 1, i = l, sum = 0; j <= r; j++) {
+			while (i <= m && arr[i] <= arr[j]) {
+				sum += arr[i++];
+			}
+			ans += sum;
+		}
+		// 正常merge
+		int i = l;
+		int a = l;
+		int b = m + 1;
+		while (a <= m && b <= r) {
+			help[i++] = arr[a] <= arr[b] ? arr[a++] : arr[b++];
+		}
+		while (a <= m) {
+			help[i++] = arr[a++];
+		}
+		while (b <= r) {
+			help[i++] = arr[b++];
+		}
+		for (i = l; i <= r; i++) {
+			arr[i] = help[i];
+		}
+		return ans;
+	}
+```
+
+### 反转对
+```java
+public static int merge(int[] arr, int l, int m, int r) {
+		// 统计部分
+		int ans = 0;
+		for (int i = l, j = m + 1; i <= m; i++) {
+			while (j <= r && (long) arr[i] > (long) arr[j] * 2) {
+				j++;
+			}
+			ans += j - m - 1;
+		}
+		// 正常merge
+		int i = l;
+		int a = l;
+		int b = m + 1;
+		while (a <= m && b <= r) {
+			help[i++] = arr[a] <= arr[b] ? arr[a++] : arr[b++];
+		}
+		while (a <= m) {
+			help[i++] = arr[a++];
+		}
+		while (b <= r) {
+			help[i++] = arr[b++];
+		}
+		for (i = l; i <= r; i++) {
+			arr[i] = help[i];
+		}
+		return ans;
+	}
+```
+
+## 快速排序
+
+## 快速分治
+## 二分
+- 为什么将二分并入递归因为二分是logn级别的非常适合递归!
+### 二分搜索
+- 可视为logn级别的递归;
+- 技术细节
+可以设置一个ans记忆指针;
+严格的<> 和严格的 如果arr[mid]<tg left一定是mid+1  
+
+数组升序排列;
+设置left  right 两个指针 和一个ans 记忆指针;
+
+输出最左边的目标值left
+```java
+// 有序数组中找>=num的最左位置
+	public static int findLeft(int[] arr, int num) {
+		int l = 0, r = arr.length - 1, m = 0;
+		int ans = -1;
+		while (l <= r) {  //终止条件是r<l因为相等的时候还要判断;
+			// m = (l + r) / 2;
+			// m = l + (r - l) / 2;
+			m = l + ((r - l) >> 1);
+			if (arr[m] >= num) {
+				ans = m;  //ans记忆指针
+				r = m - 1;
+			} else {
+				l = m + 1;
+			}
+		}
+		return ans;
+	}
+```
+最右边的类似;
+
+lefMost 可以在未找到tg时候 返回tg的极限值 如{1,2,3,5}找4返回 索引3
+
+java.util.Arrays中的 Arrays.binarySearch(数组,值);不会返回最左侧答案;
+这个要是没找到返回-(极限index+1);可以 abs(return)-1就是极限值;
+
+### 二分峰值问题
+找到数组中的一个峰值即可
+![alt text](image-12.png)
+罗尔种植定理
+```java
+
+		public static int findPeakElement(int[] arr) {
+			int n = arr.length;
+			if (arr.length == 1) {
+				return 0;
+			}
+			if (arr[0] > arr[1]) {
+				return 0;
+			}
+			if (arr[n - 1] > arr[n - 2]) {
+				return n - 1;
+			}
+			int l = 1, r = n - 2, m = 0, ans = -1; //指针皆为上升的对象//技术细节:二分查找皆为严格<>,
+
+			while (l <= r) {
+				m = (l + r) / 2;
+				if (arr[m - 1] > arr[m]) {
+					r = m - 1;
+				} else if (arr[m] < arr[m + 1]) {
+					l = m + 1;
+				} else {
+					ans = m;
+					break;
+				}
+			}
+			return ans;
+		}
+```
+
+### 二分答案
+- ![alt text](image-24.png)
+- 递归->递归树->二叉树
+#### 画家问题力扣410
+
+
+### 优化
+1. /2优化改为 >>>1 无符号右移运算防止加起来溢出;
+2. mid 取值可以用别的测度代替 如连续测度等
+
+
+
+
+
+
+
+## 回溯 
+- cache+recur 
+- 状态是基本数据类型f(int n) 是局部变量自动回溯,
+- 当状态是引用数据类型(指针)必须手动回溯
+### 字符串子序列
+```java
+	public static void f1(char[] s, int i, StringBuilder path, HashSet<String> set) {
+		if (i == s.length) {
+			set.add(path.toString());
+		} else {
+			path.append(s[i]); // 加到路径中去
+			f1(s, i + 1, path, set);
+			path.deleteCharAt(path.length() - 1); // 从路径中移除
+			f1(s, i + 1, path, set);
+		}
+	}
+```
+### 全排列
+recur+cache+
+状态是visited 和stack来储存;
+```java
+class Main {
+    public static void main(String[] args) {
+        int n=3;
+        int[] arr={1,2,3};
+        boolean[] visited=new boolean[n];
+        Arrays.fill(visited,false);
+        ArrayDeque<Integer> stack=new ArrayDeque<>();
+        dfs(stack,arr,visited);
+    }
+
+    static  void dfs(ArrayDeque<Integer> stack, int [] arr, boolean[] visited){
+        if(stack.size()==arr.length){
+            System.out.println(stack);
+            return ;
+        }
+        for (int i = 0; i < arr.length; i++) {
+            if(visited[i]==true){
+                continue;
+
+            }
+            
+            stack.push(arr[i]);
+            visited[i]=true;
+            dfs(stack,arr,visited);
+            visited[i]=false;
+            stack.pop();
+        }
+    }
+
+}
+
+```
+### 无重复全排列
+先将数组排列,判断要是重复的就跳过
+```java
+class Main {
+    public static void main(String[] args) {
+        int n=3;
+        int[] arr={1,1,3};
+        boolean[] visited=new boolean[n];
+        Arrays.fill(visited,false);
+        ArrayDeque<Integer> stack=new ArrayDeque<>();
+        dfs(stack,arr,visited);
+    }
+
+    static  void dfs(ArrayDeque<Integer> stack, int [] arr, boolean[] visited){
+        if(stack.size()==arr.length){
+            System.out.println(stack);
+            return ;
+        }
+        for (int i = 0; i < arr.length; i++) {
+            if(visited[i]==true){
+                continue;
+            
+            }
+            if(i!=0 && arr[i]==arr[i-1] rrr&& !visited[i-1]){  //这是判断语句一定要留意null ,
+                                                        //技术细节:1,1',3要满足前一个相等且要被访问过;
+                continue;
+            }
+            stack.push(arr[i]);
+            visited[i]=true;
+            dfs(stack,arr,visited);
+            visited[i]=false;
+            stack.pop();
+        }
+    }
+
+}
+
+```
+### 组合
+- 从全排列修改即可
+- 有n个元素组合 以i元素开头的时候仅需递归i+1往后的就行
+例如 1,2,3 选2个  (1,2)(1,3) (2,3)
+- 对递归的branch来说后续不够个数的直接continue 剪枝;
+```java
+package ache;
+
+import javax.swing.*;
+import java.net.http.HttpConnectTimeoutException;
+import java.util.*;
+
+class Main {
+    public static void main(String[] args) {
+        int n=5;
+        int[] arr={1,2,3,4,5};
+        boolean[] visited=new boolean[n];
+        Arrays.fill(visited,false);
+        ArrayDeque<Integer> stack=new ArrayDeque<>();
+        dfs(stack,arr,visited,3);
+    }
+
+    static  void dfs(ArrayDeque<Integer> stack, int [] arr, boolean[] visited,int target) {
+        if (stack.size() == target) {
+            System.out.println(stack);
+            return;
+        }
+        if (stack.isEmpty()) {
+            for (int i = 0; i < arr.length; i++) {
+                if (visited[i] == true) {
+                    continue;
+
+                }
+                if (i != 0 && arr[i] == arr[i - 1] && !visited[i - 1]) {
+                    continue;
+                }
+                stack.push(arr[i]);
+                visited[i] = true;
+                dfs(stack, arr, visited, target);
+                visited[i] = false;
+                stack.pop();
+            }
+        } else {
+            int i1 = Arrays.binarySearch(arr, stack.peek());
+            for (int i = i1+1; i < arr.length; i++) {  // 技术细节:仅从i1+1即可
+                if (visited[i] == true) {
+                    continue;
+                }
+                if(arr.length-i<target-stack.size()){   //技术细节:减枝
+                    continue;
+                }
+                if (i != 0 && arr[i] == arr[i - 1] && !visited[i - 1]) {
+                    continue;
+                }
+                stack.push(arr[i]);
+                visited[i] = true;
+                if((arr.length-i1)<target- stack.size()){
+                    visited[i] = false;
+                    stack.pop();
+                    return ;
+                }
+                dfs(stack, arr, visited, target);
+                visited[i] = false;
+                stack.pop();
+            }
+        }
+
+    }}
+
+
+```
+
+### 无重复组合
+同理无重复排列即可
+
+### N皇后问题
+- 简单的递归加回溯;
+技术细节:
+- 左右斜线冲突的映射是i+j and n-1-(i-j);通过解析几何
+```java
+package leetcode;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+class Solution {
+    static char[][] qipan;
+    static boolean[] lieChongtu;
+    static boolean[] zuoChongtu;
+    static boolean[] youChongtu;
+    static List<List<String>> result;
+    public List<List<String>> solveNQueens(int n) {
+         result=new ArrayList<>();
+        qipan=new char[n][n];
+        for (int i = 0; i < qipan.length; i++) {
+            Arrays.fill(qipan[i],'.');
+        }
+        lieChongtu=new boolean[n];
+        zuoChongtu=new boolean[2*n-1];
+        youChongtu=new boolean[2*n-1];
+
+            dfs(0,n);
+            return result;
+    }
+
+    static void dfs(int i,int n){
+        if(i==n){
+            toret(qipan);
+            return;
+        }
+
+        for (int j = 0; j <n ; j++) {
+            if(lieChongtu[j] || zuoChongtu[j+i] || youChongtu[n-1-(i-j)]){  //判断冲突;
+                continue;
+            }
+            qipan[i][j]='Q';
+            lieChongtu[j]= zuoChongtu[i+j]=youChongtu[n-1-i+j]=true;
+            dfs(i+1,n);
+            qipan[i][j]='.';
+            lieChongtu[j]= zuoChongtu[i+j]=youChongtu[n-1-i+j]=false;
+        }
+        return ;
+
+
+    }
+    static void toret(char[][] ret){
+        ArrayList<String> al=new ArrayList<>();
+        for (int i = 0; i < ret.length; i++) {
+            al.add(String.valueOf(ret[i]));
+        }
+        result.add(al);
+    }
+}
+```
+
+
+
 
 
 
@@ -1290,17 +1821,18 @@ public static void preOrder(TreeNode head) {
 
 
 # 并查集
+- 很有用,相当于把一个集合进行划分然后查询速度也非常快;
 ![alt text](image-21.png)
 ![alt text](image-22.png)
 - 图的最小生成树 Kruscal算法需要
-- find isSameSet union
+- 就是个向上的链表加上find  union isSameSet方法;
 - 用栈模拟递归实现扁平化
 - 小挂大
 ## java类实现
 ```java
 class UnionFind{
     int[] father;
-    int[] size;
+    int[] size;   // 一般可以把size去掉
     //init
     UnionFind(int n){
         father=new int[n];
@@ -1328,18 +1860,56 @@ class UnionFind{
     void union(int a,int b){
         int fa = find(a);
         int fb=find(b);
+        if(fa!=fb){              //一定要看边界条件这俩可能在一个集合里
+        //小挂大方便减小树的深度方便查询;
         if(size[fa]>=size[fb]){
             size[fa]+=size[fb];
             father[fb]=fa;
         }else{
             size[fb]+=size[fa];
             father[fa]=fb;
-        }
+        }}
     }
     boolean isSameSet(int a,int b){
         return find(a)==find(b);
     }
 
+}
+
+```
+
+- 去掉size 小挂大操作可以节省空间
+```java
+class UnionFind{
+    int[] father;
+    UnionFind(int n){
+        father=new int[n];
+        for (int i = 0; i < n; i++) {
+            father[i]=i;
+        }
+    }
+    int find(int n){
+        ArrayDeque<Integer> stack=new ArrayDeque<>();
+        int i=n;
+        while(!(i==father[i])){
+            stack.push(i);
+            i=father[i];
+        }
+        while (!stack.isEmpty()){
+            Integer pop = stack.pop();
+            father[pop]=i;
+        }
+        return i;
+    }
+    void union(int a,int b){
+        int fa = find(a);
+        int fb=find(b);
+        father[fb]=fa;
+
+    }
+    boolean isSameSet(int a,int b){
+        return find(a) == find(b);
+    }
 }
 
 ```
@@ -1440,6 +2010,135 @@ if indegree==0;cache.offer(indegree);
 
 
 ## 最小生成树;
+- n个节点的图最小生成树有n-1条边;
+- kruskal算法比prim算法常用
+### kruskal
+- 并查集 priorityqueue 
+- 将所有边扔到优先级队列里然后依次取出,所有节点用并查集,取出的两头节点进行划分,如果再取出的已经划分了就continue;
+```java
+import java.io.*;
+import java.net.Inet4Address;
+import java.util.*;
+
+class Main{
+    public static void main(String[] args)throws IOException {
+        PrintWriter out=new PrintWriter(new OutputStreamWriter(System.out));
+        BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st=new StringTokenizer("");
+        st=new StringTokenizer(reader.readLine());
+        int n=Integer.parseInt(st.nextToken());
+        int m=Integer.parseInt(st.nextToken());
+        ArrayList<Edge> ans=new ArrayList<>();
+        //将边仍进cache里然后贪心
+        PriorityQueue<Edge> cache=new PriorityQueue<>(new Comparator<Edge>() {
+            @Override
+            public int compare(Edge o1, Edge o2) {
+                return o1.weight-o2.weight;
+            }
+        });
+        for (int i = 0; i < m; i++) {
+            st=new StringTokenizer(reader.readLine());
+            int a= Integer.parseInt(st.nextToken());
+            int b= Integer.parseInt(st.nextToken());
+            int c= Integer.parseInt(st.nextToken());
+            cache.offer(new Edge(a-1,b-1,c));
+
+        }
+        UnionFind uf = new UnionFind(n);
+        while(!cache.isEmpty()){
+            Edge poll = cache.poll();
+            int left = poll.left;
+            int right = poll.right;
+            if(!uf.isSameSet(left,right)){
+                uf.union(left,right);
+                ans.add(poll);
+            }
+        }
+        int ansSum=0;
+        for (Edge an : ans) {
+            ansSum+=an.weight;
+        }
+        //用统计是否n-1判断是否符合要求
+        out.println(ans.size()==n-1? ansSum : "orz");
+        out.flush();
+        out.close();
+    }
+}
+class Edge{
+    int left;
+    int right;
+    int weight;
+    Edge(int l,int r,int w){
+        left=l;
+        right=r;
+        weight=w;
+    }
+}
+//并查集
+class UnionFind{
+    int[] father;
+    UnionFind(int n){
+        father=new int[n];
+        for (int i = 0; i < n; i++) {
+            father[i]=i;
+        }
+    }
+    int find(int n){
+        int i=n;
+        ArrayDeque<Integer> stack=new ArrayDeque<>();
+        while(i!=father[i]){
+            stack.push(i);
+            i=father[i];
+        }
+        while(!stack.isEmpty()){
+            Integer pop = stack.pop();
+            father[pop]=i;
+        }
+        return i;
+    }
+    void union(int a,int b){
+        int fa=find(a);
+        int fb=find(b);
+        father[fb]=fa;
+    }
+    boolean isSameSet(int a,int b){
+        return find(a)==find(b);
+    }
+}
+```
+
+## BFS
+- 队列cache out/in实现广搜
+```java
+//bfs algorithm
+    public static void bfs(Vertex v) {
+        ArrayDeque<Vertex> queue = new ArrayDeque<>();   ////LinkedList 是链表实现  ArrayDeque是数组实现;
+        v.visited = true;
+        queue.offer(v);
+          // 初始化时就标记起始节点为已访问
+
+        while (!queue.isEmpty()) {
+            Vertex poll = queue.poll();  // 从队列中取出一个节点
+
+            // 访问该节点
+
+            System.out.println(poll.name);  // 打印当前节点的名字
+
+            // 遍历当前节点的邻接边
+            for (Edge e : poll.arr) {
+                if (!e.linked.visited) {  // 只有在未访问的节点才加入队列
+                    e.linked.visited = true;  // 标记为已访问
+                    queue.offer(e.linked);  // 将邻接节点加入队列
+                }
+            }
+        }
+    }
+```
+### 扩散
+bfs可视作从一个节点螺旋式扩散,每次offer进队扩散度++,对于weight==1的图可实现扩散式最短路径;
+## 多源bfs 
+将多个节点进入0层队列然后一起扩散;
+力扣1162;
 
 
 ## dfs 递归实现
@@ -1510,29 +2209,7 @@ visited = true 相当于已经进入过数据结构了'
         }
     }
 
-//bfs algorithm
-    public static void bfs(Vertex v) {
-        LinkedList<Vertex> queue = new LinkedList<>();   ////LinkedList 是链表实现  ArrayDeque是数组实现;
-        v.visited = true;
-        queue.offer(v);
-          // 初始化时就标记起始节点为已访问
 
-        while (!queue.isEmpty()) {
-            Vertex poll = queue.poll();  // 从队列中取出一个节点
-
-            // 访问该节点
-
-            System.out.println(poll.name);  // 打印当前节点的名字
-
-            // 遍历当前节点的邻接边
-            for (Edge e : poll.arr) {
-                if (!e.linked.visited) {  // 只有在未访问的节点才加入队列
-                    e.linked.visited = true;  // 标记为已访问
-                    queue.offer(e.linked);  // 将邻接节点加入队列
-                }
-            }
-        }
-    }
 ```
 
 
@@ -1594,7 +2271,7 @@ public static void dijkstra(Vertex source, List<Vertex> vertices) {
 - dijkstra没法判断负数边的情况可以用这个
 - 遍历每条边n-1次 数学上可证明 
 - 每次更新起点和终点的distance;
-- 没法处理负数环的结构;
+- 没法处理负数环的结构;如果第n次队列还有那么就有负环;
 ```java
 public static void bellmanFord(ArrayList<Vertex>vertices) {
     	vertices.get(0).distance=0;
@@ -1852,487 +2529,6 @@ public class Main {
 ## 选考试问题
 
 ## Huffman编码
-
-
-# 递归
-- 仅有logn级别的程序能够使用递归因为2^n 的幂级数很大!
-## master公式
-- 规模相同的子状态;
-![alt text](image-15.png)
-## 归并排序
-- ![alt text](image-16.png)
-logn级别的递归
-master 公式 可得O(nlogn);
-```java
-class Solution {
-    static int[] arr=new int[50001];
-    static int[] help=new int[50001];
-    public int[] sortArray(int[] nums) {
-            mergeSort(0,nums.length-1);
-            return nums;
-    }
-    static void mergeSort(int l,int r){
-        if(l==r){
-            return;
-        }
-        int m=(l+r)>>>1;
-        mergeSort(l,m);
-        mergeSort(m+1,r);
-        merge(l,r,m);
-        return;
-    }
-
-    static void merge(int l,int r,int m){
-        int a=l;
-        int b=m+1;
-        int i=l;
-        while (!(a>m || b>r)){
-            help[i++]= arr[a]<=arr[b] ? arr[a++] : arr[b++];
-        }
-        while(!(a>m)){
-            help[i++]=arr[a++];
-        }
-        while (!(b>r)){
-            help[i++]=arr[b++];
-        }
-
-        //调用系统级别api
-        System.arraycopy(help,l,arr,l,r-l+1);
-    }
-}
-```
-## 归并分治
-将暴力n^2 通过二分变为 nlogn
-![alt text](image-17.png)
-- 能不能变成二分解决
-- 递归过程是不是有跨左右的过程
-- 嵌入归并排序是否变简单;进行排序统计
-
-一般按照图都得嵌套归并排序
-### 小和
-```java
-public static long merge(int l, int m, int r) {
-		// 统计部分 双指针统计优化;
-		long ans = 0;
-		for (int j = m + 1, i = l, sum = 0; j <= r; j++) {
-			while (i <= m && arr[i] <= arr[j]) {
-				sum += arr[i++];
-			}
-			ans += sum;
-		}
-		// 正常merge
-		int i = l;
-		int a = l;
-		int b = m + 1;
-		while (a <= m && b <= r) {
-			help[i++] = arr[a] <= arr[b] ? arr[a++] : arr[b++];
-		}
-		while (a <= m) {
-			help[i++] = arr[a++];
-		}
-		while (b <= r) {
-			help[i++] = arr[b++];
-		}
-		for (i = l; i <= r; i++) {
-			arr[i] = help[i];
-		}
-		return ans;
-	}
-```
-
-### 反转对
-```java
-public static int merge(int[] arr, int l, int m, int r) {
-		// 统计部分
-		int ans = 0;
-		for (int i = l, j = m + 1; i <= m; i++) {
-			while (j <= r && (long) arr[i] > (long) arr[j] * 2) {
-				j++;
-			}
-			ans += j - m - 1;
-		}
-		// 正常merge
-		int i = l;
-		int a = l;
-		int b = m + 1;
-		while (a <= m && b <= r) {
-			help[i++] = arr[a] <= arr[b] ? arr[a++] : arr[b++];
-		}
-		while (a <= m) {
-			help[i++] = arr[a++];
-		}
-		while (b <= r) {
-			help[i++] = arr[b++];
-		}
-		for (i = l; i <= r; i++) {
-			arr[i] = help[i];
-		}
-		return ans;
-	}
-```
-
-## 快速排序
-
-## 快速分治
-
-## 二分搜索
-- 可视为logn级别的递归;
-- 技术细节
-严格的<> 和严格的<=> 如果arr[mid]<tg left一定是mid+1  
-如果啊让人arr[mid]==tg  那么right=mid 不能加一
-峰值二分同理   
-
-数组升序排列;
-设置min max两个索引指针 根据mid 和 target比较进行更新 
-两个指针相向收缩
-因为 两个指针+-1 最后肯定相等  boundary case是max==min 
-
-```java
-public static int ef(int [] arr,int tg) {
-		int min=0;int max=arr.length-1;
-		while(max!=min) {
-			int mid = (max+min)/2;
-			if(tg==arr[mid]) {
-                max=mid;
-                min=mid;
-			}else if(tg>arr[mid]) {
-				min=mid+1;
-			}else {
-				max=mid-1;
-			}
-		}
-		if(arr[min]==tg) {
-			return min;
-		}else {
-			return -1;
-		}
-	}
-```
-
-输出最左边的目标值leftMost
-```java
-public static int ef(int [] arr,int tg) {
-		int flag;
-		int min=0;int max=arr.length-1;
-		while(max!=min) {
-			int mid = (max+min)>>1;
-			if(tg==arr[mid]) {
-				flag=mid;
-				max=mid;   //注意 是闭区间不需要-1;
-                            //可以把这个答案记录下来
-			}else if(tg>arr[mid]) {
-				min=mid+1;
-			}else {
-				max=mid-1;
-			}
-		}
-		if(arr[min]==tg) {
-			return min;
-		}else {
-			return -1;
-		}
-	}
-```
-最右边的类似;
-
-lefMost 可以在未找到tg时候 返回tg的极限值 如{1,2,3,5}找4返回 索引3
-```java
-public static int ef(int [] arr,int tg) {
-		int flag;
-		int min=0;int max=arr.length-1;
-		while(max!=min) {
-			int mid = (max+min)>>1;
-			if(tg==arr[mid]) {
-				flag=mid;
-				max=mid;   //注意 是闭区间不需要-1;
-			}else if(tg>arr[mid]) {
-				min=mid+1;
-			}else {
-				max=mid-1;
-			}
-		}
-		return min;
-	}
-```
-
-java.util.Arrays中的 Arrays.binarySearch(数组,值);
-这个要是没找到返回-(极限index+1);可以 abs(return)-1就是极限值;
-
-### 二分峰值问题
-找到数组中的一个峰值即可
-![alt text](image-12.png)
-罗尔种植定理
-```java
-
-		public static int findPeakElement(int[] arr) {
-			int n = arr.length;
-			if (arr.length == 1) {
-				return 0;
-			}
-			if (arr[0] > arr[1]) {
-				return 0;
-			}
-			if (arr[n - 1] > arr[n - 2]) {
-				return n - 1;
-			}
-			int l = 1, r = n - 2, m = 0, ans = -1; //指针皆为上升的对象//技术细节:二分查找皆为严格<>,
-
-			while (l <= r) {
-				m = (l + r) / 2;
-				if (arr[m - 1] > arr[m]) {
-					r = m - 1;
-				} else if (arr[m] < arr[m + 1]) {
-					l = m + 1;
-				} else {
-					ans = m;
-					break;
-				}
-			}
-			return ans;
-		}
-```
-
-### 二分答案
-
-
-### 优化
-1. /2优化改为 >>>1 无符号右移运算防止加起来溢出;
-2. mid 取值可以用别的测度代替 如连续测度等
-
-
-
-
-
-
-
-## 回溯 
-- cache+recur 
-- 状态是基本数据类型f(int n) 是局部变量自动回溯,
-- 当状态是引用数据类型(指针)必须手动回溯
-### 字符串子序列
-```java
-	public static void f1(char[] s, int i, StringBuilder path, HashSet<String> set) {
-		if (i == s.length) {
-			set.add(path.toString());
-		} else {
-			path.append(s[i]); // 加到路径中去
-			f1(s, i + 1, path, set);
-			path.deleteCharAt(path.length() - 1); // 从路径中移除
-			f1(s, i + 1, path, set);
-		}
-	}
-```
-### 全排列
-recur+cache+
-状态是visited 和stack来储存;
-```java
-class Main {
-    public static void main(String[] args) {
-        int n=3;
-        int[] arr={1,2,3};
-        boolean[] visited=new boolean[n];
-        Arrays.fill(visited,false);
-        ArrayDeque<Integer> stack=new ArrayDeque<>();
-        dfs(stack,arr,visited);
-    }
-
-    static  void dfs(ArrayDeque<Integer> stack, int [] arr, boolean[] visited){
-        if(stack.size()==arr.length){
-            System.out.println(stack);
-            return ;
-        }
-        for (int i = 0; i < arr.length; i++) {
-            if(visited[i]==true){
-                continue;
-
-            }
-            
-            stack.push(arr[i]);
-            visited[i]=true;
-            dfs(stack,arr,visited);
-            visited[i]=false;
-            stack.pop();
-        }
-    }
-
-}
-
-```
-### 无重复全排列
-先将数组排列,判断要是重复的就跳过
-```java
-class Main {
-    public static void main(String[] args) {
-        int n=3;
-        int[] arr={1,1,3};
-        boolean[] visited=new boolean[n];
-        Arrays.fill(visited,false);
-        ArrayDeque<Integer> stack=new ArrayDeque<>();
-        dfs(stack,arr,visited);
-    }
-
-    static  void dfs(ArrayDeque<Integer> stack, int [] arr, boolean[] visited){
-        if(stack.size()==arr.length){
-            System.out.println(stack);
-            return ;
-        }
-        for (int i = 0; i < arr.length; i++) {
-            if(visited[i]==true){
-                continue;
-            
-            }
-            if(i!=0 && arr[i]==arr[i-1] rrr&& !visited[i-1]){  //这是判断语句一定要留意null ,
-                                                        //技术细节:1,1',3要满足前一个相等且要被访问过;
-                continue;
-            }
-            stack.push(arr[i]);
-            visited[i]=true;
-            dfs(stack,arr,visited);
-            visited[i]=false;
-            stack.pop();
-        }
-    }
-
-}
-
-```
-### 组合
-- 从全排列修改即可
-- 有n个元素组合 以i元素开头的时候仅需递归i+1往后的就行
-例如 1,2,3 选2个  (1,2)(1,3) (2,3)
-- 对递归的branch来说后续不够个数的直接continue 剪枝;
-```java
-package ache;
-
-import javax.swing.*;
-import java.net.http.HttpConnectTimeoutException;
-import java.util.*;
-
-class Main {
-    public static void main(String[] args) {
-        int n=5;
-        int[] arr={1,2,3,4,5};
-        boolean[] visited=new boolean[n];
-        Arrays.fill(visited,false);
-        ArrayDeque<Integer> stack=new ArrayDeque<>();
-        dfs(stack,arr,visited,3);
-    }
-
-    static  void dfs(ArrayDeque<Integer> stack, int [] arr, boolean[] visited,int target) {
-        if (stack.size() == target) {
-            System.out.println(stack);
-            return;
-        }
-        if (stack.isEmpty()) {
-            for (int i = 0; i < arr.length; i++) {
-                if (visited[i] == true) {
-                    continue;
-
-                }
-                if (i != 0 && arr[i] == arr[i - 1] && !visited[i - 1]) {
-                    continue;
-                }
-                stack.push(arr[i]);
-                visited[i] = true;
-                dfs(stack, arr, visited, target);
-                visited[i] = false;
-                stack.pop();
-            }
-        } else {
-            int i1 = Arrays.binarySearch(arr, stack.peek());
-            for (int i = i1+1; i < arr.length; i++) {  // 技术细节:仅从i1+1即可
-                if (visited[i] == true) {
-                    continue;
-                }
-                if(arr.length-i<target-stack.size()){   //技术细节:减枝
-                    continue;
-                }
-                if (i != 0 && arr[i] == arr[i - 1] && !visited[i - 1]) {
-                    continue;
-                }
-                stack.push(arr[i]);
-                visited[i] = true;
-                if((arr.length-i1)<target- stack.size()){
-                    visited[i] = false;
-                    stack.pop();
-                    return ;
-                }
-                dfs(stack, arr, visited, target);
-                visited[i] = false;
-                stack.pop();
-            }
-        }
-
-    }}
-
-
-```
-
-### 无重复组合
-同理无重复排列即可
-
-### N皇后问题
-- 简单的递归加回溯;
-技术细节:
-- 左右斜线冲突的映射是i+j and n-1-(i-j);通过解析几何
-```java
-package leetcode;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-class Solution {
-    static char[][] qipan;
-    static boolean[] lieChongtu;
-    static boolean[] zuoChongtu;
-    static boolean[] youChongtu;
-    static List<List<String>> result;
-    public List<List<String>> solveNQueens(int n) {
-         result=new ArrayList<>();
-        qipan=new char[n][n];
-        for (int i = 0; i < qipan.length; i++) {
-            Arrays.fill(qipan[i],'.');
-        }
-        lieChongtu=new boolean[n];
-        zuoChongtu=new boolean[2*n-1];
-        youChongtu=new boolean[2*n-1];
-
-            dfs(0,n);
-            return result;
-    }
-
-    static void dfs(int i,int n){
-        if(i==n){
-            toret(qipan);
-            return;
-        }
-
-        for (int j = 0; j <n ; j++) {
-            if(lieChongtu[j] || zuoChongtu[j+i] || youChongtu[n-1-(i-j)]){  //判断冲突;
-                continue;
-            }
-            qipan[i][j]='Q';
-            lieChongtu[j]= zuoChongtu[i+j]=youChongtu[n-1-i+j]=true;
-            dfs(i+1,n);
-            qipan[i][j]='.';
-            lieChongtu[j]= zuoChongtu[i+j]=youChongtu[n-1-i+j]=false;
-        }
-        return ;
-
-
-    }
-    static void toret(char[][] ret){
-        ArrayList<String> al=new ArrayList<>();
-        for (int i = 0; i < ret.length; i++) {
-            al.add(String.valueOf(ret[i]));
-        }
-        result.add(al);
-    }
-}
-```
-
-
 
 
 
@@ -3030,12 +3226,99 @@ public class Main {
 - gcd(a,b)=gcd(b,a%b); 递归知道右边位置为0;
 - llm(a,b)=a*b/gcd(a,b);
 ## 同余原理
-- (a+b+c)%d=(((a+b)%d)+c)%d=((a%d+b%d)%d+c%d)%d *乘法类似
 - 每次运算都可以选择mod或者不mod
-(b-a)%m = (b-a+m%m)%m=(b%m-a%m+m)%m
+- (a+b+c)%d=(((a+b)%d)+c)%d=((a%d+b%d)%d+c%d)%d *乘法类似
 - 负余数=m+负余数
 负数可以+m转换为整数再mod
+(b-a)%m = (b-a+m%m)%m=(b%m-a%m+m)%m
+### 除法同余
+- +-* 同余原理可以用,除法不行
+- 逆元:b^(-1)==b^(m-2)%m  或者直接 biginteger.modInverse();                                                                                           
+- (a/b)%m == (a*b^(-1))%m ==(a%m * b^(m-2)%m)%m;
 
+### 快速幂
+- 直接用biginteger.modPow(a,b,m)几把洛谷测试了一道题递归还不如biginteger快;
+- 递归
+```java
+static int f(int a, int b, int m){
+    if(b == 0){
+        return 1;
+    }
+    if(b == 1){
+        return a % m;
+    }
+    long tmp;  //把中间变量设置为long 防止溢出
+    if(b % 2 == 0){
+        tmp = f(a, b >> 1, m);
+        return (int)((tmp * tmp) % m); //tmp返回的时候已经是mod过的了没必要再mod了
+    } else {
+        tmp = f(a, b >> 1, m);
+        return (int)(((tmp * tmp) % m * (a % m)) % m);  //每步运算都运用同余原理防止溢出;
+    }
+
+```
+
+
+## 素数相关
+一般素数都是 i*i<=n !!!!!
+## 判断小素数
+- 6k+-1 先判断是否在这个集合中,然后遍历sqrt(n);
+##  判断大质数
+### miller rabin
+<10^9 用miller rabin测试
+### BigInteger  .isProbablePrime(10);
+> 的话用biginteger 库 
+.isProblePrime(10) 中间arg是测试的次数;
+## 素数分解
+- 技术细节
+划分指针,
+自动跳过合数4直接跳过因为4=2*2 ,
+i*i<=n i表示2-i的质数都榨完了 如果i超过每次的根号n 根据对称性根号n之前没有质数可榨了就剩判断n本身和1了
+```java
+static void f(int n){
+        for (int i = 2; i *i<=n ; i++) {
+            //while 先操作再说
+                while (n%i==0){
+                    n=n/i;
+                    out.println(i);
+                }
+        }
+        if(n!=1){
+            out.println(n);
+        }
+    }
+```
+
+## 埃氏素数筛
+- 质数的倍数都是合数
+- ![alt text](image-23.png)
+- n*log(logn)  一般用这个筛就行 虽然欧拉筛是n级别的
+- 2-n范围筛出质数
+- i*i<=n就行因为根据对称性另一半肯定也筛完了
+- 先都设置为质数false 然后从2开始2的倍数都是合数  3从3*3开始因为 3*2已经被2筛了
+```java
+public static int ehrlich(int n) {
+		// visit[i] = true，代表i是合数
+		// visit[i] = false，代表i是质数
+		// 初始时认为0~n所有数都是质数
+		boolean[] visit = new boolean[n + 1];
+		for (int i = 2; i * i <= n; i++) {  //i*i<=n因为之后的已经筛过了
+			if (!visit[i]) {  //是质数就筛
+				for (int j = i * i; j <= n; j += i) {
+					visit[j] = true;
+				}
+			}
+		}
+		int cnt = 0;
+		for (int i = 2; i <= n; i++) {
+			if (!visit[i]) {
+				// 此时i就是质数，可以收集，也可以计数
+				cnt++;
+			}
+		}
+		return cnt;
+	}
+```
 
 # 字符串
 ## KMP
