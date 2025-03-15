@@ -494,7 +494,98 @@ arr[l+2]+=e
 通过两次微分离散函数可以得到
 ## 二维前缀和
 - 二维积分  →→  ↓↓ all 行积分 再 all列积分
+- 容斥原理
+## 二维差分
+- 同理一维;
 
+# 树状数组
+- 用来维护可微分的函数(可差分的信息)
+- 最值等不可差分的信息可以用线段树维护
+- 技术细节:
+下标一定要从1开始
+^性质:无进位加法,...
+Brian算法(n&-n)
+## 性质
+- i所维护的范围是[i-i&-i+1,i]; or (i-i&-i,i]
+- 包含i的所有点是f(i)=i+i&-i;
+![alt text](image-25.png)
+## add sum方法
+- 根据性质可得;
+- add(i,x)在所有包含i的点上+=x;
+- sum(i)依次寻找i之前的所有维护范围累加;
+## TreeArray类
+```java
+class TreeArray {
+    int[] treeArray;
+
+    //可以用方法重载实现两种构造方法;
+    TreeArray(int[] arr) {
+        treeArray = new int[arr.length + 1];
+        for (int i = 1; i < treeArray.length; i++) {
+            add(i, arr[i - 1]);
+        }
+    }
+    TreeArray(int n) {
+        treeArray = new int[n+1 + 1];
+    }
+
+    // 单点更新：在第 i 个位置加上 x
+    void add(int i, int x) {
+        // 保证 i 小于 treeArray 的长度
+        while (i < treeArray.length) {
+            treeArray[i] += x;
+            // 注意括号，保证先计算 (i & -i)
+            i = i + (i & -i);
+        }
+    }
+
+    // 返回 1~i 的前缀和
+    int sum(int i) {
+        int sum = 0;
+        while (i > 0) {
+            sum += treeArray[i];
+            i = i - (i & -i);
+        }
+        return sum;
+    }
+
+    // 返回区间 [l, r] 的和
+    int range(int l, int r) {
+        return sum(r) - sum(l - 1);
+    }
+}
+
+
+```
+## 单点增加范围查询
+用treearray维护就行
+## 范围增加单点查询
+用treearray来维护原数组的差分数组(导函数)
+## 范围增加范围查询
+直接线段树
+
+## 二维
+- 线段树解决二维得用树套树所以用树状数组;
+- 范围增加单点查询和单点增加范围查询直接同理一维增加一个for循环
+```java
+private void add(int x, int y, int v) {
+			for (int i = x; i <= n; i += lowbit(i)) {
+				for (int j = y; j <= m; j += lowbit(j)) {
+					tree[i][j] += v;
+				}
+			}
+		}
+		// 从(1,1)到(x,y)这个部分的累加和
+		private int sum(int x, int y) {
+			int ans = 0;
+			for (int i = x; i > 0; i -= lowbit(i)) {
+				for (int j = y; j > 0; j -= lowbit(j)) {
+					ans += tree[i][j];
+				}
+			}
+			return ans;
+		}
+```
 
 
 # 滑动窗口
@@ -545,7 +636,7 @@ https://leetcode.cn/problems/sort-array-by-parity-ii/description/
 - 满足交换结合律
 - n^n=0  n^0=n;
 - 补集 A包含于C  补集就是 C^A   a^b=c   a^b^b=c^b  a^0=c^b a=c^b;
-
+- brian算法取出最右侧的1;n&(-n)=n&(~n+1);
 ### 应用
 - 一个树奇数次其他所有数都是偶数次  
 aa b cccc dd   直接求xor和 就是b;

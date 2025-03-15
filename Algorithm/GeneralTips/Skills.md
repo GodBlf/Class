@@ -1,44 +1,117 @@
 [TOC]  
 
-# ReadMe
+ ReadMe
 算法 数据结构 方面的注意事项 技巧 和数学有关的技巧等(Tips)不是具体的知识;实际编程语言的Tips不写入
-# Algorithm
+ Algorithm
 
-## Recursion
+# Recursion
 用memo进行优化;
-### dp
+## dp
 dp表
 降维
-### dc
+## dc
 
-### bt
+## bt
 
-## DynamicPrograming
+# DynamicPrograming
 
-## BackTracking
+# BackTracking
 
-## Cache
+# Cache
 out in
-### Queue
-### Stack
-### PriorityQueue
-### MonotonicQueue MonotonicStack
+## Queue
+## Stack
+## PriorityQueue
+## MonotonicQueue MonotonicStack
 
 
 
-# Tips
-## 通过Tree来考虑数据结构和算法
+# 通过Tree来考虑数据结构和算法
 - 例如bfs 和 dfs 的queue stack实现,递归.递归树遍历;
-## 指针(地址)的思想去考率类和对象
+# 指针(地址)的思想去考率类和对象
 new Object<>() 构造方法生成的对象是一个地址
 让后 Object<> var =new Object<>() 这个var是指向这个地址的指针
 因为指针所以  让arr1=arr仅是让指针指向同一个不是copy;
 
-## 递归思想:
+# 指针技巧
+## 记忆指针
+- memo point
+- 例如(二叉树模拟递归遍历)  用指针记忆是否return的状态;
+```java
+TreeNode head=node;
+TreeNode pop=null;
+ArrayDeque<TreeNode> cache=...;
+static void dfs(TreeNode node){
+     while(true){
+            if(head==null && cache.isEmpty()){
+                break;
+            }
+            if(head!=null){
+                cache.push(head);
+                head=head.left;
+            }else{   // null是叶子节点 return;
+                TreeNode peek = cache.peek();
+                if(peek.right==pop || peek.right==null){  //如果右子树是null或者已被弹出直接return
+                    pop = cache.pop();  //标记
+                    result.add(pop.val);
+                }else{
+                    head=peek.right;        //否则head标记为right然后继续进栈;
+                }
+            }
+
+        }
+}
+```
+
+## 不回退指针
+- no back nb指针
+- 例如将数组排序,kmp算法等,A-Bproblem,滑动窗口,供暖器
+
+### 双指针统计(归并)
+将两部分排序
+n^2的统计通过排序变为n
+```java
+// 统计部分
+		long ans = 0;
+		for (int j = m + 1, i = l, sum = 0; j <= r; j++) {
+			while (i <= m && arr[i] <= arr[j]) {
+				sum += arr[i++];
+			}
+			ans += sum;
+		}
+```
+
+## 划分指针
+- divide point
+- 用指针划分区域
+### 例子
+#### 三指针划分(快速)
+<的在a左边 大于的在b右边
+```java
+public static void partition2(int[] arr, int l, int r, int x) {
+		first = l;
+		last = r;
+		int i = l;
+		while (i <= last) {
+			if (arr[i] == x) {
+				i++;
+			} else if (arr[i] < x) {
+				swap(arr, first++, i++);
+			} else {
+				swap(arr, i, last--); //i不变因为交换过来的还没有遍历;
+			}
+		}
+	}
+```
+
+#### 二分搜索划分红蓝区域寻找边界
+
+
+# 递归思想:
 - 递归树
 ![alt text](7113268cadc2876214b893736260c100.jpg)
 递归是对递归树的遍历
-### 递归树性质:
+## 递归树性质:
 - State
 1个栈{}代表一个节点,每个节点都有一个状态,f(n)n就代表根节点状态
 回溯:基本数据类型的状态,随栈自动改变,引用数据类型的状态需要手动改变
@@ -107,7 +180,6 @@ public static int[] arr;
 
         arr[n]=arr[n-1]+arr[n-2];
 
-
     }
 ```
 
@@ -129,15 +201,13 @@ while(true){
 while(!boundary case) 等价于 while if(boundary case) break;
 if() return  等价于  if else
 
-
-## Cache数据结构
+# Cache数据结构
 - dfs bfs dijkstra都是 dad out child in的过程
 - 节点in or out cache 时候标记为ture相应的 进入 或者拉出的时候判断是否需要continue
 - 将第一个节点压入(offer/push)cache来启动
 - 父节点拉出(poll/pop),符合要求的子节点进入(push/offer)cache再进行操作;
 
-
-## if/else
+# if/else
 ![alt text](1aa00cfeb4f84a6f7dfad89a36cd2c10.jpg)
 ![alt text](4258aee49f7139b2b3a2469eff118ebe.jpg)
 Object state divide and choose 对对象状态的分划和选择,对象可以是变量,序偶等,例如a>b相当于(a,b)的state;选择某个状态就在假设某个状态成立下进行后续操作;注意合并逻辑
@@ -165,11 +235,11 @@ Priority sequence
 //3. if/else/else if 为分支结构 **最终必汇合到顺序结构**
 //4. 先考虑分支结构再考虑叶子结构和短路结构 来简化代码分支;
 ```
-### 例题素分解
+## 例题素分解
 ```c
-#include<stdio.h>
-#include<stdlib.h>
-#include<math.h>
+include<stdio.h>
+include<stdlib.h>
+include<math.h>
 void sufenjie(int n){
 	printf("%d=",n);
 	if(n%2==0){
@@ -208,13 +278,12 @@ int main(){
 }
 ```
 
-
-## null 
+# null 
 - 要考虑null空的情况很多时候都有空这个边界条件
 - 在操作数据结构中通常数据结构为null的时候就会报错所以
-## 合并逻辑
+# 合并逻辑
 - 减少if嵌套用逻辑量词&&||来合并逻辑
-## while和priority sequence
+# while和priority sequence
 先操作再说
 先想操作,然后直接while()后边补充边界判断 可以ifbreak 或者 !();
 如果需要循环指标i一定要先把这个写出来!!!!!!;
@@ -262,94 +331,21 @@ public class MonotonicQueue {
         }
 }
 ```
-## 善用三元运算符 ? :
+# 善用三元运算符 ? :
 
-
-## 状态与回溯
+# 状态与回溯
 - 目前遇到的状态栈,int n ,
 - 基本数据类型因为是副本自动回溯
 - 引用数据类型手动回溯;
 
 
-## 指针技巧
-### 记忆指针
-- memo point
-- 例如(二叉树模拟递归遍历)  用指针记忆是否return的状态;
-```java
-TreeNode head=node;
-TreeNode pop=null;
-ArrayDeque<TreeNode> cache=...;
-static void dfs(TreeNode node){
-     while(true){
-            if(head==null && cache.isEmpty()){
-                break;
-            }
-            if(head!=null){
-                cache.push(head);
-                head=head.left;
-            }else{   // null是叶子节点 return;
-                TreeNode peek = cache.peek();
-                if(peek.right==pop || peek.right==null){  //如果右子树是null或者已被弹出直接return
-                    pop = cache.pop();  //标记
-                    result.add(pop.val);
-                }else{
-                    head=peek.right;        //否则head标记为right然后继续进栈;
-                }
-            }
-
-        }
-}
-```
-- 还如二分查找中记忆上个>=tg的答案实现寻找最左侧目标值;
-
-### 不回退指针
-- no back nb指针
-- 例如将数组排序,kmp算法等,A-Bproblem,滑动窗口,供暖器
-
-#### 双指针统计(归并)
-将两部分排序
-n^2的统计通过排序变为n
-```java
-// 统计部分
-		long ans = 0;
-		for (int j = m + 1, i = l, sum = 0; j <= r; j++) {
-			while (i <= m && arr[i] <= arr[j]) {
-				sum += arr[i++];
-			}
-			ans += sum;
-		}
-```
-### 划分指针
-- 用指针划分区域
-#### 三指针划分(快速)
-<的在a左边 大于的在b右边
-```java
-public static void partition2(int[] arr, int l, int r, int x) {
-		first = l;
-		last = r;
-		int i = l;
-		while (i <= last) {
-			if (arr[i] == x) {
-				i++;
-			} else if (arr[i] < x) {
-				swap(arr, first++, i++);
-			} else {
-				swap(arr, i, last--); //i不变因为交换过来的还没有遍历;
-			}
-		}
-	}
-```
-
-
-
-## 状态与回溯
+# 状态与回溯
 - 目前遇到的状态栈,int n ,
 - 基本数据类型因为是副本自动回溯
 - 引用数据类型手动回溯;
 
 
-
-## 数组索引
+# 数组索引
 index+1 = num(index) 指定索引右一位为到此索引的元素个数  
 
 可以考虑为  0,1,2,3,4,5,...,n,n_length ;  
@@ -357,20 +353,17 @@ index+1 = num(index) 指定索引右一位为到此索引的元素个数
 - for(int i=0;i<n;i++) 这个循环次数是n  用数学角度考虑就是 [0,n) 就是 [0,n-1] n-1+1 就是n个元素;
 
 
-
-
-## flag标记变量
+# flag标记变量
 - cnt flag 等等
 
-
-## sentry 哨兵指针
+# sentry 哨兵指针
 扫雷的外围一圈0;字符串""都起到辅助作用;
 例如在快速排序的时候 i指针就是i左边的都是小于pivot的 最后再将pivot插入sentry中;
 数据结构也常用sentry ;
-## Cache
+# Cache
 stack queue priorityqueue 等在bfs dfs等算法中起到cache 临时存储数据的作用;
 
-## 指针参数の函数设计 int[] arr=new int[1];
+# 指针参数の函数设计 int[] arr=new int[1];
 翁恺c语言讲过
 - void f(int * arr,int x){}; java中 可以设计public static int[] arr;静态变量代替这个;
 比int * f(int x){}好 
@@ -382,14 +375,13 @@ stack queue priorityqueue 等在bfs dfs等算法中起到cache 临时存储数�
 使用数组或对象传递 cnt
 如果你不想改变函数签名，可以使用一个数组或对象来保存 cnt，这样就能通过引用传递 cnt 的值了。
 
-## 数组可以考虑成 正半轴,元素索引的右边一位就是前边所有元素的个数,例如{4,3,5,567,4}索引(2,5) 右边一共3个元素 size-index 就是index前边所有元素的个数;
+# 数组可以考虑成 正半轴,元素索引的右边一位就是前边所有元素的个数,例如{4,3,5,567,4}索引(2,5) 右边一共3个元素 size-index 就是index前边所有元素的个数;
 
 
-
-## new
+# new
 对某个对象进行操作的时候,最好把结果弄到一个new的对象上例如矩阵转置结果,new在一个新矩阵里否则原矩阵操作困难;
 ```c
-#include<stdio.h>
+include<stdio.h>
 
 int main(){
     int n, m;
@@ -427,26 +419,25 @@ int main(){
 
 ```
 
-## temp
+# temp
 - 交换两个数需用道中间变量temp;
 - a=a^b;b=a^b;a=a^b;
 - int temp=a;
 		a=(int)((a+b)-abs(a-b))/2;
 		b=(int)((temp+b)+abs(temp-b))/2;
 
-
-## arr[i++] 
+# arr[i++] 
 可以实现数组后缀添加;这就是迭代器Iterator的原理 循环完以后正好 为数组个数n;
-## dx dy
+# dx dy
 - int[] dx={0,-1,1,0,0};
 - int[] dy={-1,0,0,1,0};
 http://xmuoj.com/problem/GW033
 
 ```c
-#include<string.h>
-#include<stdio.h>
-#include<math.h>
-#include<stdlib.h>
+include<string.h>
+include<stdio.h>
+include<math.h>
+include<stdlib.h>
 
 int main(){
 	int di[]={0,-1,1,0,0};
@@ -490,19 +481,13 @@ int main(){
 	
 }
 ```
-## 打表法
 
 
 
 
+ 数论("%"(mod) and /) 
 
-
-
-
-
-# 数论("%"(mod) and /) 
-
-## 进制(mod)
+# 进制(mod)
 - 10进制转2进制;
 ```c
 int main(){
@@ -515,7 +500,7 @@ int main(){
 	}
 }
 ```
-## 判断素数
+# 判断素数
 final 优化
 1. Math.sqrt(n) 
 2. 6k+-1;
@@ -539,10 +524,10 @@ public static boolean isPrimeNumber(int n) {
 	}
 
 ```
-## 质分解
+# 质分解
 奇数的奇数分解一定是素分解
 ```c
-#include <stdio.h>
+include <stdio.h>
 
 // 函数：质因数分解
 void prime_factors(int n) {
@@ -582,7 +567,7 @@ int main() {
 
 ```
 
-## 辗转相除法 gcd 和 lcm
+# 辗转相除法 gcd 和 lcm
 辗转相除法（也称为欧几里得算法）
 
 **定理**：两个整数 \(a\) 和 \(b\) 的最大公约数等于 \(b\) 和 \(a \mod b\) 的最大公约数（这里 \(a \mod b\) 表示 \(a\) 除以 \(b\) 的余数）。
@@ -595,7 +580,7 @@ int main() {
 
 ---
 
-### **算法步骤**
+## **算法步骤**
 1. 假设我们需要计算两个正整数 \(a\) 和 \(b\) 的最大公约数（假设 \(a > b\））。
 2. 求 \(a \mod b\)。
 3. 将 \(a\) 更新为 \(b\)，\(b\) 更新为 \(a \mod b\)。
@@ -604,11 +589,11 @@ int main() {
 
 ---
 
-### **C语言实现**
+## **C语言实现**
 以下是辗转相除法的 C 语言实现：
 
 ```c
-#include <stdio.h>
+include <stdio.h>
 
 // 函数定义：计算两个整数的最大公约数
 int gcd(int a, int b) {
@@ -639,7 +624,7 @@ int main() {
 
 ---
 
-### **代码说明**
+## **代码说明**
 1. **函数 `gcd`**：
    - 输入两个整数 \(a\) 和 \(b\)。
    - 使用 `while` 循环不断计算 \(a \mod b\)，并更新 \(a\) 和 \(b\) 的值。
@@ -652,7 +637,7 @@ int main() {
 
 ---
 
-### **运行示例**
+## **运行示例**
 假设输入两个整数 56 和 98：
 
 ```plaintext
@@ -670,11 +655,11 @@ int main() {
 
 ---
 
-### **递归实现**
+## **递归实现**
 辗转相除法也可以用递归方式实现：
 
 ```c
-#include <stdio.h>
+include <stdio.h>
 
 // 递归函数定义
 int gcd(int a, int b) {
@@ -708,10 +693,10 @@ int main() {
 
 以下是一个完整的 C 语言实现，用于计算两个正整数的最小公倍数。
 
-### 代码实现
+## 代码实现
 
 ```c
-#include <stdio.h>
+include <stdio.h>
 
 // 求最大公约数（使用欧几里得算法）
 int gcd(int a, int b) {
@@ -750,7 +735,7 @@ int main() {
 
 ---
 
-### 代码说明
+## 代码说明
 
 1. **最大公约数函数 `gcd`**:
    - 使用 **欧几里得算法** 计算两个数的最大公约数。
@@ -767,31 +752,31 @@ int main() {
 
 ---
 
-### 示例运行
+## 示例运行
 
-#### 输入：
+### 输入：
 ```
 请输入两个正整数：12 18
 ```
 
-#### 输出：
+### 输出：
 ```
 最小公倍数是：36
 ```
 
-#### 输入：
+### 输入：
 ```
 请输入两个正整数：7 5
 ```
 
-#### 输出：
+### 输出：
 ```
 最小公倍数是：35
 ``` 
 
 ---
 
-### 注意事项
+## 注意事项
 1. 输入的数必须是正整数，代码中已做简单的输入检查。
 2. 如果需要支持更大的数，建议使用 64 位整数（`long long`）。
 
@@ -799,13 +784,7 @@ int main() {
 
 
 
-
-
-
-
-
-## mod运算满足加法和乘法的分配率;
-
+# mod运算满足加法和乘法的分配率;
 
 
 
@@ -816,33 +795,24 @@ int main() {
 
 
 
-
-
-
-
-
-
-
-
-# 其他数学
-## 几何
+ 其他数学
+# 几何
 八皇后问题左斜线和右斜线冲突通过 y=x x+y=1的解析几何角度考虑下标映射;
-# 线性代数(向量)
+ 线性代数(向量)
 
-## 两数最值的向量表示
+# 两数最值的向量表示
 ```
 int max=(a+b+abs(a-b))/2;
 int min=(a+b-abs(a-b))/2;
 ```
 
-
-# 分析学(Function)
-## 数组映射(自然数集)
-### 统计字符串字母出现次数
+ 分析学(Function)
+# 数组映射(自然数集)
+## 统计字符串字母出现次数
 ```
-#include<stdio.h>
-#include<math.h>
-#include<string.h>
+include<stdio.h>
+include<math.h>
+include<string.h>
 int main(){
 	char ipt;
 	int arr[1001]={0};
