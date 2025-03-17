@@ -5,3 +5,5 @@ https://sms-activate.io/cn/freePrice#activation
 
 # 拥有一个Google账号那么你才能够开始使用一些国外网站,而且谷歌安全性不用质疑,谷歌因为未向china统治者提供用户数据而失去了中国市场.
 [谷歌账号注册](https://discord.com/channels/1218507417533419531/1236290172145111120)
+
+注册好后记得要保号 不要频繁切换节点并开启两步验证;

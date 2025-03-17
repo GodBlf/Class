@@ -19,6 +19,7 @@ dp表
 
 # Cache
 out in
+每次out / in都必须边界判断;
 ## Queue
 ## Stack
 ## PriorityQueue
@@ -278,14 +279,22 @@ int main(){
 }
 ```
 
-# null 
+# 边界判断
+## 记忆指针 判断
+归并排序中,
+## null 
 - 要考虑null空的情况很多时候都有空这个边界条件
 - 在操作数据结构中通常数据结构为null的时候就会报错所以
+## ∞溢出判断
+- 数组越界
+- integer.MAX_VALUE 相加溢出
+- 
 # 合并逻辑
 - 减少if嵌套用逻辑量词&&||来合并逻辑
 # while和priority sequence
 先操作再说
-先想操作,然后直接while()后边补充边界判断 可以ifbreak 或者 !();
+考虑一般情况再考虑边界情况
+先想一般情况操作,然后直接while()后边补充边界判断 可以ifbreak 或者 !();
 如果需要循环指标i一定要先把这个写出来!!!!!!;
 在循环操作的时候直接 while(!cache.isEmpty() || ...){}来操作
 既能减少嵌套if 又能防止null异常;
