@@ -154,8 +154,6 @@ indexOf(String str, int fromIndex)
 Math.max 同理
 
 
-
-
 ### Arrays类
 - Arrays.sort(int [] arr); 将数组arr 升序排列 
 - Arrays.binarySearch(int[] arr,int tg); 
@@ -163,7 +161,6 @@ Math.max 同理
 ##### Collections.sort
 Collections.sort(Collectiong arr , new Comparator(){@Override public int compare(Object o1,Object o2){}});
 重写比较方法 参数为arr中的相邻两元素 1 是交换 -1是不交换;
-
 
 
 # 集合API
@@ -231,7 +228,6 @@ binarySearch()  找不到返回 -(index+1);同arrays.binarySearch
 
 ### Stack
 
-
 ## PriorityQueue<E>
 - 基于heap堆实现
 - 可用Comparator<E>接口对元素进行优先级比较;
@@ -282,7 +278,6 @@ class FindUnion{
 }
 ```
 
-
 ## MonotonicQueue<E>
 ```java
 package tools;
@@ -314,7 +309,6 @@ public class MonotonicQueue {
 }
 
 ```
-
 
 ## HashSet
 - 哈希表 值对N集的映射
@@ -499,8 +493,9 @@ arr[l+2]+=e
 - 同理一维;
 
 # 树状数组
+- 线段树是从顶层二分构建,树状数组是从底层2的幂构建;
 - 用来维护可微分的函数(可差分的信息)
-- 最值等不可差分的信息可以用线段树维护
+- 最值等不可差分的信息直接交给线段树
 - 技术细节:
 下标一定要从1开始
 ^性质:无进位加法,...
@@ -555,7 +550,6 @@ class TreeArray {
     }
 }
 
-
 ```
 ## 单点增加范围查询
 用treearray维护就行
@@ -586,7 +580,132 @@ private void add(int x, int y, int v) {
 			return ans;
 		}
 ```
+### 范围增加范围查询
+![alt text](image-27.png)
+维护 [i][j] [i][j]i  [i][j]j [i][j]ij 4个树状数组;
 
+## 离散化
+- 将数组值映射到连续的正数数组中
+- 例如用treeset logn级别的离散化操作
+```java
+int[] arr=new int[]{1,3,4,4,55,6,7};
+        TreeSet<Integer> set=new TreeSet<>(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o1-o2;
+            }
+        });
+        for (int i : arr) {
+            set.add(i);
+        }
+        HashMap<Integer,Integer> map=new HashMap<>();
+        int cnt=1;
+        for (Integer i : set) {
+            map.put(i,cnt++);
+        }
+        
+        int[] arrnew=new int[arr.length];
+        for (int i = 0; i < arrnew.length; i++) {
+            arrnew[i]=map.get(arr[i]);
+        }
+
+```
+# 线段树
+- 技术细节:
+维护一段区间的信息,解决范围增加范围查询的题目
+jobl,jobr区间不断在线段树上往下筛直到包围住某个节点维护的区间;最后递归树的叶子节点组合成线段正好是jobl,jobr这个线段所以叫线段树
+lazy机制:包住某个区间直接返回在lazy数组中记录并+=tree中的信息,每次下筛经过此区域再下发lazy的信息;
+- 一维线段树树状数组都可以,二维树状数组;
+- 范围查询和范围修改![alt text](image-29.png)
+- 下标从1开始将数组拆成子线段然后分成二叉树 二叉树数组大小为4*n+1 子节点是2*i 和 2*i+1;
+- 递归填写每个节点的值; 
+- 建树,query方法
+```java
+static void build(int[] arr, int l, int r, int index) {
+        if (l == r) {
+            tree[index] = arr[l];
+            return;
+        }
+        int mid = (l + r) >> 1;
+        build(arr, l, mid, index << 1);
+        build(arr, mid + 1, r, index << 1 | 1);
+        // 节点的值为左右子树和的累加
+        tree[index] = tree[index << 1] + tree[index << 1 | 1];
+    }
+
+
+
+```
+## lazy update
+- 记忆指针;
+- 懒更新:遇到包住的区间直接修改当前维护区间的值然后记录在lazy数组中,相当于记忆指针记忆了以后子树需要更新的信息
+懒住了,以后的子树不管了,等下筛经过此节点再下发更新子树的维护信息;
+## segmenttreejava类
+```java
+class SegmentTree{
+    int n;
+    int[] tree;
+    int[] lazy;
+    SegmentTree(int n){
+        this.n=n;
+        tree=new int[n<<2];
+        lazy=new int[n<<2];
+    }
+    void build(int[] arr,int l,int r,int i){
+        if(l==r){
+            tree[i]=arr[l];
+            return;
+        }
+        int m=(r+l)>>1;
+        build(arr,l,m,i<<1);
+        build(arr,m+1,r,i<<1 | 1);
+        tree[i]=tree[i<<1]+tree[i<<1 | 1];
+        return ;
+    }
+    void lazy(int jobv,int i,int n){
+        lazy[i]+=jobv;
+        tree[i]+=jobv*n;
+    }
+    void down(int i,int ln,int rn){
+        if(lazy[i]!=0){
+            lazy(lazy[i],i<<1,ln);
+            lazy(lazy[i],i<<1 | 1,rn);
+
+            lazy[i]=0;
+        }
+    }
+    int query(int jobl,int jobr,int l,int r,int i){
+        if(jobl<=l && r<=jobr){
+            return tree[i];
+        }
+        int m=(r+l)>>1;
+        int ans=0;
+        down(i,m+1-l,r-m);
+        if(jobl<=m){
+            ans+=query(jobl,jobr,l,m,i<<1);
+        }
+        if(jobr>=m+1){
+            ans+=query(jobl,jobr,m+1,r,i<<1 | 1);
+        }
+        return ans;
+    }
+    void add(int jobl,int jobr,int jobv,int l,int r,int i){
+        if(jobl<=l && r<=jobr){
+            lazy(jobv,i,r+1-l);
+            return ;
+        }
+        int m=(r+l)>>1;
+        down(i,m+1-l,r-m);
+        if(jobl<=m){
+            add(jobl,jobr,jobv,l,m,i<<1);
+        }
+        if(jobr>=m+1){
+            add(jobl,jobr,jobv,m+1,r,i<<1 | 1);
+        }
+        tree[i]=tree[i<<1] + tree[i<<1 | 1];
+    }
+}
+```
 
 # 滑动窗口
 - 用两个不回退指针来表示滑动窗口
@@ -604,7 +723,6 @@ https://leetcode.cn/problems/sort-array-by-parity-ii/description/
 - 可把数组抽象成一个链表,然后这个链表就有环了所以可以通过快慢指针来做
 - 证明用同余定理
 - 相遇后都用慢的速度让一个指针回到起始点
-
 
 # 2进制和位运算
 ## 2进制讨论(补码)
@@ -624,7 +742,6 @@ https://leetcode.cn/problems/sort-array-by-parity-ii/description/
 - <<n  二进制表示右移n位;相当于乘了2^n;
 - >>n  二进制表示左移n位,相当于整除了2^n;
 - int n  n& 1<<i 可取出n二进制下第i位的数;
-
 
 检查奇偶性：使用 a & 1 来检查一个整数是否为奇数（如果结果为 1，则为奇数）。
 
@@ -655,11 +772,9 @@ a = a ^ b;
 
 -
 
-
 # 递归
 - 递归可以看做对递归树的dfs 深搜
 - 仅有logn级别的程序能够使用递归因为2^n 的幂级数很大!
-
 
 ## master公式
 - 规模相同的子状态;
@@ -779,91 +894,11 @@ public static int merge(int[] arr, int l, int m, int r) {
 ## 快速排序
 
 ## 快速分治
-## 二分
-- 为什么将二分并入递归因为二分是logn级别的非常适合递归!
-### 二分搜索
-- 可视为logn级别的递归;
-- 技术细节
-可以设置一个ans记忆指针;
-严格的<> 和严格的 如果arr[mid]<tg left一定是mid+1  
-
-数组升序排列;
-设置left  right 两个指针 和一个ans 记忆指针;
-
-输出最左边的目标值left
-```java
-// 有序数组中找>=num的最左位置
-	public static int findLeft(int[] arr, int num) {
-		int l = 0, r = arr.length - 1, m = 0;
-		int ans = -1;
-		while (l <= r) {  //终止条件是r<l因为相等的时候还要判断;
-			// m = (l + r) / 2;
-			// m = l + (r - l) / 2;
-			m = l + ((r - l) >> 1);
-			if (arr[m] >= num) {
-				ans = m;  //ans记忆指针
-				r = m - 1;
-			} else {
-				l = m + 1;
-			}
-		}
-		return ans;
-	}
-```
-最右边的类似;
-
-lefMost 可以在未找到tg时候 返回tg的极限值 如{1,2,3,5}找4返回 索引3
-
-java.util.Arrays中的 Arrays.binarySearch(数组,值);不会返回最左侧答案;
-这个要是没找到返回-(极限index+1);可以 abs(return)-1就是极限值;
-
-### 二分峰值问题
-找到数组中的一个峰值即可
-![alt text](image-12.png)
-罗尔种植定理
-```java
-
-		public static int findPeakElement(int[] arr) {
-			int n = arr.length;
-			if (arr.length == 1) {
-				return 0;
-			}
-			if (arr[0] > arr[1]) {
-				return 0;
-			}
-			if (arr[n - 1] > arr[n - 2]) {
-				return n - 1;
-			}
-			int l = 1, r = n - 2, m = 0, ans = -1; //指针皆为上升的对象//技术细节:二分查找皆为严格<>,
-
-			while (l <= r) {
-				m = (l + r) / 2;
-				if (arr[m - 1] > arr[m]) {
-					r = m - 1;
-				} else if (arr[m] < arr[m + 1]) {
-					l = m + 1;
-				} else {
-					ans = m;
-					break;
-				}
-			}
-			return ans;
-		}
-```
-
-### 二分答案
-- ![alt text](image-24.png)
-- 递归->递归树->二叉树
-#### 画家问题力扣410
 
 
 ### 优化
 1. /2优化改为 >>>1 无符号右移运算防止加起来溢出;
 2. mid 取值可以用别的测度代替 如连续测度等
-
-
-
-
 
 
 
@@ -1027,7 +1062,6 @@ class Main {
 
     }}
 
-
 ```
 
 ### 无重复组合
@@ -1082,7 +1116,6 @@ class Solution {
         }
         return ;
 
-
     }
     static void toret(char[][] ret){
         ArrayList<String> al=new ArrayList<>();
@@ -1096,9 +1129,98 @@ class Solution {
 
 
 
+# 二分
+- 很好的算法思想
+- 实现可以通过划分指针和记忆指针实现;
+- 因为是logn 级别的是递归的变种
+## 二分搜索
+- 可视为logn级别的递归;
+- 技术细节:
+- 划分指针 每个指针>= <= 不断往中间二分直到l+1=r;
+![alt text](image-26.png)
+https://www.bilibili.com/video/BV1d54y1q7k7/?share_source=copy_web&vd_source=4dd7efe758648db09e00b24d05324a19
+划分指针是寻找边界
+- 记忆指针是寻找具体的值
 
+- 划分指针:r划分>=tg的 l划分<tg的寻找< 和>=的边界;
+```java
+static int find(int[] arr,int tg){
+    int l=-1;int r=n;int m=0;
+    while(!(l+1==r)){
+        m=(l+r)>>1;
+        if(arr[m]>=tg){
+            r=m;
+        }else{
+            l=m;
+        }
+    }
+    return r;
+}
+```
+其他如<=tg最右侧 可寻找其他边界实现;
 
+- 记忆指针实现>=num的值;
+```java
+// 有序数组中找>=num的最左位置
+	public static int findLeft(int[] arr, int num) {
+		int l = 0, r = arr.length - 1, m = 0;
+		int ans = -1;
+		while (l <= r) {  //终止条件是r<l因为相等的时候还要判断;
+			// m = (l + r) / 2;
+			// m = l + (r - l) / 2;
+			m = l + ((r - l) >> 1);
+			if (arr[m] >= num) {
+				ans = m;  //ans记忆指针
+				r = m - 1;
+			} else {
+				l = m + 1;
+			}
+		}
+		return ans;
+	}
+```
+寻找最右侧的实现 可以在未找到tg时候 返回tg的极限值 如{1,2,3,5}找4返回 索引3
+java.util.Arrays中的 Arrays.binarySearch(数组,值);不会返回最左侧答案;
+这个要是没找到返回-(极限index+1);可以 abs(return)-1就是极限值;
 
+## 二分答案
+- ![alt text](image-24.png)
+- 递归->递归树->二叉树
+### 画家问题力扣410
+
+### 二分峰值问题
+找到数组中的一个峰值即可
+![alt text](image-12.png)
+罗尔种植定理
+```java
+
+		public static int findPeakElement(int[] arr) {
+			int n = arr.length;
+			if (arr.length == 1) {
+				return 0;
+			}
+			if (arr[0] > arr[1]) {
+				return 0;
+			}
+			if (arr[n - 1] > arr[n - 2]) {
+				return n - 1;
+			}
+			int l = 1, r = n - 2, m = 0, ans = -1; //指针皆为上升的对象//技术细节:二分查找皆为严格<>,
+
+			while (l <= r) {
+				m = (l + r) / 2;
+				if (arr[m - 1] > arr[m]) {
+					r = m - 1;
+				} else if (arr[m] < arr[m + 1]) {
+					l = m + 1;
+				} else {
+					ans = m;
+					break;
+				}
+			}
+			return ans;
+		}
+```
 
 # 复杂度
 1. 最差执行情况
@@ -1112,13 +1234,9 @@ class Solution {
 
 
 
-
-
 # 数据结构与算法引言
 - 数据结构分为 连续结构和跳转结构 数组和链表就是基本数据结构;
 - 算法分为硬计算和软计算  数学建模大量使用软计算;
-
-
 
 
 # 数组 
@@ -1219,17 +1337,13 @@ public void checkAndGrow(){
 }}
 
 
-
 	
 
-
 ```
-
 
 ## 二维数组
 int[][] array=new int[n][m];
 矩阵  array[i][j]  i是↓ j是→
-
 
 
 # 链表
@@ -1367,8 +1481,6 @@ public class SinglyLinkedList {
 
 
 
-
-
 }
 ```
 ### 单向链表(带哨兵)指的是让一个与数据无关的哨兵当头指针
@@ -1423,7 +1535,6 @@ head<->...<->head 双向
 ### 寻找交点
 
 ### 快慢指针
-
 
 ## 链表题目
 ### tips
@@ -1513,7 +1624,6 @@ class Solution {
 ### 两数相加力扣2t
 ```java
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -1554,7 +1664,6 @@ class Solution {
 
     }
 }
-
 
 
 ```
@@ -1709,7 +1818,6 @@ class Zhuzi {
 ```
 
 
-
 # 哈希表
 数据的哈希值到N的映射
 ## 哈希值
@@ -1717,10 +1825,8 @@ class Zhuzi {
 ```java
 public class HashTable{
 
-
 }
 ```
-
 
 
 # 树
@@ -1788,7 +1894,6 @@ public class Main {
             }
         }
         out.println(result);
-
 
         out.flush();
         out.close();
@@ -1906,9 +2011,7 @@ public static void preOrder(TreeNode head) {
 	}
 ```
 
-
 # 数据结构设计题目
-
 
 
 # 并查集
@@ -1916,7 +2019,7 @@ public static void preOrder(TreeNode head) {
 ![alt text](image-21.png)
 ![alt text](image-22.png)
 - 图的最小生成树 Kruscal算法需要
-- 就是个向上的链表加上find  union isSameSet方法;
+- 就是个向上的链表树加上find  union isSameSet方法;
 - 用栈模拟递归实现扁平化
 - 小挂大
 ## java类实现
@@ -2006,6 +2109,7 @@ class UnionFind{
 ```
 # 图
 - 可以直接在vertex类中定义一些变量例如 visited prev distance...用oop思想简化结构;
+- 好多算法都是cache out/in 结构一般仅in的时候判断边界进行优化,dijkstra因为out的时候确定最短路径需要out,in都判断;
 ## 概念
 - vertex edge 度 入度 出度 权 路径 连通图
 - 图的表示 :
@@ -2032,7 +2136,6 @@ public class Vertex {
 		//dijkstra
 		public int distance=Integer.MAX_VALUE ;
 		public Vertex prev;
-
 
 		public Vertex() {}
 
@@ -2062,6 +2165,512 @@ public class Edge {
 }
 ```
 - 链式前向星星(比赛减少空间);
+
+## 建图
+### 邻接表
+```java
+class Graph {
+    int n;
+    ArrayList<ArrayList<int[]>> arr = new ArrayList<>();// 边可以根据需要设置from w to  或者to
+    boolean[] visited;
+    int[] distance;
+    int[] prev;
+    
+    Graph(int n){
+        this.n = n;
+        visited = new boolean[n+1];
+        distance = new int[n+1];
+        prev = new int[n+1];
+        for (int i = 0; i < n + 1; i++) {
+            arr.add(new ArrayList<>());
+        }
+    }
+    
+    void addEdge(int a, int b, int c){
+        arr.get(a).add(new int[]{b, c});
+    }
+}
+
+
+```
+- 因为原算法都是用vertex类写的下面给出邻接表实现的算法
+```java
+import java.util.*;
+  
+public class Graph {
+    int n;   // 顶点数，顶点编号从 0 到 n-1
+    // 邻接表: 每个元素是 int[2] 数组，其中 [0]存储邻接顶点编号, [1] 存储边权重
+    ArrayList<ArrayList<int[]>> adj;
+    // 常用辅助数组，算法中可能需要重置
+    boolean[] visited;
+    int[] distance;   // 用于最短路算法等，初始值为 Integer.MAX_VALUE
+    int[] prev;       // 前驱数组，用于记录最短路径
+  
+    public Graph(int n) {
+        this.n = n;
+        adj = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            adj.add(new ArrayList<>());
+        }
+        visited = new boolean[n];
+        distance = new int[n];
+        prev = new int[n];
+        Arrays.fill(distance, Integer.MAX_VALUE);
+        Arrays.fill(prev, -1);
+    }
+  
+    // 添加边 a -> b, 权重为 weight
+    public void addEdge(int a, int b, int weight) {
+        adj.get(a).add(new int[]{b, weight});
+    }
+    
+    // 打印邻接表
+    public void printGraph() {
+        for (int i = 0; i < n; i++) {
+            System.out.print(i + " -> ");
+            for (int[] edge : adj.get(i)) {
+                System.out.print("(" + edge[0] + ", " + edge[1] + ") ");
+            }
+            System.out.println();
+        }
+    }
+    
+    // 重置 visited 数组（便于重复使用 DFS/BFS 等）
+    public void resetVisited() {
+        Arrays.fill(visited, false);
+    }
+    
+    // ------------------------------------------------------------
+    // 拓扑排序（适用于有向无环图）
+    public List<Integer> topologicalSort() {
+        int[] indegree = new int[n];
+        // 统计每个顶点的入度
+        for (int u = 0; u < n; u++) {
+            for (int[] edge : adj.get(u)) {
+                int v = edge[0];
+                indegree[v]++;
+            }
+        }
+  
+        Queue<Integer> queue = new ArrayDeque<>();
+        for (int i = 0; i < n; i++) {
+            if (indegree[i] == 0) {
+                queue.offer(i);
+            }
+        }
+  
+        List<Integer> topoOrder = new ArrayList<>();
+        while (!queue.isEmpty()) {
+            int u = queue.poll();
+            topoOrder.add(u);
+            for (int[] edge : adj.get(u)) {
+                int v = edge[0];
+                indegree[v]--;
+                if (indegree[v] == 0) {
+                    queue.offer(v);
+                }
+            }
+        }
+  
+        if (topoOrder.size() != n) {
+            System.out.println("图中存在环, 拓扑排序失败");
+            return null;
+        }
+        return topoOrder;
+    }
+  
+    // ------------------------------------------------------------
+    // BFS 广度优先搜索 (队列实现), 从起点 start 开始
+    public void bfs(int start) {
+        resetVisited();
+        Queue<Integer> queue = new LinkedList<>();
+        visited[start] = true;
+        queue.offer(start);
+  
+        while (!queue.isEmpty()) {
+            int u = queue.poll();
+            System.out.print(u + " ");
+            for (int[] edge : adj.get(u)) {
+                int v = edge[0];
+                if (!visited[v]) {
+                    visited[v] = true;
+                    queue.offer(v);
+                }
+            }
+        }
+        System.out.println();
+    }
+  
+    // ------------------------------------------------------------
+    // DFS 递归实现, 从顶点 u 开始
+    public void dfs(int u) {
+        if (visited[u]) return;
+        visited[u] = true;
+        System.out.print(u + " ");
+        for (int[] edge : adj.get(u)) {
+            int v = edge[0];
+            dfs(v);
+        }
+    }
+  
+    // DFS 非递归实现 (利用栈), 从起点 start 开始
+    public void dfsStack(int start) {
+        resetVisited();
+        Stack<Integer> stack = new Stack<>();
+        visited[start] = true;
+        stack.push(start);
+  
+        while (!stack.isEmpty()) {
+            int u = stack.pop();
+            System.out.print(u + " ");
+            // 若要求顺序与递归一致，则可以逆序遍历 u 的邻接表
+            List<int[]> neighbors = adj.get(u);
+            for (int i = neighbors.size() - 1; i >= 0; i--) {
+                int v = neighbors.get(i)[0];
+                if (!visited[v]) {
+                    visited[v] = true;
+                    stack.push(v);
+                }
+            }
+        }
+        System.out.println();
+    }
+  
+    // ------------------------------------------------------------
+    // Dijkstra 算法 (非负权图)
+    // 计算从起点 start 到各个顶点的最短距离，并记录前驱节点
+    public void dijkstra(int start) {
+        Arrays.fill(distance, Integer.MAX_VALUE);
+        Arrays.fill(prev, -1);
+        Arrays.fill(visited, false);
+        distance[start] = 0;
+  
+        // 优先队列根据当前距离排序
+        PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.comparingInt(u -> distance[u]));
+        pq.offer(start);
+  
+        while (!pq.isEmpty()) {
+            int u = pq.poll();
+            if (visited[u]) continue;
+            visited[u] = true;
+  
+            for (int[] edge : adj.get(u)) {
+                int v = edge[0], w = edge[1];
+                if (distance[u] != Integer.MAX_VALUE && distance[u] + w < distance[v]) {
+                    distance[v] = distance[u] + w;
+                    prev[v] = u;
+                    pq.offer(v);
+                }
+            }
+        }
+    }
+  
+    // ------------------------------------------------------------
+    // Bellman–Ford 算法 (可处理负权边，但无法处理负权环)
+    public boolean bellmanFord(int start) {
+        Arrays.fill(distance, Integer.MAX_VALUE);
+        Arrays.fill(prev, -1);
+        distance[start] = 0;
+  
+        // 共进行 n-1 轮松弛
+        for (int i = 1; i < n; i++) {
+            for (int u = 0; u < n; u++) {
+                for (int[] edge : adj.get(u)) {
+                    int v = edge[0], w = edge[1];
+                    if (distance[u] != Integer.MAX_VALUE && distance[u] + w < distance[v]) {
+                        distance[v] = distance[u] + w;
+                        prev[v] = u;
+                    }
+                }
+            }
+        }
+  
+        // 检查是否仍能松弛，若能则说明存在负权环
+        for (int u = 0; u < n; u++) {
+            for (int[] edge : adj.get(u)) {
+                int v = edge[0], w = edge[1];
+                if (distance[u] != Integer.MAX_VALUE && distance[u] + w < distance[v]) {
+                    System.out.println("检测到负权环");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+  
+    // ------------------------------------------------------------
+    // SPFA 算法 (Shortest Path Faster Algorithm)
+    // 利用队列实现，通常在实际情况中效率较好，同时可检测负权环
+    public boolean spfa(int start) {
+        Arrays.fill(distance, Integer.MAX_VALUE);
+        Arrays.fill(prev, -1);
+        Arrays.fill(visited, false);
+        int[] count = new int[n]; // 每个节点的松弛次数
+        distance[start] = 0;
+  
+        Deque<Integer> deque = new ArrayDeque<>();
+        deque.offer(start);
+        visited[start] = true;
+  
+        while (!deque.isEmpty()) {
+            int u = deque.poll();
+            visited[u] = false;
+  
+            for (int[] edge : adj.get(u)) {
+                int v = edge[0], w = edge[1];
+                if (distance[u] != Integer.MAX_VALUE && distance[u] + w < distance[v]) {
+                    distance[v] = distance[u] + w;
+                    prev[v] = u;
+                    if (!visited[v]) {
+                        deque.offer(v);
+                        visited[v] = true;
+                        count[v]++;
+                        if (count[v] >= n) {
+                            System.out.println("检测到负权环");
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+  
+    // ------------------------------------------------------------
+    // Floyd–Warshall 算法 (所有节点对最短路径)
+    public void floyd() {
+        int[][] dist = new int[n][n];
+        int[][] next = new int[n][n];  // 用于路径重构
+  
+        // 初始化距离矩阵
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(dist[i], Integer.MAX_VALUE);
+            for (int j = 0; j < n; j++) {
+                if (i == j) {
+                    dist[i][j] = 0;
+                    next[i][j] = j;
+                } else {
+                    next[i][j] = -1;
+                }
+            }
+            for (int[] edge : adj.get(i)) {
+                int v = edge[0], w = edge[1];
+                dist[i][v] = w;
+                next[i][v] = v;
+            }
+        }
+  
+        // 三重循环松弛所有路径
+        for (int k = 0; k < n; k++) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (dist[i][k] != Integer.MAX_VALUE && dist[k][j] != Integer.MAX_VALUE &&
+                        dist[i][k] + dist[k][j] < dist[i][j]) {
+                        dist[i][j] = dist[i][k] + dist[k][j];
+                        next[i][j] = next[i][k];
+                    }
+                }
+            }
+        }
+  
+        // 输出距离矩阵
+        System.out.println("Floyd–Warshall 最短路径矩阵:");
+        for (int i = 0; i < n; i++) {
+            System.out.println(Arrays.toString(dist[i]));
+        }
+  
+        // 示例：打印任意一对顶点之间的路径
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i != j && dist[i][j] != Integer.MAX_VALUE) {
+                    System.out.print("路径 " + i + " -> " + j + " : " + i);
+                    int k = i;
+                    while (k != j) {
+                        k = next[k][j];
+                        System.out.print(" -> " + k);
+                    }
+                    System.out.println();
+                }
+            }
+        }
+    }
+  
+    // ------------------------------------------------------------
+    // Kruskal 算法 (计算无向图的最小生成树)
+    // 由于邻接表实现通常应用于有向图，为避免重复计入无向图中的同一条边，
+    // 本示例中规定仅把 u < v 的边计入 MST 的候选列表
+    public List<UndirectedEdge> getAllEdges() {
+        List<UndirectedEdge> edges = new ArrayList<>();
+        for (int u = 0; u < n; u++) {
+            for (int[] edge : adj.get(u)) {
+                int v = edge[0], w = edge[1];
+                if (u < v) {
+                    edges.add(new UndirectedEdge(u, v, w));
+                }
+            }
+        }
+        return edges;
+    }
+  
+    public List<UndirectedEdge> kruskalMST() {
+        List<UndirectedEdge> edgeList = getAllEdges();
+        Collections.sort(edgeList, Comparator.comparingInt(e -> e.weight));
+        UnionFind uf = new UnionFind(n);
+        List<UndirectedEdge> mst = new ArrayList<>();
+  
+        for (UndirectedEdge e : edgeList) {
+            if (!uf.isSameSet(e.u, e.v)) {
+                uf.union(e.u, e.v);
+                mst.add(e);
+            }
+        }
+  
+        if (mst.size() != n - 1) {
+            System.out.println("图不连通，无法构成最小生成树");
+            return null;
+        }
+        return mst;
+    }
+  
+    // 辅助内部类：无向边 (用于 Kruskal 算法)
+    public static class UndirectedEdge {
+        int u, v, weight;
+  
+        public UndirectedEdge(int u, int v, int weight) {
+            this.u = u;
+            this.v = v;
+            this.weight = weight;
+        }
+  
+        @Override
+        public String toString() {
+            return "(" + u + " - " + v + ", weight = " + weight + ")";
+        }
+    }
+  
+    // 辅助内部类：并查集 (Union-Find)
+    public static class UnionFind {
+        int[] parent;
+  
+        public UnionFind(int n) {
+            parent = new int[n];
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+            }
+        }
+  
+        public int find(int x) {
+            if (parent[x] != x) {
+                parent[x] = find(parent[x]);
+            }
+            return parent[x];
+        }
+  
+        public void union(int x, int y) {
+            parent[find(x)] = find(y);
+        }
+  
+        public boolean isSameSet(int x, int y) {
+            return find(x) == find(y);
+        }
+    }
+  
+    // ------------------------------------------------------------
+    // 主函数中给出所有算法的示例调用
+    public static void main(String[] args) {
+        // 示例 1：构造一个有向图测试 BFS, DFS, Dijkstra, Bellman–Ford, SPFA, Floyd 算法
+        int n = 6;  // 顶点编号 0 ~ 5
+        Graph g = new Graph(n);
+        // 添加边 (有向图示例，如果需要当成无向图，请双向添加边)
+        g.addEdge(0, 1, 2);
+        g.addEdge(0, 2, 4);
+        g.addEdge(1, 2, 1);
+        g.addEdge(1, 3, 7);
+        g.addEdge(2, 4, 3);
+        g.addEdge(3, 5, 1);
+        g.addEdge(4, 3, 2);
+        g.addEdge(4, 5, 5);
+  
+        System.out.println("【邻接表表示的图】");
+        g.printGraph();
+  
+        // 拓扑排序 (仅适用于无环图，若图中有环则会提示失败)
+        System.out.println("\n【拓扑排序】");
+        List<Integer> topo = g.topologicalSort();
+        if (topo != null) {
+            System.out.println(topo);
+        }
+  
+        // BFS
+        System.out.println("\n【BFS】 (从顶点0开始)");
+        g.bfs(0);
+  
+        // DFS 递归
+        System.out.println("\n【DFS 递归】 (从顶点0开始)");
+        g.resetVisited();
+        g.dfs(0);
+        System.out.println();
+  
+        // DFS 非递归 (栈实现)
+        System.out.println("\n【DFS 非递归 (栈实现)】 (从顶点0开始)");
+        g.dfsStack(0);
+  
+        // Dijkstra 算法 (假设图中所有权重均为非负数)
+        System.out.println("\n【Dijkstra 算法】 (从顶点0开始)");
+        g.dijkstra(0);
+        System.out.println("最短距离数组: " + Arrays.toString(g.distance));
+        System.out.println("前驱数组: " + Arrays.toString(g.prev));
+  
+        // Bellman–Ford 算法
+        System.out.println("\n【Bellman–Ford 算法】 (从顶点0开始)");
+        if (g.bellmanFord(0)) {
+            System.out.println("最短距离数组: " + Arrays.toString(g.distance));
+            System.out.println("前驱数组: " + Arrays.toString(g.prev));
+        }
+  
+        // SPFA 算法
+        System.out.println("\n【SPFA 算法】 (从顶点0开始)");
+        if (g.spfa(0)) {
+            System.out.println("最短距离数组: " + Arrays.toString(g.distance));
+            System.out.println("前驱数组: " + Arrays.toString(g.prev));
+        }
+  
+        // Floyd–Warshall 算法
+        System.out.println("\n【Floyd–Warshall 算法】");
+        g.floyd();
+  
+        // 示例 2：构造一个无向图（双向添加边）测试 Kruskal 最小生成树算法
+        System.out.println("\n【Kruskal 最小生成树】 (无向图)");
+        Graph undirected = new Graph(4);
+        // 无向图的边：双向添加保证邻接表正确，但在 MST 处理中只计一次(要求 u < v)
+        undirected.addEdge(0, 1, 1);
+        undirected.addEdge(1, 0, 1);
+        undirected.addEdge(0, 2, 3);
+        undirected.addEdge(2, 0, 3);
+        undirected.addEdge(1, 2, 1);
+        undirected.addEdge(2, 1, 1);
+        undirected.addEdge(1, 3, 4);
+        undirected.addEdge(3, 1, 4);
+        undirected.addEdge(2, 3, 2);
+        undirected.addEdge(3, 2, 2);
+  
+        System.out.println("无向图邻接表：");
+        undirected.printGraph();
+        List<UndirectedEdge> mst = undirected.kruskalMST();
+        if (mst != null) {
+            System.out.println("最小生成树的边:");
+            for (UndirectedEdge e : mst) {
+                System.out.println(e);
+            }
+        }
+    }
+}
+
+```
+
+### 链式前向星
+- 类似于并查集原理的链表树,下标从一开始
+
 
 ## 拓扑排序
 - 按照依赖顺序 排序 先排入度为0的点,然后去掉边更新入度,再排0的点;
@@ -2098,7 +2707,6 @@ if indegree==0;cache.offer(indegree);
 
 ```
 - 统计poll的数量如果!=n 那就是有环直接return null;
-
 
 ## 最小生成树;
 - n个节点的图最小生成树有n-1条边;
@@ -2230,6 +2838,10 @@ bfs可视作从一个节点螺旋式扩散,每次offer进队扩散度++,对于we
 ## 多源bfs 
 将多个节点进入0层队列然后一起扩散;
 力扣1162;
+- 剪枝
+## 01 bfs
+- dijkstra算法原理一样,将priorityqueue变为双端队列
+
 
 
 ## dfs 递归实现
@@ -2300,14 +2912,13 @@ visited = true 相当于已经进入过数据结构了'
         }
     }
 
-
 ```
 
-
-## Dijkstra PriorityQueue<E>+Greedy
-和 bfs dfs 相反 poll出来再判断visited;
-Vertex要加入 public int distance and public Vertex prev;
+## Dijkstra 
+- PriorityQueue<E>+Greedy
 两重贪心;
+- 节点弹出就visited,最短距离确定,offer poll发现visited直接continue;
+Vertex要加入 public int distance and public Vertex prev;
 ```java
 public static void dijkstra(Vertex source, List<Vertex> vertices) {
         // 初始化源点距离为0，其它点距离默认 Integer.MAX_VALUE（在顶点构造时已经设置）
@@ -2330,9 +2941,9 @@ public static void dijkstra(Vertex source, List<Vertex> vertices) {
 			//还真有可能队列中有多个相同的节点直接跳过;
 
 			//优化
-            // if (current.visited) {  
-            //     continue;
-            // }
+            if (current.visited) {  
+                continue;
+            }
             current.visited = true;
             
             // 遍历所有邻边
@@ -2342,7 +2953,7 @@ public static void dijkstra(Vertex source, List<Vertex> vertices) {
 				//还真有可能指向vistited的节点
 
 				//优化
-                // if (!neighbor.visited) {       
+                if (!neighbor.visited) {       
                     int newDist = current.distance + edge.weight;
                     if (newDist < neighbor.distance) {  //未改变的不加入队列因为有别的路更短 Greedy;//叶子节点就是未改变的不加入priorityqueue
                         neighbor.distance = newDist;
@@ -2350,19 +2961,22 @@ public static void dijkstra(Vertex source, List<Vertex> vertices) {
                         // 由于距离更新，将该节点加入队列
                         pq.offer(neighbor);
                     }
-                //}
+                }
             }
         }
     }
 
 ```
+## A*
+- dijkstra变式 小根堆排列加入预估参数
+![alt text](image-28.png)
 
 
 ## BellmanFord算法
 - dijkstra没法判断负数边的情况可以用这个
-- 遍历每条边n-1次 数学上可证明 
+- 松弛每条边n-1次 数学上可证明 
 - 每次更新起点和终点的distance;
-- 没法处理负数环的结构;如果第n次队列还有那么就有负环;
+- 没法处理负数环的结构;在vertex类中设置松弛次数如果次数>n-1就是有负环
 ```java
 public static void bellmanFord(ArrayList<Vertex>vertices) {
     	vertices.get(0).distance=0;
@@ -2385,6 +2999,38 @@ public static void bellmanFord(ArrayList<Vertex>vertices) {
     		}
     	}
     	
+    }
+```
+## spfa优化
+- 一般都用spfa判断负环,每个节点加入cnt每次松弛cnt++,如果cnt超过n-1就是有负环直接返回,其余没负数边直接dijkstra
+- 借助队列减少遍历边的次数,队列中是上一轮松弛的点,边界判断,in的时候如果在队列不用重复加入,out
+```java
+static boolean spfa(Vertex v,int n){
+        ArrayDeque<Vertex> cache=new ArrayDeque<>();
+        v.distance=0;
+        v.cnt++;
+        cache.offer(v);
+        while(!cache.isEmpty()){
+            Vertex poll = cache.poll();
+            poll.visited=false;
+            for (Edge edge : poll.edges) {
+
+                Vertex link = edge.link;
+                int tmp=edge.weight+poll.distance;
+                if(tmp<link.distance){
+                    link.distance=tmp;
+                    link.cnt++;
+                    if(link.cnt==n){
+                        return true;
+                    }
+                }
+                if(link.visited==false){
+                    cache.offer(link);
+                    link.visited=true;
+                }
+            }
+        }
+        return false;
     }
 ```
 
@@ -2459,7 +3105,6 @@ public static void bellmanFord(ArrayList<Vertex>vertices) {
 ```
 
 
-
 ## 图题目
 ### P1551 亲戚 洛谷
 
@@ -2510,7 +3155,6 @@ public class Main {
         }
 
 
-
     }
 
     public static void dfsStack(Vertex v,Vertex tg){
@@ -2557,9 +3201,7 @@ public class Main {
 
         }
 
-
     }
-
 
     public static void resetVisited(Vertex[] arr) {
         for (Vertex vertex : arr) {
@@ -2588,7 +3230,6 @@ public class Main {
 
     }
 
-
     public static class Vertex{
         public int name;
         public ArrayList<Edge> edges=new ArrayList<>();
@@ -2606,12 +3247,10 @@ public class Main {
             this.linked=linked;
         }
 
-
     }
 }
 
 ```
-
 
 # Greedy
 - 寻找最优解:适用范围;
@@ -2620,7 +3259,6 @@ public class Main {
 ## 选考试问题
 
 ## Huffman编码
-
 
 
 # DP
@@ -2653,7 +3291,6 @@ public static int fibonacci(int n){
         return 1;
     }
 
-
     for(int i=2;i<=n;i++){
         dp[i]=dp[i-1]+dp[i-2];
     }
@@ -2663,7 +3300,6 @@ public static int fibonacci(int n){
     //dp[] 直接将为dp1 dp2;
 }
 ```
-
 
 ### 类Fibonaccileetcode62 走格子问题
 ```java
@@ -2698,7 +3334,6 @@ public int f(int m,int n){
 }
 
 ```
-
 
 ## 01背包问题
 ![alt text](image-9.png)
@@ -2747,8 +3382,6 @@ static int select(Item[] items, int total) {
 }
 ```
 注意：内层循环需要倒序，否则 dp[j - item.weight] 的结果会被提前覆盖
-
-
 
 
 
@@ -2801,8 +3434,6 @@ private static int select(Item[] items, int total) {
 ### 零钱兑换问题
 和完全背包一样,技术细节:凑不到目标钱数就是total+1
 所以数组初始化都成total+1
-
-
 
 
 ## 0-1bag problem
@@ -2878,7 +3509,6 @@ public class KnapsackProblem {
                 memo[n-1][i]=0;
             }
         }
-
 
         System.out.println(bagRecur(0, 10));
     }
@@ -3063,8 +3693,6 @@ public class KnapsackProblem {
 ```
 
 
-
-
 # 字符串
 ## 输入
 next系列和scanf 一样无法处理空格 按照流进行处理;
@@ -3139,7 +3767,6 @@ int [] arr= {4,3,2,1};
 Arrays.sort(arrays , new Comparator<Student>(){@Override public int compare(Student s1,Student s2){}})  对数组排序
 Collectiongs(list, new Comparator<Student>(){@Override public int compare(Student s1,Student s2){}}) 	对动态数组排序
 Node  \Class\Java\JavaStudy\生日排序算法实现.md
-
 
 # 枚举
 - 枚举经典题目数正方形还是长方形 按照边长枚举 每次枚举  是上边滑动到底和下边滑动到底的乘积;
@@ -3229,8 +3856,6 @@ public static void dfs(String str,ArrayList<Integer> arr) {
 ```
 
 
-
-
 # 数论
 ## 进制转换 
 小技巧 将二进制拆分成4个一组不够的补零    1111 1111  就是十六进制的FF
@@ -3290,7 +3915,6 @@ public class Main {
 	    return sum;
 	}
 
-
 		
 		
 		//十进制转换目标进制;
@@ -3348,7 +3972,6 @@ static int f(int a, int b, int m){
     }
 
 ```
-
 
 ## 素数相关
 一般素数都是 i*i<=n !!!!!
@@ -3421,11 +4044,6 @@ public static int ehrlich(int n) {
 
 
 
-
-
-
-
-
 ## 字符串题目
 ### 高精度加法 洛谷P1601
 ```java
@@ -3467,9 +4085,6 @@ public class HighPrecisionAdditionString {
     }
 
 }
-
-
-
 
 
 
@@ -3546,8 +4161,6 @@ public class Main {
 ```
 
 
-
-
 # 双指针
 - 双指针状态 双指针统计 双指针划分;
 ## 盛水最多的容器
@@ -3555,9 +4168,6 @@ public class Main {
 ## 两数之和 
 大了左移 小了右移
 ## 三数之和
-
-
-
 
 
 
@@ -3592,7 +4202,6 @@ public class Main1 {
 
 }
 
-
 ```
 
 ## 快速排序
@@ -3612,7 +4221,6 @@ for(int j=0;j<right-1;j++){
 int temp=arr[i];
 arr[i]=pivot;
 arr[right]=temp;//   最后再把pivot换到i处;
-
 
 ```
 
@@ -3718,15 +4326,11 @@ public class Main {
 
         return arr[n];
 
-
     }
 }
 
 ```
 ## 
-
-
-
 
 
 
