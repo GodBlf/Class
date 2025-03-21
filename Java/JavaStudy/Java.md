@@ -69,18 +69,25 @@ public class FastReader {
 }
 
 ```
-- printwriter  原理是 把结构全输出到流中 最后out.flush()再一次性打印到控制台;
-#### 嫌麻烦可以不用类
+- printwriter  原理是 把结构全输出到流中 最后out.flush()再一次性打印到控制台;记得最后out.close();
+#### StringTokenizer
+st=new StringTokenizer(line," ,&") ""里的是分割符分隔符是或的关系无法使用正则表达式;
+st.hasMoreTokens()
+st.nextToken()
+#### string.split
+.split(" {1,}")split可以使用正则表达式;
+
+#### 一般情况
 注意if(line == null || line.isEmpty()){break;} line可能是空字符 操蛋玩意也要
 ```java
         //全都初始化好 输入输出和分词器
         PrintWriter out=new PrintWriter(new OutputStreamWriter(System.out));
         BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st=new StringTokenizer("");
+        //start三剑客
         int [] [] arr=new int[2][3];
                 for (int i   = 0; i <2 ; i++) {
-                    String line = reader.readLine();//注意
-                    st=new StringTokenizer(line);
+                    st=new StringTokenizer(reader.readLine());
                     for(int j=0;j<3;j++){
                         arr[i][j]=Integer.parseInt(st.nextToken());
                     }
@@ -192,6 +199,7 @@ new Interface<E>(){
 
 - 用法:
 new一个匿名内部类重写compare方法,compare方法是以升序为基准return 0 1 -1, 1为o1>o2  0为o1=o2  -1为o1<o2
+-1 前者优先级高,1后者优先级高,0优先级相同;
 可以简单理解为1是改变两者排序 -1是不改变两者排序
 - 多重比较
 ```java
@@ -610,7 +618,7 @@ int[] arr=new int[]{1,3,4,4,55,6,7};
         }
 
 ```
-# 线段树
+# 线段树7
 - 技术细节:
 维护一段区间的信息,解决范围增加范围查询的题目
 jobl,jobr区间不断在线段树上往下筛直到包围住某个节点维护的区间;最后递归树的叶子节点组合成线段正好是jobl,jobr这个线段所以叫线段树
@@ -637,9 +645,10 @@ static void build(int[] arr, int l, int r, int index) {
 
 ```
 ## lazy update
-- 记忆指针;
+- 记忆指针: 
 - 懒更新:遇到包住的区间直接修改当前维护区间的值然后记录在lazy数组中,相当于记忆指针记忆了以后子树需要更新的信息
 懒住了,以后的子树不管了,等下筛经过此节点再下发更新子树的维护信息;
+
 ## segmenttreejava类
 ```java
 class SegmentTree{
@@ -662,12 +671,19 @@ class SegmentTree{
         tree[i]=tree[i<<1]+tree[i<<1 | 1];
         return ;
     }
+    // lazy set down建议都设置为lazy(int jobv,int i,int l,int r)因为每个节点状态是一个线段!;
+    // 最好再来个set方法更好的体现逻辑,set方法是对节点进行任务;
+    void set(int jobv,int i,int n){
+        tree[i]=jobv*n;
+    }
     void lazy(int jobv,int i,int n){
         lazy[i]+=jobv;
-        tree[i]+=jobv*n;
+        
     }
     void down(int i,int ln,int rn){
         if(lazy[i]!=0){
+            set(lazy[i],i<<1,ln);
+            set(lazy[i],i<< | 1,rn);
             lazy(lazy[i],i<<1,ln);
             lazy(lazy[i],i<<1 | 1,rn);
 
@@ -691,6 +707,7 @@ class SegmentTree{
     }
     void add(int jobl,int jobr,int jobv,int l,int r,int i){
         if(jobl<=l && r<=jobr){
+            set(jobv,i,r+1-1);
             lazy(jobv,i,r+1-l);
             return ;
         }
@@ -702,7 +719,7 @@ class SegmentTree{
         if(jobr>=m+1){
             add(jobl,jobr,jobv,m+1,r,i<<1 | 1);
         }
-        tree[i]=tree[i<<1] + tree[i<<1 | 1];
+        tree[i]=tree[i<<1] + tree[i<<1 | 1];   // 一定要记得遍历返回的时候更新维护的信息;
     }
 }
 ```
@@ -892,7 +909,46 @@ public static int merge(int[] arr, int l, int m, int r) {
 ```
 
 ## 快速排序
+- 用划分指针
+- 三个指针一个指针遍历,其余两个指针划分区域;
+```java
+public static void quickSort2(int l, int r) {
+		if (l >= r) {
+			return;
+		}
+		// 随机这一下，常数时间比较大
+		// 但只有这一下随机，才能在概率上把快速排序的时间复杂度收敛到O(n * logn)
+		int x = arr[l + (int) (Math.random() * (r - l + 1))];
+		partition2(l, r, x);
+		// 为了防止底层的递归过程覆盖全局变量
+		// 这里用临时变量记录first、last
+		int left = first;
+		int right = last;
+		quickSort2(l, left - 1);
+		quickSort2(right + 1, r);
+	}
 
+	// 荷兰国旗问题
+	public static int first, last;
+
+	// 已知arr[l....r]范围上一定有x这个值
+	// 划分数组 <x放左边，==x放中间，>x放右边
+	// 把全局变量first, last，更新成==x区域的左右边界
+	public static void partition2(int l, int r, int x) {
+		first = l;
+		last = r;
+		int i = l;
+		while (i <= last) {
+			if (arr[i] == x) {
+				i++;
+			} else if (arr[i] < x) {
+				swap(first++, i++);
+			} else {
+				swap(i, last--);//i不++因为换过来这个还没检查;
+			}
+		}
+	}
+```
 ## 快速分治
 
 
@@ -4033,6 +4089,75 @@ public static int ehrlich(int n) {
 		return cnt;
 	}
 ```
+
+## 乘法快速幂
+- 7^(11)==7^(1011)=7^(1+2+0*4+8)=7^(1)*7^(2)*7^(4*0)*7^(8) 构建迭代式递归每个节点的状态就是7^(2^n);
+- 将指数转为二进制,再转为1,2,4,8..相乘每个节点包含一个状态,二进制的01对应这个状态下是否乘这个状态;
+```java
+static int pow(int a,int b){
+    int ans=1;
+    while(b>0){
+        if(b&1==1){
+            ans*=a;
+        }
+        a*=a;
+        b>>=1;
+    }
+}
+```
+
+## 矩阵快速幂
+- 矩阵乘法ans[i][j]=a[i][c]*b[c][j];这里c相当于不回退指针;
+```java
+static int[][] matMultiply(int[][] a,int[][] b){
+            int n=a.length;
+            int m=b[0].length;
+            int k=a[0].length;
+            int[][] ans=new int[n][m];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    for (int l = 0; l < k; l++) {
+                        ans[i][j]+=a[i][l]*b[l][j];
+                    }
+                }
+            }
+            return ans;
+        }
+```
+- 快速幂同理乘法快速幂
+```java
+static int[][] matMultiply(int[][] a,int[][] b){
+            int n=a.length;
+            int m=b[0].length;
+            int k=a[0].length;
+            int[][] ans=new int[n][m];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    for (int l = 0; l < k; l++) {
+                        ans[i][j]+=a[i][l]*b[l][j];
+                    }
+                }
+            }
+            return ans;
+        }
+        static int[][] matPow(int[][] arr,int m){
+            int n=arr.length;
+            int[][] ans=new int[n][n];
+            for (int i = 0; i < n; i++) {
+                ans[i][i]=1;
+            }
+            while(m>0){
+                if((m&1)==1){
+                    ans=matMultiply(ans,arr);
+                }
+                m>>=1;
+                arr=matMultiply(arr,arr);
+            }
+            return ans;
+        }
+```
+- 矩阵快速幂解斐波那契额数列
+0 1 1 2 3 5... 相当于[0 1] * M^p这个M就是状态转移矩阵用矩阵快速幂  [0 1]是行向量所以要右成矩阵才能线性变换;
 
 # 字符串
 ## KMP

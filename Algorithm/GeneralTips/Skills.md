@@ -341,6 +341,7 @@ public class MonotonicQueue {
 }
 ```
 # 善用三元运算符 ? :
+- 和+= -=等运算符
 
 # 状态与回溯
 - 目前遇到的状态栈,int n ,
@@ -386,6 +387,8 @@ stack queue priorityqueue 等在bfs dfs等算法中起到cache 临时存储数�
 
 # 数组可以考虑成 正半轴,元素索引的右边一位就是前边所有元素的个数,例如{4,3,5,567,4}索引(2,5) 右边一共3个元素 size-index 就是index前边所有元素的个数;
 
+# 二进制 1,2,4,8..
+快速幂
 
 # new
 对某个对象进行操作的时候,最好把结果弄到一个new的对象上例如矩阵转置结果,new在一个新矩阵里否则原矩阵操作困难;
@@ -428,12 +431,18 @@ int main(){
 
 ```
 
+
 # temp
 - 交换两个数需用道中间变量temp;
 - a=a^b;b=a^b;a=a^b;
 - int temp=a;
 		a=(int)((a+b)-abs(a-b))/2;
 		b=(int)((temp+b)+abs(temp-b))/2;
+# 状态压缩
+- 用二进制可以表示boolean数组
+- 先设置一个limit表示数组的长度 limit=(0<<n)-1 方便后续移位操作 limit&tmp就能转到表示的数组长度上;
+- & 集合的与 乘法  | 集合或 有进位加法  ^ 集合补集 无进位加法 熟悉这些运算和性质方便操作 ~取反
+- 遍历状态的时候可以用brian算法提取最右侧的1 tmp&-tmp 适当对状态数组取反方便brian算法遍历;while(n!=0){int tmp=n&-n;n=(n^tmp)&limit;...}
 
 # arr[i++] 
 可以实现数组后缀添加;这就是迭代器Iterator的原理 循环完以后正好 为数组个数n;
@@ -793,6 +802,13 @@ int main() {
 
 
 
+
+# 容差法
+- 判断中间结果double类型是不是整数
+- double有效位数只有15位;
+- 定义一个很小的数double epsilon=1e-10
+- (a-Math.round(a)) < epsilon  ? true : 
+- 为什么要用round因为double运算可能出现15.99999这种;
 
 # mod运算满足加法和乘法的分配率;
 
