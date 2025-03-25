@@ -1,3 +1,36 @@
+# C语法
+## 指针与引用
+- java主引用数据类型辅基本数据类型,c正好相反
+- java中的引用数据类型在c中就是指针 Student* 可视作java中的类,c中的类是一个具体的变量
+例如java中的数组 Studeng[] 数组元素是一堆指向某块内存区域的指针 而c中Student*是元素是一块连续得内存区域里边就是Student
+- new  相当于malloc  Student* arr=(Student*)malloc(n*sizeof(Student));
+```java
+int compare(const void * o1,const void * o2){
+    Student* s1=(Student * )o1;
+    Student* s2=(Student * )o2;
+    return s1->age-s2->age;
+}
+qsort(&arr[1],n-1,sizeof(Student),compare);
+```
+
+
+
+# c标准库
+## 字符串
+.append -- sprintf+strcat
+## 数组
+
+
+
+## I/O
+
+
+
+
+
+
+
+
 # ReadMe
 完全备战转专业考试用的;
 ![alt text](image-7.png)这个代表 上一个运行还没有结束把上一个终端关掉即可;
@@ -96,6 +129,8 @@ strlen
 - strcmp
 strcmp(str1,str2) 1 前者greater  0一样大 -1 后者大 和 比较函数一样;
 - memset
+- sprintf
+- strcpy
 ## math
 fabs()double abs () int
 ## 数组
@@ -668,3 +703,7 @@ int main(){
 ## 洛谷
 P1888
 P5707
+
+
+# C语言标准库
+## 字符串

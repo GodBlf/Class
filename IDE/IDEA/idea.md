@@ -3,7 +3,7 @@
 1. 自动导入包
 2. 大小写不敏感
 3. enter 补全代码 内联插入 为tab;
-或者把补全代码改为tab 然后把内联提示插入改为enter
+最好补全代码用enter以后用cursor直接tab了 但两个最好都要掌握因为vs等编辑器是tab;
 初学者最好把整行代码补全禁用;
 ![alt text](image-4.png)
 代码补全 basic 改为 alt+/

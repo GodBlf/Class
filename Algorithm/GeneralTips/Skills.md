@@ -107,6 +107,7 @@ public static void partition2(int[] arr, int l, int r, int x) {
 
 #### 二分搜索划分红蓝区域寻找边界
 
+## 对称加速指针
 
 # 递归思想:
 - 递归树
@@ -288,7 +289,9 @@ int main(){
 ## ∞溢出判断
 - 数组越界
 - integer.MAX_VALUE 相加溢出
-- 
+
+
+
 # 合并逻辑
 - 减少if嵌套用逻辑量词&&||来合并逻辑
 # while和priority sequence
@@ -343,10 +346,7 @@ public class MonotonicQueue {
 # 善用三元运算符 ? :
 - 和+= -=等运算符
 
-# 状态与回溯
-- 目前遇到的状态栈,int n ,
-- 基本数据类型因为是副本自动回溯
-- 引用数据类型手动回溯;
+
 
 
 # 状态与回溯
@@ -386,7 +386,9 @@ stack queue priorityqueue 等在bfs dfs等算法中起到cache 临时存储数�
 如果你不想改变函数签名，可以使用一个数组或对象来保存 cnt，这样就能通过引用传递 cnt 的值了。
 
 # 数组可以考虑成 正半轴,元素索引的右边一位就是前边所有元素的个数,例如{4,3,5,567,4}索引(2,5) 右边一共3个元素 size-index 就是index前边所有元素的个数;
-
+# 计算机中的微小量1
+- 向上取整减去一个微小量1
+- 边界条件+-个1;
 # 二进制 1,2,4,8..
 快速幂
 
@@ -440,6 +442,7 @@ int main(){
 		b=(int)((temp+b)+abs(temp-b))/2;
 # 状态压缩
 - 用二进制可以表示boolean数组
+用抽象代数思考就是 单位元,运算,brian遍历
 - 先设置一个limit表示数组的长度 limit=(0<<n)-1 方便后续移位操作 limit&tmp就能转到表示的数组长度上;
 - & 集合的与 乘法  | 集合或 有进位加法  ^ 集合补集 无进位加法 熟悉这些运算和性质方便操作 ~取反
 - 遍历状态的时候可以用brian算法提取最右侧的1 tmp&-tmp 适当对状态数组取反方便brian算法遍历;while(n!=0){int tmp=n&-n;n=(n^tmp)&limit;...}
@@ -809,7 +812,8 @@ int main() {
 - 定义一个很小的数double epsilon=1e-10
 - (a-Math.round(a)) < epsilon  ? true : 
 - 为什么要用round因为double运算可能出现15.99999这种;
-
+# 向上取整
+(a+b-1)/b
 # mod运算满足加法和乘法的分配率;
 
 
