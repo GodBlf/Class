@@ -290,6 +290,17 @@ int main(){
 - 数组越界
 - integer.MAX_VALUE 相加溢出
 
+# 异常
+## 数组越界
+## 溢出
+整数溢出,整数加法溢出中间值换成long;
+
+
+## 空指针
+- 对象是null却进行了方法;
+- null,,栈堆等数据结构是空的却进行了方法
+## /0
+中间值可能为零然后除了
 
 
 # 合并逻辑
@@ -863,3 +874,6 @@ String str=new String("abc");
         String x=sc.nextLine();
         System.out.println(arr[(int)x.charAt(0)]);
 ```
+
+# 输入控制
+- *%d 然后用flag标记只有第一个输出%d 然后flag变为1之后不是1就8%d;

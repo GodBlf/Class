@@ -18,11 +18,37 @@ qsort(&arr[1],n-1,sizeof(Student),compare);
 # c标准库
 ## 字符串
 .append -- sprintf+strcat
-## 数组
+.indexof -- strcspn
+.indexof -- strstr
+strspn 寻找包含合集的连续子串的最大长度
+- Integer.paseInt()
+atof atol atoi 
 
+
+## 数组
+System.arraycopy -- memcpy
+.fill -- memset
 
 
 ## I/O
+- reader.readLine() -- fgets() + strcspn()
+因为fgets会读入\n所以要用getchar过滤;
+- StringTokenizer--strtoken
+str="hello fhhf",token=strtoken(str," ");token=strtoken(NULL," ");
+
+## 算法
+- Arrays.sort() -- qsort
+- 二分自己写
+
+## 数学
+
+
+
+
+
+
+
+
 
 
 
