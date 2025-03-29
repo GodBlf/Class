@@ -1,0 +1,10 @@
+https://github.com/kiooeht/ModTheSpire mod管理器
+- 这个是最最基础mod管理按照github页面教程操作;
+- workshop前三个基础mod下载
+- loadout 作弊 mod 下好按照mod管理器的操作执行;
+- 紫音 不能用
+- 魔卡樱
+- 动漫
+- 联机mod(详见联机.txt);
+- 更好的动画Mod
+- 快速重开按钮

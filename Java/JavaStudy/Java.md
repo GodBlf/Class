@@ -3,7 +3,7 @@
 与java有关的语法  API 题目等;数据结构 算法具体的知识 与之有关的技巧不写入;
 
 # API
-### I/O 
+## I/O 
 - Bufferedreader PrintWriter StringTokenizer .split
 - 造一个fastreader类
 ```java
@@ -70,14 +70,14 @@ public class FastReader {
 
 ```
 - printwriter  原理是 把结构全输出到流中 最后out.flush()再一次性打印到控制台;记得最后out.close();
-#### StringTokenizer
+### StringTokenizer
 st=new StringTokenizer(line," ,&") ""里的是分割符分隔符是或的关系无法使用正则表达式;
 st.hasMoreTokens()
 st.nextToken()
-#### string.split
+### string.split
 .split(" {1,}")split可以使用正则表达式;
 
-#### 一般情况
+### 一般情况
 注意if(line == null || line.isEmpty()){break;} line可能是空字符 操蛋玩意也要
 ```java
         //全都初始化好 输入输出和分词器
@@ -101,12 +101,12 @@ st.nextToken()
         out.flush();
 ```
 
-### BigInteger
+## BigInteger
 - 底层逻辑是字符串转成高精度
 - 用一个数组位置代表数字的一位高精度
 - 可完全视为数字 运算用其自带的库函数就行;
 - 因为是用多余空间进行高精度所以如果不超过位数不要用biginteger否则空间时间会很高
-### System类
+## System类
 - System.arraycopy() 是 Java 中一个非常常用的用于数组拷贝的静态方法。它的作用是将源数组中的一部分或全部元素复制到目标数组中的指定位置。这个方法是系统级的，因此执行效率比较高。
 public static void arraycopy(Object src, int srcPos, Object dest, int destPos, int length)
 参数说明：
@@ -115,8 +115,10 @@ srcPos：源数组的起始位置（从该位置开始复制）。
 dest：目标数组（将元素复制到这个数组）。
 destPos：目标数组的起始位置（复制到目标数组的哪个位置）。
 length：要复制的元素个数。
-### StringBuilder/String类
-相较于String来说，处理速度更快，所以处理字符串的时候一般使用StringBuilder，最后再通过toString()方法转为字符串
+
+
+## String类
+- 相较于String来说，处理速度更快，所以处理字符串的时候一般使用StringBuilder，最后再通过toString()方法转为字符串
 常见的 add  remove  set  get 方法
 ```java
 // 构建一个值为str的可变字符串【也可传空参数】
@@ -152,20 +154,50 @@ indexOf(String str)
 // 同上，从指定位置查找
 indexOf(String str, int fromIndex)
 ```
+- String
+""+3 == "3"  善用字符串的+运算符;  ((char)42)+""+1  思考 ((char)42)+1+""的区别
 
-### Integer Double 等
+## StringBuilder
+可将数字等转换成字符串容器方便用api方法操作;
+- reverse length 
+- 因为增和查有两种形式所以他们都有/
+- 增
+ append 元素/子集
+ insert 元素/子集
+- 删
+ delete 子集  deletecharat 元素
+- 改
+ replace  子集  setcharat 元素
+- 查
+ indexof  元素/子集
+ substring 子集  charat 元素
+
+```java
+int flag=0;
+while (true){
+            int i = sb.indexOf("123",flag);
+            flag=i+3;
+            if(i==-1){
+                break;
+            }
+            sb.replace(i,i+3,"***");
+
+        }
+```
+
+## Integer Double 等
 - .parseInt .valueOf
 
-### Math 类
+## Math 类
 - Math.min()  返回最大最小可以不用if判断直接max函数
 Math.max 同理
 
 
-### Arrays类
+## Arrays类
 - Arrays.sort(int [] arr); 将数组arr 升序排列 
 - Arrays.binarySearch(int[] arr,int tg); 
-### Collections
-##### Collections.sort
+## Collections
+#### Collections.sort
 Collections.sort(Collectiong arr , new Comparator(){@Override public int compare(Object o1,Object o2){}});
 重写比较方法 参数为arr中的相邻两元素 1 是交换 -1是不交换;
 
@@ -618,7 +650,7 @@ int[] arr=new int[]{1,3,4,4,55,6,7};
         }
 
 ```
-# 线段树7
+# 线段树
 - 技术细节:
 维护一段区间的信息,解决范围增加范围查询的题目
 jobl,jobr区间不断在线段树上往下筛直到包围住某个节点维护的区间;最后递归树的叶子节点组合成线段正好是jobl,jobr这个线段所以叫线段树
@@ -671,9 +703,9 @@ class SegmentTree{
         tree[i]=tree[i<<1]+tree[i<<1 | 1];
         return ;
     }
-    // lazy set down建议都设置为lazy(int jobv,int i,int l,int r)因为每个节点状态是一个线段!;
-    // 最好再来个set方法更好的体现逻辑,set方法是对节点进行任务;
-    void set(int jobv,int i,int n){
+    // lazy update down建议都设置为lazy(int jobv,int i,int l,int r)因为每个节点状态是一个线段!;
+    // 最好再来个update方法更好的体现逻辑,update方法是对节点进行任务;
+    void update(int jobv,int i,int n){
         tree[i]=jobv*n;
     }
     void lazy(int jobv,int i,int n){
@@ -682,8 +714,8 @@ class SegmentTree{
     }
     void down(int i,int ln,int rn){
         if(lazy[i]!=0){
-            set(lazy[i],i<<1,ln);
-            set(lazy[i],i<< | 1,rn);
+            update(lazy[i],i<<1,ln);
+            update(lazy[i],i<< | 1,rn);
             lazy(lazy[i],i<<1,ln);
             lazy(lazy[i],i<<1 | 1,rn);
 
@@ -707,7 +739,7 @@ class SegmentTree{
     }
     void add(int jobl,int jobr,int jobv,int l,int r,int i){
         if(jobl<=l && r<=jobr){
-            set(jobv,i,r+1-1);
+            update(jobv,i,r+1-1);
             lazy(jobv,i,r+1-l);
             return ;
         }
@@ -1186,9 +1218,12 @@ class Solution {
 
 
 # 二分
-- 很好的算法思想
-- 实现可以通过划分指针和记忆指针实现;
-- 因为是logn 级别的是递归的变种
+- 红蓝区域法(划分指针);
+- 确定答案区间,区间满足单调性,将区间分成红蓝区域,二分寻找红蓝边界;
+二分logn复杂度,区间可以定的很宽 
+- boolean判断函数
+开始红蓝区域均为零,寻找红蓝之间中点的数判断属于红还是蓝,由于单调性可以扩充红or蓝区域到此数;
+直到红蓝区域相撞(l+1==r);
 ## 二分搜索
 - 可视为logn级别的递归;
 - 技术细节:
@@ -1991,7 +2026,7 @@ public class Solution {
         TreeNode head=root;
         TreeNode pop=null;   //标记指针标记上一个弹出的元素;
 
-        while(true){
+        while(true){23
             if(head==null && cache.isEmpty()){
                 break;
             }
@@ -2893,7 +2928,8 @@ class UnionFind{
     }
 ```
 ### 扩散
-bfs可视作从一个节点螺旋式扩散,每次offer进队扩散度++,对于weight==1的图可实现扩散式最短路径;
+bfs可视作从一个节点螺旋式扩散,
+扩散度计算,Vertex加入kuosandu成员变量,新进队的节点为父节点kuosandu+1,对于weight==1的图可实现扩散式最短路径;
 ## 多源bfs 
 将多个节点进入0层队列然后一起扩散;
 力扣1162;
@@ -3321,7 +3357,7 @@ public class Main {
 
 
 # DP
-recursion+memo -> 直接从base case开始解决;
+recursion->recursion+memo -> dp表格->
 可以优化
 ## Fibonacci dp
 ### recursion memo
@@ -3768,9 +3804,54 @@ BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 				sb.append(line);
 			}
 ```
-## String
-""+3 == "3"  善用字符串的+运算符;  ((char)42)+""+1  思考 ((char)42)+1+""的区别
-## StringBuilder
+
+## 最大子数组
+- 每个子数组都以一个下标结尾,所以构造一维dp表;
+- 降维优化;
+ public int maxSubArray(int[] nums) {
+        int dp=nums[0];
+        int ans=dp;
+        for(int i=1;i<=nums.length-1;i++){
+            dp=Math.max(dp+nums[i],nums[i]);
+            ans=Math.max(dp,ans);
+        }
+        return ans;
+    }
+- 记录最大累加和的数组范围可以往dp表中加入 长度状态,选dp+nums[i]就length++;选nums[i]length=1;
+```java
+int main() {
+	int n; scanf("%d", &n);
+	int arr[100004];
+	for (int i = 0; i < n; i++) {
+		scanf("%d", &arr[i]);
+	}
+	int len = 1;
+	int index = 0;
+	int dp = arr[0];
+	int ans = dp;
+	int anslen = 1;
+	int ansindex = 0;
+	for (int i = 1; i <= n - 1; i++) {
+		if (dp + arr[i] > arr[i]) {
+			index = i;
+			len++;
+		}
+		else {
+			len = 1;
+			index = i;
+		}
+		dp = (int)fmax((double)arr[i], (double)(arr[i] + dp));
+		if (ans < dp) {
+			ans = dp;
+			ansindex = index;
+			anslen = len;
+		}
+	}
+	printf("%d %d", ansindex,anslen);
+	
+}
+```
+
 
 # 排序
 ## 计数排序
@@ -4168,12 +4249,23 @@ static int[][] matMultiply(int[][] a,int[][] b){
 - 同余原理和微小量 1开头的数论
 以1开头 那么位置就是i=(m-1)%n+1;
 1,2,3,4 数到2去掉 3,-,1,2  1,-,2,-   1,-,-,-   
-- 递归公式是  old=(new+k-1)%n+1; 进行n-1轮
-通过 1,2,3,4来考虑
-- 每轮k不一样 递归到1然后逆着用公式就行
-ans=(ans+arr[i]-1)%n+1;
-
-
+- 递归公式是  old=(new+k-1)%c+1; 进行n-1轮,用new old 上下指针思考n-1过程
+通过 1,2,3,4来考虑  每轮new通过上轮的n来模
+- 每轮k不一样 递归到1然后逆着用公式就行,用new old 上下指针思考n-1过程
+ans=(ans+arr[i]-1)%c+1;
+```c
+int ysf(int n, int k) {
+	int ans = 1;
+	for (int i = 2; i < n +1;i++) {
+		ans = ((ans + k - 1) % i) + 1;
+	}
+	return ans;
+}
+```
+## Catalan数
+![alt text](image-31.png)
+![alt text](image-32.png)
+填坑
 
 # 字符串
 ## KMP

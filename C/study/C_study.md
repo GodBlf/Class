@@ -12,15 +12,15 @@ int compare(const void * o1,const void * o2){
 }
 qsort(&arr[1],n-1,sizeof(Student),compare);
 ```
-
+- 指针相减 p+1 和 &p[1]一样 例如strstr,strtok中查找索引;
 
 
 # c标准库
 ## 字符串
 .append -- sprintf+strcat
-.indexof -- strcspn
-.indexof -- strstr
+.indexof -- strstr  返回的是一个指针 p-str指针相减是索引;
 strspn 寻找包含合集的连续子串的最大长度
+strcspn 寻找不包含集合元素的最大长度;
 - Integer.paseInt()
 atof atol atoi 
 
@@ -34,6 +34,7 @@ System.arraycopy -- memcpy
 - reader.readLine() -- fgets() + strcspn()
 因为fgets会读入\n所以要用getchar过滤;
 - StringTokenizer--strtoken
+底层原理是在分割出加入'\0'所以可以token-str知道此时所在索引;
 str="hello fhhf",token=strtoken(str," ");token=strtoken(NULL," ");
 
 ## 算法
