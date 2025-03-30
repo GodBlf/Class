@@ -6,7 +6,7 @@
 ## I/O 
 - Bufferedreader PrintWriter StringTokenizer .split
 - 造一个fastreader类
-```java
+```javak
 public class FastReader {
     BufferedReader br;
     StringTokenizer st;
@@ -161,6 +161,7 @@ indexOf(String str, int fromIndex)
 可将数字等转换成字符串容器方便用api方法操作;
 - reverse length 
 - 因为增和查有两种形式所以他们都有/
+- 查最重要因为其他的操作都是基于索引,查不是;
 - 增
  append 元素/子集
  insert 元素/子集

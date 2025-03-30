@@ -1,25 +1,9 @@
 [TOC]  
 
- ReadMe
-算法 数据结构 方面的注意事项 技巧 和数学有关的技巧等(Tips)不是具体的知识;实际编程语言的Tips不写入
- Algorithm
 
-# Recursion
-用memo进行优化;
-## dp
-dp表
-降维
-## dc
-
-## bt
-
-# DynamicPrograming
-
-# BackTracking
 
 # Cache
-out in
-每次out / in都必须边界判断;
+
 ## Queue
 ## Stack
 ## PriorityQueue
@@ -29,10 +13,8 @@ out in
 
 # 通过Tree来考虑数据结构和算法
 - 例如bfs 和 dfs 的queue stack实现,递归.递归树遍历;
-# 指针(地址)的思想去考率类和对象
-new Object<>() 构造方法生成的对象是一个地址
-让后 Object<> var =new Object<>() 这个var是指向这个地址的指针
-因为指针所以  让arr1=arr仅是让指针指向同一个不是copy;
+# java引用数据类型(类)就是指针
+pointer->new 出来的对象内存区域;
 
 # 指针技巧
 ## 记忆指针
@@ -204,6 +186,8 @@ while(!boundary case) 等价于 while if(boundary case) break;
 if() return  等价于  if else
 
 # Cache数据结构
+out in
+每次out / in都必须边界判断;
 - dfs bfs dijkstra都是 dad out child in的过程
 - 节点in or out cache 时候标记为ture相应的 进入 或者拉出的时候判断是否需要continue
 - 将第一个节点压入(offer/push)cache来启动
@@ -280,15 +264,6 @@ int main(){
 }
 ```
 
-# 边界判断
-## 记忆指针 判断
-归并排序中,线段树懒更新;
-## null 
-- 要考虑null空的情况很多时候都有空这个边界条件
-- 在操作数据结构中通常数据结构为null的时候就会报错所以
-## ∞溢出判断
-- 数组越界
-- integer.MAX_VALUE 相加溢出
 
 # 异常
 ## 数组越界
@@ -381,25 +356,19 @@ index+1 = num(index) 指定索引右一位为到此索引的元素个数
 扫雷的外围一圈0;字符串""都起到辅助作用;
 例如在快速排序的时候 i指针就是i左边的都是小于pivot的 最后再将pivot插入sentry中;
 数据结构也常用sentry ;
-# Cache
-stack queue priorityqueue 等在bfs dfs等算法中起到cache 临时存储数据的作用;
 
-# 指针参数の函数设计 int[] arr=new int[1];
-翁恺c语言讲过
-- void f(int * arr,int x){}; java中 可以设计public static int[] arr;静态变量代替这个;
-比int * f(int x){}好 
-例如public static void dfs(ArrayList<Vertex> arr,Vertex v)
-比 public static ArrayList<Vertex> dfs(Vertex v) 好
-- 参数是变量的时候在出栈的时候会销毁
-所以在回溯的时候变量可以指针不可以
-而需要传递不变量的时候可以传递一个指针例如:
-使用数组或对象传递 cnt
-如果你不想改变函数签名，可以使用一个数组或对象来保存 cnt，这样就能通过引用传递 cnt 的值了。
+# 函数的静态参数
+设计静态共享变量然后 设计 void f() 没有返回直接操作静态变量
 
 # 数组可以考虑成 正半轴,元素索引的右边一位就是前边所有元素的个数,例如{4,3,5,567,4}索引(2,5) 右边一共3个元素 size-index 就是index前边所有元素的个数;
+
+# 向上取整
+(a+b-1)/b
+
 # 计算机中的微小量1
 - 向上取整减去一个微小量1
 - 边界条件+-个1;
+
 # 二进制 1,2,4,8..
 快速幂
 
@@ -532,72 +501,6 @@ int main(){
 		n=n/d;
 	}
 }
-```
-# 判断素数
-final 优化
-1. Math.sqrt(n) 
-2. 6k+-1;
-```java
-// 判断素数的方法，已知1不是素数，在主函数中去除1即可
-public static boolean isPrimeNumber(int n) {
-		if (n == 2 || n == 3) {
-			return true;
-		}
-		if ((n - 1) % 6 == 0 || (n + 1) % 6 == 0) {
-			// 当前可能是素数
-			for (int i = 2; i <= Math.sqrt(n); i++) {
-				if (n % i == 0) {
-					return false;
-				}
-			}
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-```
-# 质分解
-奇数的奇数分解一定是素分解
-```c
-include <stdio.h>
-
-// 函数：质因数分解
-void prime_factors(int n) {
-    // 找出2的所有因子
-    while (n % 2 == 0) {
-        printf("2 ");
-        n = n / 2;
-    }
-
-    // 找出奇数的因子
-    for (int i = 3; i * i <= n; i += 2) {
-        while (n % i == 0) {
-            printf("%d ", i);
-            n = n / i;
-        }
-    }
-
-    // 如果剩下的n是一个质数并大于2
-    if (n > 2) {
-        printf("%d", n);
-    }
-}
-
-int main() {
-    int num;
-    
-    // 用户输入
-    printf("请输入一个整数：");
-    scanf("%d", &num);
-
-    // 质因数分解
-    printf("质因数分解结果：");
-    prime_factors(num);
-
-    return 0;
-}
-
 ```
 
 # 辗转相除法 gcd 和 lcm
@@ -823,9 +726,10 @@ int main() {
 - 定义一个很小的数double epsilon=1e-10
 - (a-Math.round(a)) < epsilon  ? true : 
 - 为什么要用round因为double运算可能出现15.99999这种;
-# 向上取整
-(a+b-1)/b
-# mod运算满足加法和乘法的分配率;
+
+# 同余原理
+- 每次运算都mod
+- 
 
 
 
@@ -836,7 +740,6 @@ int main() {
 
 
 
- 其他数学
 # 几何
 八皇后问题左斜线和右斜线冲突通过 y=x x+y=1的解析几何角度考虑下标映射;
  线性代数(向量)
