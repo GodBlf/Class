@@ -1,9 +1,16 @@
 [TOC]
 
-# 引用数据类型本质是指针
-new Object<>() 构造方法生成的对象是一个地址
-让后 Object<> var =new Object<>() 这个var是指向这个地址的指针
-因为指针所以  让arr1=arr仅是让指针指向同一个不是copy;
+# 引用数据和指针
+- 指针这种链表结构设计的非常好要记住 pointer->new 出来的内存区域;这个模型;
+- java中以引用数据类型为主 c以基本数据类型为主,引用数据就是指针;
+java 对象是指针,而c对象(结构体)是具体的值;
+Student[] arr=new ... 与 Studeng * arr=(Student*) malloc(..);
+java中arr里是指针他们指向某块student对象的内存区域 ,离散的内存区域;
+c中arr里的是具体的值连续的内存区域
+- pointer->对象的内存区域(堆空间);
+new Object<>() 构造方法生成的是一个堆内存区域
+让后 Object<> var =new Object<>() 这个var是指向这个地址的指针,var就是对象;
+所以  让arr1=arr仅是让指针指向同一个内存区域;
 ## 指针副本
 ### 方法的形参
 ![alt text](image-13.png)

@@ -14,16 +14,46 @@ qsort(&arr[1],n-1,sizeof(Student),compare);
 ```
 - 指针相减 p+1 和 &p[1]一样 例如strstr,strtok中查找索引;
 
+## malloc 和new
+Student[][] mat=new 
 
 # c标准库
 ## 字符串
-.append -- sprintf+strcat
+.append -- sprintf+strcat  %lld
 .indexof -- strstr  返回的是一个指针 p-str指针相减是索引;
 strspn 寻找包含合集的连续子串的最大长度
 strcspn 寻找不包含集合元素的最大长度;
 - Integer.paseInt()
-atof atol atoi 
+atof atol atoi 用lld输出
+arraycopy  strcpy 自动加上'\0';
+### 字符串数组
+本质是矩阵
+```c
+// 注意比较函数因该是**这个!
+int compare(const void* o1, const void* o2) {
+	char** c1 = (char**)o1;  
+	char** c2 = (char**)o2;
+	return strcmp(*c1, *c2);
+}
+int  main() {
+	char str[1004];
+	scanf("%s", str);
+	int n = strlen(str);
+	char** mat = (char**)malloc(n * sizeof(char*));
+	for (int i = 0; i<n; i++) {
+		mat[i] = (char*)malloc(1004 * sizeof(char));
+		strcpy(mat[i], str + i);
+		
+	}
+	qsort(mat, n, sizeof(char*), compare);
+	for (int i = 0; i < n; i++) {
+		printf("%s\n", mat[i]);
+	}
+	//printf("%d", strcmp("gain", "in"));
 
+
+}
+```
 
 ## 数组
 System.arraycopy -- memcpy
@@ -36,7 +66,7 @@ System.arraycopy -- memcpy
 - StringTokenizer--strtoken
 底层原理是在分割出加入'\0'所以可以token-str知道此时所在索引;
 str="hello fhhf",token=strtoken(str," ");token=strtoken(NULL," ");
-
+- 格式化输入输出  %% %lld 
 ## 算法
 - Arrays.sort() -- qsort
 - 二分自己写

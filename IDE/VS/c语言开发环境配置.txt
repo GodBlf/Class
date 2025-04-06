@@ -1,0 +1,2 @@
+源文件属性关掉SDL检查
+调试属性配置<input.txt>output.txt
