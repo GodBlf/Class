@@ -196,6 +196,49 @@ out in
 - 将第一个节点压入(offer/push)cache来启动
 - 父节点拉出(poll/pop),符合要求的子节点进入(push/offer)cache再进行操作;
 
+# 数学技巧
+
+## 数论代数
+
+### 数论微小量1
+- 向上取整减去一个微小量1
+ceil(a/b)=(a+b-1)/b;
+- 边界条件+-个1;
+- 1起始的mod运算 (n-1)mod m  +1;
+### 同余原理
+- 每次运算都mod
+
+## 分析几何
+### 矩阵遍历
+- 嵌套循环的遍历顺序通过正交坐标变化的方向确定,最先移动的是内层循环
+![alt text](image.png)
+- 矩阵乘法三层循环
+![alt text](image-1.png)
+
+
+
+### 容差法
+- 判断中间结果double类型是不是整数
+- double有效位数只有15位;
+- 定义一个很小的数double epsilon=1e-10
+- (a-Math.round(a)) < epsilon  ? true : 
+- 为什么要用round因为double运算可能出现15.99999这种;
+
+
+# 二进制
+
+##  1,2,4,8..
+1011=8+4*0+2+1;
+快速幂
+
+# 状态压缩
+- 用二进制可以表示boolean数组
+用抽象代数思考就是 单位元,运算,brian遍历
+- 先设置一个limit表示数组的长度 limit=(0<<n)-1 方便后续移位操作 limit&tmp就能转到表示的数组长度上;
+- & 集合的与 乘法  | 集合或 有进位加法  ^ 集合补集 无进位加法 熟悉这些运算和性质方便操作 ~取反
+- 遍历状态的时候可以用brian算法提取最右侧的1 tmp&-tmp 适当对状态数组取反方便brian算法遍历;while(n!=0){int tmp=n&-n;n=(n^tmp)&limit;...}
+
+
 # if/else
 ![alt text](1aa00cfeb4f84a6f7dfad89a36cd2c10.jpg)
 ![alt text](4258aee49f7139b2b3a2469eff118ebe.jpg)
@@ -224,48 +267,7 @@ Priority sequence
 //3. if/else/else if 为分支结构 **最终必汇合到顺序结构**
 //4. 先考虑分支结构再考虑叶子结构和短路结构 来简化代码分支;
 ```
-## 例题素分解
-```c
-include<stdio.h>
-include<stdlib.h>
-include<math.h>
-void sufenjie(int n){
-	printf("%d=",n);
-	if(n%2==0){
-		while(1){
-			if(n==2){
-				printf("%d",2);
-				return;
-			}
-			if(n%2!=0){
-				break;
-			}
-			n=n/2;
-			printf("%d*",2);
-		}
-	}
-	
-	for(int i=3;i<=n;i+=2){
-		if(n%i!=0){
-			continue;
-		}
-		while(1){
-				if(n/i==1){
-			printf("%d",i);
-			return;
-		}
-		if(n%i!=0){
-			break;
-		}
-		n=n/i;
-		printf("%d*",i);
-		}
-	}
-} 
-int main(){
-	sufenjie(6);
-}
-```
+
 
 
 # 异常
@@ -365,16 +367,9 @@ index+1 = num(index) 指定索引右一位为到此索引的元素个数
 
 # 数组可以考虑成 正半轴,元素索引的右边一位就是前边所有元素的个数,例如{4,3,5,567,4}索引(2,5) 右边一共3个元素 size-index 就是index前边所有元素的个数;
 
-# 向上取整
-(a+b-1)/b
 
-# 计算机中的微小量1
-- 向上取整减去一个微小量1
-ceil(a/b)=(a+b-1)/b;
-- 边界条件+-个1;
 
-# 二进制 1,2,4,8..
-快速幂
+
 
 # new
 对某个对象进行操作的时候,最好把结果弄到一个new的对象上例如矩阵转置结果,new在一个新矩阵里否则原矩阵操作困难;
@@ -424,12 +419,6 @@ int main(){
 - int temp=a;
 		a=(int)((a+b)-abs(a-b))/2;
 		b=(int)((temp+b)+abs(temp-b))/2;
-# 状态压缩
-- 用二进制可以表示boolean数组
-用抽象代数思考就是 单位元,运算,brian遍历
-- 先设置一个limit表示数组的长度 limit=(0<<n)-1 方便后续移位操作 limit&tmp就能转到表示的数组长度上;
-- & 集合的与 乘法  | 集合或 有进位加法  ^ 集合补集 无进位加法 熟悉这些运算和性质方便操作 ~取反
-- 遍历状态的时候可以用brian算法提取最右侧的1 tmp&-tmp 适当对状态数组取反方便brian算法遍历;while(n!=0){int tmp=n&-n;n=(n^tmp)&limit;...}
 
 # arr[i++] 
 可以实现数组后缀添加;这就是迭代器Iterator的原理 循环完以后正好 为数组个数n;
@@ -724,15 +713,8 @@ int main() {
 
 
 
-# 容差法
-- 判断中间结果double类型是不是整数
-- double有效位数只有15位;
-- 定义一个很小的数double epsilon=1e-10
-- (a-Math.round(a)) < epsilon  ? true : 
-- 为什么要用round因为double运算可能出现15.99999这种;
 
-# 同余原理
-- 每次运算都mod
+
 - 
 
 
@@ -740,11 +722,6 @@ int main() {
 
 
 
-# 矩阵遍历
-- 嵌套循环的遍历顺序通过正交坐标变化的方向确定,最先移动的是内层循环
-![alt text](image.png)
-- 矩阵乘法三层循环
-![alt text](image-1.png)
 
 
 
