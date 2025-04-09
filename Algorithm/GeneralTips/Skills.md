@@ -17,8 +17,28 @@
 pointer->new 出来的对象内存区域;
 
 # 指针技巧
+NyMP  (no-backtracking sysmetry memo partition);
+## 不回退指针
+- no back nb指针
+- 例如将数组排序,kmp算法等,A-Bproblem,滑动窗口,供暖器
+
+### 双指针统计(归并)
+将两部分排序
+n^2的统计通过排序变为n
+```java
+// 统计部分
+		long ans = 0;
+		for (int j = m + 1, i = l, sum = 0; j <= r; j++) {
+			while (i <= m && arr[i] <= arr[j]) {
+				sum += arr[i++];
+			}
+			ans += sum;
+		}
+```
+## 对称加速指针
+
 ## 记忆指针
-- memo point
+- memo pointer
 - 例如(二叉树模拟递归遍历)  用指针记忆是否return的状态;
 ```java
 TreeNode head=node;
@@ -46,26 +66,9 @@ static void dfs(TreeNode node){
 }
 ```
 
-## 不回退指针
-- no back nb指针
-- 例如将数组排序,kmp算法等,A-Bproblem,滑动窗口,供暖器
-
-### 双指针统计(归并)
-将两部分排序
-n^2的统计通过排序变为n
-```java
-// 统计部分
-		long ans = 0;
-		for (int j = m + 1, i = l, sum = 0; j <= r; j++) {
-			while (i <= m && arr[i] <= arr[j]) {
-				sum += arr[i++];
-			}
-			ans += sum;
-		}
-```
 
 ## 划分指针
-- divide point
+- partition pointer
 - 用指针划分区域
 ### 例子
 #### 三指针划分(快速)
@@ -89,7 +92,7 @@ public static void partition2(int[] arr, int l, int r, int x) {
 
 #### 二分搜索划分红蓝区域寻找边界
 
-## 对称加速指针
+
 
 # 递归思想:
 - 递归树
