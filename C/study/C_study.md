@@ -66,7 +66,10 @@ System.arraycopy -- memcpy
 - StringTokenizer--strtoken
 底层原理是在分割出加入'\0'所以可以token-str知道此时所在索引;
 str="hello fhhf",token=strtoken(str," ");token=strtoken(NULL," ");
-- 格式化输入输出  %% %lld 
+- 不建议使用scanf("%c")因为这个会读取\n等不良信息直接读取字符串;https://www.luogu.com.cn/problem/P1957
+- 格式化输入输出  %% %lld %g %lf 
+%g是输入多少有效位数.
+- EOF
 ## 算法
 - Arrays.sort() -- qsort
 - 二分自己写
@@ -74,6 +77,74 @@ str="hello fhhf",token=strtoken(str," ");token=strtoken(NULL," ");
 ## 数学
 
 
+# 数学
+矩阵快速幂
+```c
+#include<stdio.h>
+#include<stdlib.h>
+#include<stdbool.h>
+#include<math.h>
+#include<string.h>
+int** matMultiply(int** a,int ** b, int n,int m,int o) {
+	int** mat = (int**)malloc(n * sizeof(int*));
+	for (int i = 0; i < m; i++) {
+		mat[i] = (int*)malloc(m * sizeof(int));
+		memset(mat[i], 0, m * sizeof(int));
+	}
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			for (int k = 0; k < o; k++) {
+				mat[i][j] += a[i][k] * b[k][j];
+			}
+		}
+	}
+	return mat;
+}
+int main() {
+	int n; int k;
+	scanf("%d %d", &n, &k);
+	int** mat = (int**)malloc(n * sizeof(int*));
+	for (int i = 0; i < n; i++) {
+		mat[i] = (int*)malloc(n * sizeof(int));
+	}
+	for (int i = 0; i < n ; i++) {
+		for (int j = 0; j < n; j++) {
+			scanf("%d", &mat[i][j]);
+		}
+	}
+	int** ans = (int**)malloc(n * sizeof(int*));
+	for (int i = 0; i < n; i++) {
+		ans[i] = (int*)malloc(n * sizeof(int));
+		memset(ans[i], 0, n * sizeof(int));
+	}
+	for (int i = 0; i < n; i++) {
+		ans[i][i] = 1;
+	}
+	while (k != 0) {
+		if(k&1==1){
+			ans = matMultiply(ans, mat, n, n, n);
+		}
+		k = k >> 1;
+		mat = matMultiply(mat, mat, n, n, n);
+	}
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			printf("%d ", ans[i][j]);
+		}
+		printf("\n");
+	}
+}
+```
+
+
+
+
+# 提单
+## xmuoj
+http://xmuoj.com/problem/LQ911 矩阵乘法
+
+## 洛谷
 
 
 
@@ -83,8 +154,7 @@ str="hello fhhf",token=strtoken(str," ");token=strtoken(NULL," ");
 
 
 
-
-
+----
 
 
 
@@ -760,7 +830,9 @@ int main(){
 ## 洛谷
 P1888
 P5707
-
+https://www.luogu.com.cn/contest/225636#problems
+https://www.luogu.com.cn/contest/234164#problems
+https://www.luogu.com.cn/contest/200845#problems
 
 # C语言标准库
 ## 字符串

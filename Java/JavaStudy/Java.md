@@ -106,15 +106,6 @@ st.nextToken()
 - 用一个数组位置代表数字的一位高精度
 - 可完全视为数字 运算用其自带的库函数就行;
 - 因为是用多余空间进行高精度所以如果不超过位数不要用biginteger否则空间时间会很高
-## System类
-- System.arraycopy() 是 Java 中一个非常常用的用于数组拷贝的静态方法。它的作用是将源数组中的一部分或全部元素复制到目标数组中的指定位置。这个方法是系统级的，因此执行效率比较高。
-public static void arraycopy(Object src, int srcPos, Object dest, int destPos, int length)
-参数说明：
-src：源数组（从这个数组中复制元素）。
-srcPos：源数组的起始位置（从该位置开始复制）。
-dest：目标数组（将元素复制到这个数组）。
-destPos：目标数组的起始位置（复制到目标数组的哪个位置）。
-length：要复制的元素个数。
 
 
 ## String类
@@ -195,6 +186,17 @@ Math.max 同理
 
 
 ## Arrays类
+- Arraays.fill 数组初始化
+- System.arraycopy() 是 Java 中一个非常常用的用于数组拷贝的静态方法。它的作用是将源数组中的一部分或全部元素复制到目标数组中的指定位置。这个方法是系统级的，因此执行效率比较高。
+public static void arraycopy(Object src, int srcPos, Object dest, int destPos, int length)
+参数说明：
+src：源数组（从这个数组中复制元素）。
+srcPos：源数组的起始位置（从该位置开始复制）。
+dest：目标数组（将元素复制到这个数组）。
+destPos：目标数组的起始位置（复制到目标数组的哪个位置）。
+length：要复制的元素个数。
+因为数组复制很常用所以再system底下很快;
+
 - Arrays.sort(int [] arr); 将数组arr 升序排列 
 - Arrays.binarySearch(int[] arr,int tg); 
 ## Collections
@@ -992,169 +994,101 @@ public static void quickSort2(int l, int r) {
 
 
 ## 回溯 
-- cache+recur 
-- 状态是基本数据类型f(int n) 是局部变量自动回溯,
-- 当状态是引用数据类型(指针)必须手动回溯
-### 字符串子序列
+### 排列组合
+- 规范序列
+1,1,2,3   1,1构成规范序列只能按照这个顺序进行排列组合可以实现无重复排列组合
+- 全排列和全组合
+无重复就加上规范序列没有就去掉规范序列!;
 ```java
-	public static void f1(char[] s, int i, StringBuilder path, HashSet<String> set) {
-		if (i == s.length) {
-			set.add(path.toString());
-		} else {
-			path.append(s[i]); // 加到路径中去
-			f1(s, i + 1, path, set);
-			path.deleteCharAt(path.length() - 1); // 从路径中移除
-			f1(s, i + 1, path, set);
-		}
-	}
-```
-### 全排列
-recur+cache+
-状态是visited 和stack来储存;
-```java
-class Main {
-    public static void main(String[] args) {
-        int n=3;
-        int[] arr={1,2,3};
-        boolean[] visited=new boolean[n];
-        Arrays.fill(visited,false);
-        ArrayDeque<Integer> stack=new ArrayDeque<>();
-        dfs(stack,arr,visited);
+import java.util.ArrayList;
+import java.util.List;
+
+public class Permutations {
+
+    public static List<List<Integer>> permuteUnique(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        boolean[] used = new boolean[nums.length];
+        
+        // 为了处理重复项，先对输入数组进行排序
+        java.util.Arrays.sort(nums);
+        backtrack(result, new ArrayList<>(), nums, used);
+        return result;
     }
 
-    static  void dfs(ArrayDeque<Integer> stack, int [] arr, boolean[] visited){
-        if(stack.size()==arr.length){
-            System.out.println(stack);
-            return ;
-        }
-        for (int i = 0; i < arr.length; i++) {
-            if(visited[i]==true){
-                continue;
-
-            }
-            
-            stack.push(arr[i]);
-            visited[i]=true;
-            dfs(stack,arr,visited);
-            visited[i]=false;
-            stack.pop();
-        }
-    }
-
-}
-
-```
-### 无重复全排列
-先将数组排列,判断要是重复的就跳过
-```java
-class Main {
-    public static void main(String[] args) {
-        int n=3;
-        int[] arr={1,1,3};
-        boolean[] visited=new boolean[n];
-        Arrays.fill(visited,false);
-        ArrayDeque<Integer> stack=new ArrayDeque<>();
-        dfs(stack,arr,visited);
-    }
-
-    static  void dfs(ArrayDeque<Integer> stack, int [] arr, boolean[] visited){
-        if(stack.size()==arr.length){
-            System.out.println(stack);
-            return ;
-        }
-        for (int i = 0; i < arr.length; i++) {
-            if(visited[i]==true){
-                continue;
-            
-            }
-            if(i!=0 && arr[i]==arr[i-1] rrr&& !visited[i-1]){  //这是判断语句一定要留意null ,
-                                                        //技术细节:1,1',3要满足前一个相等且要被访问过;
-                continue;
-            }
-            stack.push(arr[i]);
-            visited[i]=true;
-            dfs(stack,arr,visited);
-            visited[i]=false;
-            stack.pop();
-        }
-    }
-
-}
-
-```
-### 组合
-- 从全排列修改即可
-- 有n个元素组合 以i元素开头的时候仅需递归i+1往后的就行
-例如 1,2,3 选2个  (1,2)(1,3) (2,3)
-- 对递归的branch来说后续不够个数的直接continue 剪枝;
-```java
-package ache;
-
-import javax.swing.*;
-import java.net.http.HttpConnectTimeoutException;
-import java.util.*;
-
-class Main {
-    public static void main(String[] args) {
-        int n=5;
-        int[] arr={1,2,3,4,5};
-        boolean[] visited=new boolean[n];
-        Arrays.fill(visited,false);
-        ArrayDeque<Integer> stack=new ArrayDeque<>();
-        dfs(stack,arr,visited,3);
-    }
-
-    static  void dfs(ArrayDeque<Integer> stack, int [] arr, boolean[] visited,int target) {
-        if (stack.size() == target) {
-            System.out.println(stack);
+    private static void backtrack(List<List<Integer>> result, List<Integer> tempList, int[] nums, boolean[] used) {
+        if (tempList.size() == nums.length) {
+            result.add(new ArrayList<>(tempList));
             return;
         }
-        if (stack.isEmpty()) {
-            for (int i = 0; i < arr.length; i++) {
-                if (visited[i] == true) {
-                    continue;
-
-                }
-                if (i != 0 && arr[i] == arr[i - 1] && !visited[i - 1]) {
-                    continue;
-                }
-                stack.push(arr[i]);
-                visited[i] = true;
-                dfs(stack, arr, visited, target);
-                visited[i] = false;
-                stack.pop();
-            }
-        } else {
-            int i1 = Arrays.binarySearch(arr, stack.peek());
-            for (int i = i1+1; i < arr.length; i++) {  // 技术细节:仅从i1+1即可
-                if (visited[i] == true) {
-                    continue;
-                }
-                if(arr.length-i<target-stack.size()){   //技术细节:减枝
-                    continue;
-                }
-                if (i != 0 && arr[i] == arr[i - 1] && !visited[i - 1]) {
-                    continue;
-                }
-                stack.push(arr[i]);
-                visited[i] = true;
-                if((arr.length-i1)<target- stack.size()){
-                    visited[i] = false;
-                    stack.pop();
-                    return ;
-                }
-                dfs(stack, arr, visited, target);
-                visited[i] = false;
-                stack.pop();
-            }
+        
+        for (int i = 0; i < nums.length; i++) {
+            // 跳过已使用的元素或重复元素
+            if (used[i] || (i > 0 && nums[i] == nums[i - 1] && !used[i - 1])) continue;
+            
+            // 做选择
+            used[i] = true;
+            tempList.add(nums[i]);
+            
+            // 递归
+            backtrack(result, tempList, nums, used);
+            
+            // 撤销选择
+            used[i] = false;
+            tempList.remove(tempList.size() - 1);
         }
+    }
 
-    }}
+    public static void main(String[] args) {
+        int[] nums = {1, 2, 2};
+        List<List<Integer>> permutations = permuteUnique(nums);
+        System.out.println(permutations);
+    }
+}
+import java.util.ArrayList;
+import java.util.List;
+
+public class Combinations {
+
+    public static List<List<Integer>> combineUnique(int[] nums, int k) {
+        List<List<Integer>> result = new ArrayList<>();
+        
+        // 为了处理重复项，先对数组进行排序
+        java.util.Arrays.sort(nums);
+        backtrack(result, new ArrayList<>(), nums, k, 0);
+        return result;
+    }
+
+    private static void backtrack(List<List<Integer>> result, List<Integer> tempList, int[] nums, int k, int start) {
+        if (tempList.size() == k) {
+            result.add(new ArrayList<>(tempList));
+            return;
+        }
+        
+        for (int i = start; i < nums.length; i++) {
+            // 跳过重复的组合
+            if (i > start && nums[i] == nums[i - 1]) continue;
+            
+            // 做选择
+            tempList.add(nums[i]);
+            
+            // 递归，注意：这里传入 i+1 而不是 i，避免重复使用同一个元素
+            backtrack(result, tempList, nums, k, i + 1);
+            
+            // 撤销选择
+            tempList.remove(tempList.size() - 1);
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] nums = {1, 2, 2};
+        int k = 2;
+        List<List<Integer>> combinations = combineUnique(nums, k);
+        System.out.println(combinations);
+    }
+}
 
 ```
-
-### 无重复组合
-同理无重复排列即可
+通过截取全排列和全组合来实现排列组合
 
 ### N皇后问题
 - 简单的递归加回溯;
