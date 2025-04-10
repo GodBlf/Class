@@ -143,6 +143,8 @@ int main() {
 # 提单
 ## xmuoj
 http://xmuoj.com/problem/LQ911 矩阵乘法
+http://xmuoj.com/problem/
+
 
 ## 洛谷
 

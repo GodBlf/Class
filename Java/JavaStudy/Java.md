@@ -776,7 +776,7 @@ https://leetcode.cn/problems/sort-array-by-parity-ii/description/
 - 证明用同余定理
 - 相遇后都用慢的速度让一个指针回到起始点
 
-# 2进制和位运算
+# 2进制
 ## 2进制讨论(补码)
 - 计算机擅长加法 所以补码满足加法逻辑 所以 0-000 是0开头的0代表正号
 1-111是-1 开头的1代表负号 然后考虑计算机擅长加法所以 1111+1=0000 所以1111是-1
@@ -805,7 +805,10 @@ https://leetcode.cn/problems/sort-array-by-parity-ii/description/
 - 满足交换结合律
 - n^n=0  n^0=n;
 - 补集 A包含于C  补集就是 C^A   a^b=c   a^b^b=c^b  a^0=c^b a=c^b;
-- brian算法取出最右侧的1;n&(-n)=n&(~n+1);
+## brian算法
+- 取出最右侧的1;n&(-n)=n&(~n+1);'
+
+
 ### 应用
 - 一个树奇数次其他所有数都是偶数次  
 aa b cccc dd   直接求xor和 就是b;

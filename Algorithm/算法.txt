@@ -16,7 +16,7 @@
 归并 快速 基数排序 桶排序 
 
 字符串:
-kmp 马拉车 字符串哈希 字典树 
+kmp 马拉车 字符串哈希 字典树 ac
  
 图论:
 dfs bfs 拓扑排序 最小生成树(prim kruskal) dijkstra A* floyd bellmanford spfa 判断负环 最近公共祖先 lca
