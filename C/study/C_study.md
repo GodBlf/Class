@@ -57,7 +57,7 @@ int  main() {
 
 ## 数组
 System.arraycopy -- memcpy
-.fill -- memset
+.fill -- memset 仅0可以
 
 
 ## I/O
