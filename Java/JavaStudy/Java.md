@@ -223,7 +223,7 @@ Collections.sort(Collectiong arr , new Comparator(){@Override public int compare
 ## Comparator<E> 接口
 - 接口是方法的集合;
 - java以引用数据类型为主(对象) 必须new出来一个对象传入参数
-- 匿名内部类可以构建一个匿名对象搭载接口;
+- 匿名内部类可以构建一个匿名对象搭载接口;new {}  -> new Comperator<T>{} 其实匿名内部类可以看作
 
 - 匿名内部类:对于接口的实例化
 new可以生成类的对象不能生成接口的对象因为接口里边没有成员变量仅是其他类的方法
