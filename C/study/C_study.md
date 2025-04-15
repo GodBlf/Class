@@ -19,6 +19,7 @@ Student[][] mat=new
 
 # c标准库
 ## 字符串
+字符串清空直接str[0]=0;
 .append -- sprintf+strcat  %lld
 .indexof -- strstr  返回的是一个指针 p-str指针相减是索引;
 strspn 寻找包含合集的连续子串的最大长度
@@ -146,6 +147,67 @@ int main() {
 去年期末题
 往年题
 模拟赛
+## 信院考题
+- 后缀子串排序简简单单的
+- ![alt text](image-8.png)
+用栈 java能干的c一样能干;
+```c 
+#include<stdio.h>
+#include<stdlib.h>
+#include<stdbool.h>
+#include<math.h>
+#include<string.h>
+
+int main() {
+	char tmp1[19];
+	char tmp2[19];
+	char ans[1004];
+	int anscnt = 0;
+	char stack[104][18];
+	int stackcnt = 0;
+	ans[0] = 0;
+	
+	int sum = 0;
+	while (scanf("%s", tmp1)!= EOF) {
+		int len = strlen(tmp1);
+		sum += len + 1;
+		if (tmp1[0]>='0' && tmp1[0]<='9') {
+			int cnt = 0;
+			for (int i = len-1; tmp1[i]>=0; i--) {
+				if (tmp1[i] != 0) {
+					tmp2[cnt++] = tmp1[i];
+				}
+				else {
+					sum--;
+				}
+			}
+			tmp2[cnt] = 0;
+			strcpy(stack[stackcnt++], tmp2);
+		}
+		else {
+			for (int i = 0; i < len; i++) {
+				if (tmp1[i] >= 'a' && tmp1[i] <= 'z') {
+					tmp2[i] = tmp1[i] - 'a' + 'A';
+				}
+				else {
+					tmp2[i] = tmp1[i] - 'A' + 'a';
+				}
+			}
+			tmp2[len] = 0;
+			strcpy(stack[stackcnt++], tmp2);
+		}
+		strcat(ans, tmp2);
+		strcat(ans, " ");
+		anscnt++;
+	}
+	for (int i = stackcnt - 1; i >= 0; i--) {
+		printf("%s ", stack[i]);
+	}
+	
+}
+```
+
+
 ## xmuoj
 回文
 质数
@@ -154,6 +216,11 @@ http://xmuoj.com/problem/
 
 
 ## 洛谷
+https://www.luogu.com.cn/problem/P5714  %.6g
+https://www.luogu.com.cn/problem/P4414 千万别用 scanf("%c) getchar啥的读字符因为会读到之前省略的东西....直接读字符串;
+
+
+
 https://www.luogu.com.cn/problem/P3741  
 https://www.luogu.com.cn/problem/P1321
 

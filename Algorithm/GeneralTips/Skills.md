@@ -16,6 +16,11 @@
 # java引用数据类型(类)就是指针
 pointer->new 出来的对象内存区域;
 
+# sentry 哨兵指针
+扫雷的外围一圈0;字符串""都起到辅助作用;
+例如在快速排序的时候 i指针就是i左边的都是小于pivot的 最后再将pivot插入sentry中;
+数据结构也常用sentry ;
+
 # 指针技巧
 NyMP  (no-backtracking sysmetry memo partition);
 ## 不回退指针
@@ -38,6 +43,7 @@ n^2的统计通过排序变为n
 ## 对称加速指针
 
 ## 记忆指针
+- 设置sentry 划分一维数组 ;
 - memo pointer
 - 例如(二叉树模拟递归遍历)  用指针记忆是否return的状态;
 ```java
@@ -357,10 +363,7 @@ index+1 = num(index) 指定索引右一位为到此索引的元素个数
 # flag标记变量
 - cnt flag 等等
 
-# sentry 哨兵指针
-扫雷的外围一圈0;字符串""都起到辅助作用;
-例如在快速排序的时候 i指针就是i左边的都是小于pivot的 最后再将pivot插入sentry中;
-数据结构也常用sentry ;
+
 
 # 函数的静态参数
 设计静态共享变量然后 设计 void f() 没有返回直接操作静态变量
