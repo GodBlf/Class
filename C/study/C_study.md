@@ -17,7 +17,20 @@ qsort(&arr[1],n-1,sizeof(Student),compare);
 ## malloc 和new
 Student[][] mat=new 
 
+## malloc 堆和char str[44]
+- malloc是申请在堆的不会销毁
+- 栈数组申请会被销毁
+所以返回指针的函数的时候要返回malloc
+
+## 类与结构体
+typedef struct element {
+	int val;
+	int index;
+}element;
+
 # c标准库
+## 时间
+unix time_t->tm gmtime()->
 ## 字符串
 字符串清空直接str[0]=0;
 .append -- sprintf+strcat  %lld
@@ -25,7 +38,7 @@ Student[][] mat=new
 strspn 寻找包含合集的连续子串的最大长度
 strcspn 寻找不包含集合元素的最大长度;
 - Integer.paseInt()
-atof atol atoi 用lld输出
+atof atoll atoi 用lld输出
 arraycopy  strcpy 自动加上'\0';
 ### 字符串数组
 本质是矩阵
@@ -148,7 +161,35 @@ int main() {
 往年题
 模拟赛
 ## 信院考题
-- 后缀子串排序简简单单的
+- 扫描线https://www.luogu.com.cn/problem/U527420?contestId=225636
+寻找地上最多的飞机即可;从左往右扫描
+```c
+#include<stdio.h>
+#include<stdlib.h>
+#include<stdbool.h>
+#include<string.h>
+#include<math.h>
+int main() {
+	int cnt = 0; int ans = 0;
+	int n; scanf("%d", &n);
+	int arr[30];
+	memset(arr, 0, 30 * sizeof(int));
+	for (int i = 0; i < n; i++) {
+		int a; int b;
+		scanf("%d %d", &a, &b);
+		//注意是+=!!!!
+		arr[a] += 1;
+		arr[b] += -1;
+	}
+	for (int i = 0; i < 30; i++) {
+		cnt += arr[i];
+		ans = (int)fmax((double)ans, (double)cnt);
+	}
+	printf("%d", ans);
+
+}
+```
+
 - ![alt text](image-8.png)
 用栈 java能干的c一样能干;
 ```c 
@@ -208,16 +249,150 @@ int main() {
 ```
 
 
+
+- 后缀子串排序简简单单的
+- 结构体排序![alt text](image-9.png)
+```c
+#include<stdio.h>
+#include<stdlib.h>
+#include<stdbool.h>
+#include<string.h>
+#include<math.h>
+typedef struct {
+	int index;
+	int val;
+}element;
+int cmp(const void* o1, const void* o2) {
+	element* e1 = (element*)o1;
+	element* e2 = (element*)o2;
+	if (e1->val!= e2->val) {
+		return e2->val - e1->val;
+	}
+	return e1->index - e2->index;
+}
+int main() {
+	int n; int m;
+	scanf("%d %d", &n, &m);
+	int arr[12];
+	element array[12];
+	for (int i = 0; i < 12; i++) {
+		array[i].index = i;
+		array[i].val = 0;
+	}
+	memset(arr, 0, 12 * sizeof(int));
+	int cnt = 0;
+	for (int i = 0; i < n; i++) {
+		int tmp; scanf("%d", &tmp);
+		if (tmp >= 1 && tmp <= m) {
+			arr[tmp]++;
+			array[tmp].val = array[tmp].val + 1;
+		}
+		else {
+			cnt++;
+		}
+	}
+	int youxiaopiao = n - cnt;
+	if ((double)youxiaopiao < 2.0 * n / 3) {
+		printf("无效投票!");
+		return 0;
+	}
+	else {
+		qsort(array + 1, m, sizeof(element), cmp);
+		for (int i = 1; i <= m; i++) {
+			if (array[i].val == 0) {
+				continue;
+			}
+			printf("No %d : %d\n",array[i].index,array[i].val);
+		}
+	}
+
+}
+```
+
+
 ## xmuoj
-回文
-质数
-http://xmuoj.com/problem/LQ911 矩阵乘法
-http://xmuoj.com/problem/
+- GW026 雇佣兵
+简简单单的模拟和向上取整;
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include<math.h>
+int main() {
+	int m; int n; int x;
+	scanf("%d %d %d", &m, &n, &x);
+	while (true) {
+		if (m > n * x) {
+			break;
+		}
+		int tmp = (m + n - 1) / n;
+		x = x - tmp;
+		n = n + m / n;
+	}
+	printf("%d", n);
+}
+```
+
+- 回文
+http://xmuoj.com/problem/ACW5993  溢出!!!!!arrcha[i] * arrcha[i + 1] > 0
+http://xmuoj.com/problem/LQ018   超级打表!;
+
+
+- 质数
+- http://xmuoj.com/problem/LQ911 矩阵乘法
+- http://xmuoj.com/problem/LQ386  超级打表用java
+- 蛇形矩阵
+```c
+#include<stdio.h>
+#include<stdlib.h>
+#include<stdbool.h>
+#include<math.h>
+#include<string>
+
+int main() {
+	int mat[10][10];
+	int n; scanf("%d", &n);
+	int top = 0; int bottom = n - 1;
+	int left = 0; int right = bottom;
+	int cnt = 1;
+	while (cnt <= n * n) {
+		for (int i = left; i <= right; i++) {
+			mat[top][i] = cnt++;
+		}
+		top++;
+		for (int i = top; i <= bottom; i++) {
+			mat[i][right] = cnt++;
+		}
+		right--;
+		for (int i = right; i >= left; i--) {
+			mat[bottom][i] = cnt++;
+		}
+		bottom--;
+		for (int i = bottom; i >= top; i--) {
+			mat[i][left] = cnt++;
+		}
+		left++;
+	}
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			printf("%3d ", mat[i][j]);
+		}
+		printf("\n");
+	}
+
+}
+```
 
 
 ## 洛谷
-https://www.luogu.com.cn/problem/P5714  %.6g
-https://www.luogu.com.cn/problem/P4414 千万别用 scanf("%c) getchar啥的读字符因为会读到之前省略的东西....直接读字符串;
+- 数字环化直接数字sprintf==num+"";
+- https://www.luogu.com.cn/problem/P5714  %.6g4. 注意点
+在scanf时，%g、%f、%e基本等价 —— 指定双精度用 %lg，但一般写%lf更常规。
+%g适合输出结果给人看的场景，可以让数更紧凑、更易读。
+%g精度默认为6位有效数字，可通过.nf控制。
+
+- https://www.luogu.com.cn/problem/P4414 千万别用 scanf("%c) getchar啥的读字符因为会读到之前省略的东西....直接读字符串;
 
 
 
@@ -661,66 +836,7 @@ int main(){
 	
 }
 
-## http://xmuoj.com/problem/GW043字符串处理
-```java
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
 
-typedef struct {
-    char str[101];
-    int length;
-    int index;
-} String;
-
-int compare1(const void *o1, const void *o2) {
-    String *s1 = (String *)o1;
-    String *s2 = (String *)o2;
-    if (s1->length != s2->length) {
-        return s2->length - s1->length; // Descending order for longest
-    }
-    return s1->index - s2->index; // Ascending order by index
-}
-
-int compare2(const void *o1, const void *o2) {
-    String *s1 = (String *)o1;
-    String *s2 = (String *)o2;
-    if (s1->length != s2->length) {
-        return s1->length - s2->length; // Ascending order for shortest
-    }
-    return s1->index - s2->index; // Ascending order by index
-}
-
-int main() {
-    char input[20001]; // To hold the entire input line
-    fgets(input, sizeof(input), stdin); // Read the line of input
-    int n = 1001;
-
-    String *arr = (String *)malloc(n * sizeof(String));
-    int cnt = 0;
-
-    char *token = strtok(input, " ,"); // Split input by space or comma
-    while (token != NULL) {
-        strcpy(arr[cnt].str, token); // Copy the word into the struct
-        arr[cnt].length = strlen(token); // Calculate the length of the word
-        arr[cnt].index = cnt; // Store the word's index position
-        cnt++;
-        token = strtok(NULL, " ,");
-    }
-
-    // Sort for the longest word
-    qsort(arr, cnt, sizeof(String), compare1);
-    printf("%s\n", arr[0].str); // The first longest word
-
-    // Sort for the shortest word
-    qsort(arr, cnt, sizeof(String), compare2);
-    printf("%s\n", arr[0].str); // The first shortest word
-
-    free(arr);
-    return 0;
-}
-
-```
 
 ## 学习用类 qsort进行排序
 ```c
@@ -871,32 +987,7 @@ int main() {
 
 ```
 XMU2034 http://xmuoj.com/problem/XMU2034
-## GW026 雇佣兵
-#include<math.h>
-#include<stdio.h>
-int main(){
-	int M=5,T=0,N=2,X=10;
-	scanf("%d %d %d",&M,&N,&X);
-	while(1){
-		int xuyao=ceil((double)M/2);
-		if(xuyao>X){
-			break;
-		}else{
-			T=M;X=X-xuyao;
-		}
-		
-		if(T/N==0){
-			break;
-		}else{
-			N+=T/N;T=0;
-		}
-		
-	}
-	printf("%d",N);
-	
-}
 
-两个边界条件
 
 
 

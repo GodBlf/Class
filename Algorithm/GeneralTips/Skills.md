@@ -275,6 +275,12 @@ Priority sequence
 ```
 
 
+# 打表
+- 打表找规律
+- 把长时间打表的答案写进源代码,节省评测机中的时间;
+素分解可以先把质数格式化输出成数组再复制粘贴到源代码中;
+http://xmuoj.com/problem/LQ018
+http://xmuoj.com/problem/LQ386
 
 # 异常
 ## 数组越界
