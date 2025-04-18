@@ -81,7 +81,7 @@ System.arraycopy -- memcpy
 底层原理是在分割出加入'\0'所以可以token-str知道此时所在索引;
 str="hello fhhf",token=strtoken(str," ");token=strtoken(NULL," ");
 - 不建议使用scanf("%c")因为这个会读取\n等不良信息直接读取字符串;https://www.luogu.com.cn/problem/P1957
-- 格式化输入输出  %% %lld %g %lf 
+- 格式化输入输出  %% %lld %g %lf  %o %x %b
 %g是输入多少有效位数.
 - EOF
 ## 算法
@@ -161,6 +161,75 @@ int main() {
 往年题
 模拟赛
 ## 信院考题
+- 模拟https://www.luogu.com.cn/problem/U524961?contestId=225636
+```c
+#include<stdio.h>
+#include<stdlib.h>
+#include<stdbool.h>
+#include<time.h>
+#include<math.h>
+#include<string.h>
+#define MAX 2147483647 
+
+int main() {
+	long long nn; int l; scanf("%lld %d", &nn, &l);
+	bool set[104]; memset(set, false, 104 * sizeof(bool));
+	int setindex[104];
+	int stack[1004]; int cnt = 0;
+	for (int i = 1; ; i++) {
+		long long n = (long long)pow((double)nn, (double)i);
+		if (n > MAX) {
+			printf("-1"); return 0;
+		}
+		if (l == 1) {
+			if (set[n % 10] == true) {
+				printf("%d\n", i - setindex[n % 10]);
+				int flag = 0;
+				for (int j = 0; j < cnt; j++) {
+					if (stack[j] == n % 10) {
+						printf("%d ", stack[j]);
+						flag = 1;
+						continue;
+					}
+					if (flag == 1) {
+						printf("%d ", stack[j]);
+
+					}
+				}
+				return 0;
+			}
+			set[n % 10] = true;
+			stack[cnt++] = n % 10;
+			setindex[n % 10] = i;
+		}
+		else {
+			if (set[n % 100] == true) {
+				printf("%d\n", i - setindex[n % 100]);
+				int flag = 0;
+				for (int j = 0; j < cnt; j++) {
+					if (stack[j] == n % 100) {
+						printf("%02d ", stack[j]);
+						flag = 1;
+						continue;
+					}
+					if (flag == 1) {
+						printf("%02d ", stack[j]);
+
+					}
+				}
+				return 0;
+
+			}
+			set[n % 100] = true;
+			stack[cnt++] = n % 100;
+
+			setindex[n % 100] = i;
+		}
+
+	}
+}
+```
+
 - 扫描线https://www.luogu.com.cn/problem/U527420?contestId=225636
 寻找地上最多的飞机即可;从左往右扫描
 ```c

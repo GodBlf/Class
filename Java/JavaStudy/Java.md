@@ -794,7 +794,6 @@ https://leetcode.cn/problems/sort-array-by-parity-ii/description/
 - |: 有1则1,相当于单进位加法  1|0=1 1|1=10(1) 0|0=0;
 - ^: 相同则0 取补集; 无进位相加
 所以例如取出某二进制数的后16位  n&0xFFFF
-### 应用
 - <<n  二进制表示右移n位;相当于乘了2^n;
 - >>n  二进制表示左移n位,相当于整除了2^n;
 - int n  n& 1<<i 可取出n二进制下第i位的数;
@@ -812,6 +811,10 @@ https://leetcode.cn/problems/sort-array-by-parity-ii/description/
 ## brian算法
 - 取出最右侧的1;n&(-n)=n&(~n+1);'
 
+## 进制
+- 又<< >>可以推出 数字表示每一位就是 base^n;左移n位就是*base^n;右移同理
+base进制转为10进制 sum=sum*base^1+i  每次左移一位;
+- 10进制转为base进制  不断取模
 
 ### 应用
 - 一个树奇数次其他所有数都是偶数次  
