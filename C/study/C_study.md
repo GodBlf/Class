@@ -455,7 +455,59 @@ int main() {
 
 
 ## 洛谷
+- 进制转换https://www.luogu.com.cn/problem/U290781?contestId=234164
+```c
+#include<stdio.h>
+#include<stdlib.h>
+#include<stdbool.h>
+#include<time.h>
+#include<math.h>
+#include<string.h>
+
+
+int main() {
+	
+	int b1; int b2; char str[40];
+	scanf("%d %d %s", &b1, &b2, str);
+	int len = strlen(str);
+	int sum = 0;
+	for (int i = 0; i < len; i++) {
+		int digit;
+		if (str[i] >= '0' && str[i] <= '9') {
+			digit = str[i] - '0';
+		}
+		else {
+			digit = str[i] - 'A' + 10;
+		}
+		sum = sum * b1 + digit;
+	}
+	char ans[40];
+	int cnt = 0;
+	while (sum != 0) {
+		int tmp = sum % b2;
+		if (tmp <= 9 && tmp >= 0) {
+			ans[cnt++] = tmp + '0';
+		}
+		else {
+			ans[cnt++] = tmp - 10 + 'A';
+		}
+		sum = sum / b2;
+	}
+	ans[cnt] = 0;
+	int l = 0; int r = cnt - 1;
+	while (l <= r) {
+		int tmp = ans[l];
+		ans[l] = ans[r];
+		ans[r] = tmp;
+		l++;
+		r--;
+	}
+	printf("%s", ans);
+}
+```
+
 - 数字环化直接数字sprintf==num+"";
+
 - https://www.luogu.com.cn/problem/P5714  %.6g4. 注意点
 在scanf时，%g、%f、%e基本等价 —— 指定双精度用 %lg，但一般写%lf更常规。
 %g适合输出结果给人看的场景，可以让数更紧凑、更易读。

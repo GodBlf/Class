@@ -24,7 +24,8 @@ pointer->new 出来的对象内存区域;
 # 指针技巧
 NyMP  (no-backtracking sysmetry memo partition);
 ## 不回退指针
-- no back nb指针
+no backtracking pointer
+- 数组反转
 - 例如将数组排序,kmp算法等,A-Bproblem,滑动窗口,供暖器
 
 ### 双指针统计(归并)
