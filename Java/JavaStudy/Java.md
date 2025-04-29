@@ -812,6 +812,7 @@ https://leetcode.cn/problems/sort-array-by-parity-ii/description/
 - 取出最右侧的1;n&(-n)=n&(~n+1);'
 
 ## 进制
+- 进制就是级数  1011=1*2^0+1*2^1+0*2^2+1*2^3;
 - 又<< >>可以推出 数字表示每一位就是 base^n;左移n位就是*base^n;右移同理
 base进制转为10进制 sum=sum*base^1+i  每次左移一位;
 - 10进制转为base进制  不断取模
