@@ -812,7 +812,7 @@ https://leetcode.cn/problems/sort-array-by-parity-ii/description/
 - 取出最右侧的1;n&(-n)=n&(~n+1);'
 
 ## 进制
-- 进制就是级数  1011=1*2^0+1*2^1+0*2^2+1*2^3;
+- 进制就是泰勒级数  1011=1*2^0+1*2^1+0*2^2+1*2^3;
 - 又<< >>可以推出 数字表示每一位就是 base^n;左移n位就是*base^n;右移同理
 base进制转为10进制 sum=sum*base^1+i  每次左移一位;
 - 10进制转为base进制  不断取模
@@ -1164,70 +1164,61 @@ class Solution {
 
 
 # 二分
-- 红蓝区域法(划分指针);
-- 确定答案区间,区间满足单调性,将区间分成红蓝区域,二分寻找红蓝边界;
-二分logn复杂度,区间可以定的很宽 
-- boolean判断函数
-开始红蓝区域均为零,寻找红蓝之间中点的数判断属于红还是蓝,由于单调性可以扩充红or蓝区域到此数;
+- 划分指针(红蓝区域法);
+![alt text](image-30.png)
+![alt text](image-24.png)
+
+- 二分区间
+确定答案区间,区间满足二分性即存在边界使得左边(red)全是false右边(blue)全是true,二分寻找此边界;
+二分logn复杂度,区间可以定的很宽;
+
+- 填充区间
+开始红区域-1蓝区域n,寻找红蓝之间中点的数判断函数属于红还是蓝,由于二分性可以扩充红or蓝区域到此数;
 直到红蓝区域相撞(l+1==r);
+
+## eg
 ## 二分搜索
-- 可视为logn级别的递归;
-- 技术细节:
-- 划分指针 每个指针>= <= 不断往中间二分直到l+1=r;
+- 确定二分区间,要满足单调递增
+
+- 确定二分区间的边界,下界二分搜索为红区域<,蓝区域>=
+
 ![alt text](image-26.png)
 ![alt text](image-30.png)
 https://www.bilibili.com/video/BV1d54y1q7k7/?share_source=copy_web&vd_source=4dd7efe758648db09e00b24d05324a19
-划分指针是寻找边界
-- 记忆指针是寻找具体的值
 
-- 划分指针:r划分>=tg的 l划分<tg的寻找< 和>=的边界;
+- 填充区间
+
 ```java
-static int find(int[] arr,int tg){
-    int l=-1;int r=n;int m=0;
-    while(!(l+1==r)){
-        m=(l+r)>>1;
-        if(arr[m]>=tg){
-            r=m;
+static boolean panduan(int n,int tg){
+        if(n<tg){
+            return false;
         }else{
-            l=m;
+            return true;
         }
     }
-    return r;
-}
+    static int find(int[] arr,int tg){
+        int n=arr.length;
+        int l=-1;int r=n;int m=0;
+        while(!(l+1==r)){
+            m=(l+r)>>1;
+            if(panduan(arr[m],tg)){
+                r=m;
+            }else{
+                l=m;
+            }
+        }
+        return r;
+    }
 ```
-其他如<=tg最右侧 可寻找其他边界实现;
-
-- 记忆指针实现>=num的值;
-```java
-// 有序数组中找>=num的最左位置
-	public static int findLeft(int[] arr, int num) {
-		int l = 0, r = arr.length - 1, m = 0;
-		int ans = -1;
-		while (l <= r) {  //终止条件是r<l因为相等的时候还要判断;
-			// m = (l + r) / 2;
-			// m = l + (r - l) / 2;
-			m = l + ((r - l) >> 1);
-			if (arr[m] >= num) {
-				ans = m;  //ans记忆指针
-				r = m - 1;
-			} else {
-				l = m + 1;
-			}
-		}
-		return ans;
-	}
-```
-寻找最右侧的实现 可以在未找到tg时候 返回tg的极限值 如{1,2,3,5}找4返回 索引3
-java.util.Arrays中的 Arrays.binarySearch(数组,值);不会返回最左侧答案;
-这个要是没找到返回-(极限index+1);可以 abs(return)-1就是极限值;
-
-## 二分答案
-- ![alt text](image-24.png)
-- 红蓝区域法,蓝区域左移与满足条件的单调性寻找红蓝边界;
-- 确定ans的区间 然后分为> 和<=的红蓝区域,寻找红蓝边界边界就是==的ans 如果找不到判断一下就行了'
 
 
-### 二分峰值问题
+- 其他如上界二分搜索可以修改边界;
+
+- 二分别用库函数自己写
+
+
+
+## 二分峰值问题
 找到数组中的一个峰值即可
 ![alt text](image-12.png)
 罗尔种植定理
