@@ -6,14 +6,9 @@
 student * p=&x; studeng & p=x;
 p->age; p.age;
 
-## 传递对象信息
+## 基本数据类型与&引用
 - c++以基本数据类型为主,指针引用仅为了方便传递对象
 - c++编译器在传递引用的时候会自动将变量转换成引用;
-
-## const 安全引用
-- const student& p=x;
-仅允许引用访问变量不允许修改变量的值
-
 
 
 ## 栈内存和堆内存(new)
@@ -21,6 +16,11 @@ p->age; p.age;
 student x;
 student * p=new student("xiaoming",19);//new 出来的对象返回的是一个指针(地址);
 - 栈区域执行完{}就会销毁注意要在堆区域开辟;
+
+# const只读修饰符
+- bool cmp(const int&i1,const int&i2){};
+- const成员函数不能修改成员变量的值
+例如比较器重载()const
 
 # 类和对象
 
