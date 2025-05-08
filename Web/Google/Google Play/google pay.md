@@ -1,5 +1,6 @@
 首先需要有张visa 或者 万事达的外币卡,工行学生星座visa挺好,用星座卡买外汇然后用谷歌支付能订阅gpt等服务;
 找一个能用谷歌服务的手机,
+https://www.youtube.com/watch?v=eEUjzbguxDg&t=6s
 https://www.meiguodizhi.com/
 美国地址修改成美区,alipayhk 可以内地手机号注册然后绑港区我的就是一个美区一个港区;
 谷歌的分区机制:

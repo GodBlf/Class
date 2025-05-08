@@ -1,3 +1,5 @@
+[TOC]
+
 # 指针与引用
 - pointer->对象(一块内存区域) 变量x的pointer就是&x;
 - 指针是可变指针,引用是不可变指针且不能指向nullptr
@@ -31,6 +33,20 @@ student * p=new student("xiaoming",19);//new 出来的对象返回的是一个�
 - 多加const 只读安全访问;
 
 # 类和对象
+```c++
+class student {
+public:
+    string name;
+    int age;
+    student(string n,int a) {
+        name=n;
+        age=a;
+    }
+    void print() {
+        cout<<name+" "<<age<<endl;
+    }
+};
+```
 
 ## 对象的复制
 - 构造函数形复制
@@ -81,3 +97,7 @@ start 和 n居多
 ## stack
 
 # 优先队列
+
+
+# 头文件
+#include<bits/stdc++.h>
