@@ -32,6 +32,11 @@ student * p=new student("xiaoming",19);//new 出来的对象返回的是一个�
 - 迭代器遍历也是const int&i:set
 - 多加const 只读安全访问;
 
+# static 静态修饰符
+- 工具方法,共享变量
+- static修饰的函数对象存在于静态区,外部能访问静态,静态只能访问静态区不能访问外部区;
+
+
 # 类和对象
 ```c++
 class student {
@@ -42,11 +47,24 @@ public:
         name=n;
         age=a;
     }
+    student(){}
     void print() {
         cout<<name+" "<<age<<endl;
     }
 };
 ```
+- 构造函数()
+- 重载需要写上空构造;
+
+- 栈空间 student xiaoming(n,a)
+直接在栈空间申请自动销毁,xiaoming()相当于构造函数student()
+stduent xiaoming=student(n,a) 相当于构造了一个对象在把值拷贝到xiaoming上
+
+- 堆空间 student* xiaoming=new student(n,a)
+student()构造了一个对象值,new返回这个对象的指针;
+需要手动销毁否则内存泄漏;
+
+
 
 ## 对象的复制
 - 构造函数形复制
@@ -71,24 +89,52 @@ class cmp {
     }
 };
 ```
+传入到泛型中 set<int,cmp>;
 
+# 迭代器
+- iterator
+有序容器都有迭代器对象,就是个指针
+- iterator.begin()指向索引0,iterator.end()指向n
+- 迭代器left right用begin和end构造  会遍历left到right-1这个区间
+- 对需要进行迭代的容器可以用迭代器简化函数
+- fill
+std::fill(src.begin() + srcPos, src.begin() + srcPos + len,value);
+- copy
+std::copy(src.begin() + srcPos, src.begin() + srcPos + len, dest.begin() + destPos);
+- insert
+arr.insert(arr.begin()+n,value);
+- erase
+arr.erase(left,right);
+- 改查;
 
 # 数组
-- 建议直接使用vector类,vector<int> arr(n),指针信息在栈,内存开辟在堆
-- 
+- 建议直接使用vector类,vector<int> arr(n,init),指针信息在栈,内存开辟在堆
+- 矩阵 vector<vector<int>> mat(n,vector<int>(m,0));
+
+- fill copy增删改查操作用迭代器实现
+
+
 
 # 字符串
 start 和 n居多
 - string 
+## 函数
 - 增 += insert(start,"");
 - 删 erase(start,n);
 - 改 replace(start,n,"");
 - 查 substr(start,n) find("",start);
+- 迭代器法详见迭代器,建议使用索引法,数组都是迭代器法,字符串都是索引法
+- to_string(int,double,...)
+- stoi  stod  stoll...
+## 重载运算符
+- + "ab"+"cd"=="abcd"
+
 
 # 哈希表
 - set
 - unordered_set
-- 
+- map
+- unordered_map
 
 # deque
 
@@ -101,3 +147,38 @@ start 和 n居多
 
 # 头文件
 #include<bits/stdc++.h>
+
+
+# 基本数据类型
+- char int long long (不开longlong见祖宗)
+- double float long double
+double 15位有效位数
+long double 18有效位数
+- 一般用double int大了开longlong
+- sizeof() 字节数
+
+# IO
+```cpp
+int main{
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(0);
+}
+```
+关闭与stdio的同步,关闭cin触发cout刷新
+
+
+# goto
+- 一般跳出嵌套循环
+- 跳到标记处
+```cpp
+for(int i=0;i<100;i++){
+    for(int j=0;j<100;j++){
+        if(j==3){
+            goto loop;
+        }
+    }
+}
+loop:
+    cout<<"";
+    return 0;
+```
