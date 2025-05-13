@@ -110,9 +110,11 @@ arr.erase(left,right);
 # 数组
 - 建议直接使用vector类,vector<int> arr(n,init),指针信息在栈,内存开辟在堆
 - 矩阵 vector<vector<int>> mat(n,vector<int>(m,0));
-
+## 函数
 - fill copy增删改查操作用迭代器实现
-
+- .resize(n,init) 重新指定大小扩充用init扩,缩小直接删;
+- .push_back(x) .pop_back()
+- 
 
 
 # 字符串
