@@ -25,6 +25,9 @@ student x("",19);
 student * p=new student("xiaoming",19);//new 出来的对象返回的是一个指针(地址);
 - 栈区域执行完{}就会销毁注意要在堆区域开辟;
 
+## 智能指针
+- 工程上new 一般使用智能指针来代替提高安全性
+
 # const只读修饰符
 - bool cmp(const int&i1,const int&i2){};
 - const成员函数不能修改成员变量的值
