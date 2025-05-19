@@ -110,6 +110,15 @@ arr.insert(arr.begin()+n,value);
 arr.erase(left,right);
 - 改查;
 
+# 函数
+- 函数的参数拷贝传递
+
+# lambda函数
+- auto f = [&y](auto x){return x+1;};
+- auto f = [capture](auto arg){};
+- 防止命名污染,和起名难..
+
+
 # 数组
 - 建议直接使用vector类,vector<int> arr(n,init),指针信息在栈,内存开辟在堆
 - 矩阵 vector<vector<int>> mat(n,vector<int>(m,0));
