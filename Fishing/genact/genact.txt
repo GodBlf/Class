@@ -1,0 +1,2 @@
+https://github.com/svenstaro/genact
+会启动一个终端,假装自己在下载依赖等.

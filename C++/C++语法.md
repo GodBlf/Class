@@ -1,15 +1,9 @@
 [TOC]
 
 # 指针与引用
-- pointer->对象(一块内存区域) 变量x的pointer就是&x;
+- pointer->对象(一块内存区域) 变量x值的pointer就是&x;
 - 指针是可变指针,引用是不可变指针且不能指向nullptr
 引用是简化版指针,用来简化代码;
-可以用引用重构指针来简化代码
-```c++
-    set<int,cmp> *set_=new set<int, cmp>;
-    set<int,cmp>& set=*set_;
-```
-
 - 指针可以->直接访问成员变量,所以不用考虑指针值*pointer的问题,直接使用!
 student * p=&x; studeng & p=x;
 p->age; p.age;
@@ -56,7 +50,8 @@ public:
     }
 };
 ```
-- 构造函数()
+## 构造函数()
+- 构造函数就是()运算符 可以在变量后() 也可以在类后();
 - 重载需要写上空构造;
 
 - 栈空间 student xiaoming(n,a)
@@ -69,10 +64,14 @@ student()构造了一个对象值,new返回这个对象的指针;
 
 
 
-## 对象的复制
+## 析构函数
+
+## 拷贝函数
 - 构造函数形复制
 student xm(xiaoming,22);
 student xh(xm);
+
+
 
 # 比较器
 - true 代表优先级正确 false代表优先级错误需要调换;a<b升序,a>b降序;
