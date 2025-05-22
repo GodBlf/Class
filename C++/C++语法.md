@@ -1,12 +1,16 @@
 [TOC]
 
 # 指针与引用
+## 指针(pointer)
 - pointer->对象(一块内存区域) 变量x值的pointer就是&x;
-- 指针是可变指针,引用是不可变指针且不能指向nullptr
-引用是简化版指针,用来简化代码;
 - 指针可以->直接访问成员变量,所以不用考虑指针值*pointer的问题,直接使用!
 student * p=&x; studeng & p=x;
 p->age; p.age;
+- 指针一般用智能指针封装确保安全性
+
+## 引用
+- 引用是简化版指针,用来简化代码;引用仅用于函数传参和返回;
+- 指针是可变指针,引用是不可变指针且不能指向nullptr
 
 ## 基本数据类型(值)与&引用
 - c++以基本数据类型为主,指针引用仅为了方便传递对象信息;
@@ -22,14 +26,16 @@ student * p=new student("xiaoming",19);//new 出来的对象返回的是一个�
 ## 智能指针
 - 工程上new 一般使用智能指针来代替提高安全性
 
-# const只读修饰符
+
+# 修饰符
+## const只读修饰符
 - bool cmp(const int&i1,const int&i2){};
 - const成员函数不能修改成员变量的值
 例如比较器重载bool operator()() const{} 
 - 迭代器遍历也是const int&i:set
 - 多加const 只读安全访问;
 
-# static 静态修饰符
+## static 静态修饰符
 - 工具方法,共享变量
 - static修饰的函数对象存在于静态区,外部能访问静态,静态只能访问静态区不能访问外部区;
 
@@ -111,6 +117,7 @@ arr.erase(left,right);
 
 # 函数
 - 函数的参数拷贝传递
+- 一般用引用做参数
 
 # lambda函数
 - auto f = [&y](auto x){return x+1;};
@@ -119,9 +126,10 @@ arr.erase(left,right);
 
 
 # 数组
-- 建议直接使用vector类,vector<int> arr(n,init),指针信息在栈,内存开辟在堆
+- 建议直接使用vector类,vector<int> arr(n,init),指针信息在栈,内存开辟在堆,相当于智能指针自动释放内存
 - 矩阵 vector<vector<int>> mat(n,vector<int>(m,0));
 ## 函数
+- (n,init) 初始化,初始n个,init值;
 - fill copy增删改查操作用迭代器实现
 - .resize(n,init) 重新指定大小扩充用init扩,缩小直接删;
 - .push_back(x) .pop_back()
