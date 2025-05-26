@@ -73,9 +73,10 @@ public:
 - 构造函数就是()运算符 可以在变量后() 也可以在类后();
 - 重载需要写上空构造;student(){}
 
-- 栈空间 student xiaoming(n,a)
+- 栈空间 student xiaoming(n,a) 
 直接在栈空间申请自动销毁,xiaoming()相当于构造函数student()
-stduent xiaoming=student(n,a) 相当于构造了一个对象在把值拷贝到xiaoming上
+stduent xiaoming=student(n,a) 相当于构造了一个匿名对象在把值拷贝到xiaoming上
+若使用空构造对象 应为student xiaoming 因为 如果student xiaoming() 编译器会识别为函数的声明!
 
 - 堆空间 student* xiaoming=new student(n,a)
 student()构造了一个对象值,new返回这个对象的指针;
@@ -173,11 +174,33 @@ arr.erase(left,right);
 - 一般用引用做参数
 
 # lambda函数
+- 用auto 体现lambda函数的匿名性;
 - auto f = [&y](auto x){return x+1;};
 - auto f = [capture](auto arg){};
 - 防止命名污染,和起名难..
 
 # stl容器一般都是智能指针
+
+# 随机数
+- random_device->randomseed->mt_algorithm->randomgenerate
+```cpp
+#include <iostream>
+#include <random>
+
+int main() {
+    std::random_device rd;                   //获取随机种子（硬件支持时更随机）
+    std::mt19937 gen(rd());                  //初始化梅森旋转算法生成器
+    std::uniform_int_distribution<> dis(10, 100); //指定范围
+
+    int r = dis(gen); // 生成10-100的随机整数
+    std::cout << r << std::endl;
+}
+//生成小鼠随机数
+std::uniform_real_distribution<> reald(0.0, 1.0);
+double dr = reald(gen);
+
+
+```
 
 # 数组
 - 建议直接使用vector类,vector<int> arr(n,init),指针信息在栈,内存开辟在堆,相当于智能指针自动释放内存
