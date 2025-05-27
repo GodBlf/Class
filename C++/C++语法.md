@@ -71,12 +71,12 @@ public:
 ## 构造函数()
 - 起到初始化的作用,例如有r S  构造函数(r){S=Π*r*r;}
 - 构造函数就是()运算符 可以在变量后() 也可以在类后();
-- 重载需要写上空构造;student(){}
+- 重载需要写上空构造;student(){},且调用空构造只能student xm;不能加()因为编译器会识别为函数的声明!
 
 - 栈空间 student xiaoming(n,a) 
 直接在栈空间申请自动销毁,xiaoming()相当于构造函数student()
 stduent xiaoming=student(n,a) 相当于构造了一个匿名对象在把值拷贝到xiaoming上
-若使用空构造对象 应为student xiaoming 因为 如果student xiaoming() 编译器会识别为函数的声明!
+
 
 - 堆空间 student* xiaoming=new student(n,a)
 student()构造了一个对象值,new返回这个对象的指针;
@@ -142,7 +142,7 @@ bool cmp(const int&i1,const int&i2){
 [](auto i1 ,auto i2){return i1<i2;}
 ```
 
-- 类型
+- 仿函数类,型
 优先级队列泛型传递比较器所以用重载()的类
 ```c++
 class cmp {
@@ -241,7 +241,8 @@ start 和 n居多
 ## stack
 
 # 优先队列
-
+- priority_queue<int,vector<int>,cmp> cmp是仿函数
+- 默认是小根堆
 
 # 头文件
 #include<bits/stdc++.h>
