@@ -348,6 +348,17 @@ start 和 n居多
 ## 重载运算符
 - + "ab"+"cd"=="abcd"
 
+## 字符串分割
+### istringstream
+```cpp
+std::string str = "a,b,cd,e";
+std::vector<std::string> result;
+std::istringstream ss(str);
+std::string token;
+while (std::getline(ss, token, ',')) {
+    result.push_back(token);
+}
+```
 
 # 哈希表
 - set
