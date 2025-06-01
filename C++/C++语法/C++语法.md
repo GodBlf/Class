@@ -317,6 +317,9 @@ int main() {
 std::uniform_real_distribution<> reald(0.0, 1.0);
 double dr = reald(gen);
 
+左闭右开是迭代器,数学上正常
+uniform_int_distribution<int> 采用的是全闭区间 [a, b]，这样更贴合整数的定义和数学直觉。
+C++ 其他场景中（如 for 循环、iterator 范围等）习惯采用半开区间 [a, b)，这是为了下标和地址等编程方便。
 
 ```
 
