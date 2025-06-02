@@ -1,0 +1,4 @@
+System Prompt
+使用LLM得采用precomputation的方式
+例如要用一个开源库,可以写一个prompt.md
+详细写出需要解决的问题需求,文档,现有的条件和实例
