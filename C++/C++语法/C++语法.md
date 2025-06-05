@@ -90,6 +90,7 @@ public:
 - 初始化通过构造函数init;
 
 ## 构造函数() init
+- 任何生成对象都是()  例如new ()  make_shared()
 - 起到初始化的作用,例如有r S  构造函数(r){S=Π*r*r;}
 - 构造函数就是()运算符 可以在变量后() 也可以在类后();
 - 重载需要写上空构造;student(){},且调用空构造只能student xm;不能加()因为编译器会识别为函数的声明!
@@ -275,7 +276,10 @@ class cmp {
 - iterator
 有序容器都有迭代器对象,就是个指针
 - iterator.begin()指向索引0,iterator.end()指向n
-- 迭代器left right用begin和end构造  会遍历left到right-1这个区间
+- 迭代器left right用begin和end构造  会遍历left到right-1这个区间[left,right)
+- 迭代器的[,)设计和长度n相关 begin()+destPos,begin()+destPos+n  就是从初始迭代器往后数n个长度
+证明:x-begin()+destPos=n 
+## 容器迭代器
 - 对需要进行迭代的容器可以用迭代器简化函数
 - fill
 std::fill(src.begin() + srcPos, src.begin() + srcPos + len,value);
@@ -289,7 +293,7 @@ arr.erase(left,right);
 
 # 函数
 - 函数的参数拷贝传递
-- 一般用引用做参数
+- 一般用引用做参数传递和函数返回
 
 # lambda函数
 - 用auto 体现lambda函数的匿名性;

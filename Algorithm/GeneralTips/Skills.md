@@ -7,8 +7,17 @@
 
 # 通过Tree来考虑数据结构和算法
 - 例如bfs 和 dfs 的queue stack实现,递归.递归树遍历;
-# java引用数据类型(类)就是指针
-pointer->new 出来的对象内存区域;
+
+
+
+# 数组索引
+index+1 = num(index) 指定索引右一位为到此索引的元素个数  
+
+可以考虑为  0,1,2,3,4,5,...,n,n_length ;  
+- System.arrarycopy(arr1,start1,arr1,start2,arr1.length-start1)  这里的length-start1 就是剩余的元素个数
+- for(int i=0;i<n;i++) 这个循环次数是n  用数学角度考虑就是 [0,n) 就是 [0,n-1] n-1+1 就是n个元素;
+
+
 
 # sentry 哨兵指针
 扫雷的外围一圈0;字符串""都起到辅助作用;
@@ -355,13 +364,6 @@ public class MonotonicQueue {
 - 基本数据类型因为是副本自动回溯
 - 引用数据类型手动回溯;
 
-
-# 数组索引
-index+1 = num(index) 指定索引右一位为到此索引的元素个数  
-
-可以考虑为  0,1,2,3,4,5,...,n,n_length ;  
-- System.arrarycopy(arr1,start1,arr1,start2,arr1.length-start1)  这里的length-start1 就是剩余的元素个数
-- for(int i=0;i<n;i++) 这个循环次数是n  用数学角度考虑就是 [0,n) 就是 [0,n-1] n-1+1 就是n个元素;
 
 
 # flag标记变量
