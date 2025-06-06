@@ -31,6 +31,20 @@
 
 # 匿名内部类
 
+# 循环标签
+- 标签
+```java
+loop1:for(int i=0;i<100;i++){
+    loop2:for(int j=0;j<100;j++){
+        if(j==50){
+            break loop2;or continue loop1;        
+        }
+
+    }
+}
+
+```
+- 一般直接return就行
 # 比较器
 
 # 字符串
