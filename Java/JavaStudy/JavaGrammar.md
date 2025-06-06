@@ -26,7 +26,14 @@ g(p)
 - 基本数据类型 副本无法对原对象修改
 - 引用数据类型:1.对对象地址又加了个指针,![alt text](image-11.png) 2.可以通过副本指针来修改对象的值3. 如果赋值是把新的指针指向别的对象;
 
-# 对象的copy
+# 格式化输出
+Node \Class\Java\JavaStudy\格式化输出.txt
+
+# 刷题如何定义类
+Node \Class\Java\JavaStudy\刷题多个类同文件和静态内部类.md
+
+# 类和对象
+## 对象的copy
 - ArrayList<Integer> arr1=new ArrayList<>(arr);可用这种方法对对象进行复制
 - 所以 拷贝ArrayList等引用数据类型
 得 Object<E> o1 =new Object<E>();
@@ -35,7 +42,7 @@ eg.  ArrayList<Integer> arr=new ArrayList<>();
 ArrayList<Integer> arr1=new ArrayList<>(arr);
 因为指针所以  让arr1=arr仅是让指针指向同一个不是copy;
 
-# static
+## static
 - 工具方法 共享变量 工具类(工具箱)
 Node \Class\Java\JavaStudy\static内部类.md
 - 类的不是对象的
@@ -51,20 +58,16 @@ Node \Class\Java\JavaStudy\static内部类.md
 ```
 
 
-# 格式化输出
-Node \Class\Java\JavaStudy\格式化输出.txt
 
-# 刷题如何定义类
-Node \Class\Java\JavaStudy\刷题多个类同文件和静态内部类.md
 
-# equals和hashCode重写
+## equals和hashCode重写
 因为java中对象都是指针所以==只能比较地址哈希值也是按照地址哈希的,equals也只能比较地址相同吗
 所以重写这两个方法可以使得equals按照对象的成员变量进行比较,hashcode按照成员变量进行哈希
 string类型已经重写好了能够直接使用;
 在建立hashmap 和 调用比较应该重写方法;
 
 
-# 构造方法
+## 构造方法
 ```java
 class Student{
     //成员变量default值,不赋值默认null
@@ -82,7 +85,7 @@ class Student{
     }
 }
 ```
-# 成员变量和局部变量
+## 成员变量和局部变量
 局部变量是方法或者{} 代码块栈中的 栈消失也跟着消失,
 成员变量和接口方法组成类 是结构框架 所以得用public 等修饰,它不会消失
 ``` java
@@ -115,7 +118,7 @@ class Item {
 
 ```
 
-# 作用域
+## 作用域
 
 
 在 Java 中，如果一个变量、方法或类没有显式声明 `public`、`protected` 或 `private`，那么它的默认作用范围是 **包级私有（package-private）**，也称为 **默认访问权限（default access modifier）**。
