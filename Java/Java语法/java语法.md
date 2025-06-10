@@ -12,7 +12,8 @@
 
 # 修饰符
 ## final
-
+- public static final int x
+常量 相当于c++的const
 ## static
 
 # 类和对象
@@ -303,7 +304,215 @@ if (a instanceof Dog) {
 
 
 
+
+
 # 匿名内部类
+
+# 面向接口(interface able)
+**函数类多态**
+- 方法类:接口是函数的集合,把对象共有的方法抽象出来 
+- 接口多态:更好的解耦合便于运行维护加功能         
+- 接口组合继承                                  
+## 接口多态
+```java
+interface Sortable {
+    void sort(int[] arr);
+}
+
+class BubbleSort implements Sortable {
+    public void sort(int[] arr) { /* 实现冒泡排序 */ }
+}
+
+class QuickSort implements Sortable {
+    public void sort(int[] arr) { /* 实现快速排序 */ }
+}
+
+class Sorter {
+    private int[] arr;
+    private Sortable strategy;
+    Sorter(Sortable strategy) { this.strategy = strategy; }
+    void sort(int[] arr) { strategy.sort(arr); }
+}
+
+
+```
+## default方法
+
+# 组合
+- 接口组合
+- 内嵌
+
+## 示例
+
+### 一、核心需求
+- 有多种设备：吊灯、电视、洗衣机、空调、窗帘、电饭煲等。
+- 用户可以**选择设备**，进行**打开/关闭**操作。
+- 不同设备可能有不同功能（比如有的可以调节温度、亮度等）。
+
+---
+
+### 二、面向接口建模
+
+#### 1. 抽象出"可开关"设备接口
+
+```java
+public interface Switchable {
+    void turnOn();
+    void turnOff();
+    boolean isOn();
+}
+```
+
+#### 2. 具体设备实现接口
+
+```java
+public class Light implements Switchable {
+    private boolean on = false;
+    public void turnOn() {
+        on = true;
+        System.out.println("吊灯已开启");
+    }
+    public void turnOff() {
+        on = false;
+        System.out.println("吊灯已关闭");
+    }
+    public boolean isOn() {
+        return on;
+    }
+}
+
+public class TV implements Switchable {
+    private boolean on = false;
+    public void turnOn() {
+        on = true;
+        System.out.println("电视已开启");
+    }
+    public void turnOff() {
+        on = false;
+        System.out.println("电视已关闭");
+    }
+    public boolean isOn() {
+        return on;
+    }
+}
+
+public class WashingMachine implements Switchable {
+    private boolean on = false;
+    public void turnOn() {
+        on = true;
+        System.out.println("洗衣机已开启");
+    }
+    public void turnOff() {
+        on = false;
+        System.out.println("洗衣机已关闭");
+    }
+    public boolean isOn() {
+        return on;
+    }
+}
+
+// 其他设备类似
+```
+
+#### 3. 设备管理器（组合实现）
+
+```java
+import java.util.*;
+
+public class SmartHomeController {
+    private Map<String, Switchable> devices = new HashMap<>();
+
+    public void addDevice(String name, Switchable device) {
+        devices.put(name, device);
+    }
+
+    public void turnOn(String name) {
+        Switchable device = devices.get(name);
+        if (device != null) {
+            device.turnOn();
+        } else {
+            System.out.println(name + " 设备不存在");
+        }
+    }
+
+    public void turnOff(String name) {
+        Switchable device = devices.get(name);
+        if (device != null) {
+            device.turnOff();
+        } else {
+            System.out.println(name + " 设备不存在");
+        }
+    }
+}
+```
+
+---
+
+#### 4. 用户操作示例
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        SmartHomeController controller = new SmartHomeController();
+        controller.addDevice("吊灯", new Light());
+        controller.addDevice("电视", new TV());
+        controller.addDevice("洗衣机", new WashingMachine());
+
+        controller.turnOn("吊灯");
+        controller.turnOff("电视");
+        controller.turnOn("洗衣机");
+    }
+}
+```
+
+**输出示例：**
+```
+吊灯已开启
+电视已关闭
+洗衣机已开启
+```
+
+---
+
+### 三、扩展能力（组合优于继承）
+
+如果以后某些设备有特殊功能，比如**调节温度/亮度**，可以用组合：
+
+```java
+public interface Adjustable {
+    void adjust(int value);
+}
+
+public class AirConditioner implements Switchable, Adjustable {
+    private boolean on = false;
+    private int temperature = 26;
+    public void turnOn() { on = true; System.out.println("空调已开启"); }
+    public void turnOff() { on = false; System.out.println("空调已关闭"); }
+    public boolean isOn() { return on; }
+    public void adjust(int value) {
+        temperature = value;
+        System.out.println("空调温度调为：" + temperature);
+    }
+}
+```
+
+添加到控制器即可：
+
+```java
+controller.addDevice("空调", new AirConditioner());
+```
+
+---
+
+### 四、总结
+
+- **接口**（Switchable，Adjustable）抽象各种设备的能力，灵活扩展。
+- **组合**（SmartHomeController持有设备）实现对设备的统一管理和操作。
+- 设备的功能随时可以扩展，不用修改原有控制器或设备管理逻辑。
+
+---
+
+
 
 # 循环标签
 - 标签
