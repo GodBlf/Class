@@ -15,6 +15,24 @@
 - public static final int x
 常量 相当于c++的const
 ## static
+**参见c++语法的static**
+- 工具方法,共享变量
+- 属于类本身,内存只有一份,不推荐用对象访问建议用类进行访问
+- 静态区,外部可以访问静态区,静态区只能访问静态区
+静态方法不能使用this因为this自指对象,对象不在静态区
+### 静态代码块
+- 因为类在方法区加载一次,static属于类只有一份内存
+所以初始化的时候得在特定区域初始化,如果在()中初始化就会每次new对象初始化一次
+- 静态代码块仅随着类在方法区加载初始化一次实现对一份内存的初始化,且仅能访问静态区的变量方法
+```java
+public class studeng{
+    private static ...
+
+    static{
+        初始化静态...
+    }
+}
+```
 
 # 类和对象
 ```java
@@ -33,6 +51,8 @@ public class Student{
 
 ```
 
+## lombook注解
+直接嵌入getter setter 空构造和有参构造
 
 ## 默认值和初始化
 
@@ -48,6 +68,20 @@ public class Student{
 - 属于类本身,内存只有一份,不推荐用对象访问建议用类进行访问
 - 静态区,外部可以访问静态区,静态区只能访问静态区
 静态方法不能使用this因为this自指对象,对象不在静态区
+### 静态代码块
+- 因为类在方法区加载一次,static属于类只有一份内存
+所以初始化的时候得在特定区域初始化,如果在()中初始化就会每次new对象初始化一次
+- 静态代码块仅随着类在方法区加载初始化一次实现对一份内存的初始化,且仅能访问静态区的变量方法
+```java
+public class studeng{
+    private static ...
+
+    static{
+        初始化静态...
+    }
+}
+```
+
 
 ### 应用
 - 共享变量
@@ -307,6 +341,13 @@ if (a instanceof Dog) {
 
 
 # 匿名内部类
+new interface/class(大部分是abstract) {@Override};
+- 底层会立即创建一个子类及其对象 所以叫匿名 ;
+student-> student$1.class
+- 方便传递一个接口对象
+- comparator<> 比较器
+## lambda
+
 
 # 面向接口(interface able)
 **函数类多态**
@@ -337,7 +378,7 @@ class Sorter {
 
 ```
 ## default方法
-
+## 接口继承
 # 组合
 - 接口组合
 - 内嵌
@@ -528,6 +569,8 @@ loop1:for(int i=0;i<100;i++){
 
 ```
 - 一般直接return就行
+
+
 # 比较器
 
 # 字符串

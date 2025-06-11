@@ -1,0 +1,39 @@
+- 学习一些前端有成果才有动力
+
+- tcp,ip http/https
+
+- linux
+- 设计模式
+
+
+- git
+- postman 接口测试
+- navicat
+- maven:包管理工具
+
+- springboot 容器 注解 aop 
+- mybatis
+
+
+- mysql
+
+
+- redis
+
+
+# 进阶
+
+- kafka rabbitmq
+- arthas
+- docker & kubernetes
+- 
+
+
+
+不要投入
+- jsp
+- tomcat servlet
+- jetty
+
+
+
