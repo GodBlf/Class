@@ -347,10 +347,20 @@ student-> student$1.class
 - 方便传递一个接口对象
 - comparator<> 比较器
 ## lambda
-
+- 替代函数式接口 (接口)
+- lambda就是简化代码用的尽量简化类似cpp的auto
+```java
+Arrays.sort(arr, new Comparator<student>() {
+            @Override
+            public int compare(student o1, student o2) {
+                return 0;
+            }
+        });
+        Arrays.sort(arr,((o1, o2) -> {return 0;}));
+```
 
 # 面向接口(interface able)
-**函数类多态**
+**函数类多态** polymorph method class
 - 方法类:接口是函数的集合,把对象共有的方法抽象出来 
 - 接口多态:更好的解耦合便于运行维护加功能         
 - 接口组合继承                                  

@@ -253,8 +253,8 @@ ceil(a/b)=(a+b-1)/b;
 # if/else
 ![alt text](1aa00cfeb4f84a6f7dfad89a36cd2c10.jpg)
 ![alt text](4258aee49f7139b2b3a2469eff118ebe.jpg)
-Object state divide and choose 对对象状态的分划和选择,对象可以是变量,序偶等,例如a>b相当于(a,b)的state;选择某个状态就在假设某个状态成立下进行后续操作;注意合并逻辑
-Priority sequence
+- Object state divide and choose 对对象状态的分划和选择,对象可以是变量,序偶等,例如a>b相当于(a,b)的state;选择某个状态就在假设某个状态成立下进行后续操作;注意合并逻辑
+- Object filter(Priority sequence) 建议设计成过滤器的结构
 - Vertex.visited
     if(v.visited==true){
 
