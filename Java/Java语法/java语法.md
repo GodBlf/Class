@@ -337,6 +337,9 @@ if (a instanceof Dog) {
 ---
 
 
+## hashcode和equals
+- 重写的有String Integer系列
+
 
 
 
@@ -358,7 +361,7 @@ Arrays.sort(arr, new Comparator<student>() {
         });
         Arrays.sort(arr,((o1, o2) -> {return 0;}));
 ```
-
+# 比较器
 # 面向接口(interface able)
 **函数类多态** polymorph method class
 - 方法类:接口是函数的集合,把对象共有的方法抽象出来 
@@ -580,8 +583,191 @@ loop1:for(int i=0;i<100;i++){
 ```
 - 一般直接return就行
 
+# 异常
+- Java 异常体系分为两大类：
 
-# 比较器
+- （1）Checked Exception（受检异常）
+编译器会检查。
+方法中如果有可能抛出，必须用 throws 声明或用 try-catch 捕获。
+例如：IOException, SQLException 等。
+这些异常往往是外部不可控因素（如文件丢失、网络中断）。
+抛出 RuntimeException（运行时异常）时，方法签名上不用 throws 声明，是因为 Java 认为这类异常是程序员的逻辑错误，编译器不会强制要求你捕获或声明它们。
+编译器只强制你处理“受检异常”，而运行时异常属于程序员自身代码逻辑问题，Java 认为你应该通过改正代码来避免它们，而不是处理它们，所以不需要 throws 声明。
+- （2）Unchecked Exception（非受检异常）
+包括 RuntimeException 及其子类（如 NullPointerException, IndexOutOfBoundsException 等）。
+编译器不会强制要求捕获或声明。
+这些异常通常是程序错误（如空指针、下标越界等），是程序员应自己避免的。
+Java 设计者认为，如果你写代码导致了运行时异常，你应该自己修正代码，而不是依赖异常处理来兜底。
+
+## throws throw
+- throws 声明方法抛出的异常类型 并把异常抛出到上层
+- throw 相当于return 抛出异常后不处理就终止程序
+- 类比 类型声明 和 return;
+
+## try catch
+```java
+ try {
+            System.out.println(f(0));
+        } catch (MyException e) {
+            e.printStackTrace();
+        }
+        out.println("end");
+```
+
+
+
+## 自定义异常
+- 一般业务用RuntimeException 因为调用多次会每次处理异常很麻烦
+```java
+public static int f(int x)throws MyException {
+        if(x==0){
+            throw new MyException("error");
+        }
+        System.out.println("success");
+        return x;
+    }
+```
+
+# 泛型
+
+- 参数化类型方便传递
+- 泛型不能基本数据类型从cpp的指针引用考虑
+
+## 一、什么是泛型？
+
+**泛型**是 Java SE 5 引入的一个特性，用于在类、接口和方法中实现参数化类型。简单说，泛型允许你在定义类、接口、方法时，使用“类型参数”来指定将来使用时具体的数据类型，从而提高代码的复用性和类型安全性。
+
+---
+
+## 二、为什么需要泛型？
+
+1. **类型安全**
+   使用泛型可以在编译期检查类型错误，避免运行时抛出 `ClassCastException`。
+
+2. **代码复用**
+   只需编写一次通用代码，可以用于多种数据类型。
+
+3. **避免强制类型转换**
+   使用泛型后，很多地方不再需要手动类型转换，代码更简洁，出错率更低。
+
+---
+
+## 三、泛型的基本语法
+
+### 1. 泛型类
+
+```java
+public class Box<T> {
+    private T value;
+    public void setValue(T value) { this.value = value; }
+    public T getValue() { return value; }
+}
+```
+使用：
+
+```java
+Box<Integer> intBox = new Box<>();
+intBox.setValue(10);
+Integer value = intBox.getValue();
+
+Box<String> strBox = new Box<>();
+strBox.setValue("Hello");
+String str = strBox.getValue();
+```
+
+### 2. 泛型方法
+
+```java
+public class Util {
+    public static <T> void printArray(T[] array) {
+        for (T elem : array) {
+            System.out.println(elem);
+        }
+    }
+}
+```
+使用：
+
+```java
+Integer[] nums = {1, 2, 3};
+Util.printArray(nums);
+
+String[] strs = {"A", "B"};
+Util.printArray(strs);
+```
+
+### 3. 泛型接口
+
+```java
+public interface Comparable<T> {
+    int compareTo(T o);
+}
+```
+实现：
+
+```java
+public class Student implements Comparable<Student> {
+    public int compareTo(Student other) {
+        // 实现比较逻辑
+    }
+}
+```
+
+---
+
+## 四、泛型的通配符
+
+### 1. `?` 通配符
+
+- `List<?>`：可以指任何类型的 List，例如 `List<String>`、`List<Integer>` 等。
+- 主要用于只读场景（不能添加元素，除了 null）。
+
+### 2. 有界通配符
+
+- 上界（extends）：`List<? extends Number>`
+  - 表示元素类型是 Number 或其子类。
+- 下界（super）：`List<? super Integer>`
+  - 表示元素类型是 Integer 或其父类。
+
+**示例：**
+
+```java
+public void printNumbers(List<? extends Number> list) {
+    for (Number n : list) {
+        System.out.println(n);
+    }
+}
+```
+
+---
+
+## 五、类型擦除
+
+Java 泛型在编译后会进行**类型擦除**，泛型类型参数会被替换为原始类型（如 Object），所以运行时不会有泛型信息。
+
+---
+
+## 六、使用泛型的注意事项
+
+1. 不能用在静态变量上（因为类型参数属于实例）。
+2. 不能实例化泛型类型参数（不能 new T()）。
+3. 不能创建泛型数组（如 new T[]）。
+4. 不能使用基本类型作为泛型参数（如 List<int>，只能用 List<Integer>）。
+
+---
+
+## 七、常见应用
+
+- 集合框架：`List<T>`, `Set<T>`, `Map<K,V>`
+- 自定义工具类和数据结构
+
+---
+
+## 总结
+
+泛型是 Java 提高类型安全和代码复用的重要机制。掌握泛型的基本用法、通配符和常见注意事项，有助于写出更健壮、灵活的代码。
+
+
 
 # 字符串
 - 用StringBuilder
@@ -595,13 +781,19 @@ loop1:for(int i=0;i<100;i++){
 - Integer.parseInt() Integer.valueOf() int 和 Integer
 - String.valueOf() ""+int
 
-# Set
-## HashSet<>
+# Collection 接口
 
-## TreeSet
+## List
+- arraylist<>
+- linkedlist<>
+
+## Set
+### HashSet<>
+
+### TreeSet
 
 
-# Map
+## Map
 - map.entrySet() 将map转成元素是map.Entry<>的set就能for迭代了
 
 
