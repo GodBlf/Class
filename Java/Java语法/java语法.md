@@ -360,13 +360,16 @@ Arrays.sort(arr, new Comparator<student>() {
             }
         });
         Arrays.sort(arr,((o1, o2) -> {return 0;}));
+        //还能进一步简化
+        x->x+1
 ```
 # 比较器
 # 面向接口(interface able)
 **函数类多态** polymorph method class
 - 方法类:接口是函数的集合,把对象共有的方法抽象出来 
 - 接口多态:更好的解耦合便于运行维护加功能         
-- 接口组合继承                                  
+- 接口组合继承     
+- 成员变量默认是常量和抽象方法                             
 ## 接口多态
 ```java
 interface Sortable {
@@ -782,18 +785,80 @@ Java 泛型在编译后会进行**类型擦除**，泛型类型参数会被替�
 - String.valueOf() ""+int
 
 # Collection 接口
+## 迭代器
+```java
+Iterator<Integer> iterator = arr.iterator();
+        while(iterator.hasNext()){
+            Integer next = iterator.next();
+            iterator.remove();
+        }
+```
+- 建议用增强for ,
+删除元素 设计并发问题需要i--;
+用removeIf+lambda
+
+### 增强for
+collection.for  idea .后缀自动遍历;
+### removeIf
+```java
+ArrayList<Integer> arr = new ArrayList<>();
+        arr.removeIf(new Predicate<Integer>() {
+            // 可lambda简化;
+            @Override
+            public boolean test(Integer integer) {
+                if(integer>1){
+                    return true;
+                }
+                return false;
+            }
+        });
+```
 
 ## List
 - arraylist<>
 - linkedlist<>
 
 ## Set
+- hahsCode 重写hashCode和equals方法
 ### HashSet<>
 
 ### TreeSet
-
+- 重写compareTo() 方法 -1 左边小  0相等   1右边大
 
 ## Map
 - map.entrySet() 将map转成元素是map.Entry<>的set就能for迭代了
+变成set后才能removeif 解决并发修改问题
+map生成的set是一个视图和map共用一个内存区域
+- 键唯一 值可重复
 
+
+# Stream流
+- 链式操作,new 流会复制一份不是视图
+- 生成流
+collection.stream()  arrays.stream(int[] arr)  streamof  
+
+## 中间方法
+
+- filter sorted limit skip
+```java
+list.stream().skip(3).limit(3).forEach(...)
+```
+- distinct去重
+
+- map类型转换
+
+- Stream.concat(,)
+
+## 终结方法
+- forEach 遍历
+- toArray(x->new object[x])
+- collect
+```java
+        Map<Integer, Integer> map = arr.stream().collect(Collectors.toMap(x -> x, x -> x + 1));
+        //tolist toset同理
+```
+
+
+# IO流
+- 字节流(word 等所有类型文件) 字符流(.md  .txt)
 

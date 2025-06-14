@@ -14,6 +14,7 @@
 
 
 # 快捷键
+1. 万能快捷键 alt+enter
 2. .var  .if .arg
 3. fori  forr(逆序)   .for  .fori  .forr;
 例如对一个list集合的遍历  list.for  ; 
