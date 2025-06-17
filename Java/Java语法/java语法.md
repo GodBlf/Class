@@ -607,7 +607,7 @@ Java 设计者认为，如果你写代码导致了运行时异常，你应该自
 - throw 相当于return 抛出异常后不处理就终止程序
 - 类比 类型声明 和 return;
 
-## try catch
+## try catch finally
 ```java
  try {
             System.out.println(f(0));
@@ -860,5 +860,53 @@ list.stream().skip(3).limit(3).forEach(...)
 
 
 # IO流
+- 相当于构建一个信息传输通道
 - 字节流(word 等所有类型文件) 字符流(.md  .txt)
+```java
+FileInputStream fi = new FileInputStream("D:\\gangbalei\\java\\csp\\src\\input.txt");
+        FileOutputStream fo = new FileOutputStream("D:\\gangbalei\\java\\csp\\src\\output.txt",true);
+        int tmp;
+        while(true){
+            tmp=fi.read();
+            if(tmp==-1){
+                break;
+            }
+            fo.write(tmp);
+        }
+fo.close();
+        fi.close(); //注意按照栈的方式close
+// 创建一个
+
+```
+## 拷贝
+- 用一个字节数组一块读取 建议1024的整数倍
+![alt text](image.png)注意tmp数组会有残留
+
+```java
+ FileInputStream fi = new FileInputStream("D:\\gangbalei\\java\\csp\\src\\input.txt");
+        FileOutputStream fo = new FileOutputStream("D:\\gangbalei\\java\\csp\\src\\output.txt",true);
+        int len;
+        byte[] tmp = new byte[1024 * 1024 * 5];
+        while(true){
+            len=fi.read(tmp);
+            if(len==-1){
+                break;
+            }
+            fo.write(tmp,0,len);
+        }
+        fo.close();
+        fi.close();
+```
+## 异常处理
+- 开发当中直接抛出 throw || throws处理
+
+## 字符编码
+1.在计算机中，任意数据都是以二进制的形式来存储的
+2.计算机中最小的存储单元是一个字节
+3.ASCI字符集中，一个英文占一个字节
+4.简体中文版Windows，默认使用GBK字符集
+5.GBK字符集完全兼容ASCII字符集
+一个英文占一个字节，二进制第一位是0
+一个中文占两个字节，二进制高位字节的第一位是1
+
 
