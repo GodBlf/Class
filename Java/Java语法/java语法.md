@@ -862,6 +862,7 @@ list.stream().skip(3).limit(3).forEach(...)
 # IO流
 - 相当于构建一个信息传输通道
 - 字节流(word 等所有类型文件) 字符流(.md  .txt)
+- 文件路径可以/ 后者\\
 ```java
 FileInputStream fi = new FileInputStream("D:\\gangbalei\\java\\csp\\src\\input.txt");
         FileOutputStream fo = new FileOutputStream("D:\\gangbalei\\java\\csp\\src\\output.txt",true);
@@ -919,3 +920,26 @@ ascii 1字节 0开头
 
 ## 字符流
 字节流+字符集格式化
+和字符流类似 byte[]->char[]
+```java
+FileWriter fw = new FileWriter("D:/output.txt",true);
+        FileReader fr = new FileReader("D:/input.txt");
+        fw.write("\n");
+        int len=0;
+        char[] tmp = new char[1024 * 1024 * 5];
+        while(true){
+                len=fr.read(tmp);
+                if(len==-1){
+                    break;
+                }
+                fw.write(tmp,0,len);
+            }
+```
+- 底层原理
+1. 判断是否有字符读取
+2. 没有就放到内存缓冲区
+3. 读取
+
+## 应用
+- 字节流:拷贝
+- 字符流 : 读取文本写入文本
