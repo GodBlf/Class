@@ -940,6 +940,24 @@ FileWriter fw = new FileWriter("D:/output.txt",true);
 2. 没有就放到内存缓冲区
 3. 读取
 
-## 应用
-- 字节流:拷贝
-- 字符流 : 读取文本写入文本
+## 缓冲流
+Buffered
+
+### 缓冲流就是对字节流的高级包装
+![alt text](image-1.png)
+```java
+BufferedInputStream bis = new BufferedInputStream(new FileInputStream("D:/input.txt"));
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream("D:/output.txt", true));
+        int len=0;
+        byte[] tmp = new byte[1024 * 1024 * 5];
+        while(true){
+            len=bis.read(tmp);
+            if(len==-1){
+                break;
+            }
+            bos.write(tmp,0,len);
+        }
+        //
+        bos.close();
+        bis.close();
+```
