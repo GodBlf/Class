@@ -961,3 +961,17 @@ BufferedInputStream bis = new BufferedInputStream(new FileInputStream("D:/input.
         bos.close();
         bis.close();
 ```
+
+
+
+# java多线程
+## 进程
+
+## 线程
+- 线程包含在进程中
+- 在进程中互相独立能同时运行
+- 多线程
+
+## 并发和并行
+- 多个指令单个cpu交替执行
+- 多个指令在多个cpu同时执行
