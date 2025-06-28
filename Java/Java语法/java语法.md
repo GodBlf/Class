@@ -975,3 +975,77 @@ BufferedInputStream bis = new BufferedInputStream(new FileInputStream("D:/input.
 ## 并发和并行
 - 多个指令单个cpu交替执行
 - 多个指令在多个cpu同时执行
+
+## 实际开发中，推荐优先使用实现Runnable接口，其次是Callable接口，几乎不用直接继承Thread。
+
+## Thread 类
+
+## Runnable 接口
+```java
+public class Test implements Runnable{
+    @Override
+    public void run() {
+        Thread t=Thread.currentThread(); //返回此方法在哪个线程中运行
+        System.out.println(t.getName()+"nihao");
+    }
+}
+
+public class Main{
+    public static void main(String[] args) {
+        Thread thread1 = new Thread(new Test());
+                thread1.setName("thread one");
+        thread1.start();
+    }
+}
+```
+## Callable<>
+- 多线程返回值用这个接口
+### FutureTask封装
+- Thread接受的对象是runable
+- futuretask实现了runable接口可以加入thread实现了future接口可以返回值
+
+### 2.3 FutureTask的作用
+
+**FutureTask**是一个适配器（桥梁），它实现了Runnable接口和Future接口：
+
+```java
+public class FutureTask<V> implements RunnableFuture<V>
+```
+而RunnableFuture又继承了Runnable和Future：
+
+```java
+public interface RunnableFuture<V> extends Runnable, Future<V>
+```
+
+- 它可以包装Callable对象，变成一个Runnable对象，这样可以供Thread/线程池执行。
+- 同时，它又能让你通过Future接口拿到任务执行的返回值、异常。
+
+---
+
+### 2.4 线程池的作用
+
+- 线程池（如ExecutorService）可以直接接受Runnable和Callable任务，统一管理线程。
+- 你用线程池的`sumbit(Callable)`方法，线程池内部会帮你包装成FutureTask。
+
+---
+
+### 3. 总结
+
+- **为什么要用FutureTask包装Callable？**
+  - 因为Thread只能接受Runnable，不能直接接受Callable。
+  - FutureTask既实现了Runnable（可以给Thread/线程池执行），又实现了Future（可以拿返回值和异常）。
+  - 线程池内部也是用FutureTask来适配Callable的。
+
+- **为什么用线程池？**
+  - 线程池能自动管理线程、回收资源、复用线程，还能统一管理任务的返回值/异常。
+
+---
+
+### 4. 小结一句话
+
+> **Callable不能直接给Thread用，要用FutureTask包装成Runnable；线程池也会自动用FutureTask适配，这样才能获取线程的返回值和异常。**
+
+---
+
+
+
