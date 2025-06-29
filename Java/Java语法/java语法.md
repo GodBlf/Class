@@ -363,7 +363,14 @@ Arrays.sort(arr, new Comparator<student>() {
         //还能进一步简化
         x->x+1
 ```
-# 比较器
+
+# compareTo and Comparator<>
+- java中两个元素a,b比较 a.compareTo(b) or compare(a,b)
+- -1:a在b左边 0:a,b相等equals 1:a在b右边
+
+
+
+
 # 面向接口(interface able)
 **函数类多态** polymorph method class
 - 方法类:接口是函数的集合,把对象共有的方法抽象出来 
@@ -395,6 +402,7 @@ class Sorter {
 ```
 ## default方法
 ## 接口继承
+
 # 组合
 - 接口组合
 - 内嵌
@@ -979,8 +987,18 @@ BufferedInputStream bis = new BufferedInputStream(new FileInputStream("D:/input.
 ## 实际开发中，推荐优先使用实现Runnable接口，其次是Callable接口，几乎不用直接继承Thread。
 
 ## Thread 类
+- main线程
+- setName getName
+有默认名字叫Thread+数字
+- Thread.sleep(1000) 此线程休眠
+- Thread.currentThread 获取该方法所在的线程对象
+### Priority 线程优先级
+- java线程优先级是抢占随机式 优先级高抢到线程概率高
+- 优先级有1-10 个等级默认等级是5
+
 
 ## Runnable 接口
+- Thread(Runnable)
 ```java
 public class Test implements Runnable{
     @Override
@@ -999,10 +1017,34 @@ public class Main{
 }
 ```
 ## Callable<>
-- 多线程返回值用这个接口
-### FutureTask封装
+- 线程返回值用这个接口
+- Thread(RunnableFuture(Callable))
+FutureTask implements RunnableFuture
+### RunnableFuture封装
 - Thread接受的对象是runable
-- futuretask实现了runable接口可以加入thread实现了future接口可以返回值
+- futuretask实现了runnableFuture接口,这个接口又实现了runable接口可以加入thread又实现了future接口可以返回值
+```java
+public class Test implements Callable<Integer> {
+
+    @Override
+    public Integer call() throws Exception {
+        Thread thread = Thread.currentThread();
+        Thread.sleep(1000);
+        System.out.println(thread.getName()+"nihao");
+        return 0;
+    }
+}
+
+main{
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        RunnableFuture<Integer> runnableFuture = new FutureTask<>(new Test());
+        Thread t1 = new Thread(runnableFuture);
+        t1.setName("thread1 ");
+        t1.start();
+        System.out.println(runnableFuture.get());
+    }
+}
+```
 
 ### 2.3 FutureTask的作用
 
