@@ -147,8 +147,8 @@ public class Student {
 一般都是public private
 
 ## this
-- this自指对象(类)本身
-- 
+- this自指对象本身
+- 和static区别,static类所有,this自指虚拟的对象 
 ## 继承
 - 子类将父类all都继承,相当于多个类组合构造一个对象,访问权限规范子类
 ```java
@@ -378,24 +378,19 @@ Arrays.sort(arr, new Comparator<student>() {
 - 接口组合继承     
 - 成员变量默认是常量和抽象方法                             
 ## 接口多态
+- 接口多态可以用泛型(generics)辅助
+
 ```java
-interface Sortable {
-    void sort(int[] arr);
+interface Sortable<T> {
+    void sort(T[] arr);
 }
 
-class BubbleSort implements Sortable {
-    public void sort(int[] arr) { /* 实现冒泡排序 */ }
+class BubbleSort<T> implements Sortable<T> {
+    public void sort(T[] arr) { /* 实现冒泡排序 */ }
 }
-
-class QuickSort implements Sortable {
+//注意泛型确定类型以后就不用在具体实现类泛型声明了
+class QuickSort implements Sortable<Integer> {
     public void sort(int[] arr) { /* 实现快速排序 */ }
-}
-
-class Sorter {
-    private int[] arr;
-    private Sortable strategy;
-    Sorter(Sortable strategy) { this.strategy = strategy; }
-    void sort(int[] arr) { strategy.sort(arr); }
 }
 
 
@@ -641,7 +636,7 @@ public static int f(int x)throws MyException {
 
 # 泛型
 
-- 参数化类型方便传递
+- 参数化类型方便传递(arguments type)
 - 泛型不能基本数据类型从cpp的指针引用考虑
 
 ## 一、什么是泛型？
@@ -706,7 +701,21 @@ Util.printArray(nums);
 String[] strs = {"A", "B"};
 Util.printArray(strs);
 ```
+泛型类（或接口）：泛型参数作用于整个类/接口的成员变量和方法。
+泛型方法：只在方法内部有效，与所在类是否为泛型类无关。即，泛型类中的泛型方法可以有自己独立的泛型参数。
+例子：
 
+```java
+<JAVA>
+public class Demo<T> {
+    // 成员变量T，随类的泛型参数
+    private T value;
+    // 泛型方法，和类的T无关
+    public <E> void show(E e) {
+        System.out.println(e);
+    }
+}
+```
 ### 3. 泛型接口
 
 ```java
@@ -736,7 +745,7 @@ public class Student implements Comparable<Student> {
 ### 2. 有界通配符
 
 - 上界（extends）：`List<? extends Number>`
-  - 表示元素类型是 Number 或其子类。
+  - 表示元素类型是 Number 或其子类。extends 的可以是接口
 - 下界（super）：`List<? super Integer>`
   - 表示元素类型是 Integer 或其父类。
 
@@ -990,15 +999,21 @@ BufferedInputStream bis = new BufferedInputStream(new FileInputStream("D:/input.
 - main线程
 - setName getName
 有默认名字叫Thread+数字
-- Thread.sleep(1000) 此线程休眠
+- Thread.sleep(1000) 此线程进入等待去休眠1000ms
 - Thread.currentThread 获取该方法所在的线程对象
 ### Priority 线程优先级
 - java线程优先级是抢占随机式 优先级高抢到线程概率高
 - 优先级有1-10 个等级默认等级是5
+### setDaemon 守护线程
+相当于主线程的仆人,主线程退出守护线程惯性一段时间再退出
+### yeild 礼让线程
+- 执行到Thread.yeild() 本线程腾出cpu给别的线程
+### join 插入线程用的不多
 
 
 ## Runnable 接口
 - Thread(Runnable)
+runnable接口是线程具体执行的代码块- ![alt text](image-2.png)
 ```java
 public class Test implements Runnable{
     @Override
@@ -1089,5 +1104,119 @@ public interface RunnableFuture<V> extends Runnable, Future<V>
 
 ---
 
+## 线程安全
+- i++ 先读取再写入可能会出现多个线程一起操作的情况线程不安全
+### 锁
+#### synchronized
+同步代码块中仅允许一个线程执行,
+synchronized(唯一锁对象){};
+```java
+public class Test implements Callable<Integer> {
+    //锁对象唯一用类的字节码文件可以实现
+    public static int i=0;
+    @Override
+    public Integer call() throws Exception {
+            while(true){
+                //类的字节码文件唯一,因为钥匙只有一把
+                 synchronized (Test.class){
+                Test.i++;
+                System.out.println(Test.i);
+            }
+        }
+        return 0;
+    }
+}
+```
+#### synchronized方法关键字
+锁对象:
+非静态 this
+静态 类.class
+将synchronized代码块中抽取成方法
 
+### 死锁
+
+## 等待唤醒机制
+- ![alt text](image-2.png)
+- synchronized 代码块就是runnable对象,传递到thread中进行执行
+### 生产消费者
+```java
+public class Desk {
+    public static Object lock=Desk.class;
+    public static int count=10;
+    public static int isHave=0;
+
+}
+public class Consumer implements Runnable{
+    @Override
+    public void run() {
+        while (true){
+            synchronized (Desk.lock){
+                if(Desk.count==0){
+                    break;
+                }else{
+                    //此synchronized代码块的线程进入等待区
+                    if(Desk.isHave==0){
+                        try {
+                            Desk.lock.wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }else{
+                        Desk.count--;
+                        System.out.println("consumer吃"+ Desk.count);
+                        Desk.isHave=0;
+                        //唤醒等待区线程
+                        Desk.lock.notifyAll();
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+public class Producer implements Runnable{
+    @Override
+    public void run() {
+        while (true){
+            synchronized (Desk.lock){
+                if(Desk.count==0){
+                    break;
+                }else{
+                    if(Desk.isHave==0){
+                        Desk.isHave=1;
+                        System.out.println("producer做");
+                        //唤醒等待区线程
+                        Desk.lock.notifyAll();
+                    }else{
+                        //此synchronized代码块的线程进入等待区
+                        try {
+                            Desk.lock.wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+}
+
+public class Main{
+    public static void main(String[] args) {
+        Runnable consumer = new Consumer();
+        Runnable producer = new Producer();
+        Thread thread1 = new Thread(consumer);
+        Thread thread2 = new Thread(producer);
+        thread1.start();
+        thread2.start();
+    }
+}
+```
+
+### 阻塞队列
+
+## 线程池
 

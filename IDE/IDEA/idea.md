@@ -15,8 +15,9 @@
 
 # 快捷键
 1. 万能快捷键 alt+enter
-2. .var  .if .arg
-3. fori  forr(逆序)   .for  .fori  .forr;
+2. f2找到下一个错误,shift+f2找到上一个错误
+3. .var  .if .arg
+4. fori  forr(逆序)   .for  .fori  .forr;
 例如对一个list集合的遍历  list.for  ; 
 1. ctrl z  ctrl shift z  ctrl c x v  ctrl /  ctrl b
 2. ctrl d  alt+shift+↑↓;
