@@ -60,7 +60,8 @@ public class Student{
 - () [] 是本体
 ## 拷贝函数
 
-##
+## 内部类
+- 依赖外部类的工具类,例如汽车,发动机就是内部类
 
 ## static
 **参见c++语法的static**
@@ -1138,6 +1139,7 @@ public class Test implements Callable<Integer> {
 ## 等待唤醒机制
 - ![alt text](image-2.png)
 - synchronized 代码块就是runnable对象,传递到thread中进行执行
+- 一条线程执行完runnable任务就会直接销毁;所以要套在while(true)里
 ### 生产消费者
 ```java
 public class Desk {
@@ -1219,4 +1221,22 @@ public class Main{
 ### 阻塞队列
 
 ## 线程池
+- 线程复用
+```java
+public static void main(String[] args) {
+        //无上限线程池
+        ExecutorService threadpool1 = Executors.newCachedThreadPool();
+        //有上限线程池
+        ExecutorService threadpool2 = Executors.newFixedThreadPool(3);
+        //runnable 任务
+        Runnable runnable = new Test();
+        //线程池提交任务
+        threadpool2.submit(runnable);
+        threadpool2.submit(runnable);
+        threadpool2.submit(runnable);
+        threadpool2.submit(runnable);
+        // 线程池销毁一般不销毁
+        threadpool1.shutdown();
+    }
 
+```
