@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>焦点访谈</title>
+    <!-- css选择器 -->
+     <!-- 元素选择,类选择,id选择 -->
+    <!-- 优先级 id>类>元素 -->
+    <style>
+        /* 元素选择 */
+        div{
+            width: 65%;
+            margin: 0 auto;
+        }
+        h1{
+            /* rgb表示法 */
+            color: rgb(255, 0, 0)
+            /* 十六进制表示法 */
+            /* color: #ff0000 ff=255 00=0 00=0*/
+        }
+        
+        a{
+            /* 首行缩进 */
+            text-decoration: none;
+        }
+
+        p{
+            text-indent: 35px;
+        }
+        /* 类选择 */
+        .black{
+            color: #00ff00;
+        }
+
+        /* id选择 */
+        #nihao{
+            color: red;
+        }
+        #zuozhe{
+            text-align: right;
+        }
+        
+       
+    </style>
+</head>
+<body>
+    <div>
+         <img src="img/xinwenzhongxin.png" width="300px"  > 新浪 > 正文
+    <h1>焦点访谈 </h1>
+    <hr>
+    <span class="black">2023 03 02</span> <span id="nihao"><a href="https://youtube.com" target="_blank">nihao</a></span>
+    <hr>
+    <span>this is video</span>
+    <br>
+    <video src="video/test.mp4" controls width="950px">小八</video>
+    <audio src="audio/test.mp3">xiaojiu</audio>
+    <br>
+    <p>
+        <b>附件是咖啡机</b>sklfjdklsjflkdsjflkdsja k,fsdajkfljdslf,dsafsdf
+    </p>
+    
+    <p id="zuozhe">
+        作者:许昊龙
+    </p>
+
+    <hr>
+    <table border="1px" cellspacing="0" width="600px">
+        <tr>
+            <th>序号</th>
+            <th>品牌logo</th>
+            <th>品牌名称</th>
+            <th>企业名称</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+            <td>4</td>
+        </tr>
+    </table>
+
+    <hr>
+    <!-- 表单 -->
+    <form action="" method="post">
+        用户名: <input type="text" name="username">
+        年龄: <input type="text" name="age">
+        <br>
+        <input type="submit" value="提交">
+    </form>
+    <hr>
+    <form action=""method="post">
+        
+
+    </form>
+
+    </div>
+</body>
+</html>
