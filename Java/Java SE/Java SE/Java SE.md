@@ -1268,4 +1268,24 @@ public static void main(String[] args) {
 
 
 # Junit 单元测试
+```java
+public class StringYewu {
+    public int len(String str){
+            return str.length()-1;
 
+    }
+
+}public class StringYewuTest {
+    @Test
+    //空参空返回
+    public void testLen(){
+        StringYewu test = new StringYewu();
+        int fsd = test.len("fsd");
+        Assert.assertEquals(3,fsd);
+        test.len(null);
+    }
+}
+
+```
+- 右键测试方法进行单元测试
+- 可在文件/项目结构中查询依赖 移出或管理 junit
