@@ -35,6 +35,9 @@ public class studeng{
 ```
 
 # 类和对象
+- class is varible and function set
+- struct is varible set
+- interface is function set
 ```java
 public class Student{
     //默认值
@@ -373,8 +376,8 @@ Arrays.sort(arr, new Comparator<student>() {
 
 
 # 面向接口(interface able)
-**函数类多态** polymorph method class
-- 方法类:接口是函数的集合,把对象共有的方法抽象出来 
+**函数集合多态** polymorph function set
+- 方法集合:接口是函数的集合,把对象共有的方法抽象出来 
 - 接口多态:更好的解耦合便于运行维护加功能         
 - 接口组合继承     
 - 成员变量默认是常量和抽象方法                             
