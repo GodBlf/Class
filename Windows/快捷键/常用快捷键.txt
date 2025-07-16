@@ -1,23 +1,73 @@
 鼠标中键:关闭,打开另一标签
+
+
+# ctrl系列
+- ctrl+a,d,x,c,v,s,f,r,z,y,shift_z
+全选 剪切 复制 粘贴 保存 搜索 替换 退回上一步 逆
+
+# ctrl+shift 系列
 ctrl+shift+esc:打开任务管理器
+
+
+# tab系列
 alt+tab:切换进程
 win+tab:显示所有窗口
 
-输入法:
+# win系列
+win+v打开剪贴版需要第一次打开
+win+d退回桌面
+win+shift+s截屏
+win+e打开资源管理器
+win+l锁屏
+
+# win+r搜索系列
+cmd / powershell
+shell:startup 打开开机自启文件夹
+control 控制面板
+
+# 资源管理器类
+alt+enter:打开文件属性
+ctrl+shift+n:新建文件夹
+ctlr+n打开新标签页
+Alt + Up Arrow	返回上一级目录
+Alt + Left / Right	前进/后退目录
+Ctrl + Shift + E	展开当前文件夹的所有子文件夹
+
+
+f2:重命名
+
+
+# 输入法:
+win+spacebar : 切换输入法
 ctrl:切换中文(微软输入法)
 ctrl+shift+j:切换简体繁体
+win+. 打开表情列表
 
-ctrl+a,d,x,c,v,s,f,r,z,y,shift_z
-
-
-win+shift+s:截图
 ctrl+alt+a:qq截图
 ctrl+back:
 
-home,end
+# 记事本/文字编辑
+ctrl+→/... 
+ctrl+
+shift+enter
+## home,end系列
+home end
 shift+home/end
+ctrl+home/end
+ctrl+backspace
+ctrl+delete删除后一个单词
+
+# chrome
+| 快捷键            | 功能说明                                 |
+|-------------------|------------------------------------------|
+| **Ctrl + T**       | 打开新标签页                            |
+| **Ctrl + W**       | 关闭当前标签页                          |
+| **Ctrl + Shift + T** | 恢复关闭的标签页                      |
+| **Ctrl + Tab**     | 切换到下一个标签页                      |
+| **Ctrl + Shift + Tab** | 切换到上一个标签页                  |
+| **Ctrl + L**       | 快速选中地址栏内容                      |
+| **Ctrl + D**       | 收藏当前网页                            |
+| **Ctrl + F5**      | 强制刷新，不使用缓存                    |
 
 
-win+e:打开主文件夹
-win+r:打开windows搜索
 
