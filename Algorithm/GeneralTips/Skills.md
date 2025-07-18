@@ -105,6 +105,9 @@ public static void partition2(int[] arr, int l, int r, int x) {
 
 
 
+# Lazy
+只记录合适时机修改
+
 # 递归思想:
 - 递归树
 ![alt text](7113268cadc2876214b893736260c100.jpg)

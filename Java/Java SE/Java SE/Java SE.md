@@ -855,6 +855,7 @@ map生成的set是一个视图和map共用一个内存区域
 
 # Stream流
 - 链式操作,new 流会复制一份不是视图
+- Lazy操作 中间方法只记录操作过程最后终结方法对流遍历收集到新的集合中
 - 生成流
 collection.stream()  arrays.stream(int[] arr)  streamof  
 
@@ -878,6 +879,7 @@ list.stream().skip(3).limit(3).forEach(...)
         Map<Integer, Integer> map = arr.stream().collect(Collectors.toMap(x -> x, x -> x + 1));
         //tolist toset同理
 ```
+
 
 
 # IO流
