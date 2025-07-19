@@ -8,6 +8,9 @@
 # ctrl+shift 系列
 ctrl+shift+esc:打开任务管理器
 
+# f系列
+alt+f4 关闭当前窗口
+f2重命名
 
 # tab系列
 alt+tab:切换进程
@@ -19,6 +22,10 @@ win+d退回桌面
 win+shift+s截屏
 win+e打开资源管理器
 win+l锁屏
+
+# win+x系列
+win+x A 快速启动管理员powershell
+... 看快速字母按钮
 
 # win+r搜索系列
 cmd / powershell
