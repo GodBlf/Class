@@ -1,0 +1,14 @@
+#  tips
+快捷键: win+x A
+在某路径右键  ctrl+shift点终端就是管理员终端
+
+# cmd
+- cd
+cd d:/lol  d可以大写
+cd d:\lol   /可以和\  \\互换
+cd /dota
+cd ./dota  /同./ 相对路径
+cd  ../   转到父目录
+简易使用/ 正斜杠
+
+- 
