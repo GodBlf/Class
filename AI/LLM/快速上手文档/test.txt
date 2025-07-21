@@ -16,3 +16,15 @@ log写每次实现什么功能,错误有哪些
 
 # debug
 打印日志法 轻松看出哪出问题了
+
+#
+- precomputation 不懂就问llm
+
+# system_prompt
+- 文档通过en-system_prompt 的方式喂给llm
+- 根据error不断迭代system_prompt
+
+# user_prompt
+- 迭代实现程序先生成大体框架在基础上进行功能的累加
+- 每加一个功能弄一个ver 有具体prompt和log(实现什么bug什么)
+
