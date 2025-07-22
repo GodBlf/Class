@@ -1,6 +1,39 @@
 [TOC]  
 
 
+# Introduct
+## math define
+- set 具体参见/Class/Math/集合论
+- variable is one of set
+- state is variables' value 一组变量具体取值的集合
+- function has args state to return state
+## if else
+- state divide and choose 变量状态的分划和选择,对象可以是变量,序偶等,例如a>b相当于(a,b)的state;选择某个状态就在假设某个状态成立下进行后续操作;注意合并逻辑
+- state filter(Priority sequence) 建议设计成过滤器的结构
+## e.g.
+- Vertex.visited
+    if(v.visited==true){
+
+    }else{
+
+    }
+- public int compare(Integer i1,Integer i2){
+        if(i1.age!=i2.age){
+
+        }
+        else{}
+        if(i1.name != i2.age){
+
+        }else{
+
+        }
+}
+```java
+//1. 单if结构 短路结构  看图
+//2. if , else,else if 遇到{return / continue/ break...} 叶子结构 不汇合;
+//3. if/else/else if 为分支结构 **最终必汇合到顺序结构**
+//4. 先考虑分支结构再考虑叶子结构和短路结构 来简化代码分支;
+```
 
 
 
@@ -108,12 +141,14 @@ public static void partition2(int[] arr, int l, int r, int x) {
 # Lazy
 只记录合适时机修改
 
-# 递归思想:
+# Recur Tree:
 - 递归树
 ![alt text](7113268cadc2876214b893736260c100.jpg)
 递归是对递归树的遍历
 ## 递归树性质:
-- State
+### Node
+- args state or varible state 函数栈节点的状态
+- return state 函数返回会变成具体的值
 1个栈{}代表一个节点,每个节点都有一个状态,f(n)n就代表根节点状态
 回溯:基本数据类型的状态,随栈自动改变,引用数据类型的状态需要手动改变
 栈return就变成了具体的值;
@@ -257,34 +292,6 @@ ceil(a/b)=(a+b-1)/b;
 - 遍历状态的时候可以用brian算法提取最右侧的1 tmp&-tmp 适当对状态数组取反方便brian算法遍历;while(n!=0){int tmp=n&-n;n=(n^tmp)&limit;...}
 
 
-# if/else
-![alt text](1aa00cfeb4f84a6f7dfad89a36cd2c10.jpg)
-![alt text](4258aee49f7139b2b3a2469eff118ebe.jpg)
-- Object state divide and choose 对对象状态的分划和选择,对象可以是变量,序偶等,例如a>b相当于(a,b)的state;选择某个状态就在假设某个状态成立下进行后续操作;注意合并逻辑
-- Object filter(Priority sequence) 建议设计成过滤器的结构
-- Vertex.visited
-    if(v.visited==true){
-
-    }else{
-
-    }
-- public int compare(Integer i1,Integer i2){
-        if(i1.age!=i2.age){
-
-        }
-        else{}
-        if(i1.name != i2.age){
-
-        }else{
-
-        }
-}
-```java
-//1. 单if结构 短路结构  看图
-//2. if , else,else if 遇到{return / continue/ break...} 叶子结构 不汇合;
-//3. if/else/else if 为分支结构 **最终必汇合到顺序结构**
-//4. 先考虑分支结构再考虑叶子结构和短路结构 来简化代码分支;
-```
 
 
 # 打表
