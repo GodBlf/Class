@@ -6,7 +6,7 @@
 - set 具体参见/Class/Math/集合论
 - variable is one of set
 - state is variables' value 一组变量具体取值的集合
-- function has args state to return state
+- function is args state to return state
 ## if else
 - state divide and choose 变量状态的分划和选择,对象可以是变量,序偶等,例如a>b相当于(a,b)的state;选择某个状态就在假设某个状态成立下进行后续操作;注意合并逻辑
 - state filter(Priority sequence) 建议设计成过滤器的结构
@@ -43,103 +43,6 @@
 - 例如bfs 和 dfs 的queue stack实现,递归.递归树遍历;
 
 
-
-# 数组索引
-index+1 = num(index) 指定索引右一位为到此索引的元素个数  
-
-可以考虑为  0,1,2,3,4,5,...,n,n_length ;  
-- System.arrarycopy(arr1,start1,arr1,start2,arr1.length-start1)  这里的length-start1 就是剩余的元素个数
-- for(int i=0;i<n;i++) 这个循环次数是n  用数学角度考虑就是 [0,n) 就是 [0,n-1] n-1+1 就是n个元素;
-
-
-
-# sentry 哨兵指针
-扫雷的外围一圈0;字符串""都起到辅助作用;
-例如在快速排序的时候 i指针就是i左边的都是小于pivot的 最后再将pivot插入sentry中;
-数据结构也常用sentry ;
-
-# 指针技巧
-NyMP  (no-backtracking sysmetry memo partition);
-## 不回退指针
-no backtracking pointer
-- 数组反转
-- 例如将数组排序,kmp算法等,A-Bproblem,滑动窗口,供暖器
-
-### 双指针统计(归并)
-将两部分排序
-n^2的统计通过排序变为n
-```java
-// 统计部分
-		long ans = 0;
-		for (int j = m + 1, i = l, sum = 0; j <= r; j++) {
-			while (i <= m && arr[i] <= arr[j]) {
-				sum += arr[i++];
-			}
-			ans += sum;
-		}
-```
-## 对称加速指针
-
-## 记忆指针
-- 设置sentry 划分一维数组 ;
-- memo pointer
-- 例如(二叉树模拟递归遍历)  用指针记忆是否return的状态;
-```java
-TreeNode head=node;
-TreeNode pop=null;
-ArrayDeque<TreeNode> cache=...;
-static void dfs(TreeNode node){
-     while(true){
-            if(head==null && cache.isEmpty()){
-                break;
-            }
-            if(head!=null){
-                cache.push(head);
-                head=head.left;
-            }else{   // null是叶子节点 return;
-                TreeNode peek = cache.peek();
-                if(peek.right==pop || peek.right==null){  //如果右子树是null或者已被弹出直接return
-                    pop = cache.pop();  //标记
-                    result.add(pop.val);
-                }else{
-                    head=peek.right;        //否则head标记为right然后继续进栈;
-                }
-            }
-
-        }
-}
-```
-
-
-## 划分指针
-- partition pointer
-- 用指针划分区域
-### 例子
-#### 三指针划分(快速)
-<的在a左边 大于的在b右边
-```java
-public static void partition2(int[] arr, int l, int r, int x) {
-		first = l;
-		last = r;
-		int i = l;
-		while (i <= last) {
-			if (arr[i] == x) {
-				i++;
-			} else if (arr[i] < x) {
-				swap(arr, first++, i++);
-			} else {
-				swap(arr, i, last--); //i不变因为交换过来的还没有遍历;
-			}
-		}
-	}
-```
-
-#### 二分搜索划分红蓝区域寻找边界
-
-
-
-# Lazy
-只记录合适时机修改
 
 # Recur Tree:
 - 递归树
@@ -236,6 +139,107 @@ while(true){
 ```
 while(!boundary case) 等价于 while if(boundary case) break;
 if() return  等价于  if else
+
+
+# Pointer Skills
+NyMP  (no-backtracking sysmetry memo partition);
+## 不回退指针
+no backtracking pointer
+- 数组反转
+- 例如将数组排序,kmp算法等,A-Bproblem,滑动窗口,供暖器
+
+### 双指针统计(归并)
+将两部分排序
+n^2的统计通过排序变为n
+```java
+// 统计部分
+		long ans = 0;
+		for (int j = m + 1, i = l, sum = 0; j <= r; j++) {
+			while (i <= m && arr[i] <= arr[j]) {
+				sum += arr[i++];
+			}
+			ans += sum;
+		}
+```
+## 对称加速指针
+
+## 记忆指针
+- 设置sentry 划分一维数组 ;
+- memo pointer
+- 例如(二叉树模拟递归遍历)  用指针记忆是否return的状态;
+```java
+TreeNode head=node;
+TreeNode pop=null;
+ArrayDeque<TreeNode> cache=...;
+static void dfs(TreeNode node){
+     while(true){
+            if(head==null && cache.isEmpty()){
+                break;
+            }
+            if(head!=null){
+                cache.push(head);
+                head=head.left;
+            }else{   // null是叶子节点 return;
+                TreeNode peek = cache.peek();
+                if(peek.right==pop || peek.right==null){  //如果右子树是null或者已被弹出直接return
+                    pop = cache.pop();  //标记
+                    result.add(pop.val);
+                }else{
+                    head=peek.right;        //否则head标记为right然后继续进栈;
+                }
+            }
+
+        }
+}
+```
+
+
+## 划分指针
+- partition pointer
+- 用指针划分区域
+### 例子
+#### 三指针划分(快速)
+<的在a左边 大于的在b右边
+```java
+public static void partition2(int[] arr, int l, int r, int x) {
+		first = l;
+		last = r;
+		int i = l;
+		while (i <= last) {
+			if (arr[i] == x) {
+				i++;
+			} else if (arr[i] < x) {
+				swap(arr, first++, i++);
+			} else {
+				swap(arr, i, last--); //i不变因为交换过来的还没有遍历;
+			}
+		}
+	}
+```
+
+#### 二分搜索划分红蓝区域寻找边界
+
+
+
+
+# 数组索引
+index+1 = num(index) 指定索引右一位为到此索引的元素个数  
+
+可以考虑为  0,1,2,3,4,5,...,n,n_length ;  
+- System.arrarycopy(arr1,start1,arr1,start2,arr1.length-start1)  这里的length-start1 就是剩余的元素个数
+- for(int i=0;i<n;i++) 这个循环次数是n  用数学角度考虑就是 [0,n) 就是 [0,n-1] n-1+1 就是n个元素;
+
+
+
+# sentry 哨兵指针
+扫雷的外围一圈0;字符串""都起到辅助作用;
+例如在快速排序的时候 i指针就是i左边的都是小于pivot的 最后再将pivot插入sentry中;
+数据结构也常用sentry ;
+
+
+# Lazy
+只记录合适时机修改
+
 
 # Cache数据结构
 out in
@@ -436,7 +440,7 @@ int main(){
 ```
 
 
-# temp
+# tmp
 - 交换两个数需用道中间变量temp;
 - a=a^b;b=a^b;a=a^b;
 - int temp=a;
