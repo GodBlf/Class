@@ -1,0 +1,46 @@
+https://doc.instcopilot-api.com/
+1. node.js
+2. 你的错误信息说明 PowerShell 阻止了脚本运行，这是因为 Windows 的 **执行策略** 默认禁止本地或未签名的脚本运行。这不是 npm 的问题，而是 PowerShell 的安全设置。
+
+### 解决方案
+
+#### 方法1：临时允许当前会话执行脚本（推荐）
+在当前 PowerShell 会话中运行以下命令：
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
+
+然后再运行你的 npm 命令：
+
+```powershell
+npm install -g @anthropic-ai/claude-code
+```
+
+#### 方法2：永久更改本地用户的执行策略
+如果你经常需要运行此类命令，可以提升权限（以管理员身份运行 PowerShell），然后输入：
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+
+**注意安全风险！** 这会让本地脚本可以运行，下载的（远程）脚本需要签名。
+
+#### 方法3：直接用 `cmd` 或者 Git Bash 运行
+你也可以在 **命令提示符（cmd.exe）** 或 **Git Bash** 里运行 npm 命令，这样不会受 PowerShell 执行策略影响。
+
+---
+
+### 参考资料
+
+- [about_Execution_Policies - PowerShell Docs](https://learn.microsoft.com/zh-cn/powershell/module/microsoft.powershell.core/about/about_execution_policies)
+
+---
+再 npm install -g @anthropic-ai/claude-code
+
+3. 配置环境变量  
+• 变量名：ANTHROPIC_AUTH_TOKEN，变量值：sk-xxx
+    • 变量名：ANTHROPIC_BASE_URL，变量值:https://sg.instcopilot-api.com
+
+4. claude 启动
+
