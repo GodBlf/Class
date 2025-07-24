@@ -2,6 +2,9 @@
 # 
 - 这个为Java语法的重构版本,在学了c后对底层有了一些了解对java语法进行重构
 - 没有的参见c++语法
+- public 起手
+
+
 # 引用(java中的指针)
 - java除了int 等基本数据类型都是cpp中的引用类型 student & xm;
 - 引用就是指针 pointer->new new出来的是值返回的是地址指针
@@ -41,9 +44,17 @@ public class studeng{
 ```
 
 # 类和对象
-- class is varible and function set
-- struct is varible set
-- interface is function set
+## math refactor
+```json
+{
+    "set":"",
+    "variable and function set":"class",
+    "function set":"interface",
+    "variable set":"struct"
+}
+
+```
+
 ```java
 public class Student{
     //默认值
@@ -353,6 +364,34 @@ if (a instanceof Dog) {
 
 
 
+# 面向接口(interface able)
+**函数集合多态** polymorph function set
+- 方法集合:接口是函数的集合,把对象共有的方法抽象出来 
+- 接口多态:更好的解耦合便于运行维护加功能         
+- 接口组合继承     
+- 成员变量默认是常量和抽象方法                             
+## 接口多态
+- 接口多态可以用泛型(generics)辅助
+
+```java
+interface Sortable<T> {
+    void sort(T[] arr);
+}
+
+class BubbleSort<T> implements Sortable<T> {
+    public void sort(T[] arr) { /* 实现冒泡排序 */ }
+}
+//注意泛型确定类型以后就不用在具体实现类泛型声明了
+class QuickSort implements Sortable<Integer> {
+    public void sort(int[] arr) { /* 实现快速排序 */ }
+}
+
+
+```
+## default方法
+## 接口继承
+
+
 # 匿名内部类
 new interface/class(大部分是abstract) {@Override};
 - 底层会立即创建一个子类及其对象 所以叫匿名 ;
@@ -381,32 +420,6 @@ Arrays.sort(arr, new Comparator<student>() {
 
 
 
-# 面向接口(interface able)
-**函数集合多态** polymorph function set
-- 方法集合:接口是函数的集合,把对象共有的方法抽象出来 
-- 接口多态:更好的解耦合便于运行维护加功能         
-- 接口组合继承     
-- 成员变量默认是常量和抽象方法                             
-## 接口多态
-- 接口多态可以用泛型(generics)辅助
-
-```java
-interface Sortable<T> {
-    void sort(T[] arr);
-}
-
-class BubbleSort<T> implements Sortable<T> {
-    public void sort(T[] arr) { /* 实现冒泡排序 */ }
-}
-//注意泛型确定类型以后就不用在具体实现类泛型声明了
-class QuickSort implements Sortable<Integer> {
-    public void sort(int[] arr) { /* 实现快速排序 */ }
-}
-
-
-```
-## default方法
-## 接口继承
 
 # 组合
 - 接口组合

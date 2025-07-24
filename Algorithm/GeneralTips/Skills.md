@@ -1,12 +1,19 @@
 [TOC]  
 
+# Math Refactor
+```json
+{
+    "set":"math", //具体参见/Class/Math/集合论
+    "variable":"one of set",
+    "state":"variables'value" ,//一组变量具体取值的集合
+    "function":{
+        "args":"operation when args state", //args是变量的副本,Fibonacci 和 汉诺塔问题
+        "return":"function stack's return value" //函数栈返回的值
+    }
 
-# Introduct
-## math define
-- set 具体参见/Class/Math/集合论
-- variable is one of set
-- state is variables' value 一组变量具体取值的集合
-- function is args state to return state
+    //记忆:variable state  function(when state return value)
+}
+```
 ## if else
 - state divide and choose 变量状态的分划和选择,对象可以是变量,序偶等,例如a>b相当于(a,b)的state;选择某个状态就在假设某个状态成立下进行后续操作;注意合并逻辑
 - state filter(Priority sequence) 建议设计成过滤器的结构
@@ -222,6 +229,15 @@ public static void partition2(int[] arr, int l, int r, int x) {
 
 
 
+# Cache数据结构
+out in
+每次out / in都必须边界判断;
+- dfs bfs dijkstra都是 dad out child in的过程
+- 节点in or out cache 时候标记为ture相应的 进入 或者拉出的时候判断是否需要continue
+- 将第一个节点压入(offer/push)cache来启动
+- 父节点拉出(poll/pop),符合要求的子节点进入(push/offer)cache再进行操作;
+
+
 # 数组索引
 index+1 = num(index) 指定索引右一位为到此索引的元素个数  
 
@@ -241,13 +257,6 @@ index+1 = num(index) 指定索引右一位为到此索引的元素个数
 只记录合适时机修改
 
 
-# Cache数据结构
-out in
-每次out / in都必须边界判断;
-- dfs bfs dijkstra都是 dad out child in的过程
-- 节点in or out cache 时候标记为ture相应的 进入 或者拉出的时候判断是否需要continue
-- 将第一个节点压入(offer/push)cache来启动
-- 父节点拉出(poll/pop),符合要求的子节点进入(push/offer)cache再进行操作;
 
 # 数学技巧
 
