@@ -1,23 +1,35 @@
 [TOC]  
+# 格式
+大分类用java命名法 专属名词具体的某个工具用c++命名格式
+例如 MathRefactor discrete_function
 
-# Math Refactor
+# MathRefactor
 ```json
 {
     "set":"math", //具体参见/Class/Math/集合论
     "variable":"one of set",
     "state":"variables'value" ,//一组变量具体取值的集合
     "function":{
-        "args":"operation when args state", //args是变量的副本,Fibonacci 和 汉诺塔问题
-        "return":"function stack's return value" //函数栈返回的值
+        "math":"input and output",//数学函数映射定义 参数是变量的副本 stack in math
+        "stack":"operate and return when args'state"//底层函数栈,返回函数栈有值
+
     }
 
-    //记忆:variable state  function(when state return value)
+    //记忆:variable state   function:math and stack
 }
 ```
 ## if else
 - state divide and choose 变量状态的分划和选择,对象可以是变量,序偶等,例如a>b相当于(a,b)的state;选择某个状态就在假设某个状态成立下进行后续操作;注意合并逻辑
-- state filter(Priority sequence) 建议设计成过滤器的结构
-## e.g.
+- state filter(Priority sequence) 建议设计成过滤器的结构,记得加continue return break等
+## filter e.g.
+- 归并排序
+- 合并链表
+if(cur1!=null){
+				pre.next=cur1;
+			}
+			if(cur2!=null){
+				pre.next=cur2;
+			}
 - Vertex.visited
     if(v.visited==true){
 
@@ -51,7 +63,7 @@
 
 
 
-# Recur Tree:
+# recur_tree:
 - 递归树
 ![alt text](7113268cadc2876214b893736260c100.jpg)
 递归是对递归树的遍历
@@ -148,9 +160,9 @@ while(!boundary case) 等价于 while if(boundary case) break;
 if() return  等价于  if else
 
 
-# Pointer Skills
+# PointerSkills
 NyMP  (no-backtracking sysmetry memo partition);
-## 不回退指针
+## no-backtracking_pointer/不回退指针
 no backtracking pointer
 - 数组反转
 - 例如将数组排序,kmp算法等,A-Bproblem,滑动窗口,供暖器
@@ -170,7 +182,7 @@ n^2的统计通过排序变为n
 ```
 ## 对称加速指针
 
-## 记忆指针
+## memo_pointer/记忆指针
 - 设置sentry 划分一维数组 ;
 - memo pointer
 - 例如(二叉树模拟递归遍历)  用指针记忆是否return的状态;
@@ -201,9 +213,9 @@ static void dfs(TreeNode node){
 ```
 
 
-## 划分指针
+## partition_pointer/划分指针
 - partition pointer
-- 用指针划分区域
+- 用指针划分区域 [] and () 闭区间划分和开区间划分
 ### 例子
 #### 三指针划分(快速)
 <的在a左边 大于的在b右边
@@ -237,6 +249,12 @@ out in
 - 将第一个节点压入(offer/push)cache来启动
 - 父节点拉出(poll/pop),符合要求的子节点进入(push/offer)cache再进行操作;
 
+# discrete_function
+## 二分峰值(导函数介值定理)
+
+## 前缀和(积分)
+
+## 差分(微分)
 
 # 数组索引
 index+1 = num(index) 指定索引右一位为到此索引的元素个数  
@@ -253,10 +271,10 @@ index+1 = num(index) 指定索引右一位为到此索引的元素个数
 数据结构也常用sentry ;
 
 
-# Lazy
+# lazy
 只记录合适时机修改
 
-
+# l+r/2 经常写作 l+(r-l)>>1 防溢出
 
 # 数学技巧
 
@@ -393,8 +411,9 @@ public class MonotonicQueue {
 
 
 
-# flag标记变量
-- cnt flag 等等
+# flag
+- 标记变量
+- cnt flag carry等标记变量
 
 
 
@@ -407,7 +426,7 @@ public class MonotonicQueue {
 
 
 
-# new
+# new_container
 对某个对象进行操作的时候,最好把结果弄到一个new的对象上例如矩阵转置结果,new在一个新矩阵里否则原矩阵操作困难;
 ```c
 include<stdio.h>

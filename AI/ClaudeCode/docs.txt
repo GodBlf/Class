@@ -38,9 +38,26 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 ---
 再 npm install -g @anthropic-ai/claude-code
 
-3. 配置环境变量  
-• 变量名：ANTHROPIC_AUTH_TOKEN，变量值：sk-xxx
-    • 变量名：ANTHROPIC_BASE_URL，变量值:https://sg.instcopilot-api.com
+3. 配置位置
+Mac: ~/.claude/settings.json 或 .claude/settings.json
+Windows: %USERPROFILE%\.claude\settings.json
+Linux: ~/.claude/settings.json
+settings.json
+复制配置
+{
+  "env": {
+    "ANTHROPIC_API_KEY": "粘贴为Claude Code专用分组令牌key",
+    "ANTHROPIC_BASE_URL": "https://sg.instcopilot-api.com",
+    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "32000",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+  },
+  "permissions": {
+    "allow": [],
+    "deny": []
+  },
+  "apiKeyHelper": "echo '粘贴为Claude Code专用分组令牌key'",
+  "model"="sonnet"
+}
 
 4. claude 启动
 

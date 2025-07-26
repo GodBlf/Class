@@ -1,16 +1,31 @@
+# json格式导论
+- 每一部分开头写一个json来作为导论
+- "重要内容":"辅助记忆的内容"//注释
+- 辅助记忆的内容可以是符号 英文单词 或者自己造的专有名词例如Skills里的很多内容
+- 目的就是轻量化记忆起到导论的作用总结重点,可以有的没有,不可以有的坚决没有
+
+# 理论这一块
+## 时间复杂度
+
+## 数据结构
+- 所有数据结构底层都是连续结构(数组),跳转结构(指针链表)拼出来的
+
+
 # 二进制和位运算
 ```json
 {
-    "运算符":"<< >> | & ^ ~ lowbit",
-    "状态压缩":"(G,*,e,-1)"
+    "运算符":"<< >> | & ^ ~ lowbit",//operator
+    "状态压缩":"(G,*,e,-1)"    //state_compress
 }
 ```
 ## 二进制设计
 - 以四位为例
 - 0000=0  1111+1=0000=0 所以 1111=-1 设计成开头一位1为负数0为整数
 0000~0111 表示0~2^3-1  1000~1111 表示 -2^3~-1
-## 二进制与十进制十六进制
+## 1248泰勒级数
 - 泰勒级数 0101= 1*2^0+0*2^1+1*2^2;(1,2,4,8);
+- 非负数左右移动转换到十进制运算 <<n is *2^n ; >> is /2^n
+## 二进制与十进制十六进制
 - 4个一组  1011 0001=B1
 - 0x  0b 等字面常量
 
@@ -62,4 +77,208 @@ unsigned int result = (unsigned int)a >> 2;  // 先转换为无符号，再右�
 
 
 ```
+- 单元测试
+- 和暴力解对拍
+- 打表找规律
 
+# 二分
+```json 
+{   
+    "红蓝区域法":null,
+    "单调区间":null,
+    "红蓝边界":null,
+    "划分指针":"partition_pointer"// in Skills
+}
+```
+
+## 红蓝区域法
+- BV1d54y1q7k7
+### 单调区间
+区间满足单调性,区间中x∈red左侧都∈red,x∈blue右侧都∈blue;                  
+### 红蓝边界
+设置边界,将区间划分为red,blue两个区间
+### 划分指针
+- red指针初始在-1,blue指针初始在n,red指针左侧是red区域,blue指针右侧是blue区域;
+- 取中间值x,若x∈red,red指针扩充到x,若x∈blue...;直到red+1==blue结束循环
+
+![alt text](image.png)![alt text](image-3.png)![alt text](image-2.png)
+
+## 二分峰值
+```json
+{
+    "数组离散函数":"discrete_function",
+    "导函数介值定理":null,//达布定理Darboux's theorem
+    "划分指针":"partition_pointer"//特殊的划分(l,r)必有峰值
+}
+```
+- [leetcode](https://leetcode.cn/problems/find-peak-element/)
+- 数组就是离散的函数;导函数介值定理;导数相乘<0 中间必有极值点
+- 划分指针划分按必有峰值划分,可理解为l左侧必没有r右侧必没有
+```java
+class Solution {
+    public int findPeakElement(int[] arr) {
+        int n = arr.length;
+        //特判
+        if (arr.length == 1) {
+            return 0;
+        }
+        if (arr[0] > arr[1]) {
+            return 0;
+        }
+        if (arr[n - 1] > arr[n - 2]) {
+            return n - 1;
+        }
+        //划分闭区间指针 (l,r)区间必有峰值可理解为l左侧必没有r右侧必没有
+        int l=0;int r=n-1;int m=0;int ans=0;
+        while(l+1!=r){
+            m=(l+r)>>1;
+            //左导数<0所以(l,m)必有极值点r扩充到m
+            if(arr[m]<arr[m-1]){
+                r=m;
+            }else if(arr[m+1]>arr[m]){  //右导数>0所以(m,r)必有极值点l扩充的m
+                l=m;
+            }else{
+                ans=m;
+                break;
+            }
+        }
+        return ans;
+    }
+}
+```
+
+## 二分答案
+
+# 链表
+```json
+{
+    "链表构造":"sentry new_container",
+    "指针技巧":"memo_pointer no-backtracking_pointer"
+}
+```
+## 函数参数
+- 函数参数是将变量拷贝副本传递到函数,指针也是变量,指针副本指向同一块内存区域
+## 链表操作
+- sentry节点
+设置哨兵节点指向链表头节点方便插入 newNode.next=sentry.next;sentry.next=newNode;
+- memo指针
+- prev指针正序插入,也是memo指针的一种
+- no-backtracking指针
+## 习题
+- [链表反转leetcode](https://leetcode.cn/problems/reverse-linked-list/)
+```java
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        if(head==null){
+            return null;
+        }
+        //设置两个哨兵节点
+        ListNode sentryHead=new ListNode();
+        sentryHead.next=head;
+        ListNode sentryAns=new ListNode();
+        sentryAns.next=null;
+        //设置memo指针
+        ListNode p=head;
+        while(p!=null){
+            p=p.next;
+            sentryHead.next.next=sentryAns.next;
+            sentryAns.next=sentryHead.next;
+            sentryHead.next=p;
+        }
+        return sentryAns.next;
+    }
+}
+```
+- [合并有序链表leetcode](https://leetcode.cn/problems/merge-two-sorted-lists/)
+好想的newContainer方法优化为在原链表模拟newContainer;
+- 构造一个新的链表容器然后将节点逐一比较插入
+- nobacktracking_pointer memo_pointer
+```java
+public static ListNode mergeTwoLists(ListNode head1, ListNode head2) {
+			if (head1 == null || head2 == null) {
+				return head1 == null ? head2 : head1;
+			}
+            ListNode head=null;
+            //两个不回退指针
+            ListNode cur1=null;
+            ListNode cur2=null;
+            if(head1.val<=head2.val){
+                head=head1;
+                cur1=head.next;
+                cur2=head2;
+            }else{
+                head=head2;
+                cur1=head.next;
+                cur2=head1;
+            }
+            //设置pre指针
+			ListNode pre = head;
+			while (cur1 != null && cur2 != null) {
+				if (cur1.val <= cur2.val) {
+					pre.next = cur1;
+					cur1 = cur1.next;
+				} else {
+					pre.next = cur2;
+					cur2 = cur2.next;
+				}
+				pre = pre.next;
+			}
+			if(cur1!=null){
+				pre.next=cur1;
+			}
+			if(cur2!=null){
+				pre.next=cur2;
+			}
+			return head;
+		}
+```
+- [链表相加leetcode](https://leetcode.cn/problems/add-two-numbers)
+```java
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        int carry=0;int tmp=0;
+        ListNode sentry=new ListNode();
+        sentry.next=null;
+        ListNode pre=new ListNode();
+        pre=sentry;
+        ListNode p1=l1;
+        ListNode p2=l2;
+        while(p1!=null || p2!=null){
+            if (p1!=null && p2!=null) {
+                tmp=p1.val+p2.val+carry;
+                carry=tmp/10;
+                tmp=tmp%10;
+                pre.next=new ListNode(tmp);
+                pre=pre.next;
+                p1=p1.next;
+                p2=p2.next;
+            }
+            else if(p1==null && p2!=null){
+                tmp=0+p2.val+carry;
+                carry=tmp/10;
+                tmp=tmp%10;
+                pre.next=new ListNode(tmp);
+                pre=pre.next;
+                p2=p2.next;
+            }
+            else if(p2==null && p1!=null){
+                tmp=p1.val+0+carry;
+                carry=tmp/10;
+                tmp=tmp%10;
+                pre.next=new ListNode(tmp);
+                pre=pre.next;
+                p1=p1.next;
+            }
+            //也可以改成state_filter形式 if()...continue
+
+        }
+        if(carry!=0){
+            pre.next=new ListNode(carry);
+            pre=pre.next;
+        }
+        pre.next=null;
+        return sentry.next;
+
+    }
+}
+```

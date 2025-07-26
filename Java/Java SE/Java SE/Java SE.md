@@ -1,9 +1,6 @@
 [TOC]
 # 
-- 这个为Java语法的重构版本,在学了c后对底层有了一些了解对java语法进行重构
-- 没有的参见c++语法
-- public 起手
-
+- 直接全都 public 起手
 
 # 引用(java中的指针)
 - java除了int 等基本数据类型都是cpp中的引用类型 student & xm;
