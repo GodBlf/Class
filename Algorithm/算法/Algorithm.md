@@ -165,20 +165,23 @@ class Solution {
 # 链表
 ```json
 {
-    "链表构造":"sentry new_container",
+    "链表构造模型":"sentry_node memo_pointer new_container",//memo_pointer记忆尾节点
     "指针技巧":"memo_pointer no-backtracking_pointer"
 }
 ```
 ## 函数参数
 - 函数参数是将变量拷贝副本传递到函数,指针也是变量,指针副本指向同一块内存区域
-## 链表操作
+## 链表模型
+![alt text](image-4.png)
 - sentry节点
 设置哨兵节点指向链表头节点方便插入 newNode.next=sentry.next;sentry.next=newNode;
+
 - memo指针
-- prev指针正序插入,也是memo指针的一种
+指向链表的尾节点实现正序插入,记忆尾节点,也是memo指针的一种
+
 - no-backtracking指针
 ## 习题
-- [链表反转leetcode](https://leetcode.cn/problems/reverse-linked-list/)
+### [链表反转leetcode](https://leetcode.cn/problems/reverse-linked-list/)
 ```java
 class Solution {
     public ListNode reverseList(ListNode head) {
@@ -202,7 +205,8 @@ class Solution {
     }
 }
 ```
-- [合并有序链表leetcode](https://leetcode.cn/problems/merge-two-sorted-lists/)
+
+### [合并有序链表leetcode](https://leetcode.cn/problems/merge-two-sorted-lists/)
 好想的newContainer方法优化为在原链表模拟newContainer;
 - 构造一个新的链表容器然后将节点逐一比较插入
 - nobacktracking_pointer memo_pointer
@@ -224,7 +228,7 @@ public static ListNode mergeTwoLists(ListNode head1, ListNode head2) {
                 cur1=head.next;
                 cur2=head1;
             }
-            //设置pre指针
+            //设置pre 记忆指针memo
 			ListNode pre = head;
 			while (cur1 != null && cur2 != null) {
 				if (cur1.val <= cur2.val) {
@@ -245,7 +249,8 @@ public static ListNode mergeTwoLists(ListNode head1, ListNode head2) {
 			return head;
 		}
 ```
-- [链表相加leetcode](https://leetcode.cn/problems/add-two-numbers)
+
+### [链表相加leetcode](https://leetcode.cn/problems/add-two-numbers)
 ```java
 class Solution {
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
@@ -292,6 +297,69 @@ class Solution {
         pre.next=null;
         return sentry.next;
 
+    }
+}
+```
+
+### [划分链表leetcode](https://leetcode.cn/problems/partition-list/)
+- sentry_node memo_pointer new_container
+```java
+class Solution {
+    public ListNode partition(ListNode head, int x) {
+        ListNode xiaoSentry = new ListNode(300);
+        ListNode daSentry = new ListNode(300);
+        //设置两个记忆指针记忆两个新链表的尾节点
+        ListNode xiaoPre=xiaoSentry;
+        ListNode daPre=daSentry;
+        ListNode p=head;
+        //记忆指针记忆p的下一个位置
+        ListNode memo=head;
+        while(p!=null){
+            memo=p.next;
+            if(p.val<x){
+                xiaoPre.next=p;
+                xiaoPre=p;
+                p.next=null;
+            }else{
+                daPre.next=p;
+                daPre=p;
+                p.next=null;
+            }
+            p=memo;
+        }
+        if(xiaoSentry.next==null){
+            return daSentry.next;
+        }
+        if(daSentry.next==null){
+            return xiaoSentry.next;
+        }
+        xiaoPre.next=daSentry.next;
+        return xiaoSentry.next;
+    }
+}
+```
+
+### [删除倒数第n个指针leetcode](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/)
+- no-backtracking_pointer 设置不回退指针的距离差
+```java
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode sentry = new ListNode(666);
+        sentry.next=head;
+        ListNode pRight=head;
+        ListNode pLeft=head;
+        ListNode memo=sentry;
+        //构造距离差
+        for(int i=0;i<n;i++){
+            pRight=pRight.next;
+        }
+        while(pRight!=null){
+            pRight=pRight.next;
+            pLeft=pLeft.next;
+            memo=memo.next;
+        }
+        memo.next=pLeft.next;
+        return sentry.next;
     }
 }
 ```
