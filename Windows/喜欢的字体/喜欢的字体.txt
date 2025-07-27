@@ -1,0 +1,8 @@
+英语:
+Jetbrains Mono ExtraBold
+https://www.jetbrains.com/lp/mono/
+微软雅黑
+
+中文:
+楷体
+幼圆
