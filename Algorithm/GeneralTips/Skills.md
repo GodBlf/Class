@@ -1,6 +1,6 @@
 [TOC]  
 # 格式
-大分类用java命名法 专属名词具体的某个工具用c++命名格式
+大分类借用的专有名词用java命名法 专属名词自己造的具体的某个工具用c++命名格式
 例如 MathRefactor discrete_function
 
 # MathRefactor
@@ -15,7 +15,7 @@
 
     }
 
-    //记忆:variable state   function:math and stack
+    //记忆:variable->state   function->math and stack->input output operate
 }
 ```
 ## if else
@@ -67,20 +67,26 @@ if(cur1!=null){
 - 递归树
 ![alt text](7113268cadc2876214b893736260c100.jpg)
 递归是对递归树的遍历
-## 递归树性质:
-### Node
+
+## Node
 - args state or varible state 函数栈节点的状态
 - return state 函数返回会变成具体的值
 1个栈{}代表一个节点,每个节点都有一个状态,f(n)n就代表根节点状态
 回溯:基本数据类型的状态,随栈自动改变,引用数据类型的状态需要手动改变
 栈return就变成了具体的值;
-- Leaf
+
+## 对于 递归函数 f()来说,以下开栈都是f()函数栈,其他函数的栈视作基本语句
+## Leaf
+- 节点内部未开f()函数栈的就是叶子节点
+- 基本语句,return都算作叶子节点
 直接return 无开栈的是leaf节点,基本语句也可视作leaf节点,可以再任何位置;
-- Branch
+## Branch
+- 节点内部开f()函数栈的就是分支节点
 开栈f()可视作branch节点 ,开栈后的return可视作基本语句
-- Root
+## Root
+- leaf和branch的区分就是开没开栈
 branch节点的结构和root节点的结构相同,且仅能够从root节点设计递归树的结构
-- dfs遍历
+## dfs遍历
 递归是对递归树的遍历,采取包裹(dfs)式的遍历,遇到叶子节点就返回;
 具体例子可思考fabonacci 01背包 n皇后问题 全排列等
 
