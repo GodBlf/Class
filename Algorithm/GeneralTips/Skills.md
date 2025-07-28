@@ -265,10 +265,52 @@ index+1 = num(index) 指定索引右一位为到此索引的元素个数
 
 
 
-# sentry 哨兵指针
-扫雷的外围一圈0;字符串""都起到辅助作用;
-例如在快速排序的时候 i指针就是i左边的都是小于pivot的 最后再将pivot插入sentry中;
-数据结构也常用sentry ;
+# sentry 
+哨兵:辅助作用
+- 扫雷的外围一圈0;字符串""都起到辅助作用;
+- 链表哨兵节点指向头节点辅助作用
+- 常用sentry和new_container配合使用
+
+# new_container
+对某个对象进行操作的时候,最好把结果弄到一个new的对象上例如矩阵转置结果,new在一个新矩阵里否则原矩阵操作困难;
+```c
+include<stdio.h>
+
+int main(){
+    int n, m;
+    scanf("%d %d", &n, &m);  // 输入矩阵的行数和列数
+    int arr[n][m];            // 原矩阵
+    int transpose[m][n];      // 转置矩阵
+
+    // 读入原矩阵
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            scanf("%d", &arr[i][j]);
+        }
+    }
+
+    // 进行转置
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            transpose[j][i] = arr[i][j];
+        }
+    }
+
+    // 输出转置矩阵
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            if (j == n - 1) {
+                printf("%d\n", transpose[i][j]);  // 最后一项输出换行
+            } else {
+                printf("%d ", transpose[i][j]);  // 其他项输出空格
+            }
+        }
+    }
+
+    return 0;
+}
+
+```
 
 
 # lazy
@@ -426,46 +468,6 @@ public class MonotonicQueue {
 
 
 
-# new_container
-对某个对象进行操作的时候,最好把结果弄到一个new的对象上例如矩阵转置结果,new在一个新矩阵里否则原矩阵操作困难;
-```c
-include<stdio.h>
-
-int main(){
-    int n, m;
-    scanf("%d %d", &n, &m);  // 输入矩阵的行数和列数
-    int arr[n][m];            // 原矩阵
-    int transpose[m][n];      // 转置矩阵
-
-    // 读入原矩阵
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            scanf("%d", &arr[i][j]);
-        }
-    }
-
-    // 进行转置
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            transpose[j][i] = arr[i][j];
-        }
-    }
-
-    // 输出转置矩阵
-    for (int i = 0; i < m; i++) {
-        for (int j = 0; j < n; j++) {
-            if (j == n - 1) {
-                printf("%d\n", transpose[i][j]);  // 最后一项输出换行
-            } else {
-                printf("%d ", transpose[i][j]);  // 其他项输出空格
-            }
-        }
-    }
-
-    return 0;
-}
-
-```
 
 
 # tmp
