@@ -106,6 +106,8 @@ unsigned int result = (unsigned int)a >> 2;  // 先转换为无符号，再右�
     "划分指针":"partition_pointer"// in Skills
 }
 ```
+- 时间复杂度:log(N) 
+log(2^32)=32 所以二分非常快
 
 ## 红蓝区域法
 - BV1d54y1q7k7
@@ -164,10 +166,151 @@ class Solution {
 ```
 
 ## 二分答案
+- 单调区间
+1）估计 最终答案可能的范围 是什么，可以定的粗略，反正二分不了几次
+2）分析 问题的答案 和 给定条件 之间的 单调性，大部分时候只需要用到 自然智慧
+- 二分边界
+3）建立一个f函数，当答案固定的情况下，判断 给定的条件是否达标
+- 划分指针
+4）在 最终答案可能的范围上不断二分搜索，每次用judge函数判断，直到二分结束，找到最合适的答案
+### 习题
+#### [爱吃香蕉的珂珂leetcode](https://leetcode.cn/problems/koko-eating-bananas/)
+- 单调区间
+速度区间 (0,piles.max]
+- 二分边界
+在h时间内不能吃完 | 在h时间内能吃完
+- 向上取整 a+b-1/b
+```java
+class Solution {
+    public int minEatingSpeed(int[] piles, int h) {
+        int max=0;
+        for (int i = 0; i < piles.length; i++) {
+            max=Math.max(max,piles[i]);
+        }
+        int l=0;int r=max+1;
+        while(l+1!=r){
+            int m=(l+r)>>1;
+            if(panduan(m,h,piles)){
+                r=m;
+            }else{
+                l=m;
+            }
+        }
+        return r;
+    }
+    //判断能不能吃完
+    static boolean panduan(int v,int h,int[] piles){
+        long ansh=0;
+        for (int i = 0; i < piles.length; i++) {
+            //数论微小量1向上取整
+            ansh+=(piles[i]+v-1)/v;
+            if(ansh>h){
+                return false;
+            }
+        }
+        return true;
+    }
+}
+```
+
+#### [画匠问题leetcode](https://leetcode.cn/problems/split-array-largest-sum/)
+- flag nobacktracking_pointer
+- 单调区间
+[0,nums.sum],从0到累加和
+- 二分区间
+能分>k个区间 | 能分<=k个区间
+```java
+class Solution {
+    public int splitArray(int[] nums, int k) {
+            int right=0;int left=-1;int m=0;
+            for(int i=0;i<nums.length;i++){
+                right+=nums[i];
+            }
+            right++;
+            while(left+1!=right){
+                m=(left+right)>>1;
+                if(judge(nums,k,m)){
+                    right=m;
+                }else{
+                    left=m;
+                }
+            }
+            return right;
+    }
+    public static boolean judge(int[]nums,int k,int val){
+        //初始已经有一个油桶了
+        //flag
+        int partition=1;
+        int sum=0;
+        for(int i=0;i<nums.length;i++){
+            //单值大于val直接不用分了
+            if(nums[i]>val) return false;
+            sum+=nums[i];
+            //大于就重开一个油桶
+            if(sum>val){
+                partition++;
+                sum=nums[i];
+                continue;
+            }
+        }
+        return partition<=k;
+    }
+}
+```
+
+#### [机器人跳跃nowcoder](https://www.nowcoder.com/practice/7037a3d57bbd4336856b8e16a9cafd71)
+- 溢出剪枝 prune
+```java
+public class Main{
+    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter out=new PrintWriter(new OutputStreamWriter(System.out));
+        StringTokenizer st=new StringTokenizer("");
+        //
+        int n=0;
+        n=Integer.parseInt(reader.readLine());
+        st=new StringTokenizer(reader.readLine());
+        int max=0;int[] arr=new int[n+1];
+        arr[0]=0;
+        for(int i=1;i<n+1;i++){
+            arr[i]=Integer.parseInt(st.nextToken());
+            max=Math.max(arr[i],max);
+        }
+        int left=-1;int right=max+1;int m=0;
+        while(left+1!=right){
+            m=(left+right)>>1;
+            if(judge(arr,max,m)){
+                right=m;
+            }else{
+                left=m;
+            }
+        }
+        out.println(right);
+
+        //
+        out.close();
+        reader.close();
+    }
+    public static boolean judge(int[] arr,int max,int e){
+        for(int i=1;i<arr.length;i++){
+            if(e>arr[i]){
+                e+=e-arr[i];
+            }else{
+                e-=arr[i]-e;
+            }
+            if(e<0) return false;
+            //找个例子会发现增加的值是2等比数列会溢出所以剪枝超过max必然能过
+            if(e>=max) return true;
+        }
+        return true;
+    }
+}
+```
+
+#### []()
 
 
 ---
-
 # 基础数据结构
 
 # 链表

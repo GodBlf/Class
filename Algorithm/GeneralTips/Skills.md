@@ -449,7 +449,7 @@ public class MonotonicQueue {
 # 善用三元运算符 ? :
 - 和+= -=等运算符
 
-
+# prune
 
 
 # 状态与回溯

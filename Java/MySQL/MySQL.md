@@ -51,7 +51,7 @@ create table user(
     gender char(1) default '男' comment '性别'
 ) comment '用户信息表';
 ```
-字段是行向量
+**字段是行向量**
 
 ## 数据类型
 - tinyint : 1 byte

@@ -1,4 +1,6 @@
 # Factory Pattern
-
+- 自己不创建(new)管理对象交给工厂调用方法或者注解创建管理对象给你这个对象的使用权
 # Dependency Injection
+
+#缓存Cache
 

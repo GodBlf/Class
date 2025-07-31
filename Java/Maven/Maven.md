@@ -152,5 +152,8 @@ public class YewuTest {
 
 ![alt text](image-8.png)
 
+2. 新项目导入依赖右侧不显示依赖项
+生存期compile一下项目就会自动下载依赖
+
 
 
