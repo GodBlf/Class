@@ -71,3 +71,33 @@ public class jdbcUpdateTest {
 </dependenies>
 
 ```
+
+# 
+
+# 预编译
+- #{}相当于jdbc的?将函数中的参数传递到数据建库预编译
+- ${}是直接拼接不是预编译方式不推荐使用
+- 函数参数编译为字节码参数将没有名字 应该用@Param("")来对应占位符和传递的参数 官方springboot框架可以省略
+- 参数传递封装的对象,占位符用对应的成员变量可以自动对应
+
+# xml映射文件
+在Mybatis中使用XML映射文件方式开发，需要符合一定的规范：
+1. XML映射文件的名称与Mapper接口名称一致，并且将XML映射文件和Mapper接口放置在相同包下（同包同名）目录用/不用.
+2. XML映射文件的namespace属性为Mapper接口全限定名一致
+3. XML映射文件中sql语句的id与Mapper接口中的方法名一致，并保持返回类型一致。
+4. 小的用注解 大的用xml映射文件
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.mapper.EmpMapper">
+
+    <!--查询操作-->
+    <select id="findAll" resultType="com.itheima.pojo.User">
+        select * from user
+    </select>
+    
+</mapper>
+
+标签是对mapper类的描述

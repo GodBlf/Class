@@ -206,6 +206,28 @@ select min(salary) from emp;
 select sum(salary) from emp;
 
 ### 分组查询
-
+- 常和聚合函数使用
+- group by 对查询到的数据分组
+- having 过滤 filter
+```sql
+select job, count(*)
+from emp
+where entry_date <= '2015-01-01'   -- 分组前条件
+group by job                      -- 按照job字段分组
+having count(*) >= 2;             -- 分组后条件
+```
+### 排序查询
+- 默认asc升序可省略,desc降序
+select id, username, password, name, gender, phone, salary, job, image, entry_date, create_time, update_time
+from emp
+order by entry_date ASC , update_time DESC;
 
 ### 分页查询
+1. 起始索引从0开始。           计算公式 ：起始索引 = （查询页码 - 1）* 每页显示记录数
+2. 分页查询是数据库的方言，不同的数据库有不同的实现，MySQL中是LIMIT
+3. 如果查询的是第一页数据，起始索引可以省略，直接简写为 limit  条数
+- 索引为数组0起始的索引
+select id, username, password, name, gender, phone, salary, job, image, entry_date, create_time, update_time
+from emp
+limit 10 , 5; -- 从索引10开始，向后取5条记录
+查询第三页每页五条记录
