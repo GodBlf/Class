@@ -153,3 +153,59 @@ update emp set name='张三', update_time=now() where id=1;
 ### delete from
 - 行向量
 delete from emp where id = 1;
+
+
+## DQL
+查询语句
+SELECT
+        字段列表
+FROM
+        表名列表
+WHERE
+        条件列表
+GROUP  BY
+        分组字段列表
+HAVING
+        分组后条件列表
+ORDER BY
+        排序字段列表
+LIMIT
+        分页参数
+### where
+>	大于
+>=	大于等于
+<	小于
+<=	小于等于
+=	等于
+<> 或 !=	不等于
+between ... and ...	在某个范围之内(含最小、最大值)
+in(...)	在in之后的列表中的值，多选一 e.g. x in (1,3,4)
+- like 占位符	模糊匹配(_匹配单个字符, %匹配任意个字符)
+
+is null	; is not null ; 不能用! 和 =
+
+and 或 &&	并且 (多个条件同时成立)
+or 或 ||	或者 (多个条件任意一个成立)
+not 或 !	非 , 不是
+
+### 聚合函数
+-- count(字段)
+select count(id) from emp;-- 结果：30
+select count(job) from emp;-- 结果：29 （聚合函数对NULL值不做计算）
+
+-- count(常量)
+select count(0) from emp;
+select count('A') from emp;
+
+-- count(*)  推荐此写法（MySQL底层进行了优化）
+select count(*) from emp;
+
+select avg(salary) from  emp;
+select max(salary) from emp;
+select min(salary) from emp;
+select sum(salary) from emp;
+
+### 分组查询
+
+
+### 分页查询
