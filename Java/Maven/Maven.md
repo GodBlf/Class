@@ -125,7 +125,7 @@ public class Yewu {
 public class YewuTest {
 //测试方法
     @Test
-    // public void规范
+    // public void规范 无static junit创建实例调用
     public void testStringLength(){
         //测试数据点
         Yewu yewu = new Yewu();

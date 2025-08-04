@@ -1299,7 +1299,7 @@ public class StringYewu {
 
 }public class StringYewuTest {
     @Test
-    //空参空返回
+    //测试函数要public void
     public void testLen(){
         StringYewu test = new StringYewu();
         int fsd = test.len("fsd");

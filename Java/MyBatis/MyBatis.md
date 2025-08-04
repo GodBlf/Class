@@ -72,7 +72,41 @@ public class jdbcUpdateTest {
 
 ```
 
-# 
+# Dao层 @Mapper
+- @Component->@Repository->@Mapper
+- factory parttern 将接口交给spring创建对象
+```java
+package com.xxh.mybytis1.Dao;
+import com.xxh.mybytis1.pojo.User;
+import org.apache.ibatis.annotations.*;
+import java.util.List;
+@org.apache.ibatis.annotations.Mapper
+public interface UserMapper {
+    //查询
+    @Select("select * from user")
+    public List<User> findAll();
+
+    //预编译方式删除,#{}是展位符号传到函数的参数
+    @Delete("delete from user where id = #{id}")
+    //返回影响了多少组数据
+    public Integer deleteById(Integer id);
+
+    //增加
+    @Insert("insert into user(username,password,name,age) values (#{username},#{password},#{name},#{age})")
+    //参数太多封装成对象传递到预编译占位符,占位符写的是类的成员变量不是字段
+    public Integer insert(User user);
+
+    //改
+    public Integer update(User user);
+
+    //查询
+    @Select("select * from user where username=#{username} and password=#{password}")
+    //用@param注解实现注解间通信
+    public User findByUsernameAndPassword(@Param("username") String username,@Param("password") String password);
+}
+```
+
+
 
 # 预编译
 - #{}相当于jdbc的?将函数中的参数传递到数据建库预编译

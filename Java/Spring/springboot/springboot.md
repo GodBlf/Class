@@ -186,6 +186,32 @@ Spring 容器的生命周期管理（比如 Bean 的初始化、销毁）是通�
 primary注解是使实现类优先级高
 resource和autowired不同 :分别按照名称, 类型注入
 
+# Junit 单元测试
+refer to Class/Java/Maven
+
 
 # spring配置
 - .properties 改为 .yml 文件方便编辑配置文档
+## yml配置文件格式
+- 树型结构 python和json结合体
+```yml
+spring:
+  application:
+    name: mybytis1
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+  #数据库访问的url地址
+    url: jdbc:mysql://localhost:3306/web01
+  #访问数据库-用户名
+    username: root
+  #访问数据库-密码
+    password: asd456
+  #数据库驱动类类名
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  #日志
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+```
+
