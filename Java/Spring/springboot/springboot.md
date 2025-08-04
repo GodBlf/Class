@@ -186,3 +186,6 @@ Spring 容器的生命周期管理（比如 Bean 的初始化、销毁）是通�
 primary注解是使实现类优先级高
 resource和autowired不同 :分别按照名称, 类型注入
 
+
+# spring配置
+- .properties 改为 .yml 文件方便编辑配置文档
