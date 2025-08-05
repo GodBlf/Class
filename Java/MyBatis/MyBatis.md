@@ -55,7 +55,6 @@ public class jdbcUpdateTest {
 
 - 编码设置为utf-8;
 
-#
 
 # 数据库链接池
 - 容器分配管理数据库链接(connection)
@@ -72,14 +71,16 @@ public class jdbcUpdateTest {
 
 ```
 
-# Dao层 @Mapper
+# Dao层(mapper层) @Mapper
 - @Component->@Repository->@Mapper
 - factory parttern 将接口交给spring创建对象
 ```java
 package com.xxh.mybytis1.Dao;
 import com.xxh.mybytis1.pojo.User;
 import org.apache.ibatis.annotations.*;
+
 import java.util.List;
+
 @org.apache.ibatis.annotations.Mapper
 public interface UserMapper {
     //查询
@@ -135,3 +136,13 @@ public interface UserMapper {
 </mapper>
 
 标签是对mapper类的描述
+
+# 驼峰映射开关
+- mybatis封装对象的时候类属性名(驼峰命名)和字段名(下划线命名)不一致
+- 开启驼峰命名开关
+
+```yml
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+```
