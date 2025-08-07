@@ -28,6 +28,9 @@ https://osu.ppy.sh/beatmapsets
 - 不要看note 要看波纹
 - 提前看几个预判
 - 手指垂直键帽,轻点
+## 跳跳读谱
+## 转转读谱
+
 # 强双
 ## 强双原理
 ```json
