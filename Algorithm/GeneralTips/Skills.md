@@ -1,9 +1,14 @@
 [TOC]  
 # 格式
-大分类借用的专有名词用java命名法 专属名词自己造的具体的某个工具用c++命名格式
-例如 MathRefactor discrete_function
+大分类,学术上已经有的借用的专有名词,用java命名法 专属名词自己造的具体的某个工具用c++命名格式
+例如 Tree math_refactor discrete_function
 
-# MathRefactor
+# math_refactor公理
+- 借鉴数学的ZFC集合论公理体系
+Skills->Algorithm ; Skills->JavaSE
+- math_refactor是公理体系的公理;Skills里的例如no-backtracking_pointer等都是定理
+
+# math_refactor
 ```json
 {
     "set":"math", //具体参见/Class/Math/集合论
@@ -18,6 +23,15 @@
     //记忆:variable->state   function->math and stack->input output operate
 }
 ```
+```json
+{
+    "set":"",
+    "variable and function set":"class",
+    "function set":"interface",
+    "variable set":"struct"
+}
+```
+
 ## if else
 - state divide and choose 变量状态的分划和选择,对象可以是变量,序偶等,例如a>b相当于(a,b)的state;选择某个状态就在假设某个状态成立下进行后续操作;注意合并逻辑
 - state filter(Priority sequence) 建议设计成过滤器的结构,记得加continue return break等
@@ -76,6 +90,7 @@ if(cur1!=null){
 栈return就变成了具体的值;
 
 ## 对于 递归函数 f()来说,以下开栈都是f()函数栈,其他函数的栈视作基本语句
+- 判断关键就是开没开栈
 ## Leaf
 - 节点内部未开f()函数栈的就是叶子节点
 - 基本语句,return都算作叶子节点
@@ -247,7 +262,7 @@ public static void partition2(int[] arr, int l, int r, int x) {
 
 
 
-# Cache数据结构
+# cache数据结构
 out in
 每次out / in都必须边界判断;
 - dfs bfs dijkstra都是 dad out child in的过程

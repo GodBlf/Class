@@ -92,7 +92,7 @@ public class ResponseControl {
 # 设计
 ## 三层架构
 - 解耦,单一职责,提高复用性
-- Controller<->Service<->Dao
+- Controller<->Service<->Dao(Mapper)
 ![alt text](image.png)
 https://heuqqdmbyk.feishu.cn/wiki/MQ95wDTtji6ob6kiRkyc9jamnwg
 ## 分层解耦
@@ -212,12 +212,19 @@ spring:
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
+    map-underscore-to-camel-case: true
 ```
+
+# logback日志@slf4j
+参见../logback
 
 # 注解通信
 - 注解间一般用注解通信
 - 简单参数传递(Integer)能省略注解
+@ Param
+@ RequestParam
+@ RequestBody
+@ PathVariable
 
 # 占位符
 - mybatis

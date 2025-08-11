@@ -41,7 +41,7 @@ public class studeng{
 ```
 
 # 类和对象
-## math refactor
+## math_refactor
 ```json
 {
     "set":"",
