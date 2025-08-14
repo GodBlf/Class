@@ -218,7 +218,8 @@ mybatis:
 # logback日志@slf4j
 参见../logback
 
-# 注解通信
+# 注解
+- 注解是将类函数等交给IOC处理
 - 注解间一般用注解通信
 - 简单参数传递(Integer)能省略注解
 @ Param

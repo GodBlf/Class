@@ -17,7 +17,7 @@
 1. 万能快捷键 alt+enter
 2. f2找到下一个错误,shift+f2找到上一个错误
 3. .var  .if .arg
-4. ctrl+p获取方法形参信息 可改成alt+p好按
+4. ctrl+p 函数参数 ctrl+i 实现接口方法
 5. fori  forr(逆序)   .for  .fori  .forr;
 例如对一个list集合的遍历  list.for  ; 
 1. ctrl z  ctrl shift z  ctrl c x v  ctrl /  ctrl b
