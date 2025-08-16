@@ -1,12 +1,12 @@
 [TOC]
 # 信息获取
 - 开源社群
-reddit qq群231094840
+reddit qq群231094840 osu.ppy
 
 # 设备
 ## 外设
 - wacom ctl 472
-- 笔记本键盘 红轴键盘 薄膜键盘
+-  红轴键盘 磁轴键盘 
 ## 驱动
 - opentabledriver
 
@@ -17,12 +17,13 @@ reddit qq群231094840
 ## 网站
 https://skins.osuck.net/
 ## 推荐
-BTMC
-default improved
-ba皮肤
+- 猫
 
 # 谱面
 https://osu.ppy.sh/beatmapsets
+## pp farm
+- 一些简单图用来刷pp分数
+- [网站](https://osu-pps.com/)
 
 # 数位板
 - wacom clt472
@@ -30,7 +31,7 @@ https://osu.ppy.sh/beatmapsets
 - ~~四角动态握笔~~
 ~~中指 食指 无名指 中端关节缠绕在笔上 大拇指上端关节放在笔杆倾斜60度~~
 - 自然握笔
-- 用手胶扩展1cm左右的半径再用卫生纸封装
+- 用手胶扩展0.5~0.6cm左右的半径
 
 # 技巧
 - 不要看note 要看波纹
