@@ -1,7 +1,8 @@
 # goの简化
 - go中()是函数 函数类型 {}是生成
+{}用json格式初始化 : 是 is
 - 万能:= go强调变量名称弱化类型后置
-:=&struct{}
+:=&struct{} go自动解引用指针
 
 - 和python一样强大的, i,j=j,i
 Go 语言的 := 是 短变量声明，它的规则是：
@@ -248,9 +249,12 @@ f=func(a,b int) int{
 - len cap append copy delete
 - 速度快但是太底层len返回字节数等 常用len append 其他slices maps包有泛型函数
 
+## init函数
+- 包导入执行用于初始化
+
 ## defer
 延迟在return后执行,defer 常用于资源释放、panic 恢复
-
+当一个函数中有多个 defer 语句时，它们会被推送到一个栈上，并在函数即将返回时，按照 后进先出 (LIFO) 的顺序执行。
 # type
 - 自定义类型是定义了一个全新的类型。我们可以基于内置的基本类型定义，也可以通过struct定义。例如：
     //将MyInt定义为int类型
@@ -281,11 +285,17 @@ func (h *IntHeap) Pop() any {
 ```
 ## 结构体
 - variable set is struct
+### 结构体使用
 - :=&json{}格式初始化 最佳实践
 //一般用指针直接:= & 不用new因为有逃逸分析
 p :=&Person{...}
-建议直接p:=&struct{}
-因为很多方法 的接受体值满足的可以用指针和值 指针满足的只能用指针
+- 直接p:=&struct{}
+函数传递参数自动解引用 (dereference)指针
+因为很多方法 的接口接受体值满足的可以用指针和值 指针满足的只能用指针
+### json格式讨论
+为什么json格式用:为变量初始化 因为=是赋值的意思 :是 is的意思
+强调键值关系
+
 ### 
 在 Go 语言中，`struct`（结构体）是一种用户自定义的复合数据类型，它允许你将不同类型的数据字段组合成一个单一的逻辑单元。结构体是 Go 语言中实现面向对象编程（OOP）思想（特别是组合优于继承）的基础。
 
@@ -1638,4 +1648,86 @@ b, _ := strconv.ParseBool("true")
 
 ## TCP
 
-## http
+
+### 服务端
+- 用web框架例如gin
+
+### 客户端
+- Get请求
+```go
+package main
+
+import (
+    "fmt"
+    "io"
+    "net/http"
+    "time"
+)
+
+func main() {
+    client := &http.Client{Timeout: 5 * time.Second} // 推荐设置超时
+
+    resp, err := client.Get("https://httpbin.org/get?name=go&age=10")
+    if err != nil {
+        fmt.Printf("GET请求失败: %v\n", err)
+        return
+    }
+    defer resp.Body.Close() // 务必关闭响应体
+
+    fmt.Printf("GET 响应状态: %s\n", resp.Status)
+    fmt.Printf("GET 响应头 Content-Type: %s\n", resp.Header.Get("Content-Type"))
+
+    body, err := io.ReadAll(resp.Body)
+    if err != nil {
+        fmt.Printf("读取响应体失败: %v\n", err)
+        return
+    }
+    fmt.Printf("GET 响应体:\n%s\n", string(body))
+}
+
+```
+- Post请求
+```go
+package main
+
+import (
+    "bytes"
+    "encoding/json"
+    "fmt"
+    "io"
+    "net/http"
+    "time"
+)
+
+type PostData struct {
+    Title  string `json:"title"`
+    Author string `json:"author"`
+}
+
+func main() {
+    client := &http.Client{Timeout: 5 * time.Second}
+
+    data := PostData{Title: "Go HTTP Client", Author: "Gopher"}
+    jsonData, _ := &json.Marshal(data)      //封装为json字节码
+    bodyReader := bytes.NewReader(jsonData) // 将JSON字节切片包装为io.Reader方便读取
+
+    req, err := http.NewRequest("POST", "https://httpbin.org/post", bodyReader)
+    if err != nil {
+        fmt.Printf("创建POST请求失败: %v\n", err)
+        return
+    }
+    req.Header.Set("Content-Type", "application/json") // 告知服务器是JSON
+
+    resp, err := client.Do(req)
+    if err != nil {
+        fmt.Printf("POST请求失败: %v\n", err)
+        return
+    }
+    defer resp.Body.Close()
+
+    fmt.Printf("POST 响应状态: %s\n", resp.Status)
+    body, _ := io.ReadAll(resp.Body)
+    fmt.Printf("POST 响应体:\n%s\n", string(body))
+}
+
+```

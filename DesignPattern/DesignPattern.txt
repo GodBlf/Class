@@ -1,6 +1,24 @@
 # Factory Pattern
 - 自己不创建(new)管理对象交给工厂调用方法或者注解创建管理对象给你这个对象的使用权
+
+
 # Dependency Injection
 
 #缓存Cache
 
+# Hook
+- 系统运行时执行注册的hook函数
+```mermaid
+graph LR
+A(System)-->|call_back|B((Hook))
+A-->|call_back|C((Hook))
+A-->|call_back|D((....))
+E(HookRegister)
+B<-->E
+C<-->E
+D<-->E
+
+```
+
+- callback实现
+gin框架路由仅注册传入回调函数,gin.run()路由请求方法再调用注册的回调函数

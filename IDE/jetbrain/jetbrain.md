@@ -17,15 +17,20 @@
 1. 万能快捷键 alt+enter
 2. f2找到下一个错误,shift+f2找到上一个错误
 3. .var  .if .arg
-4. ctrl+p 函数参数 ctrl+i 实现接口方法
 5. fori  forr(逆序)   .for  .fori  .forr;
 例如对一个list集合的遍历  list.for  ; 
-1. ctrl z  ctrl shift z  ctrl c x v  ctrl /  ctrl b
+1. ctrl z  ctrl shift z  ctrl c x v  ctrl /  ctrl b ctrl f r
 2. ctrl d  alt+shift+↑↓;
 3.  ctrl alt shift t   与 ctrl alt t 包围代码
-4.  alt + enter 快速修改;
-5.  alt 拖拽; alt j
-6. shift + shift
-7. f2  or  shift f2
-8. f11 shift f11 书签
-9. sout souf
+4.  alt 拖拽; alt j
+5. shift + shift
+6. f2  or  shift f2
+7. f11 shift f11 书签
+8. sout souf
+
+
+# 代码层面快捷键
+- ctlr+点击 跳转
+- ctrl+p 查看函数参数 pram
+- ctrl+i 实现接口 implements
+- alt+ctlr+m 抽取方法

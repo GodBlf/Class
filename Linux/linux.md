@@ -149,7 +149,7 @@ i 或 a 或 o
 
 # 防火墙
 
-# 虚拟机设置
+# 虚拟机网络链接模式
 好的，我们来详细讲解一下 **VMware 虚拟机中的三种常见网络连接模式**，它们分别是 **仅主机模式 (Host-Only)**、**NAT 模式 (Network Address Translation)** 和 **桥接模式 (Bridged)**。
 
 ---
