@@ -1,0 +1,3 @@
+为了节省空间,包含内容多经常用经常需要学习写学习笔记或者被更强的目录包含的就会独立出去例如githubdesktop独立到Git目录里
+- cherrystudio独立到LLMs里
+- Chrome独立到Web里
