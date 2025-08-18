@@ -26,9 +26,9 @@ Skills->Algorithm ; Skills->JavaSE
 ```json
 {
     "set":"",
-    "variable and function set":"class",
-    "function set":"interface",
-    "variable set":"struct"
+    "variable _and_function set":"class",
+    "function_set":"interface",
+    "variable_set":"struct"
 }
 ```
 
