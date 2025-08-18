@@ -1,0 +1,72 @@
+查找clash verge代理混合端口 是 什么
+好的，如果你确定 Clash Verge 提供的代理端口是 `7897`，并且你知道它是 `HTTP` 类型还是 `SOCKS5` 类型，那么你可以这样为 Git 单独设置代理。
+
+**首先，你需要确认 `7897` 端口在 Clash Verge 中是作为哪种类型的代理服务（HTTP/HTTPS 还是 SOCKS5）提供。** 这非常重要，因为 Git 配置代理时需要指定协议前缀。
+
+通常，Clash Verge 默认的端口是：
+*   `7890` 用于 HTTP/HTTPS 代理
+*   `7891` 用于 SOCKS5 代理
+*   `9090` 用于 Clash 的 Web UI
+
+如果你自定义了 `7897`，请检查 Clash Verge 的设置（通常在 `Settings` -> `Profiles` 或 `Ports` 部分）来确认它的类型。
+
+### 情况一：`7897` 是 HTTP/HTTPS 代理
+
+如果 `7897` 是 HTTP/HTTPS 代理，在 Git Bash 或任何命令行工具中执行以下命令：
+
+```bash
+# 首先，清除可能存在的旧代理设置，避免冲突
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+
+# 设置 HTTP/HTTPS 代理
+git config --global http.proxy http://127.0.0.1:7897
+git config --global https.proxy http://127.0.0.1:7897
+
+# 验证设置是否成功
+git config --global --get http.proxy
+git config --global --get https.proxy
+```
+
+### 情况二：`7897` 是 SOCKS5 代理
+
+如果 `7897` 是 SOCKS5 代理，则协议前缀需要使用 `socks5://`：
+
+```bash
+# 首先，清除可能存在的旧代理设置，避免冲突
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+
+# 设置 SOCKS5 代理
+git config --global http.proxy socks5://127.0.0.1:7897
+git config --global https.proxy socks5://127.0.0.1:7897
+
+# 验证设置是否成功
+git config --global --get http.proxy
+git config --global --get https.proxy
+```
+
+### 设置完成后
+
+1.  **确保 Clash Verge 正在运行**，并且你所选的代理节点是可用的。
+2.  **测试 Git 连接：**
+    你可以尝试一个简单的 Git 命令来测试连接，例如：
+    ```bash
+    git ls-remote https://github.com/GodBlf/GodBlf.github.io.git
+    # 或者更简单的测试：
+    git ls-remote https://github.com/git/git.git
+    ```
+    如果这些命令能够正常执行（列出仓库的引用信息），说明 Git 已经成功通过代理连接到了 GitHub。
+
+3.  **再次运行 `hexo d`：**
+    ```bash
+    hexo d
+    ```
+
+### 注意事项：
+
+*   **`--global` 参数：** 这会将代理设置应用到你当前用户下的所有 Git 仓库。如果你只想为某个特定仓库设置代理，可以去掉 `--global` 参数，并在该仓库目录下执行命令。
+*   **Clash Verge 状态：** 即使 Git 配置了代理，如果 Clash Verge 没有运行，或者其内部的代理节点不可用，Git 仍然无法成功连接。
+*   **SSH 部署方式：** 再次强调，如果 HTTP/SOCKS 代理方式仍然不稳定，SSH 部署方式 (`git@github.com:GodBlf/GodBlf.github.io.git`) 通常是更稳定和推荐的选择，因为它不依赖于 HTTP/SOCKS 代理设置。
+
+请根据你的 `7897` 端口实际类型选择对应的命令进行设置。

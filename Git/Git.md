@@ -4,8 +4,6 @@
 
 git bash 和cmd一样命令行工具 
 
-先用githubdesktop 以后再学 gitbash
-
 ---
 ctrl+shift+管理员终端 可在本目录下打开 管理员powershell
 

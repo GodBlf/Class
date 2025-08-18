@@ -1,8 +1,9 @@
 # goの简化
+- x:=&json{:}
 - go中()是函数 函数类型 {}是生成
 {}用json格式初始化 : 是 is
 - 万能:= go强调变量名称弱化类型后置
-:=&struct{} go自动解引用指针
+:=&struct{} go自动解引用指针推荐传指针
 
 - 和python一样强大的, i,j=j,i
 Go 语言的 := 是 短变量声明，它的规则是：
@@ -62,13 +63,17 @@ gofmt .go
 ## 声明
 - 后缀.var方便ide代码补全
 - 万能:=
-- var i int =1  var i =1  i:=1
+- var i int =1  var i =1  var()
 ```go
 var (
     i=1
     j=1
 )
 ```
+## 全局变量
+- 在go文件zhong var i int  var()
+仅声明不赋值
+- 在init函数或者具体函数中初始化
 
 ## 匿名变量_下划线
 - 用于忽略值
