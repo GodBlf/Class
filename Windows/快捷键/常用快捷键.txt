@@ -26,6 +26,7 @@ win+l锁屏
 # win+x系列
 win+x A 快速启动管理员powershell
 ... 看快速字母按钮
+右键工作空间ctrl+shift+左键 管理员ps
 
 # win+r搜索系列
 cmd / powershell
