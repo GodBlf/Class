@@ -12,7 +12,12 @@ C{DesignPattern}
 D(Algorithm/Algorithm)
 Java(Java)
 Go(Golang)
-Blf((Belief))--->A
+Class(Class)
+Class-->LLMs(LLMs)
+Class-->W(Web)
+Class-->Tool(ToolSoftware)
+Class-->etc(...Tips)
+Blf((Belief))--->|Class|A
 A===|imitate|B
 A===|imitate|C
 B-->D
@@ -22,12 +27,14 @@ C-->Java
 C-->Go
 ```
 
-# 文档管理
+# 仓库依赖
 ```mermaid
 graph TD
 A(Class)-->B(Blog)
-A-->C(Projects/redme)
-C-->B
+A-->C(GithubProjects)
+C-->D
+D(GithubProjects/README)-->B
+
 
 ```
 
