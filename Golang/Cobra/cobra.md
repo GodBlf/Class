@@ -1,16 +1,93 @@
 # 导论
+```json
+{
+    "flag":"variable",
+    "flags":"variable_set",
+    "command_function":"Hook" //callback实现
+}
+```
 - cobra眼睛蛇 viper毒蛇
 - 底层基于flag包开发的开发命令行接口框架
 - 搭配viper(CLIs配置框架)
 
+# 项目结构
+```
+mycli/
+├── cmd/
+│   ├── root.go       # 根命令
+│   ├── hello.go      # 子命令 hello
+│   └── config.go     # 配置初始化
+├── configs/
+│   └── config.yaml   # 默认配置文件
+├── go.mod
+└── main/main.go
+```
+
 # 命令结构
 - 根命令 子命令 [flags] [args]
 
-# Command结构体
+# Command
+-结构体
+type Command struct {
+    // 命令的名称或用法字符串，通常是用户在命令行中键入的第一个词。
+    // 例如：对于 `mycli serve`，Use 就是 "serve"。
+    Use string
+
+    // 命令的简短描述，通常用于 `help` 输出的摘要行。
+    Short string
+
+    // 命令的详细描述，通常用于 `help` 输出的详细部分。
+    Long string
+
+    // 命令的使用示例，用于 `help` 输出，帮助用户理解如何使用。
+    Example string
+
+    // ----------------------------------------------------------------------
+    // 命令的执行逻辑。
+    // RunE 是一个函数，当命令被执行时调用。它接收当前命令实例和非标志参数列表。
+    // 返回 error 可以让 Cobra 统一处理错误并打印。
+    RunE func(cmd *Command, args []string) error
+    // 还有一个 Run 字段，与 RunE 类似，但不返回 error。推荐使用 RunE 以便更好地错误处理。
+    // Run func(cmd *Command, args []string)
+
+    // ----------------------------------------------------------------------
+    // 参数验证函数。用于验证用户输入的非标志参数 (args)。
+    // 例如：cobra.ExactArgs(1) 要求必须且只能有一个非标志参数。
+    // Args func(cmd *Command, args []string) error
+
+    // ----------------------------------------------------------------------
+    // 钩子函数 (Hooks)。在 RunE/Run 执行前后执行。
+    // PersistentPreRunE/PersistentPreRun: 在命令及其所有子命令的 RunE/Run 之前执行。
+    // PreRunE/PreRun: 只在当前命令的 RunE/Run 之前执行。
+    // PostRunE/PostRun: 只在当前命令的 RunE/Run 之后执行。
+    // PersistentPostRunE/PersistentPostRun: 在命令及其所有子命令的 RunE/Run 之后执行。
+
+    // ----------------------------------------------------------------------
+    // 标志 (Flags) 管理。
+    // PersistentFlags: 持久化标志集。这些标志对当前命令及其所有子命令都有效。
+    PersistentFlags *pflag.FlagSet
+    // Flags: 本地标志集。这些标志只对当前命令有效。
+    Flags *pflag.FlagSet
+
+    // ----------------------------------------------------------------------
+    // 子命令。
+    // Commands: 当前命令的子命令列表。
+    Commands []*Command
+
+    // ----------------------------------------------------------------------
+    // 其他高级设置。
+    // SilenceUsage bool: 如果为 true，当命令执行错误时，Cobra 不会打印用法信息。
+    // SilenceErrors bool: 如果为 true，Cobra 不会打印错误信息（留给调用者自行处理）。
+    // Hidden bool: 如果为 true，该命令不会出现在 help 输出中。
+    // ValidArgs []string: 用于 shell 自动补全的有效参数列表。
+    // DisableFlagsInUseLine bool: 如果为 true，`[flags]` 不会出现在 `Use` 行中。
+    // TraverseChildren bool: 如果为 true，即使在子命令执行时，也会解析其父命令的本地标志。
+    // FParseErrWhitelist FParseErrWhitelist: 允许忽略某些解析错误。
+}
 
 
 ## Hook
-
+- 给定hook run函数,cobra 根据命令自动回调hook函数
 
 ### 1. Cobra 的生命周期
 每个 `Command` 执行时，大致流程如下：
@@ -169,9 +246,10 @@ root PersistentPostRun
 
 要不要我给你画一个 **调用流程图**，把这些 Hooks 的执行顺序可视化，方便记忆？
 
-# pflag
-- 每个命令都有一个flags修饰集合
-- 将flag变量加入命令的flagset里
+
+# flag(pflag包)
+- user在命令行输入flag和对应的参数就是给flag变量赋值
+- 每个命令都有一个flags修饰集合将flag变量加入命令的flagset里
 ```go
 var Region string
 //rootCmd.Flags()生成root命令的flag集合
@@ -192,6 +270,31 @@ rootCmd.Flags().StringVarP(&Region, "region", "r", "", "AWS region (required)")
 //必选标志标记此标志必选
 rootCmd.MarkFlagRequired("region")
 
+
+```
+
+## viper管理
+- viper就是管理配置文件crud的
+- 可以将flag交给viper和配置文件管理
+```go
+var serveCmd = &cobra.Command{
+	Use:   "serve",
+	Short: "启动服务",
+	Run: func(cmd *cobra.Command, args []string) {
+		port := viper.GetInt("port")
+		host := viper.GetString("host")
+		fmt.Printf("启动服务: http://%s:%d\n", host, port)
+	},
+}
+
+var port int=0
+var host string=""
+serveCmd.Flags().IntVarP(&port,"port", "p",8080, "监听端口")
+	serveCmd.Flags().StringVarP(&host,"host","h", "127.0.0.1", "绑定的host")
+	// 将 flag 绑定到 viper
+    //lookup()查找flag
+	viper.BindPFlag("app.port", serveCmd.Flags().Lookup("port"))
+	viper.BindPFlag("app.host", serveCmd.Flags().Lookup("host"))
 
 ```
 
