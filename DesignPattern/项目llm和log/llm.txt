@@ -1,0 +1,8 @@
+- 设置  system_prompt dialogues dev_logs/logs
+- 每次开发测试完一个模块就写 下0.*第一个版本进行版本迭代
+例如system_prompt/0.md  system_prompt/1.md
+
+- 导出对话
+同理进行版本迭代
+- 写下logs实现的功能
+时间按照 从现在 ->过去方式记录
