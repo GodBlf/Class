@@ -10,6 +10,11 @@
 好的，我们来系统地讲解一下 Go 语言常用的配置管理库——**Viper**。
 
 ---
+```json
+{
+	"配置文件和golang变量的映射":"vriable"//vriable map
+}
+```
 
 ## 1. Viper 简介
 

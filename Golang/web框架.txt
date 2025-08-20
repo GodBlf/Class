@@ -1,0 +1,31 @@
+web框架:
+ gin+gorm gofram iris 
+
+API:
+RestfulAPI Swagger OpenAPI
+
+缓存消息队列:
+ Redis Kafka RabbitMQ
+
+微服务分布式RPC:
+ go-zero gRPC
+
+命令行:
+ cobra
+
+配置管理:
+ viper
+
+日志:
+ zap zerolog
+
+测试:
+
+
+部署:
+ docker
+ k8s
+ linux
+ 
+性能调优和调试工具:
+（pprof, race detector）

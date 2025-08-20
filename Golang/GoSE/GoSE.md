@@ -1,9 +1,16 @@
 # goの简化
-- x:=&json{:}
+```json
+{
+    "x:=&json{:}":":=&{}",
+    "x:=newfunc()":":=()"
+}
+
+```
 - go中()是函数 函数类型 {}是生成
 {}用json格式初始化 : 是 is
 - 万能:= go强调变量名称弱化类型后置
 :=&struct{} go自动解引用指针推荐传指针
+:=newfunc() 因为go的临时内存无法寻址所以函数返回的直接:=不用考虑&  
 
 - 和python一样强大的, i,j=j,i
 Go 语言的 := 是 短变量声明，它的规则是：
@@ -54,6 +61,48 @@ i, err := f(3)
 # 语言设计哲学
 - Less can be more
 gofmt .go
+
+# 内存
+## java
+- java全是引用数据类型
+- java 直接new
+## := &
+- go中常用值,仅传递参数和内存大的时候用指针
+h *IntHeap 指针声明
+*p 指针使用
+&p 指针获取
+### 逃逸分析
+- go中内存栈和堆开辟内存会被编译器优化所以直接:=生成值
+```golang
+p := Person{
+    Name:"Jane",
+    Age:10        //json格式赋值
+}
+f(&p)  //直接&变量使用指针
+
+```
+### 最佳实践
+- x:=&json{:} x:=newfunc()
+- //一般用指针直接:= & 不用new因为有逃逸分析
+p :=&Person{...}
+建议直接p:=&struct{}
+因为很多方法 的接受体值满足的可以用指针和值 指针满足的只能用指针
+- 结构体一般是值,函数参数和返回一般是结构体指针
+
+## make
+- 引用数据类型
+go中仅slice map chan 用make生成是引用数据类型
+- 在append等扩充slice返回新的slice要用引用的指针
+```go
+type IntHeap []int
+//...
+func (h *IntHeap) Push(x any){
+
+}
+```
+
+
+
 
 # 变量
 ## 作用域
@@ -261,6 +310,8 @@ f=func(a,b int) int{
 - 包导入执行用于初始化
 
 ## defer
+- 底层原理
+return函数栈返回从下到上依次执行函数体内的defer语句
 延迟在return后执行,defer 常用于资源释放、panic 恢复
 当一个函数中有多个 defer 语句时，它们会被推送到一个栈上，并在函数即将返回时，按照 后进先出 (LIFO) 的顺序执行。
 # type
@@ -615,43 +666,6 @@ Go 语言的 `struct` 是构建复杂数据结构和实现面向对象风格编�
 
 ## 面向对象编程
 
-
-# 内存
-## java
-- java全是引用数据类型
-- java 直接new
-## := &
-- go中常用值,仅传递参数和内存大的时候用指针
-h *IntHeap 指针声明
-*p 指针使用
-&p 指针获取
-### 逃逸分析
-- go中内存栈和堆开辟内存会被编译器优化所以直接:=生成值
-```golang
-p := Person{
-    Name:"Jane",
-    Age:10        //json格式赋值
-}
-f(&p)  //直接&变量使用指针
-
-```
-### 最佳实践
-//一般用指针直接:= & 不用new因为有逃逸分析
-p :=&Person{...}
-建议直接p:=&struct{}
-因为很多方法 的接受体值满足的可以用指针和值 指针满足的只能用指针
-
-## make
-- 引用数据类型
-go中仅slice map chan 用make生成是引用数据类型
-- 在append等扩充slice返回新的slice要用引用的指针
-```go
-type IntHeap []int
-//...
-func (h *IntHeap) Push(x any){
-
-}
-```
 
 
 # comma ok
@@ -1650,7 +1664,11 @@ b, _ := strconv.ParseBool("true")
 
 ### big.Int
 - 内存大用指针接受
-- big.Int{} b.SetString
+- big.newint() .setstring(str)
+
+### 运算
+z:=big.newint(0) z:=&big.Int{} 
+z.Add(x,y) z=x+y 内存直接覆盖到z性能更优
 
 # 网络编程
 
@@ -1748,4 +1766,11 @@ func main() {
 | 典型用途             | URL、资源路径          | 本地文件路径             |
 | 跨平台文件路径支持   | 否                    | 是                      |
 ## path
+
+## filepath
+### 树
+./logs/log
+project/logs/log
+第一个打头的是数的root节点0级
+不用纠结加不加. 谁打头就看作树的root节点用树来考虑filepath
 

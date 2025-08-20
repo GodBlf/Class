@@ -1,4 +1,9 @@
 # Hook
+- 框架
+you call library , framework call you
+you call library function,framework call your function
+框架是基于hook模式建立的
+
 - 系统运行时执行注册的hook函数
 ```mermaid
 graph LR
