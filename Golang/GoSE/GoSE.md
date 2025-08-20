@@ -33,6 +33,10 @@ i, err := f(3)
 - 简化type struct type interface 里不用加var和func 因为外边已经有type了
 
 - 包一般小写命名
+## 字节
+golang以字节为底层很多都得转成底层[]byte进行操作
+- json.marshal()求结构体字节,[]byte()强转为字节
+- sha256.sum([]byte)加密某个字节
 
 # math_refactor
 ```json
@@ -895,8 +899,8 @@ func main() {
 如果你需要的话，我可以帮你画一个 **Go 异常处理流程图**，帮你更直观理解。你要我画吗？
 
 # 单元测试
-- _test.go->TestFunction->测试数据
-
+- _test.go->TestFunction(t *testing.T)->测试数据
+- TestFunction是hook函数供测试框架回调
 ## 1. Go 单元测试的基本规则
 
 在 Go 里，单元测试遵循以下约定（标准库 `testing`）：
@@ -1669,6 +1673,75 @@ b, _ := strconv.ParseBool("true")
 ### 运算
 z:=big.newint(0) z:=&big.Int{} 
 z.Add(x,y) z=x+y 内存直接覆盖到z性能更优
+
+
+# 并发编程
+## goroutine
+- go func : 给这个函数栈分配一个线程
+
+## channel
+
+## select
+- 阻塞协程只到通道有货或者都无执行default
+```go
+select{
+    case tmp:=<-ch1:
+        //...
+    case <-ch2:
+        //...
+    default:
+        //通道皆无货执行
+}
+```
+- 搭配context实现协程取消
+```go
+{
+    go task1
+
+    go task2
+
+    go task3
+
+    select{
+        case: <-context.Done()
+            logger.Error("time out",
+            zap.Err(errors.NewError("time out")))
+            return 
+        case: <-ch1
+
+        case: <-ch2
+
+        case: <-ch3
+    }
+}
+```
+
+```go
+func handler(w http.ResponseWriter, r *http.Request) {
+    // 创建一个 2 秒的超时 Context
+    这些语句时间约等于0s
+    ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
+    defer cancel()
+
+    resultCh := make(chan string, 1)
+
+    //主要耗时任务开另一个协程运行
+    go func() {
+        // 模拟耗时操作（比如访问数据库/外部服务）
+        time.Sleep(3 * time.Second)
+        resultCh <- "done"
+    }()
+    //
+    select {
+    case res := <-resultCh:
+        fmt.Fprintln(w, "result:", res)
+    case <-ctx.Done():
+        http.Error(w, "request timeout", http.StatusGatewayTimeout)
+    }
+}
+
+```
+
 
 # 网络编程
 
