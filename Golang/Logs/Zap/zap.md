@@ -23,7 +23,21 @@ func InitLogger() {
 }
 
 ```
-
+- 日志格式
+级别+msg+jsong字段值
+``` go
+if err != nil {
+        logger.Error(
+            "Error fetching url..",
+            zap.String("url", url),
+            zap.Error(err))
+    } else {
+        logger.Info("Success..",
+            zap.String("statusCode", resp.Status),
+            zap.String("url", url))
+        resp.Body.Close()
+    }
+```
 # Logger
 通过调用zap.NewProduction()/zap.NewDevelopment()或者zap.Example()创建一个Logger。
 上面的每一个函数都将创建一个logger。唯一的区别在于它将记录的信息不同。例如production logger默认记录调用函数信息、日期和时间等。

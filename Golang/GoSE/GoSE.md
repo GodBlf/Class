@@ -138,6 +138,13 @@ var (
 - math input and output stack operate and return
 
 ## 函数类型
+func fabonacci(n int) *big.Int{}  func(n int) *big.Int  func fabonacci(n int) (ans big.Int,err error){}
+其中n和int对应 fabonacci和*big.Int对应
+n和int对应 func类型和*big.Int对应
+多返回值用于标记返回方便return
+- 应该参数写名称和类型 返回值不写名称因为名称就是函数名称
+- 多返回值是给error准备的
+
 - go中函数是一个类型
 func(int, int) (int, int) or func(a,b int) (x,y int)
 函数类型声明定义确保有input和output即可
@@ -1682,6 +1689,7 @@ z.Add(x,y) z=x+y 内存直接覆盖到z性能更优
 ## channel
 
 ## select
+- ifelse变体 variable state choose
 - 阻塞协程只到通道有货或者都无执行default
 ```go
 select{

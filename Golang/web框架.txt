@@ -1,5 +1,5 @@
-web框架:
- gin+gorm gofram iris 
+web框架
+ gin gorm gofram iris wire
 
 API:
 RestfulAPI Swagger OpenAPI
@@ -29,3 +29,6 @@ RestfulAPI Swagger OpenAPI
  
 性能调优和调试工具:
 （pprof, race detector）
+
+后端:
+gin gorm wire viper zap testify go-redis

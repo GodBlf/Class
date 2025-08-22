@@ -1,0 +1,13 @@
+context 上下文
+persistent 持久
+lookup 查找
+convey 调查
+count计数
+timestamp ts
+crypto 密码
+delimiters 分隔符
+# gin
+default默认
+param 参数
+query 询问
+postform post表格
