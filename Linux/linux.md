@@ -206,3 +206,60 @@ i 或 a 或 o
 ---
 
 要不要我给你画一张**网络拓扑图示意图**（ASCII字符图或文字说明）来直观理解这三种模式？
+
+
+# redis
+
+## 配置systemctl
+BV1rV411M7eU
+
+
+[Unit]
+Description=redis-server
+After=network.target
+[Service]
+Type=forking
+ExecStart=/usr/local/bin/redis-server /usr/local/src/redis-6.2.10/redis.conf
+PrivateTmp=true
+[Install]
+WantedBy=multi-user.target
+
+systemctl daemon-reload
+
+systemctl start/stop/restart/status  redis
+
+## cli
+redis-cli -h ip -p端口 -a密码
+AUTH 密码 校验密码
+
+- help 命令查看命令用法
+
+- keys 查找键
+- del 删除键
+- exists 判断键是否存在
+- expire 设置键的多少秒后死亡
+- ttl  查看键寿命 -1永久不死 -2死了 
+
+- set 添加键值对
+- mset 批量添加键值对
+- incr 自增1
+- incrby 自增自定义步长可以用负数自减法
+
+- setnx 存在不在创建
+- setex 组合命令set+expire
+
+
+
+## datagrip图形化界面
+- 配置redis数据库 linux ip addr地址 和密码显示16个库即可
+
+
+## redis数据结构
+
+### string
+
+### 
+
+
+
+
