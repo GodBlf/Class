@@ -1,6 +1,6 @@
 ---
 {
-    "dependences":"class/java/java_se"
+    "dependency":"class/java/java_se"
 }
 ---
 # goの简化
