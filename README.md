@@ -46,10 +46,10 @@ D(GithubProjects/README)-->B
 ```md 
 ---
 {
-    "dependences":["class/games/cheatengine","class/web"]
+    "dependency":["class/games/cheatengine","class/web"]
 }
 ---
-
+dependency取自依赖注入
 # 标题
 ...
 
