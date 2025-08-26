@@ -1,3 +1,8 @@
+---
+{
+    "dependences":"class/java/java_se"
+}
+---
 # goの简化
 ```json
 {
