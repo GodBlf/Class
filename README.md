@@ -39,6 +39,23 @@ D(GithubProjects/README)-->B
 ```
 
 # 格式导论
+
+## frontmatter
+- 借用markdown文档的frontatter功能实现依赖注入
+- e.g.
+```md 
+---
+{
+    "dependences":["class/games/cheatengine","class/web"]
+}
+---
+
+# 标题
+...
+
+```
+
+
 ## json
 - 每一部分开头写一个json来作为导论
 - "重要内容":"辅助记忆的内容"//注释
