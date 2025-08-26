@@ -1,7 +1,7 @@
 context 上下文
 persistent 持久
 lookup 查找
-convey 调查
+convey 表达
 count计数
 timestamp ts
 crypto 密码
@@ -11,3 +11,5 @@ default默认
 param 参数
 query 询问
 postform post表格
+process status进程状态
+bash猛烈敲击 命令行

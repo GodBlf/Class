@@ -35,6 +35,10 @@ tab tab 提示
 ↑↓曾经用过的
 ctrl+l clear 清屏
 ctlr+c 退出
+## ip
+- ip addr
+192.168.100.128/24 这里24代表前24位就是前3大位不能变进最后一位可以变动
+
 ## ls
 - ls -a [dir]
 - ls -l [dir]
@@ -148,6 +152,16 @@ i 或 a 或 o
 - 注意重启/etc/profile 
 
 # 防火墙
+#开发防火墙的3306端口号
+firewall-cmd --zone=public --add-port=3306/tcp --permanent
+
+#重新加载
+firewall-cmd --reload
+
+#查看开放的端口号
+firewall-cmd --zone=public --list-ports
+#关闭防火墙
+systemctl stop firewalld
 
 # 虚拟机网络链接模式
 好的，我们来详细讲解一下 **VMware 虚拟机中的三种常见网络连接模式**，它们分别是 **仅主机模式 (Host-Only)**、**NAT 模式 (Network Address Translation)** 和 **桥接模式 (Bridged)**。
@@ -207,6 +221,19 @@ i 或 a 或 o
 
 要不要我给你画一张**网络拓扑图示意图**（ASCII字符图或文字说明）来直观理解这三种模式？
 
+# mysql
+- mysql -h 192.168.100.128 -P3306 -uxxh -pasd456
+- 用nat端口映射将localhost 3307映射到linux的3306
+- 创建任意主机的root出现bug,采用创建xxh用户来debug 
+```sql
+CREATE USER 'xxh'@'%' IDENTIFIED BY 'asd456';
+
+GRANT ALL PRIVILEGES ON *.* TO 'xxh'@'%';
+
+FLUSH PRIVILEGES;
+```
+
+
 
 # redis
 
@@ -254,11 +281,7 @@ AUTH 密码 校验密码
 - 配置redis数据库 linux ip addr地址 和密码显示16个库即可
 
 
-## redis数据结构
 
-### string
-
-### 
 
 
 
