@@ -31,7 +31,7 @@
 
 ## 数据结构
 - 所有数据结构底层都是连续结构(数组),跳转结构(指针链表)拼出来的
-
+- 理论(数组,树,图)->底层(连续,跳转)->应用(slice,map,set,arraylist)
 
 # 二进制和位运算
 ```json
@@ -317,13 +317,15 @@ public class Main{
 
 
 ---
+
 # 基础数据结构
 
 # 链表
 ```json
 {
     "链表构造模型":"sentry memo_pointer new_container",//memo_pointer记忆尾节点
-    "指针技巧":"memo_pointer no-backtracking_pointer"
+    "指针技巧":"memo_pointer no-backtracking_pointer",
+    "快慢指针":"no-backtracking_pointer"
 }
 ```
 ## 函数参数
@@ -497,7 +499,7 @@ class Solution {
 ```
 
 ### [删除倒数第n个指针leetcode](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/)
-- no-backtracking_pointer 设置不回退指针的距离差
+- 快慢指针 no-backtracking_pointer 设置不回退指针的距离差
 ```java
 class Solution {
     public ListNode removeNthFromEnd(ListNode head, int n) {
@@ -522,11 +524,428 @@ class Solution {
 ```
 
 # 队列和栈
+- 简简单单的
 
+## 习题
+### [栈模拟队列leetcode](https://leetcode.cn/problems/implement-queue-using-stacks/)
+- 两个栈循环
+```java
+
+class MyQueue {
+    ArrayDeque<Integer> in=new ArrayDeque<>();
+    ArrayDeque<Integer> out=new ArrayDeque<>();
+    public MyQueue() {
+
+    }
+    //将in栈元素全部倒入out栈
+    public void dao(){
+        while(true){
+            if(in.isEmpty()){
+                break;
+            }
+            Integer pop = in.pop();
+            out.push(pop);
+        }
+    }
+
+    public void push(int x) {
+        in.push(x);
+    }
+
+    public int pop() {
+        if(out.isEmpty()){
+            dao();
+        }
+        return out.pop();
+    }
+
+    public int peek() {
+        if(out.isEmpty()){
+            dao();
+        }
+        return out.peek();
+    }
+
+    public boolean empty() {
+        if(in.isEmpty() && out.isEmpty()) return true;
+        return false;
+    }
+}
+
+```
+
+### [队列模拟栈leetcode](https://leetcode.cn/problems/implement-stack-using-queues/)
+- 一个队列循环
+```java
+	class MyStack {
+
+		Queue<Integer> queue;
+
+		public MyStack() {
+			queue = new LinkedList<Integer>();
+		}
+
+		// O(n)
+		public void push(int x) {
+			int n = queue.size();
+			queue.offer(x);
+            //记录前边几个元素循环加入末尾
+			for (int i = 0; i < n; i++) {
+				queue.offer(queue.poll());
+			}
+		}
+
+		public int pop() {
+			return queue.poll();
+		}
+
+		public int top() {
+			return queue.peek();
+		}
+
+		public boolean empty() {
+			return queue.isEmpty();
+		}
+
+	}
+```
+
+### [最小栈leetcode](https://leetcode.cn/problems/min-stack/)
+```json
+{
+    "记忆栈":"memo_pointer"//最小栈的每个元素记忆原栈到栈底的最小值
+}
+```
+```java
+class MinStack1 {
+		public Stack<Integer> data;
+		public Stack<Integer> min;
+
+		public MinStack1() {
+			data = new Stack<Integer>();
+			min = new Stack<Integer>();
+		}
+
+		public void push(int val) {
+			data.push(val);
+			if (min.isEmpty() || val <= min.peek()) {
+				min.push(val);
+			} else { // !min.isEmpty() && val > min.peek()
+				min.push(min.peek());
+			}
+		}
+
+		public void pop() {
+			data.pop();
+			min.pop();
+		}
+
+		public int top() {
+			return data.peek();
+		}
+
+		public int getMin() {
+			return min.peek();
+		}
+	}
+```
 
 # 二叉树
 
----
+## 递归实现遍历
+```json
+{
+    "递归树":"recur_tree"
+}
+```
+- 先序
+![alt text](image-5.png)
+红打印节点是leaf节点设计到root,branch节点的开栈前边实现先序打印
+
+- 中序
+红打印节点是leaf节点设计到root,branch节点的开栈中间实现中序打印
+
+- 后序
+红打印节点是leaf节点设计到root,branch节点的开栈后边实现后序打印
+```java
+public void dfs(treenode root){
+    if(root == null) return;
+    //先
+    dfs(root.left);
+    //中
+    dfs(root.right);
+    //后
+
+}
+```
+
+## 栈模拟递归
+
+```json
+{   
+    "栈模拟递归树":"recur_tree memo_pointer",
+    "虚返回":"lazy",//虚返回可以看作懒操作不用一步步返回
+}
+```
+### 先序
+- null是leaf节点
+- branch节点首次进入就会被记录到ans中经过两次就会弹走
+- 终止条件是p==null&&栈空了
+```java
+class Solution {
+    public List<Integer> preorderTraversal(TreeNode root) {
+            TreeNode p=root;
+        ArrayDeque<TreeNode> cache = new ArrayDeque<>();
+        List<Integer> ans = new ArrayList<>();
+        while(true){
+            //终止条件
+            if(cache.isEmpty() && p==null){
+                return ans;
+            }
+            if(p!=null){
+                ans.add(p.val);
+                cache.push(p);
+                p=p.left;
+            }else{
+                TreeNode pop = cache.pop();
+                //这里return的箭头是虚线,虚返回但是返回到了pop右孩子
+                p=pop.right;
+            }
+        }
+
+    }
+}
+
+```
+
+
+
+
+### 中序
+- null是leaf节点
+- branch节点经过两次就会弹走并记录到ans
+- 终止条件是p==null&&栈空了
+```java
+class Solution {
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> ans = new ArrayList<>();
+        ArrayDeque<TreeNode> cache = new ArrayDeque<>();
+        TreeNode p=root;
+        while (true){
+            //终止条件
+            if(cache.isEmpty() && p==null){
+                return ans;
+            }
+            //模拟recur_tree
+            if(p!=null){
+                cache.push(p);
+                p=p.left;
+            }else{
+                //这里return的箭头是虚线,虚返回但是返回到了pop右孩子
+                TreeNode tmp = cache.pop();
+                ans.add(tmp.val);
+                p=tmp.right;
+            }
+        }
+    }
+}
+```
+
+
+### 后序
+- 无敌将左神解法和中序遍历交给gpt5写出来的
+- null是leaf节点
+- 右节点memo||为空就弹出 并标记
+```java
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> ans = new ArrayList<>();
+        ArrayDeque<TreeNode> stack = new ArrayDeque<>();
+        TreeNode p = root, memo = null;
+        while (p != null || !stack.isEmpty()) {
+            if(p!=null){
+                stack.push(p);
+                p=p.left;
+            }else{
+                TreeNode peek = stack.peek();
+                //返回条件
+                if(peek.right==memo || peek.right==null){
+                    //懒操作
+                    TreeNode pop = stack.pop();
+                    ans.add(pop.val);
+                    memo=pop;
+                }else{
+                    //懒操作直到右节点满足条件p才真正转移过去
+                    p=peek.right;
+                }
+            }
+        }
+        return ans;
+    }
+
+```
+
+
+### 先中后序真正的模拟栈法
+- p代表函数栈凡是p到的节点state就++
+- leaf节点是null 循环终止条件是根节点
+- 后序遍历在state==3时候打印先序1 中序2
+```java
+class Solution {
+    public List postorderTraversal(TreeNode root) {
+        List<Integer> ans = new ArrayList<Integer>();
+        if (root == null) return ans;
+
+        ArrayDeque<Pair> cache = new ArrayDeque<>();
+        Pair pairroot = new Pair(root, 1);
+        Pair p=pairroot;
+        while(true){
+            if(p.node==root && p.state==3){
+                ans.add(root.val);
+                return ans;
+            }
+            if(p.node!=null){
+                if(p.state==1){
+                    cache.push(p);
+                    Pair tmp = new Pair(p.node.left, 1);
+                    p=tmp;
+                }else if(p.state==2){
+                    Pair tmp = new Pair(p.node.right, 1);
+                    p=tmp;
+                }else{
+                    Pair pop = cache.pop();
+                    ans.add(pop.node.val);
+                    p=cache.peek();
+                    p.state++;
+                }
+            }else{
+                Pair peek = cache.peek();
+                p=peek;
+                p.state++;
+            }
+        }
+    }
+
+    private static class Pair {
+        TreeNode node;
+        //记忆每个节点进入几次的状态
+        int state;
+        Pair(TreeNode n, int s) {
+            node = n;
+            state = s;
+        }
+    }
+}
+
+
+```
+
+
+
+## out/in 实现bfs dfs
+
+
+
+
+# io优化
+## 一般string int读入
+```java
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter out=new PrintWriter(new OutputStreamWriter(System.out));
+        StreamTokenizer st=new StreamTokenizer(reader);
+//st首指针在-1
+while (st.nextToken() != StreamTokenizer.TT_EOF) { // 文件没有结束就继续 EOF=-1
+			// n，二维数组的行
+			int n = (int) st.nval;
+			st.nextToken();
+			// m，二维数组的列
+			int m = (int) st.nval;
+			out.println(maxSumSubmatrix(mat, n, m));
+		}
+```
+## 读一行
+```java
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter out=new PrintWriter(new OutputStreamWriter(System.out));
+        StringTokenizer st=new StringTokenizer("");
+        st=new StringTokenizer(reader.readLine());
+```
+
+## 全局静态空间
+```java
+public class Code03_StaticSpace {
+
+	// 题目给定的行的最大数据量
+	public static int MAXN = 201;
+
+	// 题目给定的列的最大数据量
+	public static int MAXM = 201;
+
+	// 申请这么大的矩阵空间，一定够用了
+	// 静态的空间，不停复用
+	public static int[][] mat = new int[MAXN][MAXM];
+
+	// 需要的所有辅助空间也提前生成
+	// 静态的空间，不停复用
+	public static int[] arr = new int[MAXM];
+
+	// 当前测试数据行的数量是n
+	// 当前测试数据列的数量是m
+	// 这两个变量可以把代码运行的边界规定下来
+	public static int n, m;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StreamTokenizer in = new StreamTokenizer(br);
+		PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
+		while (in.nextToken() != StreamTokenizer.TT_EOF) {
+			n = (int) in.nval;
+			in.nextToken();
+			m = (int) in.nval;
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < m; j++) {
+					in.nextToken();
+					mat[i][j] = (int) in.nval;
+				}
+			}
+			out.println(maxSumSubmatrix());
+		}
+		out.flush();
+		br.close();
+		out.close();
+	}
+
+	// 求子矩阵的最大累加和，后面的课会讲
+	public static int maxSumSubmatrix() {
+		int max = Integer.MIN_VALUE;
+		for (int i = 0; i < n; i++) {
+			// 因为之前的过程可能用过辅助数组
+			// 为了让之前结果不干扰到这次运行，需要自己清空辅助数组需要用到的部分
+			Arrays.fill(arr, 0, m, 0);
+			for (int j = i; j < n; j++) {
+				for (int k = 0; k < m; k++) {
+					arr[k] += mat[j][k];
+				}
+				max = Math.max(max, maxSumSubarray());
+			}
+		}
+		return max;
+	}
+
+	// 求子数组的最大累加和，后面的课会讲
+	public static int maxSumSubarray() {
+		int max = Integer.MIN_VALUE;
+		int cur = 0;
+		for (int i = 0; i < m; i++) {
+			cur += arr[i];
+			max = Math.max(max, cur);
+			cur = cur < 0 ? 0 : cur;
+		}
+		return max;
+	}
+
+}
+
+```
 
 
 # 归并
