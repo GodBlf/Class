@@ -524,7 +524,6 @@ class Solution {
 ```
 
 # 队列和栈
-- 简简单单的
 
 ## 习题
 ### [栈模拟队列leetcode](https://leetcode.cn/problems/implement-queue-using-stacks/)
@@ -951,5 +950,83 @@ public class Code03_StaticSpace {
 # 归并
 
 # 快速排序
+
+
+# KMP
+```json
+{
+    "前缀函数π":"symmetry discrete_function"
+}
+```
+## 前缀函数π
+
+
+## symmetry discrete_function
+![alt text](image-6.png)
+![alt text](image-7.png)
+```go
+π(i-1)+1=π(i)
+ππ(i-1)+1=π(i)
+π^3(i-1)+1=π(i)
+...
+π^n(i-1)+1=π(i)
+//终止条件是π^n==0 || π^n(-1)+1==π(i)
+//以1为索引 以0就one_short
+```
+```java
+//以0为索引
+class Solution {
+    public int strStr(String haystack, String needle) {
+        int ans=needle.length();
+        StringBuilder sb = new StringBuilder();
+        sb.append(needle);sb.append('#');sb.append(haystack);
+        int[] pi = new int[sb.length()];
+        pi[0]=0;
+        for(int i=1;i<pi.length;i++){
+            //j是迭代指数 类似于int i while{ i++}末尾状态更新
+            int j=pi[i-1];
+            while(true){
+                if(j==0 || sb.charAt(i)==sb.charAt(j)) break;
+                j=pi[j-1];
+            }
+            if(sb.charAt(i)==sb.charAt(j)){
+                pi[i]=j+1;
+            }
+            if(pi[i]==ans){
+                return i-2*ans;
+            }
+        }
+        return -1;
+    }
+}
+
+//以1为索引
+class Solution {
+    public int strStr(String haystack, String needle) {
+        int ans=needle.length();
+        StringBuilder sb = new StringBuilder();
+        sb.append(needle);sb.append('#');sb.append(haystack);
+        int[] pi = new int[sb.length()];
+        pi[0]=0;
+        for(int i=1;i<pi.length;i++){
+             //j是迭代指数 类似于int i while{ i++}末尾状态更新
+            int j=pi[i-1];
+            while(true){
+                if(j==0 || sb.charAt(i)==sb.charAt(j)) break;
+                j=pi[j-1];
+            }
+            if(sb.charAt(i)==sb.charAt(j)){
+                pi[i]=j+1;
+            }
+            if(pi[i]==ans){
+                return i-2*ans;
+            }
+        }
+        return -1;
+    }
+}
+```
+
+
 
 
