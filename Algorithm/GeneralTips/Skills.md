@@ -32,10 +32,19 @@ Skills->Algorithm ; Skills->JavaSE
 }
 ```
 
-## if else
+# if_else
+## state_enum
+- 在判断边界的时候通常有true false的状态组合,用二进制来考虑状态枚举问题
+用二进制考虑所有的状态枚举,写下所有的ifelse
+例如二叉树左右孩子的状态null或have 状态组合有11,10,00,01 2^2 4种状态
 - state divide and choose 变量状态的分划和选择,对象可以是变量,序偶等,例如a>b相当于(a,b)的state;选择某个状态就在假设某个状态成立下进行后续操作;注意合并逻辑
+## state_enum_set
+- 二叉树后序遍历将状态s分为左移 右移 弹出三个状态集合
+
+## state_filter e.g.
+- 因为状态的枚举太多了所以设计成filter结构减少枚举条件
 - state filter(Priority sequence) 建议设计成过滤器的结构,记得加continue return break等
-## filter e.g.
+
 - 归并排序
 - 合并链表
 if(cur1!=null){
@@ -71,6 +80,7 @@ if(cur1!=null){
 
 
 
+
 # Tree
 - 很多计算机底层都是树结构
 - 例如bfs 和 dfs 的queue stack实现,递归.递归树遍历;
@@ -78,8 +88,22 @@ if(cur1!=null){
 
 
 # recur_tree:
+```json
+{
+   "variable":"one of set",
+    "state":"variables'value" ,//一组变量具体取值的集合
+    "function":{
+        "math":"input and output",//数学函数映射定义 参数是变量的副本 stack in math
+        "stack":"operate and return when args'state"//底层函数栈,返回函数栈有值
+
+    }
+
+    //记忆:variable->state   function->math and stack->input output operate
+}
+```
+
 - 递归树
-![alt text](7113268cadc2876214b893736260c100.jpg)
+![alt text](7113268cadc2876214b893736260c100.jpg)![alt text](image-3.png)
 递归是对递归树的遍历
 
 ## Node
@@ -102,9 +126,16 @@ if(cur1!=null){
 - leaf和branch的区分就是开没开栈
 branch节点的结构和root节点的结构相同,且仅能够从root节点设计递归树的结构
 ## dfs遍历
+![alt text](image-2.png)
 递归是对递归树的遍历,采取包裹(dfs)式的遍历,遇到叶子节点就返回;
 具体例子可思考fabonacci 01背包 n皇后问题 全排列等
+## function
+- math:f(a,b) 解决a,b状态的问题构建math函数
+- stack:用函数栈模拟递归树
 
+## master公式
+
+## dustbin
 - 模板
 构建递归树 只能在顶层对root节点进行加入叶子节点来操作;
 ```c
@@ -180,6 +211,9 @@ while(true){
 while(!boundary case) 等价于 while if(boundary case) break;
 if() return  等价于  if else
 
+# Prune
+- 剪枝
+
 
 # PointerSkills
 NyMP  (no-backtracking sysmetry memo partition);
@@ -232,9 +266,11 @@ static void dfs(TreeNode node){
         }
 }
 ```
-
+- 最小栈记录栈的最小值
 
 ## partition_pointer/划分指针
+- 和memopointer的区别 memo自身有记忆的状态,partition仅划分区域,和flag的区别memo和数据结构本身相关,flag
+例如bool flag cout等与数据结构本身无关
 - partition pointer
 - 用指针划分区域 [] and () 闭区间划分和开区间划分
 ### 例子
@@ -269,6 +305,45 @@ out in
 - 节点in or out cache 时候标记为ture相应的 进入 或者拉出的时候判断是否需要continue
 - 将第一个节点压入(offer/push)cache来启动
 - 父节点拉出(poll/pop),符合要求的子节点进入(push/offer)cache再进行操作;
+
+# lazy
+- 懒操作
+1. 什么是懒操作？
+懒操作的核心思想是：把本应立即执行的操作延迟到真正需要的时候才去执行。
+
+这样做通常可以节省开销、减少重复计算，从而提升整体运行效率。
+
+2. 常见的应用场景
+线段树（Segment Tree）的懒标记 Lazy Propagation）
+
+在线段树中，经常需要对一个区间做批量的更新，比如给 [L, R] 区间加上一个值。
+如果直接更新，会递归访问很多节点，复杂度很高。
+使用懒操作，我们在访问到某个节点时，不立即更新其所有子节点，而是在该节点上加一个 "懒标记"（Lazy Tag）来记录还没传播下去的修改。
+只有在将来真正访问子节点或者需要下层信息时，才把修改传播下去。
+函数式编程中的惰性求值（Lazy Evaluation）
+
+- 二叉树的栈模拟后序递归遍历,返回的时候仅当memo没标记右节点且右节点不null才返回到右节点,否则不返回懒住栈一直弹出
+
+
+1. 为什么需要懒操作？
+减少重复工作：更新一个大区间时，不必立刻递归到所有子节点。
+提升效率：例如线段树大量区间修改场景，懒传播能把复杂度从 O(n) 降到 O(log n)。
+节省内存/计算量：惰性求值避免了不必要的中间结果计算。
+1. 一个直观类比
+假设有一个教室里的学生座位表：
+
+如果老师要求「给所有学生的成绩+5」，懒操作就是在教室门口挂个牌子写「进入这个班的成绩+5」，而不去一个个加。
+等到别人要查某个学生成绩时，才把牌子的+5计算进去并登记好。
+5. 懒操作需要注意的问题
+保证一致性：传播懒标记的时候要小心，否则可能导致查询结果错误。
+时机选择：并不是所有计算都适合懒处理，只有在「多次批量更新、少量查询」这种场景下收益比较大。
+✅ 总结：
+懒操作就是延迟执行、按需计算的思想。
+
+在数据结构（特别是线段树的区间操作）和函数式编程里尤为重要。它的本质是通过延迟计算来提高整体性能。
+
+要不要我给你画一个具体的例子（比如带懒标记的线段树区间加法的运行图解），这样更直观地展示懒操作是怎么工作的？
+
 
 # discrete_function
 ## 二分峰值(导函数介值定理)
@@ -328,9 +403,6 @@ int main(){
 ```
 
 
-# lazy
-只记录合适时机修改
-
 # l+r/2 经常写作 l+(r-l)>>1 防溢出
 
 # Math
@@ -345,7 +417,8 @@ int main(){
 - 基数 n [0,n-1]
 - 序数+1=基数 基数-1=序数 先有序数数轴(从0开始)再有基数所以序数+1
 
-## (G,*,e,-1)
+## (G,*,e,-1) 有序n元组 group_theory
+
 
 ### 数组索引
 arr[i] 数量为i+1 n个数的数组是[0,n-1]
@@ -499,7 +572,8 @@ public class MonotonicQueue {
 
 
 # flag
-- 标记变量
+- 标记变量 和memo_pointer的区别
+flag和数据结构无关 memo和数据结构相关
 - cnt flag carry等标记变量
 
 
