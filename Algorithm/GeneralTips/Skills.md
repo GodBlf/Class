@@ -78,7 +78,16 @@ if(cur1!=null){
 ```
 
 
-
+# while/for
+```json
+{
+    "variable":"state"
+}
+```
+- 每次迭代都是一个状态
+- e.g.
+fori  
+int i  while{... ;  i++} 末尾i状态变化
 
 
 # Tree
@@ -134,6 +143,13 @@ branch节点的结构和root节点的结构相同,且仅能够从root节点设�
 - stack:用函数栈模拟递归树
 
 ## master公式
+- T(N)=a*T(N/b)+O(N^c)
+- 符合这个公式的递归可以估计复杂度,仅能估计子状态规模相等的情况
+例如T(N)=2*T(N/2)+O(1) T(N)=2*T(N*2/3)+O(N) 
+    b. 如果log(b,a)  < c，复杂度为：O(n^c)
+    c. 如果log(b,a)  > c，复杂度为：O(n^log(b,a))
+    d. 如果log(b,a) == c，复杂度为：O(n^c * logn)
+    T(n) = 2*T(n/2) + O(n*logn)，时间复杂度是O(n * ((logn)的平方))，证明过程比较复杂，记住即可
 
 ## dustbin
 - 模板
@@ -344,6 +360,7 @@ out in
 
 要不要我给你画一个具体的例子（比如带懒标记的线段树区间加法的运行图解），这样更直观地展示懒操作是怎么工作的？
 
+# symmetry
 
 # discrete_function
 ## 二分峰值(导函数介值定理)
@@ -360,6 +377,14 @@ out in
 - 扫雷的外围一圈0;字符串""都起到辅助作用;
 - 链表哨兵节点指向头节点辅助作用
 - 常用sentry和new_container配合使用
+
+# flag
+- 标记变量 和memo_pointer的区别
+flag和数据结构无关 memo和数据结构相关
+- cnt flag carry等标记变量
+
+
+
 
 # new_container
 对某个对象进行操作的时候,最好把结果弄到一个new的对象上例如矩阵转置结果,new在一个新矩阵里否则原矩阵操作困难;
@@ -560,21 +585,11 @@ public class MonotonicQueue {
 # 善用三元运算符 ? :
 - 和+= -=等运算符
 
-# prune
-- 剪枝
-- Fabonacci递归树剪枝
-
 # 状态与回溯
 - 目前遇到的状态栈,int n ,
 - 基本数据类型因为是副本自动回溯
 - 引用数据类型手动回溯;
 
-
-
-# flag
-- 标记变量 和memo_pointer的区别
-flag和数据结构无关 memo和数据结构相关
-- cnt flag carry等标记变量
 
 
 
