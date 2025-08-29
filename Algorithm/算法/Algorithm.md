@@ -953,6 +953,8 @@ public class Code03_StaticSpace {
 
 
 # KMP
+https://www.bilibili.com/video/BV1Er421K7kF/
+https://oi-wiki.org/string/kmp/
 ```json
 {
     "前缀函数π":"symmetry discrete_function"
