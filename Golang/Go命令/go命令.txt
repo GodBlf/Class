@@ -16,3 +16,6 @@ go get -u github/.../@latest  go mod tidy
 -v: 打印编译时所涉及的包名。
 -ldflags "-s -w": 减小可执行文件大小，去除调试信息。
 -tags <tag-name>: 根据构建标签选择性地编译代码。
+
+# go install
+- 将库的脚手架下载到go env中的go path里方便快速生成脚手架代码

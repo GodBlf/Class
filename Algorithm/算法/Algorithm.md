@@ -499,6 +499,11 @@ class Solution {
 ```
 
 ### [删除倒数第n个指针leetcode](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/)
+```json
+{
+    "距离快慢指针":"fast-slow_pointer"
+}
+```
 - 快慢指针 no-backtracking_pointer 设置不回退指针的距离差
 ```java
 class Solution {
@@ -947,10 +952,385 @@ public class Code03_StaticSpace {
 ```
 
 
-# 归并
+# 归并(分治)
+```json
+{
+    "递归树":"recur_tree",
+    "merge":"no-backtracking_pointer",//这里merge的时候有一个简单的statefilter
+    "统计部分":"partition_pointer no-backtracking_pointer"//这里是开区间的划分指针,开区间更常见仅二分为了方便用闭区间
 
-# 快速排序
+}
+```
+- 原理：
+1）思考一个问题在大范围上的答案，是否等于，左部分的答案 + 右部分的答案 + 跨越左右产生的答案 //recur_tree state为区间范围
+2）计算“跨越左右产生的答案”时，如果加上左、右各自有序这个设定，会不会获得计算的便利性  //函数设计为return答案stack数组变有序,需要划分指针不回退指针实现
+3）如果以上两点都成立，那么该问题很可能被归并分治解决（话不说满，因为总有很毒的出题人）
+4）求解答案的过程中只需要加入归并排序的过程即可，因为要让左、右各自有序，来获得计算的便利性
 
+
+## 归并排序
+- 二分为两部分每一部分都有序再用辅助数组将两部分合成一个有序部分
+```java
+class Solution {
+    public int[] sortArray(int[] nums) {
+        dfs(nums,0,nums.length-1);
+        return nums;
+    }
+    //recur_tree
+    public void dfs(int[] arr,int l,int r){
+        if(l==r) return;
+        int m=(l+r)>>1;
+        dfs(arr,l,m);
+        dfs(arr,m+1,r);
+        merge(arr,l,m,r);
+    }
+
+    public void merge(int[] arr,int l,int m,int r){
+        int i=l;int j=m+1;
+        int[] tmp = new int[r + 1 - l];int k=0;
+        //i,j nobacktracking指针
+        while(i<=m && j<=r){
+            if(arr[i]<=arr[j]){
+                tmp[k++]=arr[i++];
+            }else{
+                tmp[k++]=arr[j++];
+            }
+        }
+        //state_filter
+        // 左侧指针、右侧指针，必有一个越界、另一个不越界
+        while(i<=m){
+            tmp[k++]=arr[i++];
+        }
+        while(j<=r){
+            tmp[k++]=arr[j++];
+        }
+        System.arraycopy(tmp,0,arr,l,r+1-l);
+    }
+}
+
+
+```
+### 时空复杂度
+	// 假设l...r一共n个数
+    //merge()操作额外复杂度是O(n)通过分析recurtree可以简易得出
+	// T(n) = 2 * T(n/2) + O(n)
+	// a = 2, b = 2, c = 1
+	// 根据master公式，时间复杂度O(n * logn)
+	// 空间复杂度O(n)
+
+## 习题
+### [小和问题nowcoder](https://www.nowcoder.com/practice/edfe05a1d45c4ea89101d936cac32469)
+```json
+{
+    "递归树":"recur_tree",
+    "merge排序":"no-backtracking_pointer",
+    "统计部分":"partition_pointer no-backtracking_pointer"//这里是开区间的划分指针,开区间更常见仅二分为了方便用闭区间
+}
+```
+```java
+import java.io.*;
+import java.util.Scanner;
+
+// 注意类名必须为 Main, 不要有任何 package xxx 信息
+public class Main {
+    public static int MAXN = 100001;
+
+    public static int[] arr = new int[MAXN];
+
+    public static int[] help = new int[MAXN];
+
+    public static int n;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StreamTokenizer in = new StreamTokenizer(br);
+        PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
+        while (in.nextToken() != StreamTokenizer.TT_EOF) {
+            n = (int) in.nval;
+            for (int i = 0; i < n; i++) {
+                in.nextToken();
+                arr[i] = (int) in.nval;
+            }
+            out.println(smallSum(0, n - 1));
+        }
+        out.flush();
+        out.close();
+    }
+
+    // 结果比较大，用int会溢出的，所以返回long类型
+    // 特别注意溢出这个点，笔试常见坑
+    // 返回arr[l...r]范围上，小和的累加和，同时请把arr[l..r]变有序
+    // 时间复杂度O(n * logn)
+    public static long smallSum(int l, int r) {
+        if (l == r) {
+            return 0;
+        }
+        int m = (l + r) / 2;
+        long tmp = smallSum(l, m) + smallSum(m + 1, r) + tongji(l, m, r);
+        merge(l, m, r);
+        return tmp;
+    }
+
+    // 统计部分
+    public static long tongji(int l, int m, int r) {
+        long ans = 0;
+        int sum = 0;
+        //i是开区间划分指针,sum记录区间状态
+        int i = l;
+        //j是nobacktrack指针寻找小和
+        for (int j = m + 1; j <= r; j++) {
+            //寻找右指针对应的区间
+            while (true) {
+                if (i > m) break;
+                if (arr[i] <= arr[j]) {
+                    sum += arr[i++];
+                } else {
+                    break;
+                }
+            }
+            ans += sum;
+        }
+        return ans;
+    }
+
+    // 返回跨左右产生的小和累加和，左侧有序、右侧有序，让左右两侧整体有序
+    // arr[l...m] arr[m+1...r]
+    public static void merge(int l, int m, int r) {
+        // 正常merge
+        int i = l;
+        int a = l;
+        int b = m + 1;
+        while (a <= m && b <= r) {
+            help[i++] = arr[a] <= arr[b] ? arr[a++] : arr[b++];
+        }
+        while (a <= m) {
+            help[i++] = arr[a++];
+        }
+        while (b <= r) {
+            help[i++] = arr[b++];
+        }
+        for (i = l; i <= r; i++) {
+            arr[i] = help[i];
+        }
+    }
+}
+```
+
+
+### [反转对数量leetcode](https://leetcode.cn/problems/reverse-pairs/)
+- 注意溢出风险
+- 和第一题几乎一模一样
+```json
+{
+    "递归树":"recur_tree",
+    "merge排序":"no-backtracking_pointer",
+    "统计部分":"partition_pointer no-backtracking_pointer"//这里是开区间的划分指针,开区间更常见仅二分为了方便用闭区间
+}
+```
+```java
+public class Solution {
+        public int reversePairs(int[] nums) {
+            int l=0;int r=nums.length-1;
+            return dfs(nums,l,r);
+        }
+        public static int dfs(int[] arr,int l,int r){
+            if(l==r){
+                return 0;
+            }
+            int m=(l+r)>>1;
+            int tmp=dfs(arr,l,m)+dfs(arr,m+1,r)+tongji(arr,l,m,r);
+            merge(arr,l,m,r);
+            return tmp;
+        }
+        public static int tongji(int[]arr,int l,int m,int r){
+            int i=l;int j=m+1;int sum=0;int ans=0;
+            for(i=l;i<=m;i++){
+                while(true){
+                    if(j>r) break;
+                    //注意溢出风险
+                    if((long) arr[i] > (long) arr[j] * 2){
+                        sum++;
+                        j++;
+                    }else{
+                        break;
+                    }
+                }
+                ans+=sum;
+            }
+            return ans;
+        }
+        public static void merge(int[]arr,int l,int m,int r){
+            int[] help = new int[r + 1 - l];
+            int i=l;int j=m+1;int k=0;
+            while(i<=m && j<=r){
+                if(arr[i]<=arr[j]){
+                    help[k++]=arr[i++];
+                }else{
+                    help[k++]=arr[j++];
+                }
+            }
+            while(i<=m){
+                help[k++]=arr[i++];
+            }
+            while(j<=r){
+                help[k++]=arr[j++];
+            }
+            System.arraycopy(help,0,arr,l,r+1-l);
+        }
+    }
+```
+
+# 随机快速(分治)
+```json
+{
+    "递归":"recur_tree",
+    "划分区域":"partition_pointer",//划分成< = >三个区域,注意着三个区域的开闭关系,<是) =是[) >是(
+    "边界判断技巧":"Boundary"
+}
+```
+## 随机快速排序
+- 划分指针分析
+典型的开闭结合划分指针
+i是<区域的右开区间和=区域的左[闭区间
+k是=区域的)右开区间
+j是>区域的左(开区间
+开区间都设计为指针的移动方向,因为设计成迭代头的形式方便迭代遍历
+这样设计一开始所有区间都没元素
+```java
+class Solution {
+        public int[] sortArray(int[] nums) {
+            dfs(nums,0,nums.length-1);
+            return nums;
+        }
+        public static void swap(int[] arr,int l,int r){
+            int tmp=arr[l];
+            arr[l]=arr[r];
+            arr[r]=tmp;
+        }
+        public static void dfs(int[]arr,int l,int r){
+            //boundary技巧
+            //注意这里的叶子节点为>= 因为划分指针如果在最右端会出现>的情况
+            if(l>=r){
+                return ;
+            }
+            int x=arr[(int)(Math.random()*(r-l+1))+l];
+            partition(arr,l,r,x);
+            // 为了防止底层的递归过程覆盖全局变量
+		    // 这里用临时变量记录first、last
+            //如果是golang直接返回两个值就可以
+            int left=i-1;
+            int right=j+1;
+            dfs(arr,l,left);
+            dfs(arr,right,r);
+        }
+        //java没多返回值用两个静态变量当划分指针
+        public static int i=0;
+        public static int j=0;
+        public static void partition(int[]arr,int l,int r,int x){
+            //< 和 >区域的划分指针 注意i也是=区域的左闭区间
+            i=l;j=r;
+            //k是=区域的)右开区间,这样设计一开始所有区间都没元素
+            int k=l;
+            while(true){
+                if(k>j){
+                    break;
+                }
+                if(arr[k]<x){
+                    //        i     k     j
+                    //1,2,3,4,5,5,5,4,4,...
+                    //k和=区域的左闭区间调换k++扩充=区域,i++扩充<区域
+                    swap(arr,i,k);
+                    k++;
+                    i++;
+                }else if(arr[k]==x){
+                    //=区域扩充
+                    k++;
+                }else{
+                    swap(arr,j,k);
+                    //k不变,因为右边调换过来的数还没检查过
+                    j--;
+                }
+            }
+        }
+    }
+```
+
+## 习题 
+### [第k小的数luogu](https://www.luogu.com.cn/problem/P1923)
+```java
+import java.io.*;
+import java.util.Scanner;
+
+// 注意类名必须为 Main, 不要有任何 package xxx 信息
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        StreamTokenizer in = new StreamTokenizer(reader);
+        PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
+        in.nextToken();
+        int n=(int)in.nval;
+        in.nextToken();
+        int k=(int)in.nval;
+        int[] arr = new int[n];
+        in.nextToken();
+        for (int i = 0; i < n; i++) {
+            arr[i]=(int)in.nval;
+            in.nextToken();
+        }
+        dfs(arr,0,arr.length-1,k);
+        out.println(ans);
+        out.flush();
+        out.close();
+
+    }
+    public static int i=0;
+    public static int j=0;
+    public static int ans=0;
+    public static void dfs(int[] arr,int l,int r,int k){
+        //注意这里的Boundary
+        if(l==r){
+            if(l==k) ans=arr[l];
+            return;
+        }if(l>r){
+            return; //k一定会出现在arr中所以这种情况直接返回
+        }
+        int x=(l+(int)(Math.random()*(r-l+1)));
+        partition(arr,l,r,x);
+        if(k>=i && k<=j){
+            ans=arr[i];
+            return ;
+        }
+        int left=i-1;
+        int right=j+1;
+        if(k<i){
+            dfs(arr,l,left,k);
+        }else{
+            dfs(arr,right,r,k);
+        }
+    }
+    public static void partition(int[] arr,int l,int r,int x){
+        i=l;j=r;int k=l;
+        while(k<=j){
+            if(arr[k]<x){
+                swap(arr,i,k);
+                i++;
+                k++;
+            }else if(arr[k]==x){
+                k++;
+            }else{
+                swap(arr,k,j);
+                j--;
+            }
+        }
+    }
+
+    public static void swap(int[] arr,int a,int b){
+        int tmp=arr[a];
+        arr[a]=arr[b];
+        arr[b]=tmp;
+    }
+}
+```
 
 # KMP
 https://www.bilibili.com/video/BV1Er421K7kF/

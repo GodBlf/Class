@@ -1,0 +1,6 @@
+# comment
+- 注释
+# json
+- json作为字符串表达结构体方便阅读和传递信息
+# level/rights
+- 级别和权限

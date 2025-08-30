@@ -1,0 +1,104 @@
+package main
+
+import (
+	"fmt"
+	"github.com/spf13/viper"
+	"log"
+	"os/exec"
+	"strings"
+	"syscall" // 用于 Windows 隐藏窗口
+	"time"
+)
+
+// x 是一个全局变量，表示检查间隔的秒数。
+// 你可以根据需要修改它的值。
+var x int // 默认每 5 秒检查一次
+
+const (
+	toDeskProcessName = "ToDesk.exe"           // 要监控的进程名称
+	toDeskPath        = `D:\todesk\ToDesk.exe` // ToDesk.exe 的完整路径
+)
+
+// init 函数在 main 函数之前运行，用于设置日志格式。
+func init() {
+	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile) // 设置日志输出日期、时间、文件名和行号
+
+}
+
+// isProcessRunning 检查指定名称的进程是否正在运行 (Windows)
+// 它通过执行 'tasklist' 命令并解析输出来实现。
+func isProcessRunning(processName string) bool {
+	// 构建 tasklist 命令，/nh 表示不显示列标题，/fi 是过滤器
+	cmd := exec.Command("tasklist", "/nh", "/fi", "imagename eq "+processName)
+
+	// 执行命令并捕获输出
+	output, err := cmd.Output()
+	if err != nil {
+		log.Printf("执行 tasklist 命令失败: %v。请确保 tasklist 可用且有权限。", err)
+		return false // 无法确定进程状态，假设不运行或出现错误
+	}
+
+	// 检查输出中是否包含进程名称
+	// 如果 tasklist 找到进程，其输出中会包含进程名称
+	return strings.Contains(string(output), processName)
+}
+
+// startProcess 启动指定路径的程序 (Windows)
+// 它会创建一个新的进程并隐藏其命令行窗口。
+func startProcess(processPath string) error {
+	// 创建一个新的命令，指定要执行的程序路径
+	cmd := exec.Command(processPath)
+
+	// 设置 SysProcAttr 以隐藏 Windows 命令行窗口
+	// 这使得 ToDesk 在后台启动，不会弹出黑色的控制台窗口
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+
+	// 启动进程
+	err := cmd.Start()
+	if err != nil {
+		return fmt.Errorf("启动进程 '%s' 失败: %v", processPath, err)
+	}
+	log.Printf("成功启动进程: %s (PID: %d)", processPath, cmd.Process.Pid)
+	return nil
+}
+
+func main() {
+	fmt.Printf("程序启动。\n")
+	fmt.Printf("将每隔 %d 秒检查一次 '%s' 进程。\n", x, toDeskProcessName)
+	fmt.Printf("如果 '%s' 未运行，将尝试从 '%s' 启动。\n", toDeskProcessName, toDeskPath)
+	fmt.Println("按 Ctrl+C 键可以退出程序。")
+	viper.SetDefault("time", 5) // 默认每 5 秒检查一次
+	// 2. 设置配置文件的名称和类型（不带扩展名）
+	viper.SetConfigName("config") // config.yaml, config.json 等
+	viper.SetConfigType("yaml")   // 如果文件没有扩展名，需要明确指定类型
+	// 3. 添加查找配置文件的路径
+	// . 表示当前程序运行的目录
+	// 你也可以添加其他路径，例如 viper.AddConfigPath("/etc/appname/")
+	viper.AddConfigPath(".")
+	// 4. 读取配置文件
+	err := viper.ReadInConfig()
+	if err != nil {
+		log.Printf(err.Error())
+	}
+	x = viper.GetInt("time")
+	// 无限循环，持续监控
+	for {
+		go monitor()
+		// 等待 x 秒后再次检查
+		time.Sleep(time.Duration(x) * time.Second)
+	}
+}
+
+func monitor() {
+	log.Printf("正在检查 '%s' 进程...", toDeskProcessName)
+
+	if !isProcessRunning(toDeskProcessName) {
+		log.Printf("检测到 '%s' 未运行，尝试启动...", toDeskProcessName)
+		err := startProcess(toDeskPath)
+		if err != nil {
+			log.Printf("启动 '%s' 失败: %v", toDeskProcessName, err)
+		}
+	} else {
+		log.Printf("'%s' 正在运行。", toDeskProcessName)
+	}
+}

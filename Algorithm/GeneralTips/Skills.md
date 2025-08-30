@@ -44,8 +44,8 @@ Skills->Algorithm ; Skills->JavaSE
 ## state_filter e.g.
 - 因为状态的枚举太多了所以设计成filter结构减少枚举条件
 - state filter(Priority sequence) 建议设计成过滤器的结构,记得加continue return break等
-
 - 归并排序
+
 - 合并链表
 if(cur1!=null){
 				pre.next=cur1;
@@ -77,6 +77,10 @@ if(cur1!=null){
 //4. 先考虑分支结构再考虑叶子结构和短路结构 来简化代码分支;
 ```
 
+# Boundary
+- 收纳很多边界判断的技巧
+- >= <= 优于==
+例如快排中叶子节点为 l>=r 防止l在右边界
 
 # while/for
 ```json
@@ -88,6 +92,16 @@ if(cur1!=null){
 - e.g.
 fori  
 int i  while{... ;  i++} 末尾i状态变化
+- 例如kmp里的前缀函数循环
+```go
+π(i-1)+1=π(i)
+ππ(i-1)+1=π(i)
+π^3(i-1)+1=π(i)
+...
+π^n(i-1)+1=π(i)
+//终止条件是π^n==0 || π^n(-1)+1==π(i)
+//以1为索引 以0就one_short
+```
 
 
 # Tree
@@ -232,12 +246,13 @@ if() return  等价于  if else
 
 
 # PointerSkills
-NyMP  (no-backtracking sysmetry memo partition);
+NMP  (no-backtracking memo partition);
 ## no-backtracking_pointer/不回退指针
 no backtracking pointer
 - 数组反转
 - 例如将数组排序,kmp算法等,A-Bproblem,滑动窗口,供暖器
-
+### order
+- 当需要两个指针不断循环的时候可以考虑排序然后改为no-backtracking指针
 ### 双指针统计(归并)
 将两部分排序
 n^2的统计通过排序变为n
@@ -251,7 +266,10 @@ n^2的统计通过排序变为n
 			ans += sum;
 		}
 ```
-## 对称加速指针
+
+### fast-slow_pointer
+- 快慢指针
+- 距离差,速度差,时间差构筑快慢指针
 
 ## memo_pointer/记忆指针
 - 设置sentry 划分一维数组 ;
@@ -285,10 +303,13 @@ static void dfs(TreeNode node){
 - 最小栈记录栈的最小值
 
 ## partition_pointer/划分指针
-- 和memopointer的区别 memo自身有记忆的状态,partition仅划分区域,和flag的区别memo和数据结构本身相关,flag
+- 和memopointer的区别 memo自身有记忆的状态,partition也可以有记忆区间状态,但是partition可以逐步扩充memo是瞬移,和flag的区别memo和数据结构本身相关,flag
 例如bool flag cout等与数据结构本身无关
 - partition pointer
-- 用指针划分区域 [] and () 闭区间划分和开区间划分
+用指针划分区域 [] and () 闭区间划分和开区间划分,开区间较为常见,仅二分用闭区间方便
+开区域优点是边界可以充当迭代器的头方便迭代
+- 开闭结合使用例如快排的三个区域
+
 ### 例子
 #### 三指针划分(快速)
 <的在a左边 大于的在b右边
@@ -505,9 +526,6 @@ ceil(a/b)=(a+b-1)/b;
 - 先设置一个limit表示数组的长度 limit=(0<<n)-1 方便后续移位操作 limit&tmp就能转到表示的数组长度上;
 - & 集合的与 乘法  | 集合或 有进位加法  ^ 集合补集 无进位加法 熟悉这些运算和性质方便操作 ~取反
 - 遍历状态的时候可以用brian算法提取最右侧的1 tmp&-tmp 适当对状态数组取反方便brian算法遍历;while(n!=0){int tmp=n&-n;n=(n^tmp)&limit;...}
-
-
-
 
 # 打表
 - 打表找规律

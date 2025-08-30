@@ -23,7 +23,14 @@ func InitLogger() {
 }
 
 ```
-- 日志格式
+- zap日志格式
+```json
+{
+	"级别":"level",
+	"json数据":"json",
+	"注释":"comment"
+}
+```
 级别+msg+jsong字段值
 ``` go
 if err != nil {
