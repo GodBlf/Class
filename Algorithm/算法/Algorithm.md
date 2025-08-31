@@ -33,67 +33,6 @@
 - 所有数据结构底层都是连续结构(数组),跳转结构(指针链表)拼出来的
 - 理论(数组,树,图)->底层(连续,跳转)->应用(slice,map,set,arraylist)
 
-# 二进制和位运算
-```json
-{
-    "运算符":"<< >> | & ^ ~ lowbit",//operator
-    "状态压缩":"(G,*,e,-1)"    //state_compress
-}
-```
-## 二进制设计
-- 以四位为例
-- 0000=0  1111+1=0000=0 所以 1111=-1 设计成开头一位1为负数0为整数
-0000~0111 表示0~2^3-1  1000~1111 表示 -2^3~-1
-## 1248泰勒级数
-- 泰勒级数 0101= 1*2^0+0*2^1+1*2^2;(1,2,4,8);
-- 非负数左右移动转换到十进制运算 <<n is *2^n ; >> is /2^n
-## 二进制与十进制十六进制
-- 4个一组  1011 0001=B1
-- 0x  0b 等字面常量
-
-## 运算
-### << 
-- 带符号左移 高位用符号填充;
-a<<n 二进制数左移n位(类比数组索引)
-- 十进制
-a<<n=a*2^n; 仅对非负数有效
-### >>
-- 带符号右移 高位用符号填充;
-a>>n 二进制数右移n位;
-- 十进制
-a>>n = a/2^n 整除 仅对非负数有效
-- >>>
-```cpp
-实现无符号右移
-int a = -8;
-unsigned int result = (unsigned int)a >> 2;  // 先转换为无符号，再右移
-```
-
-### |
-- 有进位加法 1011|0001=1011 
-### &
-- 乘法 1011&0001=0001;
-- n& 1<<i 可取出n二进制下第i位的数;
-- n&1 == 0 可以检查奇偶性
-### ^
-- 无进位相加  1011^0001=1010 
-- 满足交换结合律
-- n^n=0  n^0=n;
-- 补集 A包含于C  补集就是 C^A   a^b=c   a^b^b=c^b  a^0=c^b a=c^b;
-### ~
-- -号为 -a=~a+1 
-- 注意1000取反加一还是1000不能表示为整数 -256 没有 对应的正数因为最大到255 所以int_min 取绝对值还是自己
-### + -
-- 数学上的加减
-- -:~n+1
-
-### lowbit(brian算法)
-- n&(-n)=n&(~n+1) 取出二进制数最右侧的1  01010100->10101011->1010100->00000100 
-
-## 抽象代数(状态压缩)
-(G,*,e,-1) 有序四元组
-
-
 # 对数器
 ```json
 
@@ -323,7 +262,7 @@ public class Main{
 # 链表
 ```json
 {
-    "链表构造模型":"sentry memo_pointer new_container",//memo_pointer记忆尾节点
+    "链表构造模型":"sentry memo_pointer container.new_container",//memo_pointer记忆尾节点
     "指针技巧":"memo_pointer no-backtracking_pointer",
     "快慢指针":"no-backtracking_pointer"
 }
@@ -847,6 +786,8 @@ class Solution {
 
 ## out/in 实现bfs dfs
 
+# 堆
+
 
 
 
@@ -987,6 +928,7 @@ class Solution {
 
     public void merge(int[] arr,int l,int m,int r){
         int i=l;int j=m+1;
+        //辅助数组container.help_container
         int[] tmp = new int[r + 1 - l];int k=0;
         //i,j nobacktracking指针
         while(i<=m && j<=r){
@@ -1185,7 +1127,7 @@ public class Solution {
 {
     "递归":"recur_tree",
     "划分区域":"partition_pointer",//划分成< = >三个区域,注意着三个区域的开闭关系,<是) =是[) >是(
-    "边界判断技巧":"Boundary"
+    "边界判断技巧":"boundary"
 }
 ```
 ## 随机快速排序
@@ -1226,6 +1168,7 @@ class Solution {
         //java没多返回值用两个静态变量当划分指针
         public static int i=0;
         public static int j=0;
+        //划分完=区域就排好序确定了
         public static void partition(int[]arr,int l,int r,int x){
             //< 和 >区域的划分指针 注意i也是=区域的左闭区间
             i=l;j=r;
@@ -1257,6 +1200,16 @@ class Solution {
 
 ## 习题 
 ### [第k小的数luogu](https://www.luogu.com.cn/problem/P1923)
+```json
+{
+    "递归树":"recur_tree",
+    "划分区域":"partition_pointer",
+    "剪枝为一叉树":"prune"
+}
+```
+- 参见随机快排划分完=区域已经排好序已经确定不再改变,据此来寻找剪枝寻找第k小的树
+- 这里递归树只走一个分支并不会遍历所有节点
+- 时间复杂度参考快排的期望计算,每次分一半n/2+n/4+n/8+...+1=log(n)等比数列
 ```java
 import java.io.*;
 import java.util.Scanner;
@@ -1286,14 +1239,13 @@ public class Main {
     public static int i=0;
     public static int j=0;
     public static int ans=0;
-    public static void dfs(int[] arr,int l,int r,int k){
+    public static int dfs(int[] arr,int l,int r,int k){
         //注意这里的Boundary
         if(l==r){
-            if(l==k) ans=arr[l];
-            return;
-        }if(l>r){
-            return; //k一定会出现在arr中所以这种情况直接返回
-        }
+            return arr[l];
+        }//if(l>r){
+           // return; //因为只走递归树的一个分支所以不会出现l>r的情况
+        //}
         int x=(l+(int)(Math.random()*(r-l+1)));
         partition(arr,l,r,x);
         if(k>=i && k<=j){
@@ -1303,9 +1255,9 @@ public class Main {
         int left=i-1;
         int right=j+1;
         if(k<i){
-            dfs(arr,l,left,k);
+           return dfs(arr,l,left,k);
         }else{
-            dfs(arr,right,r,k);
+           return dfs(arr,right,r,k);
         }
     }
     public static void partition(int[] arr,int l,int r,int x){
@@ -1331,6 +1283,212 @@ public class Main {
     }
 }
 ```
+- 迭代改写递归
+因为递归树是一叉树所以简易迭代改写
+```java
+	// 随机选择算法，时间复杂度O(n)
+	public static int findKthLargest(int[] nums, int k) {
+		return randomizedSelect(nums, nums.length - k);
+	}
+
+	// 如果arr排序的话，在i位置的数字是什么
+	public static int randomizedSelect(int[] arr, int i) {
+		int ans = 0;
+		for (int l = 0, r = arr.length - 1; l <= r;) {
+			// 随机这一下，常数时间比较大
+			// 但只有这一下随机，才能在概率上把时间复杂度收敛到O(n)
+			partition(arr, l, r, arr[l + (int) (Math.random() * (r - l + 1))]);
+			// 因为左右两侧只需要走一侧
+			// 所以不需要临时变量记录全局的first、last
+			// 直接用即可
+			if (i < first) {
+				r = first - 1;
+			} else if (i > last) {
+				l = last + 1;
+			} else {
+				ans = arr[i];
+				break;
+			}
+		}
+		return ans;
+	}
+
+	// 荷兰国旗问题
+	public static int first, last;
+
+	public static void partition(int[] arr, int l, int r, int x) {
+		first = l;
+		last = r;
+		int i = l;
+		while (i <= last) {
+			if (arr[i] == x) {
+				i++;
+			} else if (arr[i] < x) {
+				swap(arr, first++, i++);
+			} else {
+				swap(arr, i, last--);
+			}
+		}
+	}
+
+	public static void swap(int[] arr, int i, int j) {
+		int tmp = arr[i];
+		arr[i] = arr[j];
+		arr[j] = tmp;
+	}
+```
+
+### 时间复杂度分析
+- 随机过程用期望值,因为如果用最差情况概率会等于零
+- 差
+递归树二叉树退化为一叉树,时间复杂度O(N^2) 空间复杂度O(N)
+- 好
+递归树完全是二叉树,时间复杂度是O(NlogN) 空间复杂度是O(logN)
+master公式 T(n)=2T(n/2)+O(n)  时间复杂度是O(nlogn)
+空间复杂度:由二叉树可得叶子节点是n 树的层数为x  n=2^(x-1) x=log(n) 
+- 由于用期望来计算 综合时间复杂度为o(nlogn) 空间复杂度为o(logn)
+
+# 基数(桶)排序
+```json
+{   "桶":"hubs",//记忆要像桶这个模型倒入倒出起到集线器的作用
+    "前缀和函数优化桶":"discrete_function.Σ∫",
+    "桶内的次序":"order ordinal_cardinal"//因为前缀,所以排序的时候每个桶内先排大的,所以遍历原数组要从右往左遍历保证大的先排到
+}
+```
+## 计数排序
+- 投票问题
+适用于范围较小,准备数列,每个索引是一个桶,投哪个就++最后倒出来
+
+## 桶排序 前缀和函数,进制优化
+- 自然比较先比较个位排好再比较十位,每一位都进行一遍桶操作
+- ![alt text](image-8.png)
+## 十进制
+```java
+    public static void jishuSort(int[] arr){
+        int n=arr.length;
+        int[] tmp = new int[n];
+        int[] tong = new int[10];
+        int max=0;
+        for (int i : arr) {
+            max=Math.max(max,i);
+        }
+        int bits=(""+max).length();
+        int offset=1;
+        for(int i=1;i<=bits;i++){
+            Arrays.fill(tong,0);
+            for(int j=arr.length-1;j>=0;j--){
+                int tmpnumber=(arr[j]/offset)%10;
+                tong[tmpnumber]++;
+            }
+            for(int j=1;j<=9;j++){
+                tong[j]=tong[j]+tong[j-1];
+            }
+            for(int j=arr.length-1;j>=0;j--){
+                int tmpnumber=(arr[j]/offset)%10;
+                tmp[tong[tmpnumber]-1]=arr[j];
+                tong[tmpnumber]--;
+            }
+            System.arraycopy(tmp,0,arr,0,arr.length);
+
+            offset=offset*10;
+        }
+    }
+
+```
+
+```java
+
+
+// 基数排序
+// 测试链接 : https://leetcode.cn/problems/sort-an-array/
+public class Solution {
+
+	// 可以设置进制，不一定10进制，随你设置
+	public static int BASE = 10;
+
+	public static int MAXN = 50001;
+
+	public static int[] help = new int[MAXN];
+
+	public static int[] cnts = new int[BASE];
+
+	public static int[] sortArray(int[] arr) {
+		if (arr.length > 1) {
+			// 如果会溢出，那么要改用long类型数组来排序
+			int n = arr.length;
+			// 找到数组中的最小值
+			int min = arr[0];
+			for (int i = 1; i < n; i++) {
+				min = Math.min(min, arr[i]);
+			}
+			int max = 0;
+			for (int i = 0; i < n; i++) {
+				// 数组中的每个数字，减去数组中的最小值，就把arr转成了非负数组
+				arr[i] -= min;
+				// 记录数组中的最大值
+				max = Math.max(max, arr[i]);
+			}
+			// 根据最大值在BASE进制下的位数，决定基数排序做多少轮
+			radixSort(arr, n, bits(max));
+			// 数组中所有数都减去了最小值，所以最后不要忘了还原
+			for (int i = 0; i < n; i++) {
+				arr[i] += min;
+			}
+		}
+		return arr;
+	}
+
+	// 返回number在BASE进制下有几位
+	public static int bits(int number) {
+		int ans = 0;
+		while (number > 0) {
+			ans++;
+			number /= BASE;
+		}
+		return ans;
+	}
+
+	// 基数排序核心代码
+	// arr内要保证没有负数
+	// n是arr的长度
+	// bits是arr中最大值在BASE进制下有几位
+	public static void radixSort(int[] arr, int n, int bits) {
+		// 理解的时候可以假设BASE = 10
+		for (int offset = 1; bits > 0; offset *= BASE, bits--) {
+			Arrays.fill(cnts, 0);
+			for (int i = 0; i < n; i++) {
+				// 数字提取某一位的技巧
+                //桶数组
+				cnts[(arr[i] / offset) % BASE]++;
+			}
+			// 处理成前缀次数累加的形式
+			for (int i = 1; i < BASE; i++) {
+                //桶数组∑∫
+				cnts[i] = cnts[i] + cnts[i - 1];
+			}
+			for (int i = n - 1; i >= 0; i--) {
+				// 前缀数量分区的技巧
+				// 数字提取某一位的技巧
+				help[--cnts[(arr[i] / offset) % BASE]] = arr[i];
+			}
+			for (int i = 0; i < n; i++) {
+				arr[i] = help[i];
+			}
+		}
+	}
+
+}
+
+```
+
+
+
+
+
+
+
+
+
 
 # KMP
 https://www.bilibili.com/video/BV1Er421K7kF/

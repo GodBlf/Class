@@ -1,7 +1,8 @@
 [TOC]  
 # 格式
-大分类,学术上已经有的借用的专有名词,用java命名法 专属名词自己造的具体的某个工具用c++命名格式
-例如 Tree math_refactor discrete_function
+- 全部用c++命名方式,如果有个命名想用下边的子分类不想用大分类就中文命名
+例如 指针技巧下有memo_pointer
+- 可用.  discrete_fuction.∑∫
 
 # math_refactor公理
 - 借鉴数学的ZFC集合论公理体系
@@ -77,7 +78,7 @@ if(cur1!=null){
 //4. 先考虑分支结构再考虑叶子结构和短路结构 来简化代码分支;
 ```
 
-# Boundary
+# boundary
 - 收纳很多边界判断的技巧
 - >= <= 优于==
 例如快排中叶子节点为 l>=r 防止l在右边界
@@ -104,7 +105,7 @@ int i  while{... ;  i++} 末尾i状态变化
 ```
 
 
-# Tree
+# tree
 - 很多计算机底层都是树结构
 - 例如bfs 和 dfs 的queue stack实现,递归.递归树遍历;
 
@@ -241,11 +242,10 @@ while(true){
 while(!boundary case) 等价于 while if(boundary case) break;
 if() return  等价于  if else
 
-# Prune
+# prune
 - 剪枝
 
-
-# PointerSkills
+# 指针技巧
 NMP  (no-backtracking memo partition);
 ## no-backtracking_pointer/不回退指针
 no backtracking pointer
@@ -335,13 +335,6 @@ public static void partition2(int[] arr, int l, int r, int x) {
 
 
 
-# cache数据结构
-out in
-每次out / in都必须边界判断;
-- dfs bfs dijkstra都是 dad out child in的过程
-- 节点in or out cache 时候标记为ture相应的 进入 或者拉出的时候判断是否需要continue
-- 将第一个节点压入(offer/push)cache来启动
-- 父节点拉出(poll/pop),符合要求的子节点进入(push/offer)cache再进行操作;
 
 # lazy
 - 懒操作
@@ -382,32 +375,21 @@ out in
 要不要我给你画一个具体的例子（比如带懒标记的线段树区间加法的运行图解），这样更直观地展示懒操作是怎么工作的？
 
 # symmetry
+- kmp前缀函数Π
 
 # discrete_function
+## prefix
+
 ## 二分峰值(导函数介值定理)
 
-## 前缀和(积分)
+## Σ∫ 前缀和(积分) 
+- 桶排序优化桶
 
-## 差分(微分)
+## Δd 差分(微分)
 
-
-
-
-# sentry 
-哨兵:辅助作用
-- 扫雷的外围一圈0;字符串""都起到辅助作用;
-- 链表哨兵节点指向头节点辅助作用
-- 常用sentry和new_container配合使用
-
-# flag
-- 标记变量 和memo_pointer的区别
-flag和数据结构无关 memo和数据结构相关
-- cnt flag carry等标记变量
-
-
-
-
-# new_container
+# container
+- 为了算法实现构造的容器
+## new_container
 对某个对象进行操作的时候,最好把结果弄到一个new的对象上例如矩阵转置结果,new在一个新矩阵里否则原矩阵操作困难;
 ```c
 include<stdio.h>
@@ -448,10 +430,48 @@ int main(){
 
 ```
 
+## help_container
+- 例如归并排序中的辅助数组,先写入help再刷回原数组,两个数组交替使用
+- 基数排序也是这样
 
-# l+r/2 经常写作 l+(r-l)>>1 防溢出
+## cache
+- 快速去出放入
+out in
+每次out / in都必须边界判断;
+- dfs bfs dijkstra都是 dad out child in的过程
+- 节点in or out cache 时候标记为ture相应的 进入 或者拉出的时候判断是否需要continue
+- 将第一个节点压入(offer/push)cache来启动
+- 父节点拉出(poll/pop),符合要求的子节点进入(push/offer)cache再进行操作;
 
-# Math
+## hubs
+- 集线器
+- 在基数(桶)排序中用到了
+- 将元素收集到若干个桶中再统一分发
+
+
+
+# sentry 
+哨兵:辅助作用
+- 扫雷的外围一圈0;字符串""都起到辅助作用;
+- 链表哨兵节点指向头节点辅助作用
+- 常用sentry和new_container配合使用
+
+# flag
+- 标记变量 和memo_pointer的区别
+flag和数据结构无关 memo和数据结构相关
+- cnt flag carry等标记变量
+
+
+# tmp
+- 交换两个数需用道中间变量temp;
+- a=a^b;b=a^b;a=a^b;
+- int temp=a;
+		a=(int)((a+b)-abs(a-b))/2;
+		b=(int)((temp+b)+abs(temp-b))/2;
+
+
+
+# 数学相关
 
 ## order
 - 取自有序n元组 序偶
@@ -496,14 +516,21 @@ ceil(a/b)=(a+b-1)/b;
 - 数论微小量向上取整
 
 
-## 分析几何
+## 分析几何和向量
 ### 矩阵遍历
 - 嵌套循环的遍历顺序通过正交坐标变化的方向确定,最先移动的是内层循环
 ![alt text](image.png)
 - 矩阵乘法三层循环
 ![alt text](image-1.png)
 
-
+### 
+八皇后问题左斜线和右斜线冲突通过 y=x x+y=1的解析几何角度考虑下标映射;
+向量
+### 两数最值的向量表示
+```
+int max=(a+b+abs(a-b))/2;
+int min=(a+b-abs(a-b))/2;
+```
 
 ### 容差法
 - 判断中间结果double类型是不是整数
@@ -512,20 +539,75 @@ ceil(a/b)=(a+b-1)/b;
 - (a-Math.round(a)) < epsilon  ? true : 
 - 为什么要用round因为double运算可能出现15.99999这种;
 
+# binary_bit-operate
+- 二进制和位操作
+```json
+{
+    "运算符":"<< >> | & ^ ~ lowbit",//operator
+    "状态压缩":"(G,*,e,-1)"    //state_compress
+}
+```
+## 二进制设计
+- 以四位为例
+- 0000=0  1111+1=0000=0 所以 1111=-1 设计成开头一位1为负数0为整数
+0000~0111 表示0~2^3-1  1000~1111 表示 -2^3~-1
+## 1248-Taylor级数
+- 泰勒级数 0101= 1*2^0+0*2^1+1*2^2;(1,2,4,8);
+- 非负数左右移动转换到十进制运算 <<n is *2^n ; >> is /2^n
+## 二进制与十进制十六进制
+- 4个一组  1011 0001=B1
+- 0x  0b 等字面常量
 
-# 二进制
-## Tylor级数
-1011=1*2^0+1*2^1+0*2^2+1*2^3;
-##  1,2,4,8..
-1011=8+4*0+2+1;
-快速幂
+## 运算
+### << 
+- 带符号左移 高位用符号填充;
+a<<n 二进制数左移n位(类比数组索引)
+- 十进制
+a<<n=a*2^n; 仅对非负数有效
+### >>
+- 带符号右移 高位用符号填充;
+a>>n 二进制数右移n位;
+- 十进制
+a>>n = a/2^n 整除 仅对非负数有效
+- >>>
+```cpp
+实现无符号右移
+int a = -8;
+unsigned int result = (unsigned int)a >> 2;  // 先转换为无符号，再右移
+```
 
-# 状态压缩
+### |
+- 有进位加法 1011|0001=1011 
+### &
+- 乘法 1011&0001=0001;
+- n& 1<<i 可取出n二进制下第i位的数;
+- n&1 == 0 可以检查奇偶性
+### ^
+- 无进位相加  1011^0001=1010 
+- 满足交换结合律
+- n^n=0  n^0=n;
+- 补集 A包含于C  补集就是 C^A   a^b=c   a^b^b=c^b  a^0=c^b a=c^b;
+### ~
+- -号为 -a=~a+1 
+- 注意1000取反加一还是1000不能表示为整数 -256 没有 对应的正数因为最大到255 所以int_min 取绝对值还是自己
+### + -
+- 数学上的加减
+- -:~n+1
+
+### lowbit(brian算法)
+- n&(-n)=n&(~n+1) 取出二进制数最右侧的1  01010100->10101011->1010100->00000100 
+
+## (G,*,e,-1)抽象代数(状态压缩)
+- (G,*,e,-1) 有序四元组
 - 用二进制可以表示boolean数组
 用抽象代数思考就是 单位元,运算,brian遍历
 - 先设置一个limit表示数组的长度 limit=(0<<n)-1 方便后续移位操作 limit&tmp就能转到表示的数组长度上;
 - & 集合的与 乘法  | 集合或 有进位加法  ^ 集合补集 无进位加法 熟悉这些运算和性质方便操作 ~取反
 - 遍历状态的时候可以用brian算法提取最右侧的1 tmp&-tmp 适当对状态数组取反方便brian算法遍历;while(n!=0){int tmp=n&-n;n=(n^tmp)&limit;...}
+
+
+
+
 
 # 打表
 - 打表找规律
@@ -540,7 +622,7 @@ http://xmuoj.com/problem/LQ386
 ## 数组越界
 ## 溢出
 整数溢出,整数加法溢出中间值换成long;
-
+### l+r/2 经常写作 l+(r-l)>>1 防溢出
 
 ## 空指针
 - 对象是null却进行了方法;
@@ -549,8 +631,7 @@ http://xmuoj.com/problem/LQ386
 中间值可能为零然后除了
 
 
-# 合并逻辑
-- 减少if嵌套用逻辑量词&&||来合并逻辑
+
 # while和priority sequence
 先操作再说
 考虑一般情况再考虑边界情况
@@ -600,15 +681,8 @@ public class MonotonicQueue {
         }
 }
 ```
-# 善用三元运算符 ? :
+# 善用+= -= *= /=
 - 和+= -=等运算符
-
-# 状态与回溯
-- 目前遇到的状态栈,int n ,
-- 基本数据类型因为是副本自动回溯
-- 引用数据类型手动回溯;
-
-
 
 
 # 函数的静态参数
@@ -616,18 +690,6 @@ public class MonotonicQueue {
 
 # 数组可以考虑成 正半轴,元素索引的右边一位就是前边所有元素的个数,例如{4,3,5,567,4}索引(2,5) 右边一共3个元素 size-index 就是index前边所有元素的个数;
 
-
-
-
-
-
-
-# tmp
-- 交换两个数需用道中间变量temp;
-- a=a^b;b=a^b;a=a^b;
-- int temp=a;
-		a=(int)((a+b)-abs(a-b))/2;
-		b=(int)((temp+b)+abs(temp-b))/2;
 
 # arr[i++] 
 可以实现数组后缀添加;这就是迭代器Iterator的原理 循环完以后正好 为数组个数n;
@@ -934,17 +996,8 @@ int main() {
 
 
 
-# 几何
-八皇后问题左斜线和右斜线冲突通过 y=x x+y=1的解析几何角度考虑下标映射;
- 线性代数(向量)
 
-# 两数最值的向量表示
-```
-int max=(a+b+abs(a-b))/2;
-int min=(a+b-abs(a-b))/2;
-```
 
- 分析学(Function)
 # 数组映射(自然数集)
 ## 统计字符串字母出现次数
 ```
