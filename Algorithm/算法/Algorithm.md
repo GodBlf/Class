@@ -258,7 +258,9 @@ public class Main{
 ---
 
 # 基础数据结构
-
+- 基础数据结构以0初始索引
+- 高级数据结构以1初始索引
+- 根据ordinal_cardinal,树的深度是root延申的数量,高度是叶子节点眼神到root的数量
 # 链表
 ```json
 {
@@ -556,7 +558,7 @@ class MyQueue {
 ### [最小栈leetcode](https://leetcode.cn/problems/min-stack/)
 ```json
 {
-    "记忆栈":"memo_pointer"//最小栈的每个元素记忆原栈到栈底的最小值
+    "记忆栈":"memo_pointers pointers_container"//最小栈的每个元素记忆原栈到栈底的最小值,将记忆指针放入容器方便管理
 }
 ```
 ```java
@@ -787,6 +789,123 @@ class Solution {
 ## out/in 实现bfs dfs
 
 # 堆
+- 父节点 (i-1)/2
+- 子节点 i*2+1  i*2+2 以0为初始索引
+- 小根堆大根堆 Less()函数不同而已
+## 上滤 heapinsert
+```java
+	public static void heapInsert(int i) {
+        //终止boundary条件是<=
+        //(0-1)/2=0所以终止掉在0;
+		while (arr[i] > arr[(i - 1) / 2]) {
+			swap(i, (i - 1) / 2);
+			i = (i - 1) / 2;
+		}
+	}
+```
+- O(logn)
+## 下滤 heapify
+```java
+	// i位置的数，向下调整大根堆
+	// 当前堆的大小为size
+	public static void heapify(int i, int size) {
+		int l = i * 2 + 1;
+		while (l < size) {
+			int best = l + 1 < size && arr[l + 1] > arr[l] ? l + 1 : l;
+			best = arr[best] > arr[i] ? best : i;
+			if (best == i) {
+				break;
+			}
+			swap(best, i);
+			i = best;
+			l = i * 2 + 1;
+		}
+	}
+```
+- O(logn)
+
+## heapsort
+```java
+	// 从顶到底建立大根堆，O(n * logn)
+	// 依次弹出堆内最大值并排好序，O(n * logn)
+	// 整体时间复杂度O(n * logn)
+	public static void heapSort1() {
+		for (int i = 0; i < n; i++) {
+			heapInsert(i);
+		}
+		int size = n;
+		while (size > 1) {
+			swap(0, --size);
+			heapify(0, size);
+		}
+	}
+```
+- 从第一个元素的堆不断加入元素,构建一个大根堆,上滤
+- 再从堆顶不断取最大值和末尾交换排序,下滤
+
+```java
+	// 从底到顶建立大根堆，O(n)
+	// 依次弹出堆内最大值并排好序，O(n * logn)
+	// 整体时间复杂度O(n * logn)
+	public static void heapSort2() {
+		for (int i = n - 1; i >= 0; i--) {
+			heapify(i, n);
+		}
+		int size = n;
+		while (size > 1) {
+			swap(0, --size);
+			heapify(0, size);
+		}
+	}
+```
+- 从叶子节点到root进行下滤,每次左右孩子都是已经好的大根堆相当于root节点变化进行下滤操作
+- 时间复杂度是o(n)
+- 
+
+## discrete_function.∑积分 估计复杂度
+- log1+log2+...+logn  is  ∫logn = nlogn
+- 上滤下滤来回两轮
+
+## 常量倍增法估计复杂度
+- n的时候时间复杂度上界是O(nlogn)
+- kn(k取2)2n的时候下界是O(nlogn)
+- 由于时间复杂度不变所以是O(nlogn)
+
+
+## 习题
+### [合并k个有序链表leetcode](https://leetcode.cn/problems/merge-k-sorted-lists/)
+```json
+{
+    "优先级队列小根堆":"container.cache",
+    "不回退状态指针":"no-backtracking_pointer pointers_container"//进入cache充当不回退指针
+}
+```
+- 合并两个用不回退指针和链表模型
+- 注意进入cache充当不回退指针
+```java
+public class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        PriorityQueue<ListNode> cache = new PriorityQueue<>((a,b)->{return a.val-b.val;});
+        ListNode sentry = new ListNode(666, null);
+        ListNode pre=sentry;
+        for (ListNode i : lists) {
+            if(i!=null){
+                cache.offer(i);
+            }
+            
+        }
+        while(!cache.isEmpty()){
+            ListNode poll = cache.poll();
+            pre.next=poll;
+            pre=pre.next;
+            if(pre.next!=null){
+                cache.offer(pre.next);
+            }
+        }
+        return sentry.next;
+    }
+}
+```
 
 
 
@@ -913,7 +1032,9 @@ public class Code03_StaticSpace {
 - 二分为两部分每一部分都有序再用辅助数组将两部分合成一个有序部分
 ```java
 class Solution {
+    int[] help;
     public int[] sortArray(int[] nums) {
+        help = new int[nums.length];
         dfs(nums,0,nums.length-1);
         return nums;
     }
@@ -929,7 +1050,7 @@ class Solution {
     public void merge(int[] arr,int l,int m,int r){
         int i=l;int j=m+1;
         //辅助数组container.help_container
-        int[] tmp = new int[r + 1 - l];int k=0;
+        int k=l;
         //i,j nobacktracking指针
         while(i<=m && j<=r){
             if(arr[i]<=arr[j]){
@@ -946,7 +1067,7 @@ class Solution {
         while(j<=r){
             tmp[k++]=arr[j++];
         }
-        System.arraycopy(tmp,0,arr,l,r+1-l);
+        System.arraycopy(tmp,l,arr,l,r+1-l);
     }
 }
 
@@ -958,7 +1079,7 @@ class Solution {
 	// T(n) = 2 * T(n/2) + O(n)
 	// a = 2, b = 2, c = 1
 	// 根据master公式，时间复杂度O(n * logn)
-	// 空间复杂度O(n)
+	// 空间复杂度O(n)//用了一个n的辅助help数组
 
 ## 习题
 ### [小和问题nowcoder](https://www.nowcoder.com/practice/edfe05a1d45c4ea89101d936cac32469)
@@ -1071,7 +1192,9 @@ public class Main {
 ```
 ```java
 public class Solution {
+        int[] help;
         public int reversePairs(int[] nums) {
+            help = new int[nums.length];
             int l=0;int r=nums.length-1;
             return dfs(nums,l,r);
         }
@@ -1102,8 +1225,7 @@ public class Solution {
             return ans;
         }
         public static void merge(int[]arr,int l,int m,int r){
-            int[] help = new int[r + 1 - l];
-            int i=l;int j=m+1;int k=0;
+            int i=l;int j=m+1;int k=l;
             while(i<=m && j<=r){
                 if(arr[i]<=arr[j]){
                     help[k++]=arr[i++];
@@ -1117,7 +1239,7 @@ public class Solution {
             while(j<=r){
                 help[k++]=arr[j++];
             }
-            System.arraycopy(help,0,arr,l,r+1-l);
+            System.arraycopy(help,l,arr,l,r+1-l);
         }
     }
 ```
@@ -1131,6 +1253,10 @@ public class Solution {
 }
 ```
 ## 随机快速排序
+- dfs函数的()io是:
+整体排好序
+- stack是:
+先划分把=区域的元素确定好顺序,再dfs<和>区域
 - 划分指针分析
 典型的开闭结合划分指针
 i是<区域的右开区间和=区域的左[闭区间
@@ -1338,11 +1464,12 @@ public class Main {
 	}
 ```
 
-### 时间复杂度分析
+## 时间复杂度分析
 - 随机过程用期望值,因为如果用最差情况概率会等于零
 - 差
 递归树二叉树退化为一叉树,时间复杂度O(N^2) 空间复杂度O(N)
 - 好
+用等比数列来算 深度x 数量n 
 递归树完全是二叉树,时间复杂度是O(NlogN) 空间复杂度是O(logN)
 master公式 T(n)=2T(n/2)+O(n)  时间复杂度是O(nlogn)
 空间复杂度:由二叉树可得叶子节点是n 树的层数为x  n=2^(x-1) x=log(n) 
@@ -1482,8 +1609,21 @@ public class Solution {
 ```
 
 
-
-
+# 排序算法总结
+- 稳定性指元素间相对order不变
+- 归并快排用master公式估计时间复杂度
+- 主要算法时间、空间、稳定性总结
+                  时间               空间              稳定性
+SelectionSort    O(N^2)             O(1)               无
+BubbleSort       O(N^2)             O(1)               有
+InsertionSort    O(N^2)             O(1)               有
+MergeSort        O(N*logN)          O(N)               有
+QuickSort        O(N*logN)        O(logN)              无
+HeapSort         O(N*logN)          O(1)               无
+CountSort        O(N)               O(M)               有
+RadixSort        O(N)               O(M)               有
+- quicksort相比merge空间少了但是不稳定,守恒
+- quicksort通常常数时间比heapsort好,守恒
 
 
 

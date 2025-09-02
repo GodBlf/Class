@@ -12,16 +12,16 @@ Skills->Algorithm ; Skills->JavaSE
 # math_refactor
 ```json
 {
-    "set":"math", //具体参见/Class/Math/集合论
-    "variable":"one of set",
-    "state":"variables'value" ,//一组变量具体取值的集合
-    "function":{
-        "math":"input and output",//数学函数映射定义 参数是变量的副本 stack in math
-        "stack":"operate and return when args'state"//底层函数栈,返回函数栈有值
-
+    "set_theory":"math", //具体参见/Class/Math/集合论 取自vsios部分
+    "variable state":["middle of element and set","variables'value degrade to element" ],//variable确定确定的状态退化为集合中具体的元素
+    "func":{
+        "()io":"order_set input and output",//算法中的函数和集合论的orderset定义一样,但是,算法中更注重io,变量的输入输出和函数栈
+        "{}stack":"operate and return when args'state"//底层函数栈,返回函数栈有值
     }
-
-    //记忆:variable->state   function->math and stack->input output operate
+    //记忆算法可省略soo vsios仅取vsios部分,因为算法中集合常用变量代替
+    //例如背包问题确定研究位面,物品,数量,最小值三个set-element,再确定order,在确定orderset函数dp,在确定variable:i,j,min;最后确定()io和{}stack
+    //dp(i,j)输出为最小值,等价关系是min=dp(i,j)
+    //记忆:variable->state   function->()io and {}stack->input output operate return
 }
 ```
 ```json
@@ -114,15 +114,16 @@ int i  while{... ;  i++} 末尾i状态变化
 # recur_tree:
 ```json
 {
-   "variable":"one of set",
-    "state":"variables'value" ,//一组变量具体取值的集合
+    "set_theory":"math", //具体参见/Class/Math/集合论 skills的公理仅把集合论论的variable 和 function
+    "variable":"middle of element and set",
+    "state":"variables'value degrade to element" ,//variable确定确定的状态退化为集合中具体的元素
     "function":{
-        "math":"input and output",//数学函数映射定义 参数是变量的副本 stack in math
-        "stack":"operate and return when args'state"//底层函数栈,返回函数栈有值
+        "()io":"order_set input and output",//数学函数映射定义 参数是变量的副本 
+        "{}stack":"operate and return when args'state"//底层函数栈,返回函数栈有值
 
     }
 
-    //记忆:variable->state   function->math and stack->input output operate
+    //记忆:variable->state   function->()io and {}stack->input output operate return
 }
 ```
 
@@ -246,6 +247,16 @@ if() return  等价于  if else
 - 剪枝
 
 # 指针技巧
+## 普通迭代状态指针
+- 如果指针模拟状态遍历,那么指到哪里就立即更新他的状态
+例如,遍历树的时候指针指向root先把root设置为visited再while遍历
+- 下面的高级优化指针都是普通迭代状态指针的自己都继承他的特性
+### pointers_container
+- 指针过多收集到容器中方便管理
+- 这里指针可以是memo,普通状态指针等
+- 例如最小栈的memo指针容器;合并k个有序链表的小根堆不回退指针
+
+---
 NMP  (no-backtracking memo partition);
 ## no-backtracking_pointer/不回退指针
 no backtracking pointer
@@ -384,7 +395,8 @@ public static void partition2(int[] arr, int l, int r, int x) {
 
 ## Σ∫ 前缀和(积分) 
 - 桶排序优化桶
-
+- 1/1+1/2+1/3+...+1/n  is  ∫1/n=lnn的复杂度
+- log1+log2+...+logn  is  ∫logn = nlogn
 ## Δd 差分(微分)
 
 # container
@@ -434,6 +446,11 @@ int main(){
 - 例如归并排序中的辅助数组,先写入help再刷回原数组,两个数组交替使用
 - 基数排序也是这样
 
+### pointers_container
+- 指针过多收集到容器中方便管理
+- 这里指针可以是memo,普通状态指针等
+- 例如最小栈的memo指针容器;合并k个有序链表的小根堆不回退指针
+
 ## cache
 - 快速去出放入
 out in
@@ -477,6 +494,11 @@ flag和数据结构无关 memo和数据结构相关
 - 取自有序n元组 序偶
 - cmp函数 返回-1在左边1在右边
 - 全排列的规范序列
+
+### 上界下界常量倍增估计时间复杂度
+- n的时候时间复杂度上界是O(nlogn)
+- kn(k取2)2n的时候下界是O(nlogn)
+- 由于时间复杂度不变所以是O(nlogn)
 
 ## ordinal_cardinal
 - 序数 从0开始数轴

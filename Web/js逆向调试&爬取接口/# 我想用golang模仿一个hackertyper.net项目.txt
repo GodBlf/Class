@@ -1,0 +1,249 @@
+# 我想用golang模仿一个hackertyper.net项目
+# hackertyper.net项目描述
+监听键盘,按任意键盘就会打出kernel.txt这个代码文件里的代码
+## script.js
+$(
+	function(){
+		$( document ).keydown(
+			function ( event ) {
+				Typer.addText( event ); //Capture the keydown event and call the addText, this is executed on page load
+			}
+		);
+	}
+);
+
+var Typer={
+	text: null,
+	accessCountimer:null,
+	index:0, // current cursor position
+	speed:2, // speed of the Typer
+	file:"", //file, must be set
+	accessCount:0, //times alt is pressed for Access Granted
+	deniedCount:0, //times caps is pressed for Access Denied
+	init: function(){// initialize Hacker Typer
+		this.accessCountimer=setInterval(function(){Typer.updLstChr();},500); // initialize timer for blinking cursor
+		$.get(Typer.file,function(data){// get the text file
+			Typer.text=data;// save the textfile in Typer.text
+		});
+	},
+
+	content:function(){
+		return $("#console").html();// get console content
+	},
+
+	write:function(str){// append to console content
+		$("#console").append(str);
+		return false;
+	},
+
+	makeAccess:function(){//create Access Granted popUp
+		Typer.hidepop(); // hide all popups
+		Typer.accessCount=0; //reset count
+		var ddiv=$("<div id='gran'>").html(""); // create new blank div and id "gran"
+		ddiv.addClass("accessGranted"); // add class to the div
+		ddiv.html("<h1>ACCESS GRANTED</h1>"); // set content of div
+		$(document.body).prepend(ddiv); // prepend div to body
+		return false;
+	},
+	makeDenied:function(){//create Access Denied popUp
+		Typer.hidepop(); // hide all popups
+		Typer.deniedCount=0; //reset count
+		var ddiv=$("<div id='deni'>").html(""); // create new blank div and id "deni"
+		ddiv.addClass("accessDenied");// add class to the div
+		ddiv.html("<h1>ACCESS DENIED</h1>");// set content of div
+		$(document.body).prepend(ddiv);// prepend div to body
+		return false;
+	},
+
+	hidepop:function(){// remove all existing popups
+		$("#deni").remove();
+		$("#gran").remove();
+        Typer.accessCount=0; //reset access granted count
+        Typer.deniedCount=0; //reset access denied count
+	},
+
+	addText:function(key){//Main function to add the code
+	  var console=$("#console")
+		if(key.key==='Alt'){// key 18 = alt key
+			Typer.accessCount++; //increase counter
+			if(Typer.accessCount>=3){// if it's pressed 3 times
+				Typer.makeAccess(); // make access popup
+			}
+		}else if(key.key==='CapsLock'){// key 20 = caps lock
+			Typer.deniedCount++; // increase counter
+			if(Typer.deniedCount>=3){ // if it's pressed 3 times
+				Typer.makeDenied(); // make denied popup
+			}
+		}else if(key.key==='Esc' || key.key==='Escape'){ // key 27 = esc key
+			Typer.hidepop(); // hide all popups
+		}else if(Typer.text){ // otherwise if text is loaded
+			var cont=Typer.content(); // get the console content
+			if(cont.substring(cont.length-1,cont.length)==="|") // if the last char is the blinking cursor
+				console.html(console.html().substring(0,cont.length-1)); // remove it before adding the text
+			if(key.key!=='Backspace'){ // if key is not backspace
+				Typer.index+=Typer.speed;	// add to the index the speed
+			}else{
+				if(Typer.index>0) // else if index is not less than 0
+					Typer.index-=Typer.speed;//	remove speed for deleting text
+			}
+			var text=$("<div/>").text(Typer.text.substring(0,Typer.index)).html();// parse the text for stripping html entities
+			var rtn= new RegExp("\n", "g"); // newline regex
+			var rts= new RegExp("\\s", "g"); // whitespace regex
+			var rtt= new RegExp("\\t", "g"); // tab regex
+      console.html(text.replace(rtn,"<br/>").replace(rtt,"&nbsp;&nbsp;&nbsp;&nbsp;").replace(rts,"&nbsp;"));// replace newline chars with br, tabs with 4 space and blanks with an html blank
+			window.scrollBy(0,50); // scroll to make sure bottom is always visible
+		}
+		if ( key.preventDefault && key.key !== 'F11' ) { // prevent F11(fullscreen) from being blocked
+			key.preventDefault()
+		}
+		if(key.key !== 'F11'){ // otherwise prevent keys default behavior
+			key.returnValue = false;
+		}
+	},
+
+	updLstChr:function(){ // blinking cursor
+	  var console=$("#console")
+		var cont=this.content(); // get console
+		if(cont.substring(cont.length-1,cont.length)==="|") // if last char is the cursor
+			console.html(console.html().substring(0,cont.length-1)); // remove it
+		else
+			this.write("|"); // else write it
+	}
+}
+## style.css
+body {
+  background: #000000;
+  color: #00ff00;
+  font-family: monospace;
+}
+
+.accessGranted {
+  position: fixed;
+  top: 200px;
+  background: #333;
+  padding: 20px;
+  border: 1px solid #999;
+  width: 300px;
+  left: 50%;
+  margin-left: -150px;
+  text-align: center;
+}
+
+.accessDenied {
+  position: fixed;
+  top: 200px;
+  color: #f00;
+  background: #511;
+  padding: 20px;
+  border: 1px solid #f00;
+  width: 300px;
+  left: 50%;
+  margin-left: -150px;
+  text-align: center;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #000000;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #000000;
+}
+## index.html
+<!DOCTYPE HTML>
+<html lang="en">
+
+<!--
+*(c) Copyright 2011 Simone Masiero. Some Rights Reserved. 
+*This work is licensed under a Creative Commons Attribution-Noncommercial-Share Alike 3.0 License
+-->
+
+<head>
+    <meta charset="utf-8">
+    <title>Hacker Typer</title>
+    <link href="style.css" rel="stylesheet" type="text/css"/>
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id='console'></div>
+</body>
+
+<script src='script.js' type='text/javascript'></script>
+<script type='text/javascript'>
+    Typer.speed = 3;
+    Typer.file = 'kernel.txt';
+    Typer.init();
+</script>
+</html>
+
+## kernel.txtstruct group_info init_groups = { .usage = ATOMIC_INIT(2) };
+
+struct group_info *groups_alloc(int gidsetsize){
+
+	struct group_info *group_info;
+
+	int nblocks;
+
+	int i;
+
+
+
+	nblocks = (gidsetsize + NGROUPS_PER_BLOCK - 1) / NGROUPS_PER_BLOCK;
+
+	/* Make sure we always allocate at least one indirect block pointer */
+
+	nblocks = nblocks ? : 1;
+
+	group_info = kmalloc(sizeof(*group_info) + nblocks*sizeof(gid_t *), GFP_USER);
+
+	if (!group_info)
+
+		return NULL;
+
+	group_info->ngroups = gidsetsize;
+
+	group_info->nblocks = nblocks;
+
+	atomic_set(&group_info->usage, 1);
+
+
+
+	if (gidsetsize <= NGROUPS_SMALL)
+
+		group_info->blocks[0] = group_info->small_block;
+
+	else {
+
+		for (i = 0; i < nblocks; i++) {
+
+			gid_t *b;
+
+			b = (void *)__get_free_page(GFP_USER);
+
+			if (!b)
+
+				goto out_undo_partial_alloc;
+
+			group_info->blocks[i] = b;
+
+		}
+
+	}...一些代码
+
+# 我的模仿项目描述
+- 我在考虑用命令行实现hackertype.net这个网页端,你有更好的实现吗请分析并告诉我
+- 生成到一个main.go文件中

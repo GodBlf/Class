@@ -1,0 +1,53 @@
+# 我想用python模拟学校网站登录,学校网站post请求中密码被加密,请使用python requests session Selenium模拟浏览器等技术实现
+
+# session学校网站https://c-mobile.xmu.edu.cn/login,得到了一个加载页面的HTML。这是一个典型的单页应用(SPA)的情况，页面内容是通过JavaScript动态加载需要用到selenium,重定向到一个登录界面是cas单点登录,登录界面隐藏的标签有,加密盐: id="pwdEncryptSalt"
+execution:name="execution",post账户密码会进行cas操作验证ticket之类的然后再重定向到原网站
+
+# username是19020232202429
+password是130533Mc4416
+
+# 登录的post请求是{
+username=19020232202429&password=加密的密码&captcha=&_eventId=submit&lt=&cllt=userNameLogin&dllt=generalLogin&execution=隐藏的标签
+}
+
+# 加密算法
+- n是明文密码,f是加密盐在页面 id="pwdEncryptSalt"中
+function getAesString(n, f, c) {
+    f = f.replace(/(^\s+)|(\s+$)/g, "");
+    f = CryptoJS.enc.Utf8.parse(f);
+    c = CryptoJS.enc.Utf8.parse(c);
+    return CryptoJS.AES.encrypt(n, f, {
+        iv: c,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+    }).toString()
+}
+function encryptAES(n, f) {
+    return f ? getAesString(randomString(64) + n, f, randomString(16)) : n
+}
+function encryptPassword(n, f) {
+    try {
+        return encryptAES(n, f)
+    } catch (c) {}
+    return n
+}
+var $aes_chars = "ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678"
+  , aes_chars_len = $aes_chars.length;
+function randomString(n) {
+    var f = "";
+    for (i = 0; i < n; i++)
+        f += $aes_chars.charAt(Math.floor(Math.random() * aes_chars_len));
+    return f
+}
+function decryptPassword(n, f) {
+    var c = CryptoJS.enc.Utf8.parse(f)
+      , q = CryptoJS.enc.Utf8.parse(randomString(16))
+      , c = CryptoJS.AES.decrypt(n, c, {
+        iv: q,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+    });
+    return CryptoJS.enc.Utf8.stringify(c).substring(64)
+}
+;
+我可不可以做一个中间层自己再浏览器输入将服务端返回的cookie和会话等拦截到中间层以此来访问学校网站的内容
