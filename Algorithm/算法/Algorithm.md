@@ -909,7 +909,30 @@ public class Solution {
 
 
 
+### [数组整体累加和减半的操作次数leetcode](https://leetcode.cn/problems/minimum-operations-to-halve-array-sum/)
+```java
 
+class Solution {
+	public static int halveArray(int[] nums) {
+		// 大根堆
+		PriorityQueue<Double> heap = new PriorityQueue<>((a, b) -> b.compareTo(a));
+		double sum = 0;
+		for (int num : nums) {
+			heap.add((double) num);
+			sum += num;
+		}
+		// sum，整体累加和，-> 要减少的目标！
+		sum /= 2;
+		int ans = 0;
+		for (double minus = 0, cur; minus < sum; ans++, minus += cur) {
+			cur = heap.poll() / 2;
+			heap.add(cur);
+		}
+		return ans;
+	}
+}
+
+```
 # io优化
 ## 一般string int读入
 ```java
@@ -1253,7 +1276,7 @@ public class Solution {
 }
 ```
 ## 随机快速排序
-- dfs函数的()io是:
+- dfs函数的io是:
 整体排好序
 - stack是:
 先划分把=区域的元素确定好顺序,再dfs<和>区域
@@ -1625,17 +1648,45 @@ RadixSort        O(N)               O(M)               有
 - quicksort相比merge空间少了但是不稳定,守恒
 - quicksort通常常数时间比heapsort好,守恒
 
-
-
-
-
-
+# binary-bits_operate 题目
+## 异或题目
+- 1~10少了一个元素求这个元素
+准备两个集合一个是[1,10]另一个是少了的集合
+两个集合元素^  1^1^2^2^... 因为n^n=0 0^n=n 所以最后就剩下了缺失的那个数
+- 数组中一种数出现奇数次另一种出现偶数次直接全部异或不必多说
+- 黑白棋
+### [只出现一次的数字 III](https://leetcode.cn/problems/single-number-iii/)
+- 全部异或 剩下a^b
+- lowbit 确定a,b不同位某位一定为1 某位一定为0
+- 将这一位为1的跳过再全部异或起来最会肯定剩下a或b再a^b^x 确定另一个元素
+```java
+class Solution {
+    public int[] singleNumber(int[] nums) {
+        int e1=0;
+        for (int num : nums) {
+            e1=e1^num;
+        }
+        int lowbit=e1&(-e1);
+        int e2=0;
+        for (int num : nums) {
+            if((num&lowbit)==0){
+                e2=e2^num;
+            }
+        }
+        int[] ans = new int[2];
+        int e3=e2^e1;
+        ans[0]=e3;ans[1]=e2;
+        return ans;
+    }
+}
+```
 # KMP
 https://www.bilibili.com/video/BV1Er421K7kF/
 https://oi-wiki.org/string/kmp/
 ```json
 {
-    "前缀函数π":"symmetry discrete_function"
+    "前缀函数π":"symmetry discrete_function",
+    "π算子幂":"operator_pow"
 }
 ```
 ## 前缀函数π
@@ -1706,6 +1757,8 @@ class Solution {
     }
 }
 ```
+
+
 
 
 

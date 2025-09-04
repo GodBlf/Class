@@ -12,18 +12,27 @@ Skills->Algorithm ; Skills->JavaSE
 # math_refactor
 ```json
 {
-    "set_theory":"math", //具体参见/Class/Math/集合论 取自vsios部分
-    "variable state":["middle of element and set","variables'value degrade to element" ],//variable确定确定的状态退化为集合中具体的元素
-    "func":{
-        "()io":"order_set input and output",//算法中的函数和集合论的orderset定义一样,但是,算法中更注重io,变量的输入输出和函数栈
-        "{}stack":"operate and return when args'state"//底层函数栈,返回函数栈有值
+    "set_theory":"math", //具体参见/Class/Math/集合论 
+    "memory":"算法以计算机内存和集合论为基础",
+    "var state":["variable is one field of memory","state is the variables' value " ],//variable是计算机内存的一块区域,具体取值是state,系统多个变量取值组合也可是系统整体状态
+    "operator":{
+        "process_quantity":null,
+        "operator_evolve":null,
+        //f()整体是算子一个过程量,其他的是var内存量,f是命名标记
+        //算子是根据某种规则(rule)栈(计算机底层叫函数栈{})将()括号里输入的东西输出成规则对应的东西
+        //算子进化:operator -> orderset 算子生成order集合
+        //f()根据自定义的规则栈,f就是一个命名标记全部输出完毕后这个标记就是这个order_set的命名标记;这样就生成了一个order_set
+        //operator底层是一个变量记录io stack信息
+        "io":"input and output",//f(x)就是输入变量输出另一个变量,f(1) 输入一个变量状态(值)输出一个变量状态(值)
+        "stack":"rule operate and return when args'state"//规则,底层函数栈,返回函数栈有值
     }
-    //记忆算法可省略soo vsios仅取vsios部分,因为算法中集合常用变量代替
-    //例如背包问题确定研究位面,物品,数量,最小值三个set-element,再确定order,在确定orderset函数dp,在确定variable:i,j,min;最后确定()io和{}stack
-    //dp(i,j)输出为最小值,等价关系是min=dp(i,j)
-    //记忆:variable->state   function->()io and {}stack->input output operate return
+    ![alt text](image-4.png)
+
+    //记忆:var->state   operator->()io and {}stack->input output operate return
 }
 ```
+![alt text](image-5.png)
+
 ```json
 {
     "set":"",
@@ -112,20 +121,7 @@ int i  while{... ;  i++} 末尾i状态变化
 
 
 # recur_tree:
-```json
-{
-    "set_theory":"math", //具体参见/Class/Math/集合论 skills的公理仅把集合论论的variable 和 function
-    "variable":"middle of element and set",
-    "state":"variables'value degrade to element" ,//variable确定确定的状态退化为集合中具体的元素
-    "function":{
-        "()io":"order_set input and output",//数学函数映射定义 参数是变量的副本 
-        "{}stack":"operate and return when args'state"//底层函数栈,返回函数栈有值
-
-    }
-
-    //记忆:variable->state   function->()io and {}stack->input output operate return
-}
-```
+- 用到了算子的stack部分
 
 - 递归树
 ![alt text](7113268cadc2876214b893736260c100.jpg)![alt text](image-3.png)
@@ -389,6 +385,7 @@ public static void partition2(int[] arr, int l, int r, int x) {
 - kmp前缀函数Π
 
 # discrete_function
+- 将数组dp 当成一个算子;dp(索引) 输出一个值到数组索引对应的位置上,那么这个数组整体构成一个order_set
 ## prefix
 
 ## 二分峰值(导函数介值定理)
@@ -539,6 +536,15 @@ ceil(a/b)=(a+b-1)/b;
 
 
 ## 分析几何和向量
+### operator_pow
+- 算子的幂次复合 f(x) f(f(x)):f^2(x) ...
+可以用迭代的方式表示每个幂次算子的状态
+p=x int i=0 while(true){i++;p=f(p)} 根据算子的状态立即更新i的状态
+- kmp算法中的Π算子
+### Taylar级数
+Taylar公式就是将f算子从0幂加到n次幂
+x^5+2x^4+3x^3+4x^2+5x^1+6这个泰勒级数可以转化为以x为进制的123456
+
 ### 矩阵遍历
 - 嵌套循环的遍历顺序通过正交坐标变化的方向确定,最先移动的是内层循环
 ![alt text](image.png)
@@ -573,7 +579,7 @@ int min=(a+b-abs(a-b))/2;
 - 以四位为例
 - 0000=0  1111+1=0000=0 所以 1111=-1 设计成开头一位1为负数0为整数
 0000~0111 表示0~2^3-1  1000~1111 表示 -2^3~-1
-## 1248-Taylor级数
+## 1248-Taylar级数
 - 泰勒级数 0101= 1*2^0+0*2^1+1*2^2;(1,2,4,8);
 - 非负数左右移动转换到十进制运算 <<n is *2^n ; >> is /2^n
 ## 二进制与十进制十六进制
@@ -586,6 +592,11 @@ int min=(a+b-abs(a-b))/2;
 a<<n 二进制数左移n位(类比数组索引)
 - 十进制
 a<<n=a*2^n; 仅对非负数有效
+#### <<和泰勒级数Taylar
+- 左移和泰勒级数
+- x^5+2x^4+3x^3+4x^2+5x^1+6这个泰勒级数可以转化为以x为进制的123456
+然后从0开始左移构建 p=0 p=p<<1+1; p=p<<1+2;...
+参见horner算法
 ### >>
 - 带符号右移 高位用符号填充;
 a>>n 二进制数右移n位;
