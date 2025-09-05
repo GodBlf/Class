@@ -109,7 +109,10 @@ func (h *IntHeap) Push(x any){
 
 }
 ```
-
+### 重新赋值
+因为slice是引用指向底层数组所以涉及增删改操作的底层会开辟新数组,所以返回新的引用要重新赋值
+- append  slices.delete insert replace
+- map不需要重新赋值因为开始就开辟了一个很大的数组不需要开辟新数组
 
 
 
@@ -688,6 +691,19 @@ Go 语言的 `struct` 是构建复杂数据结构和实现面向对象风格编�
 - map contains
 - 错误处理
 
+# goto
+- 和java的循环标签类似
+```go
+for true{
+for true{
+    if...
+    goto loop
+}
+}
+loop:
+
+```
+
 # 类型转换
 Go语言中只有强制类型转换，没有隐式类型转换。该语法只能在两个类型之间支持相互转换的时候使用。
 
@@ -1092,6 +1108,11 @@ func (*h IntHeap) Push(x any) {
     *h=append(*h,x.(int))
 }
 ```
+### 重新赋值
+因为slice是引用指向底层数组所以涉及增删改操作的底层会开辟新数组,所以返回新的引用要重新赋值
+- append  slices.delete insert replace
+- map不需要重新赋值因为开始就开辟了一个很大的数组不需要开辟新数组
+
 ### slices包
 - len append
 - 增删改查

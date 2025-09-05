@@ -1,7 +1,8 @@
-# 我想用python模拟学校网站登录,学校网站post请求中密码被加密,请使用python requests session Selenium模拟浏览器等技术实现
+# 我想用python模拟学校网站登录,学校网站post请求中密码被加密,请使用python  session 模拟浏览器等技术实现
 
-# session学校网站https://c-mobile.xmu.edu.cn/login,得到了一个加载页面的HTML。这是一个典型的单页应用(SPA)的情况，页面内容是通过JavaScript动态加载需要用到selenium,重定向到一个登录界面是cas单点登录,登录界面隐藏的标签有,加密盐: id="pwdEncryptSalt"
-execution:name="execution",post账户密码会进行cas操作验证ticket之类的然后再重定向到原网站
+# session学校网站
+https://ids.xmu.edu.cn/authserver/login,得到了一个HTML。登录界面隐藏的标签有,加密盐: id="pwdEncryptSalt"
+execution:name="execution",这些是登录post请求和密码加密所需要的部分
 
 # username是19020232202429
 password是130533Mc4416
@@ -50,4 +51,4 @@ function decryptPassword(n, f) {
     return CryptoJS.enc.Utf8.stringify(c).substring(64)
 }
 ;
-我可不可以做一个中间层自己再浏览器输入将服务端返回的cookie和会话等拦截到中间层以此来访问学校网站的内容
+

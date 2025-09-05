@@ -31,7 +31,7 @@
 
 ## 数据结构
 - 所有数据结构底层都是连续结构(数组),跳转结构(指针链表)拼出来的
-- 理论(数组,树,图)->底层(连续,跳转)->应用(slice,map,set,arraylist)
+- 底层(连续,跳转)->理论(线性表,哈希表,树,图)
 
 # 对数器
 ```json
@@ -41,6 +41,108 @@
 - 单元测试
 - 和暴力解对拍
 - 打表找规律
+
+# io优化
+## 一般string int读入
+```java
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter out=new PrintWriter(new OutputStreamWriter(System.out));
+        StreamTokenizer st=new StreamTokenizer(reader);
+//st首指针在-1
+while (st.nextToken() != StreamTokenizer.TT_EOF) { // 文件没有结束就继续 EOF=-1
+			// n，二维数组的行
+			int n = (int) st.nval;
+			st.nextToken();
+			// m，二维数组的列
+			int m = (int) st.nval;
+			out.println(maxSumSubmatrix(mat, n, m));
+		}
+```
+## 读一行
+```java
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter out=new PrintWriter(new OutputStreamWriter(System.out));
+        StringTokenizer st=new StringTokenizer("");
+        st=new StringTokenizer(reader.readLine());
+```
+
+## 全局静态空间
+```java
+public class Code03_StaticSpace {
+
+	// 题目给定的行的最大数据量
+	public static int MAXN = 201;
+
+	// 题目给定的列的最大数据量
+	public static int MAXM = 201;
+
+	// 申请这么大的矩阵空间，一定够用了
+	// 静态的空间，不停复用
+	public static int[][] mat = new int[MAXN][MAXM];
+
+	// 需要的所有辅助空间也提前生成
+	// 静态的空间，不停复用
+	public static int[] arr = new int[MAXM];
+
+	// 当前测试数据行的数量是n
+	// 当前测试数据列的数量是m
+	// 这两个变量可以把代码运行的边界规定下来
+	public static int n, m;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StreamTokenizer in = new StreamTokenizer(br);
+		PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
+		while (in.nextToken() != StreamTokenizer.TT_EOF) {
+			n = (int) in.nval;
+			in.nextToken();
+			m = (int) in.nval;
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < m; j++) {
+					in.nextToken();
+					mat[i][j] = (int) in.nval;
+				}
+			}
+			out.println(maxSumSubmatrix());
+		}
+		out.flush();
+		br.close();
+		out.close();
+	}
+
+	// 求子矩阵的最大累加和，后面的课会讲
+	public static int maxSumSubmatrix() {
+		int max = Integer.MIN_VALUE;
+		for (int i = 0; i < n; i++) {
+			// 因为之前的过程可能用过辅助数组
+			// 为了让之前结果不干扰到这次运行，需要自己清空辅助数组需要用到的部分
+			Arrays.fill(arr, 0, m, 0);
+			for (int j = i; j < n; j++) {
+				for (int k = 0; k < m; k++) {
+					arr[k] += mat[j][k];
+				}
+				max = Math.max(max, maxSumSubarray());
+			}
+		}
+		return max;
+	}
+
+	// 求子数组的最大累加和，后面的课会讲
+	public static int maxSumSubarray() {
+		int max = Integer.MIN_VALUE;
+		int cur = 0;
+		for (int i = 0; i < m; i++) {
+			cur += arr[i];
+			max = Math.max(max, cur);
+			cur = cur < 0 ? 0 : cur;
+		}
+		return max;
+	}
+
+}
+
+```
+
 
 # 二分
 ```json 
@@ -183,6 +285,7 @@ class Solution {
             return right;
     }
     public static boolean judge(int[]nums,int k,int val){
+        //指针模拟状态遍历,那么指到哪里就立即更新他的状态
         //初始已经有一个油桶了
         //flag
         int partition=1;
@@ -257,7 +360,13 @@ public class Main{
 
 ---
 
+#
+---
+#
+
 # 基础数据结构
+- 所有数据结构底层都是连续结构(数组),跳转结构(指针链表)拼出来的
+- 底层(连续,跳转)->理论(线性表,哈希表,树,图)
 - 基础数据结构以0初始索引
 - 高级数据结构以1初始索引
 - 根据ordinal_cardinal,树的深度是root延申的数量,高度是叶子节点眼神到root的数量
@@ -302,6 +411,54 @@ class Solution {
             sentryHead.next=p;
         }
         return sentryAns.next;
+    }
+}
+```
+
+### [链表分组反转](https://leetcode.cn/problems/reverse-nodes-in-k-group/)
+```json
+{   
+    "链表模型容器":"sentry memo_pointer flag",//用一个flag变量标记memo指向容器的最后一个元素方便sentry转移
+    "很多个指针":"memo_pointer"
+}
+```
+```java
+public class Solution {
+    public ListNode reverseKGroup(ListNode head, int k) {
+        ListNode sentry = new ListNode(666);
+        ListNode ans=sentry;
+        ListNode prev=sentry;
+        ListNode p=head;
+        ListNode pmemo=head;
+        ListNode p1=head;
+        loop:
+        while(true){
+            for(int i=1;i<=k;i++){
+                if(p1==null){
+                    break loop;
+                }
+                p1=p1.next;
+            }
+            int flag=1;
+            while (p!=p1){
+                pmemo=p.next;
+                p.next=sentry.next;
+                sentry.next=p;
+                p=pmemo;
+                //flag标记代表第一次操作的状态
+                //state filter 第一次操作时执行并状态改变
+                if(flag==1){
+                    prev=sentry.next;
+                    //状态改变不再是第一次
+                    flag=2;
+                }
+
+            }
+            sentry=prev;
+        }
+        prev.next=p;
+        return ans.next;
+
     }
 }
 ```
@@ -439,7 +596,118 @@ class Solution {
 }
 ```
 
-### [删除倒数第n个指针leetcode](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/)
+### [复制随机指针链表](https://leetcode.cn/problems/copy-list-with-random-pointer/)
+- memo指针,container在原结构构建容器
+- 把新节点和旧节点串起来,起到容器的作用,然后再遍历构造新节点的random最后再用memo指针分离开新旧节点
+```java
+class Solution {
+    public Node copyRandomList(Node head) {
+        if(head==null) return null;
+        Node sentry=head;
+        Node p=head;
+        Node prev=head;
+        //新旧节点串起来 1,1',2,2',3,3',...,null
+        while(p!=null){
+            prev=p.next;
+            Node tmp = new Node(p.val);
+            tmp.next=prev;
+            p.next=tmp;
+            p=prev;
+        }
+        //构建新节点update信息
+        p=sentry;
+        while(p!=null){
+            //注意boundary可能为null
+            if(p.random==null){
+                p.next.random=null;
+            }else{
+                p.next.random=p.random.next;
+            }
+            p=p.next.next;
+        }
+        Node sentry1=sentry.next;
+        p=sentry;Node memo;
+        //分离新旧节点
+        while(p.next.next!=null){
+            prev=p.next.next;
+            memo=p.next;
+            memo.next=prev.next;
+            p.next=prev;
+            p=prev;
+        }
+        p.next=null;
+        return sentry1;
+
+
+    }
+}
+```
+
+### [链表中点](https://leetcode.cn/problems/middle-of-the-linked-list/)
+- 快慢指针简简单单的
+```java
+class Solution {
+    public ListNode middleNode(ListNode head) {
+        ListNode f=head;
+        ListNode s=head;
+        if(f.next==null) return f;
+        if(f.next.next==null) return f.next;
+        while(true){
+            s=s.next;
+            f=f.next.next;
+            if(f.next==null) return s;
+            if(f.next.next==null) return s.next;
+        }
+    }
+}
+```
+
+### [判断链表是不是回文](https://leetcode.cn/problems/palindrome-linked-list/)
+- 快慢指针寻找中点然后,将右部分反转左右对比;
+- 用额外空间的是将节点值存入数组然后不回退双指针遍历即可简简单单的
+```json
+{
+    "寻找中点":"fast-slow_pointer",
+    "反转右部分":"container"//链表模型
+}
+```
+```java
+
+ class Solution {
+     public boolean isPalindrome(ListNode head) {
+        ListNode s=head;
+        ListNode f=head;
+        while(f.next!=null && f.next.next!=null){
+            s=s.next;
+            f=f.next.next;
+        }
+        ListNode sentry=new ListNode(666);
+        ListNode p=s.next;
+        ListNode prev=p;
+        while(p!=null){
+            prev=p.next;
+            p.next=sentry.next;
+            sentry.next=p;
+            p=prev;
+        }
+        p=sentry.next;
+        while(p!=null){
+            if(p.val!=head.val){
+                return false;
+            }
+            p=p.next;
+            head=head.next;
+        }
+        return true;
+
+     }
+ }
+```
+
+### [链表排序](https://leetcode.cn/problems/sort-list)
+- 好麻烦目前除了作甚的有递归做法
+
+### [删除倒数第n个节点leetcode](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/)
 ```json
 {
     "距离快慢指针":"fast-slow_pointer"
@@ -469,9 +737,98 @@ class Solution {
 }
 ```
 
+### [判断链表相交](https://leetcode.cn/problems/intersection-of-two-linked-lists/)
+```json
+{
+    "距离快慢指针":"fast-slow_pointer"
+}
+```
+- 先得出两链表长度,长的前进使得两个指针在同一起点
+```java
+public class Solution {
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        ListNode a=headA;
+        ListNode b=headB;
+        int cnta=0;
+        int cntb=0;
+        while(a!=null){
+            cnta++;
+            a=a.next;
+        }
+        while (b!=null){
+            cntb++;
+            b=b.next;
+        }
+        a=headA;
+        b=headB;
+        if(cnta<=cntb){
+            int tmp=cntb-cnta;
+            for (int i = 0; i < tmp; i++) {
+                b=b.next;
+            }
+        }else{
+            int tmp=cnta-cntb;
+            for (int i = 0; i < tmp; i++) {
+                a=a.next;
+            }
+        }
+        while(true){
+            if(a==b) return a;
+            a=a.next;
+            b=b.next;
+        }
+    }
+}
+```
+
+### [查找链表环起点](https://leetcode.cn/problems/linked-list-cycle-ii/)
+```json
+{
+    "距离快慢指针":"fast-slow_pointer"
+}
+```
+- head是起点 f速度是2 s速度是1,相交停止,再从头速度都是1 相交就是ans
+
+```java
+
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        ListNode s=head;
+        ListNode f=head;
+        if(head==null) return null;
+        while(true){
+            if(f.next==null || f.next.next==null) return null;
+            f=f.next.next;
+            s=s.next;
+            if(f==s){
+                break;
+            }
+        }
+        s=head;
+        while(s!=f){
+            f=f.next;
+            s=s.next;
+        }
+        return s;
+    }
+}
+```
+
 # 队列和栈
 
 ## 习题
+### [LRU缓存模拟](https://leetcode.cn/problems/lru-cache/)
+```json
+{
+    "双向链表队列+哈希表":"container"
+}
+```
+- 双向链表队列+哈希表
+- 用双向链表做队列方便O(1)复杂度找到container中的元素并remove,正常队列只能头部和尾部
+```java
+
+```
+
 ### [栈模拟队列leetcode](https://leetcode.cn/problems/implement-queue-using-stacks/)
 - 两个栈循环
 ```java
@@ -591,6 +948,47 @@ class MinStack1 {
 
 		public int getMin() {
 			return min.peek();
+		}
+	}
+```
+
+# 哈希表题目
+## [setall](https://www.nowcoder.com/practice/7c4559f138e74ceb9ba57d76fd169967)
+```json
+{
+    "时间戳":"order"
+}
+```
+```java
+public static HashMap<Integer, int[]> map = new HashMap<>();
+	public static int setAllValue;
+	public static int setAllTime;
+	public static int cnt;
+
+	public static void put(int k, int v) {
+		if (map.containsKey(k)) {
+			int[] value = map.get(k);
+			value[0] = v;
+			value[1] = cnt++;
+		} else {
+			map.put(k, new int[] { v, cnt++ });
+		}
+	}
+
+	public static void setAll(int v) {
+		setAllValue = v;
+		setAllTime = cnt++;
+	}
+
+	public static int get(int k) {
+		if (!map.containsKey(k)) {
+			return -1;
+		}
+		int[] value = map.get(k);
+		if (value[1] > setAllTime) {
+			return value[0];
+		} else {
+			return setAllValue;
 		}
 	}
 ```
@@ -933,107 +1331,12 @@ class Solution {
 }
 
 ```
-# io优化
-## 一般string int读入
-```java
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        PrintWriter out=new PrintWriter(new OutputStreamWriter(System.out));
-        StreamTokenizer st=new StreamTokenizer(reader);
-//st首指针在-1
-while (st.nextToken() != StreamTokenizer.TT_EOF) { // 文件没有结束就继续 EOF=-1
-			// n，二维数组的行
-			int n = (int) st.nval;
-			st.nextToken();
-			// m，二维数组的列
-			int m = (int) st.nval;
-			out.println(maxSumSubmatrix(mat, n, m));
-		}
-```
-## 读一行
-```java
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        PrintWriter out=new PrintWriter(new OutputStreamWriter(System.out));
-        StringTokenizer st=new StringTokenizer("");
-        st=new StringTokenizer(reader.readLine());
-```
 
-## 全局静态空间
-```java
-public class Code03_StaticSpace {
+#
+---
+#
 
-	// 题目给定的行的最大数据量
-	public static int MAXN = 201;
-
-	// 题目给定的列的最大数据量
-	public static int MAXM = 201;
-
-	// 申请这么大的矩阵空间，一定够用了
-	// 静态的空间，不停复用
-	public static int[][] mat = new int[MAXN][MAXM];
-
-	// 需要的所有辅助空间也提前生成
-	// 静态的空间，不停复用
-	public static int[] arr = new int[MAXM];
-
-	// 当前测试数据行的数量是n
-	// 当前测试数据列的数量是m
-	// 这两个变量可以把代码运行的边界规定下来
-	public static int n, m;
-
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StreamTokenizer in = new StreamTokenizer(br);
-		PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
-		while (in.nextToken() != StreamTokenizer.TT_EOF) {
-			n = (int) in.nval;
-			in.nextToken();
-			m = (int) in.nval;
-			for (int i = 0; i < n; i++) {
-				for (int j = 0; j < m; j++) {
-					in.nextToken();
-					mat[i][j] = (int) in.nval;
-				}
-			}
-			out.println(maxSumSubmatrix());
-		}
-		out.flush();
-		br.close();
-		out.close();
-	}
-
-	// 求子矩阵的最大累加和，后面的课会讲
-	public static int maxSumSubmatrix() {
-		int max = Integer.MIN_VALUE;
-		for (int i = 0; i < n; i++) {
-			// 因为之前的过程可能用过辅助数组
-			// 为了让之前结果不干扰到这次运行，需要自己清空辅助数组需要用到的部分
-			Arrays.fill(arr, 0, m, 0);
-			for (int j = i; j < n; j++) {
-				for (int k = 0; k < m; k++) {
-					arr[k] += mat[j][k];
-				}
-				max = Math.max(max, maxSumSubarray());
-			}
-		}
-		return max;
-	}
-
-	// 求子数组的最大累加和，后面的课会讲
-	public static int maxSumSubarray() {
-		int max = Integer.MIN_VALUE;
-		int cur = 0;
-		for (int i = 0; i < m; i++) {
-			cur += arr[i];
-			max = Math.max(max, cur);
-			cur = cur < 0 ? 0 : cur;
-		}
-		return max;
-	}
-
-}
-
-```
-
+# 排序导论
 
 # 归并(分治)
 ```json
@@ -1648,7 +1951,11 @@ RadixSort        O(N)               O(M)               有
 - quicksort相比merge空间少了但是不稳定,守恒
 - quicksort通常常数时间比heapsort好,守恒
 
-# binary-bits_operate 题目
+#
+---
+#
+
+# binary-bit题目
 ## 异或题目
 - 1~10少了一个元素求这个元素
 准备两个集合一个是[1,10]另一个是少了的集合
@@ -1680,16 +1987,143 @@ class Solution {
     }
 }
 ```
+## bit题目
+### [只出现一次的数字 II](https://leetcode.cn/problems/single-number-ii/)
+- 统计所有位上的1,不是m的倍数的就是这位就有answer的1最后加起来
+```java
+class Solution {
+    public int singleNumber(int[] nums) {
+        int m=3;
+        int[] cnt = new int[32];
+        for (int num : nums) {
+            for(int i=0;i<32;i++){
+                int tmp=1&(num>>i);
+                if(tmp==1){
+                    cnt[i]++;
+                }
+            }
+        }
+        int ans=0;
+        for(int i=0;i<32;i++){
+            if(cnt[i]%m!=0){
+            ans=ans | (1<<(i));
+            }
+        }
+        return ans;
+    }
+}
+```
+### [2的幂判断](https://leetcode.cn/problems/power-of-two/)
+- lowbit
+```java
+class Solution {
+    public boolean isPowerOfTwo(int n) {
+        //2的幂仅有一位1所以lowbit看看是不是相同就行
+        if(n>0 && (n&(-n))==n) return true;
+        return false;
+    }
+}
+```
+### [3的幂判断](https://leetcode.cn/problems/power-of-three/)
+- 找一个int范围内最大的3的幂计算器或者自己算然后%n==0就是!=0就不是
+
+### [区间内所有数&起来](https://leetcode.cn/problems/bitwise-and-of-numbers-range/)
+- lowbit看最右侧的1会不会消失
+```java
+public class Code04_LeftToRightAnd {
+	public static int rangeBitwiseAnd(int left, int right) {
+		while (left < right) {
+			right -= right & -right;
+		}
+		return right;
+	}
+
+}
+```
+
+#
+---
+#
+
+# 高等数学
+- skills 数学相关指的是数学底层的东西例如集合论soo,mod底层算子原理
+- 高等数学是数学相关的应用例如同余原理
+
+# 最大公约数(辗转相除法)
+```json
+{
+    "基数取模":"mod"
+}
+```
+![alt text](Euclidean_algorithm_252_105_animation_flipped.gif)
+```java
+public int gcd (int a,int b){
+    while(b!=0){
+        int tmp=a;
+        a=b;
+        b=tmp%b;
+    }
+    return a;
+}
+```
+## 习题
+
+# 同余原理
+
+# 高等数据结构
+
+#
+---
+#
+
+# discrete_function
+- 用数组模拟算子,将索引映射的算法
+- 动态规划可以看作递归树的逆从leaf到root的遍历,递归可改成dp
+
+# 前缀和和差分 积分和微分
+
+# 一维动态规划
+- 用空间代替重复计算,用dp数组模拟算子,将索引dp(i)映射到求解值
+## 典中典 fabbnoci 数列
+算子dp,将索引i映射到i的斐波那契值 dp(i)=dp(i-1)+dp(i-2);
+```java
+public static int fabbnoci(int n){
+    int[] dp=new int[n+1];
+    dp[0]=1;dp[1]=1;
+    for(int i=2;i<=n;i++){
+        dp[i]=dp[i-1]+dp[i-2];
+    }
+    return dp[n];
+}
+```
+- 降维优化
+```java
+public static int fabbnoci(int n){
+    int dp1=1;int dp2=1;
+    int i=1;
+    while(true){
+        if(i==n) return dp2;
+        int tmp=dp2;
+        dp2=dp1+dp2;
+        dp1=tmp;
+        i++;
+    }
+}
+```
+
+## 习题
+### [最低票价](https://leetcode.cn/problems/minimum-cost-for-tickets/)
+
 # KMP
 https://www.bilibili.com/video/BV1Er421K7kF/
 https://oi-wiki.org/string/kmp/
 ```json
 {
-    "前缀函数π":"symmetry discrete_function",
+    "前缀算子π":"symmetry discrete_function",
     "π算子幂":"operator_pow"
 }
 ```
-## 前缀函数π
+## 前缀算子π
 
 
 ## symmetry discrete_function
