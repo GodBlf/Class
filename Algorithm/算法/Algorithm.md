@@ -1136,50 +1136,15 @@ class FreqStack {
 }
 ```
 
-# 哈希表题目
+# 哈希表
 - 去出hash表某个元素可用迭代器
 tmp for(i:hashset){tmp=i;break;}
-## [setall](https://www.nowcoder.com/practice/7c4559f138e74ceb9ba57d76fd169967)
-```json
-{
-    "时间戳":"order"
-}
-```
-```java
-public static HashMap<Integer, int[]> map = new HashMap<>();
-	public static int setAllValue;
-	public static int setAllTime;
-	public static int cnt;
 
-	public static void put(int k, int v) {
-		if (map.containsKey(k)) {
-			int[] value = map.get(k);
-			value[0] = v;
-			value[1] = cnt++;
-		} else {
-			map.put(k, new int[] { v, cnt++ });
-		}
-	}
+## 哈希数组
+- 哈希表记录元素在数组中的索引
 
-	public static void setAll(int v) {
-		setAllValue = v;
-		setAllTime = cnt++;
-	}
-
-	public static int get(int k) {
-		if (!map.containsKey(k)) {
-			return -1;
-		}
-		int[] value = map.get(k);
-		if (value[1] > setAllTime) {
-			return value[0];
-		} else {
-			return setAllValue;
-		}
-	}
-```
-## [LRU缓存](参见链表习题)
-## [O(1) 时间插入、删除和获取随机元素](https://leetcode.cn/problems/insert-delete-getrandom-o1/)
+### 习题
+#### [O(1) 时间插入、删除和获取随机元素](https://leetcode.cn/problems/insert-delete-getrandom-o1/)
 ```json
 {
     "填remove的空隙":"partition_pointer",//用到划分指针的swap填充功能
@@ -1230,7 +1195,7 @@ class RandomizedSet {
 
 ```
 
-## [O(1) 时间插入、删除和获取随机元素 - 允许重复](https://leetcode.cn/problems/insert-delete-getrandom-o1-duplicates-allowed/)
+#### [O(1) 时间插入、删除和获取随机元素 - 允许重复](https://leetcode.cn/problems/insert-delete-getrandom-o1-duplicates-allowed/)
 ```json
 {
     "填remove的空隙":"partition_pointer",//用到划分指针的swap填充功能
@@ -1293,6 +1258,275 @@ class RandomizedCollection {
 }
 
 ```
+
+## 哈希链表
+```json
+{
+    "哈希双向链表":"mapcontainer.map_link"
+}
+```
+- 将哈希表和双向链表结合实现数组的查找方便和链表的crud方便,实现两个线性表的优点
+
+### 习题
+#### [LRU缓存模拟](https://leetcode.cn/problems/lru-cache/)
+```json
+{
+    "双向链表队列+哈希表":"container"
+}
+```
+- 双向链表队列+哈希表
+- 用双向链表做队列方便O(1)复杂度找到container中的元素并remove,正常队列只能头部和尾部
+```java
+class LRUCache {
+    class DoubleNode {
+        public int key;
+        public int val;
+        public DoubleNode last;
+        public DoubleNode next;
+
+        public DoubleNode(int k, int v) {
+            key = k;
+            val = v;
+        }
+        public DoubleNode(){}
+    }
+    DoubleNode sentryHead=new DoubleNode();
+    DoubleNode sentryTail=new DoubleNode();
+    int len=0;
+    int cap;
+    HashMap<Integer,DoubleNode> map=new HashMap<>();
+    public LRUCache(int capacity) {
+        cap=capacity;
+        sentryHead.next=sentryTail;
+        sentryTail.last=sentryHead;
+    }
+    public  void offer(DoubleNode d){
+        DoubleNode tmp = sentryTail.last;
+        d.next=sentryTail;
+        sentryTail.last=d;
+        d.last=tmp;
+        tmp.next=d;
+        map.put(d.key,d);
+    }
+    public  void poll(){
+        DoubleNode remove=sentryHead.next;
+        DoubleNode tmp = sentryHead.next.next;
+        sentryHead.next=tmp;
+        tmp.last=sentryHead;
+        map.remove(remove.key);
+    }
+    public void read(DoubleNode d){
+        DoubleNode last = d.last;
+        DoubleNode next = d.next;
+        last.next=next;
+        next.last=last;
+        DoubleNode tmp = sentryTail.last;
+        d.next=sentryTail;
+        sentryTail.last=d;
+        d.last=tmp;
+        tmp.next=d;
+    }
+
+    public int get(int key) {
+        if(map.containsKey(key)==false) return -1;
+        read(map.get(key));
+        return map.get(key).val;
+    }
+
+    public void put(int key, int value) {
+        DoubleNode doubleNode = new DoubleNode(key, value);
+        //这里注意boundary,如果已经存在要弹出再offer最后return
+        if(map.containsKey(key)){
+            DoubleNode d = map.get(key);
+            DoubleNode last = d.last;
+            DoubleNode next = d.next;
+            last.next=next;
+            next.last=last;
+            offer(doubleNode);
+            map.put(key,doubleNode);
+            return;
+        }
+        if(len<cap){
+            offer(doubleNode);
+            len++;
+        }else{
+            poll();
+            offer(doubleNode);
+        }
+    }
+}
+
+```
+
+#### [经典哈希链表中模拟](https://leetcode.cn/problems/all-oone-data-structure)
+- 两个container都要全面维护,这里的state if else很麻烦
+```java
+import java.util.HashMap;
+import java.util.HashSet;
+
+class AllOne {
+
+    Node sentryHead;
+    Node sentryTail;
+    HashMap<String,Node> map;
+    class Node{
+        int cnt;
+        HashSet<String> set;
+        Node last;
+        Node next;
+        Node(int c){
+            cnt=c;
+            set=new HashSet<>();
+        }
+    }
+
+    public AllOne() {
+        sentryHead=new Node(0);
+        sentryTail=new Node(Integer.MAX_VALUE);
+        sentryHead.next=sentryTail;
+        sentryTail.last=sentryHead;
+        map=new HashMap<>();
+        sentryHead.set.add("");
+        sentryTail.set.add("");
+    }
+
+    public void insert(Node left,Node mid , Node right){
+        left.next=mid;
+        right.last=mid;
+        mid.next=right;
+        mid.last=left;
+    }
+
+    public void remove(Node node){
+        if(node.set.isEmpty()){
+            Node last = node.last;
+            Node next = node.next;
+            last.next=next;
+            next.last=last;
+        }else{
+            return;
+        }
+    }
+
+    public void inc(String key) {
+        if(map.containsKey(key)){
+            Node node = map.get(key);
+            if(node.next.cnt==node.cnt+1){
+                node.set.remove(key);
+                node.next.set.add(key);
+                map.put(key,node.next);
+            }else{
+                Node newNode = new Node(node.cnt + 1);
+                newNode.set.add(key);
+                node.set.remove(key);
+                insert(node,newNode,node.next);
+                map.put(key,newNode);
+            }
+            //注意插入也要判断是否node为空
+            remove(node);
+
+
+        }else{
+            if(sentryHead.next.cnt==1){
+                sentryHead.next.set.add(key);
+                map.put(key,sentryHead.next);
+            }else{
+                Node newNode = new Node(1);
+                newNode.set.add(key);
+                insert(sentryHead,newNode,sentryHead.next);
+                map.put(key,newNode);
+            }
+        }
+    }
+
+    public void dec(String key) {
+        Node node = map.get(key);
+        if(node.cnt==1){
+            map.remove(key);
+            node.set.remove(key);
+
+        }else{
+            if(node.last.cnt==node.cnt-1){
+                node.last.set.add(key);
+                node.set.remove(key);
+                map.put(key,node.last);
+            }else{
+                Node newNode = new Node(node.cnt - 1);
+                newNode.set.add(key);
+                insert(node.last,newNode,node);
+                node.set.remove(key);
+                map.put(key,newNode);
+            }
+        }
+        remove(node);
+    }
+
+    public String getMaxKey() {
+        HashSet<String> set = sentryTail.last.set;
+        String ans="";
+        for (String s : set) {
+            ans=s;
+            return ans;
+        }
+        return ans;
+    }
+
+    public String getMinKey() {
+        HashSet<String> set = sentryHead.next.set;
+        String ans="";
+        for (String s : set) {
+            ans=s;
+            return ans;
+        }
+        return ans;
+    }
+}
+
+```
+
+
+
+## 纯哈希表习题
+### [setall](https://www.nowcoder.com/practice/7c4559f138e74ceb9ba57d76fd169967)
+```json
+{
+    "时间戳":"order"
+}
+```
+```java
+public static HashMap<Integer, int[]> map = new HashMap<>();
+	public static int setAllValue;
+	public static int setAllTime;
+	public static int cnt;
+
+	public static void put(int k, int v) {
+		if (map.containsKey(k)) {
+			int[] value = map.get(k);
+			value[0] = v;
+			value[1] = cnt++;
+		} else {
+			map.put(k, new int[] { v, cnt++ });
+		}
+	}
+
+	public static void setAll(int v) {
+		setAllValue = v;
+		setAllTime = cnt++;
+	}
+
+	public static int get(int k) {
+		if (!map.containsKey(k)) {
+			return -1;
+		}
+		int[] value = map.get(k);
+		if (value[1] > setAllTime) {
+			return value[0];
+		} else {
+			return setAllValue;
+		}
+	}
+```
+
 
 # 二叉树
 

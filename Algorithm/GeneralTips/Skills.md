@@ -413,7 +413,7 @@ public static void partition2(int[] arr, int l, int r, int x) {
 ## Δd 差分(微分)
 
 # container
-- 为了算法实现构造的容器
+- 构造的所有容器都要全面维护,如果为空就要移出全面考虑,等boundary边界条件
 ## new_container
 对某个对象进行操作的时候,最好把结果弄到一个new的对象上例如矩阵转置结果,new在一个新矩阵里否则原矩阵操作困难;
 ```c
@@ -466,6 +466,14 @@ int main(){
 
 ## map_container
 - 经常需要一个容器其中元素同样存入哈希表中,方便直接O(1)查到对应元素和在容器中的位置 
+- 可以通过map来实现很多结构例如二维栈可以通过哈希表记录单个栈key是数字,再用max计入栈顶
+
+### map_arr哈希数组
+- 将元素的索引或者索引集合记录在哈希表中
+
+### map_link 哈希链表
+- 经常搭配双向链表出现,因为实现了索引和方便增删的链表和数组两个的共同优点
+- 例如LRU缓存 https://leetcode.cn/problems/all-oone-data-structure/description/
 
 ## pow_container
 - 二维栈(最大频率栈),用栈,栈中元素是栈(栈套栈),类比向量空间
