@@ -1,3 +1,6 @@
+websocket:
+nhooyr/websocket
+
 客户端:
 resty cookiejar
 

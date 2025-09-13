@@ -34,6 +34,19 @@ i, err := f(3)
 	}
 	fmt.Println(i2)
 ```
+赋值的时候行末尾都要加,
+```go
+student :=&{
+    Name:"asd",
+    Age:234,
+}
+Logger.Info(
+    "message",
+    zap.String("",""),
+    zap.Int64("",54),
+)
+
+```
 
 - 简化type struct type interface 里不用加var和func 因为外边已经有type了
 
@@ -1482,7 +1495,7 @@ func main() {
 ## string
 - []索引 有中文转换为[]rune
 - len(str)	返回字节长度
-- +或fmt.Sprintf	拼接字符串建议用strings.Builder
+- +或fmt.Sprintf	复杂拼接字符串建议用strings.Builder
 - strings.Split	分割
 - strings.Contains	判断是否包含
 - strings.HasPrefix,strings.HasSuffix	前缀/后缀判断
@@ -1786,6 +1799,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 - 用web框架例如gin
 
 ### 客户端
+- 用resty cookiejar等客户端库
 - Get请求
 ```go
 package main

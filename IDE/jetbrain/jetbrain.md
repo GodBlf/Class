@@ -34,3 +34,9 @@
 - ctrl+p 查看函数参数 pram
 - ctrl+i 实现接口 implements
 - alt+ctlr+m 抽取方法
+- f2 shift f2 跳转问题
+
+# 工具栏快捷键
+- alg+0 gitcommit
+- alt+9 git
+- alt+4,5,6 运行 debug 问题

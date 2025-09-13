@@ -360,9 +360,7 @@ public class Main{
 
 ---
 
-#
----
-#
+# =================================================================== 1
 
 # 基础数据结构
 - 所有数据结构底层都是连续结构(数组),跳转结构(指针链表)拼出来的
@@ -370,6 +368,10 @@ public class Main{
 - 基础数据结构以0初始索引
 - 高级数据结构以1初始索引
 - 根据ordinal_cardinal,树的深度是root延申的数量,高度是叶子节点眼神到root的数量
+
+# 线性表
+- ArrayList slice 记得能remove
+
 # 链表
 ```json
 {
@@ -614,7 +616,7 @@ class Solution {
             p.next=tmp;
             p=prev;
         }
-        //构建新节点update信息
+        //构建新节点random信息
         p=sentry;
         while(p!=null){
             //注意boundary可能为null
@@ -706,6 +708,62 @@ class Solution {
 
 ### [链表排序](https://leetcode.cn/problems/sort-list)
 - 好麻烦目前除了作甚的有递归做法
+```java
+class Solution {
+    public ListNode sortList(ListNode head) {
+        return sortList(head, null);
+    }
+
+    public ListNode sortList(ListNode head, ListNode tail) {
+        if (head == null) {
+            return head;
+        }
+        if (head.next == tail) {
+            head.next = null;
+            return head;
+        }
+        ListNode slow = head, fast = head;
+        while (fast != tail) {
+            slow = slow.next;
+            fast = fast.next;
+            if (fast != tail) {
+                fast = fast.next;
+            }
+        }
+        ListNode mid = slow;
+        ListNode list1 = sortList(head, mid);
+        ListNode list2 = sortList(mid, tail);
+        ListNode sorted = merge(list1, list2);
+        return sorted;
+    }
+
+    public ListNode merge(ListNode head1, ListNode head2) {
+        ListNode dummyHead = new ListNode(0);
+        ListNode temp = dummyHead, temp1 = head1, temp2 = head2;
+        while (temp1 != null && temp2 != null) {
+            if (temp1.val <= temp2.val) {
+                temp.next = temp1;
+                temp1 = temp1.next;
+            } else {
+                temp.next = temp2;
+                temp2 = temp2.next;
+            }
+            temp = temp.next;
+        }
+        if (temp1 != null) {
+            temp.next = temp1;
+        } else if (temp2 != null) {
+            temp.next = temp2;
+        }
+        return dummyHead.next;
+    }
+}
+
+作者：力扣官方题解
+链接：https://leetcode.cn/problems/sort-list/solutions/492301/pai-xu-lian-biao-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+```
 
 ### [删除倒数第n个节点leetcode](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/)
 ```json
@@ -826,6 +884,84 @@ public class Solution {
 - 双向链表队列+哈希表
 - 用双向链表做队列方便O(1)复杂度找到container中的元素并remove,正常队列只能头部和尾部
 ```java
+class LRUCache {
+    class DoubleNode {
+        public int key;
+        public int val;
+        public DoubleNode last;
+        public DoubleNode next;
+
+        public DoubleNode(int k, int v) {
+            key = k;
+            val = v;
+        }
+        public DoubleNode(){}
+    }
+    DoubleNode sentryHead=new DoubleNode();
+    DoubleNode sentryTail=new DoubleNode();
+    int len=0;
+    int cap;
+    HashMap<Integer,DoubleNode> map=new HashMap<>();
+    public LRUCache(int capacity) {
+        cap=capacity;
+        sentryHead.next=sentryTail;
+        sentryTail.last=sentryHead;
+    }
+    public  void offer(DoubleNode d){
+        DoubleNode tmp = sentryTail.last;
+        d.next=sentryTail;
+        sentryTail.last=d;
+        d.last=tmp;
+        tmp.next=d;
+        map.put(d.key,d);
+    }
+    public  void poll(){
+        DoubleNode remove=sentryHead.next;
+        DoubleNode tmp = sentryHead.next.next;
+        sentryHead.next=tmp;
+        tmp.last=sentryHead;
+        map.remove(remove.key);
+    }
+    public void read(DoubleNode d){
+        DoubleNode last = d.last;
+        DoubleNode next = d.next;
+        last.next=next;
+        next.last=last;
+        DoubleNode tmp = sentryTail.last;
+        d.next=sentryTail;
+        sentryTail.last=d;
+        d.last=tmp;
+        tmp.next=d;
+    }
+
+    public int get(int key) {
+        if(map.containsKey(key)==false) return -1;
+        read(map.get(key));
+        return map.get(key).val;
+    }
+
+    public void put(int key, int value) {
+        DoubleNode doubleNode = new DoubleNode(key, value);
+        //这里注意boundary,如果已经存在要弹出再offer最后return
+        if(map.containsKey(key)){
+            DoubleNode d = map.get(key);
+            DoubleNode last = d.last;
+            DoubleNode next = d.next;
+            last.next=next;
+            next.last=last;
+            offer(doubleNode);
+            map.put(key,doubleNode);
+            return;
+        }
+        if(len<cap){
+            offer(doubleNode);
+            len++;
+        }else{
+            poll();
+            offer(doubleNode);
+        }
+    }
+}
 
 ```
 
@@ -952,7 +1088,57 @@ class MinStack1 {
 	}
 ```
 
+### [最大频率栈(二维栈)](https://leetcode.cn/problems/maximum-frequency-stack/)
+```json
+{
+    "构造一个二维栈套栈":"pow_container",
+    "map记忆频率":"map_container"
+}
+```
+```java
+class FreqStack {
+    HashMap<Integer,Integer> map;
+    int max=0;
+    HashMap<Integer, ArrayList<Integer>> stack;
+    public FreqStack() {
+        map=new HashMap<>();
+        stack=new HashMap<>();
+    }
+
+    public void push(int val) {
+        if(map.containsKey(val)){
+            map.put(val,map.get(val)+1);
+        }else{
+            map.put(val,1);
+        }
+        Integer cishu = map.get(val);
+        if(stack.containsKey(cishu)){
+            stack.get(cishu).add(val);
+        }else{
+            ArrayList<Integer> arr = new ArrayList<>();
+            arr.add(val);
+            stack.put(cishu,arr);
+            max++;
+        }
+
+    }
+
+    public int pop() {
+        List<Integer> arr = stack.get(max);
+        Integer remove = arr.remove(arr.size() - 1);
+        map.put(remove,map.get(remove)-1);
+        if(arr.isEmpty()){
+            stack.remove(max);
+            max--;
+        }
+        return remove;
+    }
+}
+```
+
 # 哈希表题目
+- 去出hash表某个元素可用迭代器
+tmp for(i:hashset){tmp=i;break;}
 ## [setall](https://www.nowcoder.com/practice/7c4559f138e74ceb9ba57d76fd169967)
 ```json
 {
@@ -991,6 +1177,121 @@ public static HashMap<Integer, int[]> map = new HashMap<>();
 			return setAllValue;
 		}
 	}
+```
+## [LRU缓存](参见链表习题)
+## [O(1) 时间插入、删除和获取随机元素](https://leetcode.cn/problems/insert-delete-getrandom-o1/)
+```json
+{
+    "填remove的空隙":"partition_pointer",//用到划分指针的swap填充功能
+    "哈希表计录每个元素索引":"container"//哈希容器
+}
+```
+```java
+import java.util.*;
+
+class RandomizedSet {
+    private ArrayList<Integer> arr;
+    private HashMap<Integer,Integer> map;
+    private Random rand;
+
+    public RandomizedSet() {
+        arr = new ArrayList<>();
+        map = new HashMap<>();
+        rand = new Random();
+    }
+
+    public boolean insert(int val) {
+        if(map.containsKey(val)) return false;
+        arr.add(val);
+        map.put(val, arr.size() - 1);
+        return true;
+    }
+    //划分指针的swap功能
+    public boolean remove(int val) {
+        if(!map.containsKey(val)) return false;
+        int index = map.get(val);
+        int lastVal = arr.get(arr.size() - 1);
+
+        // 把最后的元素放到 index 位置
+        arr.set(index, lastVal);
+        map.put(lastVal, index);
+
+        // 删除最后一个
+        arr.remove(arr.size() - 1);
+        map.remove(val);
+        return true;
+    }
+
+    public int getRandom() {
+        int index = rand.nextInt(arr.size());
+        return arr.get(index);
+    }
+}
+
+```
+
+## [O(1) 时间插入、删除和获取随机元素 - 允许重复](https://leetcode.cn/problems/insert-delete-getrandom-o1-duplicates-allowed/)
+```json
+{
+    "填remove的空隙":"partition_pointer",//用到划分指针的swap填充功能
+    "哈希表计录每个元素索引":"container"
+}
+```
+```java
+import java.util.*;
+
+class RandomizedCollection {
+    HashMap<Integer, HashSet<Integer>> map=new HashMap<>();
+    ArrayList<Integer> arr=new ArrayList<>();
+    public RandomizedCollection() {
+
+    }
+
+    public boolean insert(int val) {
+        if(map.containsKey(val)){
+            arr.add(val);
+            HashSet<Integer> set = map.get(val);
+            set.add(arr.size()-1);
+            return false;
+        }
+        arr.add(val);
+        HashSet<Integer> set = new HashSet<>();
+        set.add(arr.size()-1);
+        map.put(val,set);
+        return true;
+    }
+
+    public boolean remove(int val) {
+        if(!map.containsKey(val)) return false;
+        HashSet<Integer> valSet = map.get(val);
+        int valIndex=0;
+        for (Integer i : valSet) {
+            valIndex=i;
+            break;
+        }
+        int tailIndex=(arr.size()-1);
+        int tailVal = arr.get(tailIndex);
+        HashSet<Integer> tailSet = map.get(tailVal);
+        if(val==tailVal){
+            //注意移出尾巴元素
+            valSet.remove(tailIndex);
+        }else{
+            arr.set(valIndex,tailVal);
+            valSet.remove(valIndex);
+            tailSet.remove(tailIndex);
+            tailSet.add(valIndex);
+        }
+        arr.remove(tailIndex);
+        //注意如果容器空了要移出map
+        if(valSet.isEmpty()) map.remove(val);
+        return true;
+    }
+
+    public int getRandom() {
+        return arr.get((int)(Math.random() * arr.size()));
+    }
+}
+
 ```
 
 # 二叉树
@@ -1187,6 +1488,9 @@ class Solution {
 ## out/in 实现bfs dfs
 
 # 堆
+- 优先级队列思考堆结构,堆结构是一个""排好序的队列",小头进大头出大根堆,大头进小头出小根堆
+- 仅堆顶是确定的最大最小元素其他位置都不确定;如果需要自动排序的数据结构要确定堆顶在哪一头,
+小头需要操作就是小根堆,大头需要操作就是大根堆
 - 父节点 (i-1)/2
 - 子节点 i*2+1  i*2+2 以0为初始索引
 - 小根堆大根堆 Less()函数不同而已
@@ -1332,9 +1636,62 @@ class Solution {
 
 ```
 
-#
----
-#
+### [数据流中的中位数](https://leetcode.cn/problems/find-median-from-data-stream/)
+- 用一大一小两个优先级队列维护,拼起来就是一个排好序的数组
+- 左部分用大根堆因为大头需要操作,右部分小根堆因为小头需要出来操作
+```java
+class MedianFinder {
+    PriorityQueue<Integer> leftHeap=new PriorityQueue<>((a,b)->{return b-a;});
+    PriorityQueue<Integer> rightHeap=new PriorityQueue<>((a,b)->{return a-b;});
+
+    public MedianFinder() {
+
+    }
+
+    public void addNum(int num) {
+        if(leftHeap.isEmpty() && rightHeap.isEmpty()){
+            leftHeap.offer(num);
+            return ;
+        }
+        Integer peekl = leftHeap.peek();
+        if(num<=peekl){
+            leftHeap.offer(num);
+        }else{
+            rightHeap.offer(num);
+        }
+        blance();
+    }
+
+    public double findMedian() {
+        if(leftHeap.size()==rightHeap.size()){
+            Integer peekl = leftHeap.peek();
+            Integer peekr = rightHeap.peek();
+            return ((double)(peekl+peekr))/2;
+        }
+        if(leftHeap.size()>rightHeap.size()) return (double)leftHeap.peek();
+        return (double) rightHeap.peek();
+    }
+    //平衡两个堆的数量差在1以内
+    public void blance(){
+        int delt=(int)(Math.abs(leftHeap.size()-rightHeap.size()));
+        if(delt>1){
+            if(leftHeap.size()>rightHeap.size()){
+                Integer poll = leftHeap.poll();
+                rightHeap.offer(poll);
+            }else{
+                Integer poll = rightHeap.poll();
+                leftHeap.offer(poll);
+            }
+        }
+    }
+}
+
+```
+
+# 图
+
+
+# =================================================================== 2
 
 # 排序导论
 
@@ -1951,9 +2308,7 @@ RadixSort        O(N)               O(M)               有
 - quicksort相比merge空间少了但是不稳定,守恒
 - quicksort通常常数时间比heapsort好,守恒
 
-#
----
-#
+# =================================================================== 3
 
 # binary-bit题目
 ## 异或题目
@@ -2041,9 +2396,15 @@ public class Code04_LeftToRightAnd {
 }
 ```
 
-#
----
-#
+### java关于bit的api 
+- cout hightlowbit trailleading
+
+# =================================================================== 4
+
+# 递归题目
+- recur_tree
+
+# =================================================================== 5
 
 # 高等数学
 - skills 数学相关指的是数学底层的东西例如集合论soo,mod底层算子原理
@@ -2070,11 +2431,21 @@ public int gcd (int a,int b){
 
 # 同余原理
 
+# 组合数学
+- 组合is set-element 排列 is order  组合+order=排列
+
+## 全组合
+- recur_tree prune
+## 全排列
+- recur_tree prune
+
+# =================================================================== 6
+
 # 高等数据结构
 
-#
----
-#
+# 前缀树
+
+# =================================================================== 7
 
 # discrete_function
 - 用数组模拟算子,将索引映射的算法

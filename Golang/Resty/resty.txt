@@ -1,0 +1,9 @@
+# client
+- 设置全局变量客户端
+
+# initialize初始化
+- 设置全局变量客户端的cookiejar实现session功能
+
+# R()
+.R()方法返回一条request请求,设置这条请求的请求头请求体json然后
+request.get/post/(url)发送出去

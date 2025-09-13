@@ -1,5 +1,39 @@
 # Golang Viper 配置管理库讲解
 
+# viperBoot
+```golang
+package initialize
+
+import (
+    "HiChat/global"
+
+    "github.com/spf13/viper"
+    "go.uber.org/zap"
+)
+
+func InitConfig() {
+    //实例化对象
+    v := viper.New()
+
+    configFile := "../HiChat/config-debug.yaml"
+
+    //读取配置文件
+    v.SetConfigFile(configFile)
+
+    //读入文件
+    if err := v.ReadInConfig(); err != nil {
+        panic(err)
+    }
+
+    //将数据放入global.ServerConfig 这个对象如何在其他文件中使用--全局变量
+    if err := v.Unmarshal(&global.ServiceConfig); err != nil {
+        panic(err)
+    }
+
+    zap.S().Info("配置信息", global.ServiceConfig)
+}
+```
+
 ## 🧑‍💻 User
 
 讲解golang的viper这个和配置管理相关的库
@@ -60,13 +94,16 @@ import (
 )
 
 func main() {
+	
 	// 设置配置文件名（不带扩展名）
 	viper.SetConfigName("config")
 	// 指定文件路径
 	viper.AddConfigPath(".") // 当前目录
 	// 设置文件类型（可选，如果有指定完整文件名，可以不用）
 	viper.SetConfigType("yaml")
-
+	//或者一步到位
+	//	viper.SetConfigFile("./viper/config.yaml")
+	
 	// 读取配置
 	err := viper.ReadInConfig()
 	if err != nil {
