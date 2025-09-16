@@ -360,6 +360,44 @@ public class Main{
 
 ---
 
+# 指针技巧习题
+## [删除元素](https://leetcode.cn/problems/remove-element/)
+```json
+{
+    "划分两个区域":"partition_pointer.swap"
+}
+```
+- 这题以后还会在O(1)数据结构题目出现
+- 左指针左侧是没有val区域,右指针右侧是val区域,都是开区间,用swap交换元素实现扩充
+```java
+class Solution {
+    public int removeElement(int[] nums, int val) {
+        int n=nums.length;
+        int l=0;int r=n-1;
+        int ans=0;
+        while(l<=r){
+            int tmp=nums[l];
+            if(tmp==val){
+                if(nums[r]==val){
+                    r--;ans++;
+                }else{
+                    swap(l,r,nums);
+                    r--;ans++;
+                }
+            }else{
+                l++;
+            }
+        }
+        return n-ans;
+    }
+    public static void swap(int i,int j,int[] arr){
+        int tmp=arr[i];
+        arr[i]=arr[j];
+        arr[j]=tmp;
+    }
+}
+```
+
 # =================================================================== 1
 
 # 基础数据结构
@@ -873,7 +911,14 @@ public class Solution {
 ```
 
 # 队列和栈
-
+## 数组实现队列和栈
+- 队列构造[)partition pointer
+```java
+int[] arr=new int[3004];int l=0;int r=0;
+arr[r++]=offer
+arr[l++]=poll
+```
+- 栈同理
 ## 习题
 ### [LRU缓存模拟](https://leetcode.cn/problems/lru-cache/)
 ```json
@@ -1262,7 +1307,7 @@ class RandomizedCollection {
 ## 哈希链表
 ```json
 {
-    "哈希双向链表":"mapcontainer.map_link"
+    "哈希双向链表":"map_container.map_link"
 }
 ```
 - 将哈希表和双向链表结合实现数组的查找方便和链表的crud方便,实现两个线性表的优点
@@ -1434,7 +1479,7 @@ class AllOne {
                 Node newNode = new Node(1);
                 newNode.set.add(key);
                 insert(sentryHead,newNode,sentryHead.next);
-                map.put(key,newNode);
+                map.put(key,newNode);</String>
             }
         }
     }
@@ -1529,8 +1574,11 @@ public static HashMap<Integer, int[]> map = new HashMap<>();
 
 
 # 二叉树
-
-## 递归实现遍历
+## 二叉树数组
+- 父节点 (i-1)/2
+- 子节点 i*2+1  i*2+2 以0为初始索引
+## 递归实现dfs
+- 递归设计整体考虑树的左子树和右子树
 ```json
 {
     "递归树":"recur_tree"
@@ -1556,6 +1604,116 @@ public void dfs(treenode root){
 
 }
 ```
+
+### 习题
+#### [二叉树最小深度](https://leetcode.cn/problems/minimum-depth-of-binary-tree/)
+```json
+{
+    "递归树":"recur_tree",
+    "剪枝剪掉null":"prune",
+    "分为四种节点状态":"state_enum"
+}
+```
+- io:输入节点状态 返回节点到叶子节点的最小深度
+- stack:剪掉null节点 state_enum分为四种节点控制遍历顺序
+```java
+class Solution {
+    public int minDepth(TreeNode root) {
+        if(root==null) return 0;
+        return dfs(root);
+    }
+    public static int dfs(TreeNode node){
+        if(node.left==null && node.right==null) return 1;
+        if(node.left!=null && node.right!=null){
+            return Math.min(dfs(node.left),dfs(node.right))+1;
+        }
+        if(node.left==null && node.right!=null){
+            return dfs(node.right)+1;
+        }
+        return dfs(node.left)+1;
+    }
+}
+```
+#### [二叉树最大深度](https://leetcode.cn/problems/maximum-depth-of-binary-tree/)
+- recurtree 简简单单的
+- io:输入节点状态,返回节点到叶子节点的最大深度
+```java
+class Solution {
+    public int maxDepth(TreeNode root) {
+        if(root==null) return 0;
+        return dfs(root);
+    }
+    public static int dfs(TreeNode node){
+        if(node==null) return 0;
+        return Math.max(dfs(node.left),dfs(node.right))+1;
+    }
+}
+```
+
+#### [二叉树先序序列化和反序列化]()
+```json
+{
+    "递归树简简单单的":"recur_tree",
+    "cnt作为状态指针游走":"state_pointer"
+}
+```
+
+- 反序列化recurtree
+io:返回一个树节点
+stack:构建一颗树,并把左右孩子链接起来
+state:由cnt游走的指针控制
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+public class Codec {
+
+  // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        dfs(root);
+        return sb.toString();
+    }
+    public static StringBuilder sb=new StringBuilder("");
+    public static void dfs(TreeNode node){
+        if(node==null){
+            sb.append("#,");
+            return;
+        }
+        sb.append(node.val+",");
+        dfs(node.left);
+        dfs(node.right);
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        String[] split = data.split(",");
+        return rdfs(split);
+    }
+    public static int cnt=0;
+    public static TreeNode rdfs(String[] split){
+        if(split[cnt].equals("#")){
+            cnt++;
+            return null;
+        }
+        TreeNode tmp = new TreeNode(Integer.parseInt(split[cnt]));
+        cnt++;
+        tmp.left=rdfs(split);
+        tmp.right=rdfs(split);
+        return tmp;
+    }
+}
+
+
+```
+#### [二叉树后序序列化和反序列化]
+- 反序列化把数组reverse就是先序反序列化,简简单单的
 
 ## 栈模拟递归
 
@@ -1719,7 +1877,171 @@ class Solution {
 
 
 
-## out/in 实现bfs dfs
+## cache实现bfs
+```json
+{
+    "cache队列容器实现":"cache"//out in
+}
+```
+- 记入每一层cache的数量每次刷新一层
+```java
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        ArrayDeque<TreeNode> cache = new ArrayDeque<>();
+        List<List<Integer>> ans = new ArrayList<>();
+        if(root==null) return ans;
+        int cnt=0;
+        cache.offer(root);
+        //state pointer 状态要立即更新好
+        cnt=cache.size();
+        while(cache.isEmpty()!=true){
+            ArrayList<Integer> tmp = new ArrayList<>();
+            //每次while循环刷新一层节点
+            for(int i=0;i<cnt;i++){
+                TreeNode poll = cache.poll();
+                if(poll.left!=null) cache.offer(poll.left);
+                if(poll.right!=null) cache.offer(poll.right);
+                tmp.add(poll.val);
+            }
+            ans.add(tmp);
+            cnt=cache.size();
+        }
+        return ans;
+    }
+}
+```
+
+### 数组实现队列cache
+- 数组实现队列方便索引查询
+```json
+{
+    "数组模拟队列":"partition_pointer"//用patition_pointer 构造[)区间队列
+}
+```
+```java
+public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> ans=new ArrayList<>();
+        if(root==null) return ans;
+        TreeNode[] cache = new TreeNode[2002];
+        int l=0;int r=1;int cnt=1;
+        cache[l]=root;int flag=0;
+        while(r>l){
+            List<Integer> tmp = new ArrayList<>();
+            //先收集这里数组构建的queue方便索引
+            for(int i=l;i<r;i++){
+                tmp.add(cache[i].val);
+            }
+            flag ^=1;
+            for(int i=0;i<cnt;i++){
+                TreeNode poll = cache[l];
+                l++;
+                if(poll.left!=null){
+                    cache[r]=poll.left;
+                    r++;
+                }
+                if(poll.right!=null){
+                    cache[r]=poll.right;
+                    r++;
+                }
+            }
+            ans.add(tmp);
+            cnt=r-l;
+        }
+        return ans;
+    }
+```
+
+### 习题
+#### [z型二叉树bfs](https://leetcode.cn/problems/binary-tree-zigzag-level-order-traversal/)
+```java
+public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> ans=new ArrayList<>();
+        if(root==null) return ans;
+        TreeNode[] cache = new TreeNode[2002];
+        int l=0;int r=1;int cnt=1;
+        cache[l]=root;int flag=0;
+        while(r>l){
+            List<Integer> tmp = new ArrayList<>();
+            //先收集这里数组构建的queue方便索引
+            if(flag==0){
+                for(int i=l;i<r;i++){
+                    tmp.add(cache[i].val);
+                }
+            }else{
+                for(int i=r-1;i>=l;i--){
+                    tmp.add(cache[i].val);
+                }
+            }
+            flag ^=1;
+            for(int i=0;i<cnt;i++){
+                TreeNode poll = cache[l];
+                l++;
+                if(poll.left!=null){
+                    cache[r]=poll.left;
+                    r++;
+                }
+                if(poll.right!=null){
+                    cache[r]=poll.right;
+                    r++;
+                }
+            }
+            ans.add(tmp);
+            cnt=r-l;
+        }
+        return ans;
+    }
+```
+
+#### [二叉树最大宽度包含null](https://leetcode.cn/problems/maximum-width-of-binary-tree)
+```json
+{
+    "记忆每个节点的位置":"memo_pointer pointers_container",//方便计算宽度
+    "cache容器":"cache"
+}
+```
+- 将cache中的树节点在数组中的位置记录下来方便计算宽度
+- 数组实现队列cache,每次刷新一层
+```java
+class Solution {
+    public int widthOfBinaryTree(TreeNode root) {
+        if(root==null) return 0;
+        int ans=0;
+        TreeNode[] cache = new TreeNode[3004];
+        int[] memocache = new int[3004];
+        int l=0;int r=0;int cnt=0;
+        cache[l]=root;r++;memocache[l]=0;
+        cnt=1;
+        while(r>l){
+            ans= Math.max(memocache[r-1]-memocache[l]+1,ans);
+            for(int i=0;i<cnt;i++){
+                TreeNode poll=cache[l];
+                int memopoll=memocache[l];
+                l++;
+                if(poll.left!=null){
+                    cache[r]=poll.left;
+                    memocache[r]=memopoll*2+1;
+                    r++;
+                }
+                if(poll.right!=null){
+                    cache[r]=poll.right;
+                    memocache[r]=memopoll*2+2;
+                    r++;
+                }
+            }
+            cnt=r-l;
+        }
+        return ans;
+    }
+}
+```
+
+#### [二叉树层序序列化和反序列化]()
+```json
+{
+    "层序遍历队列容器":"cache",
+    "p作为状态指针游走":"state_pointer"
+}
+```
 
 # 堆
 - 优先级队列思考堆结构,堆结构是一个""排好序的队列",小头进大头出大根堆,大头进小头出小根堆
@@ -1926,6 +2248,326 @@ class MedianFinder {
 
 
 # =================================================================== 2
+
+# 高等数据结构
+
+# 滑动窗口
+- 应用于数组的全子串问题,维护一个滑动的子串窗口,将O(n^2)优化为O(n)
+- 暴力做法以右边为边界从0至n-1 遍历所有子串,每次遍历左指针回退到0重新开始, O(n^2)
+- 通过左边界的不回退指针,遍历每个字串不回退,优化为O(n)
+```json
+{
+    "滑动窗口":"partition_pointer no-backtracking_pointer"//维护的区域构建为[),左指针不回退
+}
+```
+## 习题
+### [累加和>=k的最短子串](https://leetcode.cn/problems/minimum-size-subarray-sum/)
+```java
+class Solution {
+    public int minSubArrayLen(int target, int[] nums) {
+        int l=0;int r=0;int ans=Integer.MAX_VALUE;int n=nums.length;
+        int sum=0;
+        while(r<n){
+            //以右为基准,右指针遍历每个字串
+            sum+=nums[r];
+            r++;
+            //左指针不回退收缩区域
+            while(true){
+                if(sum-nums[l]<target) break;
+                sum-=nums[l++];
+            }
+            if(sum>=target){
+                ans=Math.min(ans,(r-l));
+            }
+        }
+        if(ans==Integer.MAX_VALUE) return 0;
+        return ans;
+    }
+}
+```
+
+### [无重复字符的最长字串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
+```json
+{
+    "记录索引方便查询是否在窗口内":"map_container",
+    "懒得删":"lazy",//不删除不包含在窗口中map里的元素,仅关注在窗口中的元素即可,懒得删了
+    "滑动窗口":"no-backtracking_pointer partition_pointer"
+}
+```
+- 用一个mapcontainer 储存窗口中的元素 及其 索引
+- 存在一个lazy操作,判断窗口存在重复那么直接更新到重复的下一个,在map里仅改变重复的其余的不改变懒住,加一个>=l判断仅关注map里在窗孔中的元素即可
+类似与野指针
+```java
+import java.util.HashMap;
+import java.util.Map;
+
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        Map<Character, Integer> map = new HashMap<>();
+        int l=0;int r=0;int ans=0;
+        int n=s.length();
+        while(r<n){
+            char chr = s.charAt(r);
+            r++;
+            if(!map.containsKey(chr)){
+                map.put(chr,r-1);
+                ans=Math.max(ans,r-l);
+                continue;
+            }
+            Integer last = map.get(chr);
+            if(last>=l){
+                map.put(chr,r-1);
+                l=last+1;
+            }else{
+                map.put(chr,r-1);
+            }
+            ans=Math.max(ans,r-l);
+        }
+        return ans;
+    }
+}
+```
+
+### [最小覆盖子串](https://leetcode.cn/problems/minimum-window-substring)
+```json
+{
+    "窗口内需要包含的字符数量":"map_container",
+    "控制ans答案收集":"flag",//flag是负债标记不标记盈余实现控制
+    "滑动窗口":"no-backtracking_pointer partition_pointer"
+}
+```
+- 用map储存滑动窗口里含小字符串字符的数量,
+- 仅当所有都map所有>=0才能更新ans 用flag来控制map所有>=0 
+- map是负债表,flag标记负债而不标记盈余实现控制
+```java
+class Solution {
+    public String minWindow(String s, String t) {
+        int l=0;int r=0;int ansl=0;int ansr=Integer.MAX_VALUE-1;int flag=0;
+        int n=s.length();
+        Map<Character, Integer> map = new HashMap<>();
+        for(int i=0;i<t.length();i++){
+            char tmp = t.charAt(i);
+            if(!map.containsKey(tmp)){
+                map.put(tmp,-1);
+                flag--;
+            }else{
+                map.put(tmp,map.get(tmp)-1);
+                flag--;
+            }
+        }
+        //窗口滑动的state_enum有 是否存在map,存在是否>0两个state
+        while(r<n){
+            //右指针
+            char c = s.charAt(r);
+            r++;
+            if(map.containsKey(c)){
+                //注意这里仅负债++盈余不++
+                if(map.get(c)<0){
+                    flag++;
+                }
+                map.put(c,map.get(c)+1);
+            }
+            //左指针不回退
+            while(l<r){
+                char cl = s.charAt(l);
+                if(!map.containsKey(cl)){
+                    l++;
+                    continue;
+                }else{
+                    if(map.get(cl)<=0){
+                        break;
+                    }else{
+                        //注意这里盈余,flag不--
+                        l++;
+                        map.put(cl,map.get(cl)-1);
+                    }
+                }
+
+            }
+            if(flag>=0){
+                if(ansr-ansl > r-l){
+                    ansr=r;
+                    ansl=l;
+                }
+            }
+
+        }
+        if(ansr==Integer.MAX_VALUE-1){
+            return "";
+        }
+        return s.substring(ansl,ansr);
+
+    }
+}
+```
+
+### [最小覆盖子串ii 平衡字符串](https://leetcode.cn/problems/replace-the-substring-for-balanced-string)
+- 该题可转化为最小覆盖子串问题
+- // 替换子串得到平衡字符串
+// 有一个只含有 'Q', 'W', 'E', 'R' 四种字符，且长度为 n 的字符串。
+// 假如在该字符串中，这四个字符都恰好出现 n/4 次，那么它就是一个「平衡字符串」。
+// 给你一个这样的字符串 s，请通过「替换一个子串」的方式，使原字符串 s 变成一个「平衡字符串」。
+// 你可以用和「待替换子串」长度相同的 任何 其他字符串来完成替换。
+// 请返回待替换子串的最小可能长度。
+// 如果原字符串自身就是一个平衡字符串，则返回 0。
+```java
+import java.nio.file.FileAlreadyExistsException;
+import java.util.HashMap;
+import java.util.Map;
+
+class Solution {
+    public int balancedString(String s) {
+        Map<Character, Integer> map = new HashMap<>();
+        int n=s.length();
+        int should=n/4;
+        map.put('Q',should);
+        map.put('W',should);
+        map.put('E',should);
+        map.put('R',should);
+        for(int i=0;i<n;i++){
+            map.put(s.charAt(i),map.get(s.charAt(i))-1);
+        }
+        int flag=0;
+        for (Map.Entry<Character, Integer> p : map.entrySet()) {
+            if(p.getValue()<0){
+                flag+=p.getValue();
+            }
+        }
+        if(flag==0) return 0;
+        int l=0;int r=0;
+        int ans=Integer.MAX_VALUE;
+        while(true){
+            if(r>=n) break;
+            //right
+            char num = s.charAt(r);
+            r++;
+            if(map.containsKey(num)){
+                if(map.get(num)<0){
+                    flag++;
+                }
+                map.put(num,map.get(num)+1);
+            }
+            //left
+            while(l<r){
+                char lnum = s.charAt(l);
+                if(map.containsKey(lnum) && map.get(lnum)<=0){
+                    break;
+                }else if (map.containsKey(lnum) && map.get(lnum)>0){
+                    map.put(lnum,map.get(lnum)-1);
+                        l++;
+                    }
+                else{
+                    l++;
+                }
+
+            }
+            if(flag==0){
+                ans=Math.min(r-l,ans);
+            }
+        }
+        return ans;
+    }
+}
+```
+
+### [加油站出发点](https://leetcode.cn/problems/gas-station/)
+```json
+{
+    "滑动窗口":"no-backtracking_pointer partition_pointer",
+    "复制一份数组模拟环":"help_container mod"//将复制的数组索引mod映射到原来数组索引
+}
+```
+- 将这个环上油和距离做差值生成数组[-2,-2,-2,3,3] 
+- 遍历每个节点,然后从每个节点出发累加,加到<0意味着这个节点不行
+- 可看作环数组的全子串问题可以通过滑动窗口优化
+- 后边再拼接一份一样的数组实现环数组的转化,[-2,-2,-2,3,3,-2,-2,-2,3,3] 
+- 仅关注索引可以不实际构造help数组,原数组内外通过arr[index mod n]实现取值
+
+```java
+class Solution {
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        int n=gas.length;
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i]=gas[i]-cost[i];
+        }
+        int l=0;int r=0;
+        int sum=0;
+        int ans=-1;
+        //r-l==n代表找到节点了返回l
+        while(r-l<n){
+            //注意这里boudary判断l>=n直接return 没找到
+            if(l>=n) return ans;
+            int num = arr[r % n];
+            r++;
+            sum+=num;
+            //sum<0直接l,r跳到num后边
+            if(sum<0){
+                l=r;
+                sum=0;
+                continue;
+            }
+        }
+        return l;
+    }
+}
+```
+
+
+### [k个不同数的子串](https://leetcode.cn/problems/subarrays-with-k-different-integers/)
+```json
+{
+     "滑动窗口":"partition_pointer no-backtracking_pointer",//维护的区域构建为[),左指针不回退
+     "积分再差分求k":"discrete_oo.∑∫"
+}
+
+
+```
+- 求<=k 和<= k-1 然后相减差分求k
+```java
+class Solution {
+    public int subarraysWithKDistinct(int[] nums, int k) {
+        return f(nums,k)-f(nums,k-1);
+    }
+    public static int f(int[] nums,int k){
+        int n=nums.length;
+        int l=0;int r=0;
+        Map<Integer, Integer> map = new HashMap<>();
+        int ans=0;
+        int cnt=0;
+        while(r<n){
+            //right
+            int rnum=nums[r];
+            r++;
+            if(map.containsKey(rnum)){
+                map.put(rnum,map.get(rnum)+1);
+            }else{
+                map.put(rnum,1);
+                cnt++;
+            }
+            //left
+            while(true){
+                if(cnt<=k){
+                    break;
+                }else{
+                    int lnum=nums[l];
+                    map.put(lnum,map.get(lnum)-1);
+                    l++;
+                    if(map.get(lnum)==0){
+                        map.remove(lnum);
+                        cnt--;
+                    }
+                }
+
+            }
+            ans+=r-l;
+        }
+        return ans;
+    }
+}
+```
+
+# =================================================================== 3
 
 # 排序导论
 
@@ -2253,6 +2895,7 @@ class Solution {
 - 参见随机快排划分完=区域已经排好序已经确定不再改变,据此来寻找剪枝寻找第k小的树
 - 这里递归树只走一个分支并不会遍历所有节点
 - 时间复杂度参考快排的期望计算,每次分一半n/2+n/4+n/8+...+1=log(n)等比数列
+- io:输入区域返回第k小的数 stack:划分好区域
 ```java
 import java.io.*;
 import java.util.Scanner;
@@ -2293,7 +2936,7 @@ public class Main {
         partition(arr,l,r,x);
         if(k>=i && k<=j){
             ans=arr[i];
-            return ;
+            return ans;
         }
         int left=i-1;
         int right=j+1;
@@ -2395,7 +3038,7 @@ master公式 T(n)=2T(n/2)+O(n)  时间复杂度是O(nlogn)
 # 基数(桶)排序
 ```json
 {   "桶":"hubs",//记忆要像桶这个模型倒入倒出起到集线器的作用
-    "前缀和函数优化桶":"discrete_function.Σ∫",
+    "前缀和函数优化桶":"discrete_oo.Σ∫",
     "桶内的次序":"order ordinal_cardinal"//因为前缀,所以排序的时候每个桶内先排大的,所以遍历原数组要从右往左遍历保证大的先排到
 }
 ```
@@ -2542,7 +3185,7 @@ RadixSort        O(N)               O(M)               有
 - quicksort相比merge空间少了但是不稳定,守恒
 - quicksort通常常数时间比heapsort好,守恒
 
-# =================================================================== 3
+# =================================================================== 4
 
 # binary-bit题目
 ## 异或题目
@@ -2633,12 +3276,12 @@ public class Code04_LeftToRightAnd {
 ### java关于bit的api 
 - cout hightlowbit trailleading
 
-# =================================================================== 4
+# =================================================================== 5
 
 # 递归题目
 - recur_tree
 
-# =================================================================== 5
+# =================================================================== 6
 
 # 高等数学
 - skills 数学相关指的是数学底层的东西例如集合论soo,mod底层算子原理
@@ -2673,15 +3316,9 @@ public int gcd (int a,int b){
 ## 全排列
 - recur_tree prune
 
-# =================================================================== 6
-
-# 高等数据结构
-
-# 前缀树
-
 # =================================================================== 7
 
-# discrete_function
+# discrete_oo
 - 用数组模拟算子,将索引映射的算法
 - 动态规划可以看作递归树的逆从leaf到root的遍历,递归可改成dp
 
@@ -2724,14 +3361,14 @@ https://www.bilibili.com/video/BV1Er421K7kF/
 https://oi-wiki.org/string/kmp/
 ```json
 {
-    "前缀算子π":"symmetry discrete_function",
-    "π算子幂":"operator_pow"
+    "前缀算子π":"symmetry discrete_oo",
+    "π算子幂":"pow"
 }
 ```
 ## 前缀算子π
 
 
-## symmetry discrete_function
+## symmetry discrete_oo
 ![alt text](image-6.png)
 ![alt text](image-7.png)
 ```go
