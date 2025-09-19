@@ -142,34 +142,70 @@ if(cur1!=null){
 - 递归树
 ![alt text](7113268cadc2876214b893736260c100.jpg)![alt text](image-3.png)
 递归是对递归树的dfs遍历
+## basis 基底表示
+### consis_operator 一致算子
+- 用于构建递归树
+- io:f(a,b) 解决a,b状态的问题构建math算子
+- stack:用函数栈模拟递归树
+- 将要解决的problem 抽象为带状态的树节点,node:f(a,b) a,b是这个节点的状态 f(a,b)是这个树节点由函数栈模拟
+- 对状态进行枚举划分为leaf 和 no-leaf 他们区别就是开没开栈
+- f和g是一致的所以g=f
+- 由此构建每个节点最终组装成递归树
+```tex
+f()={
+    k   
+   ...  leaf 
+k+g()+g()+k   
+   ...  no-leaf
+}
+g()=f()
 
-## Node
+```
+### basis
+- Vn=∑kiVi+k*0  向量空间那个图来记忆
+- 不同状态节点由其子状态向量基底表示
+基底可一致转化
+- 叶子节点表示为0向量+k
+f(N)={
+    0*n+k  is leaf
+    g(n)+k is no-leaf
+}
+g=f 
+## tree
+### Node
 - args state or varible state 函数栈节点的状态
 - return state 函数返回会变成具体的值
 1个栈{}代表一个节点,每个节点都有一个状态,f(n)n就代表根节点状态
 回溯:基本数据类型的状态,随栈自动改变,引用数据类型的状态需要手动改变
 栈return就变成了具体的值;
 
-## 对于 递归函数 f()来说,以下开栈都是f()函数栈,其他函数的栈视作基本语句
+### 对于 递归函数 f()来说,以下开栈都是f()函数栈,其他函数的栈视作基本语句
 - 判断关键就是开没开栈
-## Leaf
+### Leaf
 - 节点内部未开f()函数栈的就是叶子节点
 - 基本语句,return都算作叶子节点
 直接return 无开栈的是leaf节点,基本语句也可视作leaf节点,可以再任何位置;
-## Branch
+### Branch
 - 节点内部开f()函数栈的就是分支节点
 开栈f()可视作branch节点 ,开栈后的return可视作基本语句
-## Root
+### Root
 - leaf和branch的区分就是开没开栈
 branch节点的结构和root节点的结构相同,且仅能够从root节点设计递归树的结构
-## dfs遍历
+## dfs遍历 
 ![alt text](image-2.png)
 递归是对递归树的遍历,采取包裹(dfs)式的遍历,遇到叶子节点就返回;
 具体例子可思考fabonacci 01背包 n皇后问题 全排列等
-## operator
-- io:f(a,b) 解决a,b状态的问题构建math算子
-- stack:用函数栈模拟递归树
+- 按照栈先进先出恢复
+- backtrack 记得恢复
 
+
+
+### dustbin
+
+- f=g+g+k g和f这两个算子是一致那么f=g 子问题g基底表示父问题f 如果f和g是一致的那么f=g
+- operator的设计有自指的含义,
+例如二叉树递归中root处io为返回节点stack为建好这课树,实际root处还没完成,对于两个子树可以直接当作完成了再拼接到一起,加了拼接这个语句,所有子问题都加上了拼接这个语句,自指
+例如快排中io为返回空 stack为
 ## master公式
 - T(N)=a*T(N/b)+O(N^c)
 - 符合这个公式的递归可以估计复杂度,仅能估计子状态规模相等的情况
@@ -255,11 +291,18 @@ while(true){
 while(!boundary case) 等价于 while if(boundary case) break;
 if() return  等价于  if else
 
-# prune
+# 递归衍生技巧
+
+## prune
 - 剪枝
 斐波那契额递归用记忆数组剪枝
 二分机器人走路问题达到最大值直接剪掉不考虑
 全组合
+
+
+## recover
+- 回溯的时候要把visit 栈等恢复到上一个状态因为根据basis不同节点状态不一样并不一定都是root节点需要恢复进行下一个节点dfs
+- 按照栈先进先出恢复
 
 # 指针技巧
 ## 普通迭代状态指针
@@ -628,7 +671,7 @@ ceil(a/b)=(a+b-1)/b;
 - (K,+,x)-(V,+,||): aA+bB |A|
 KV都是交换群
 ||:V->K 三角不等式 内积A*B=|A|x|B|xcosθ 
-- 基底表示
+- 基底表示 basis
 ### pow
 幂运算可以看作坐标维度的升高
 - 算子的幂次复合 f(x) f(f(x)):f^2(x) ...
