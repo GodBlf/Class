@@ -1650,7 +1650,7 @@ class Solution {
 }
 ```
 
-#### [二叉树先序序列化和反序列化]()
+#### [二叉树先序序列化和反序列化](https://leetcode.cn/problems/serialize-and-deserialize-binary-tree/)
 ```json
 {
     "递归树简简单单的":"recur_tree",
@@ -2035,12 +2035,87 @@ class Solution {
 }
 ```
 
-#### [二叉树层序序列化和反序列化]()
+#### [二叉树层序序列化和反序列化](https://leetcode.cn/problems/serialize-and-deserialize-binary-tree/)
 ```json
 {
     "层序遍历队列容器":"cache",
     "p作为状态指针游走":"state_pointer"
 }
+```
+
+```java
+
+
+public class Codec {
+    public static TreeNode[] cache=new TreeNode[10004];
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        int l=0;int r=0;
+        StringBuilder stringBuilder = new StringBuilder("");
+        if(root==null) return "";
+        stringBuilder.append(root.val+",");
+        cache[r++]=root;
+        while(l<r){
+            int size=r-l;
+            for(int i=0;i<size;i++){
+                TreeNode node=cache[l++];
+                TreeNode left = node.left;
+                TreeNode right = node.right;
+                if(left!=null){
+                    stringBuilder.append(left.val+",");
+                    cache[r++]=left;
+                }else{
+                    stringBuilder.append("#,");
+                }
+                if(right!=null){
+                    stringBuilder.append(right.val+",");
+                    cache[r++]=right;
+                }else{
+                    stringBuilder.append("#,");
+                }
+            }
+        }
+        return stringBuilder.toString();
+    }
+    TreeNode[] rcache=new TreeNode[10004];
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        int l=0;int r=0;
+        if(data.equals("")) return null;
+        String[] split = data.split(",");
+        int p=0;
+        TreeNode root = new TreeNode(Integer.parseInt(split[p]));
+        rcache[r++]=root;
+        while(l<r){
+            int size=r-l;
+            for(int i=0;i<size;i++){
+                TreeNode node = rcache[l++];
+                p++;
+                if(split[p].equals("#")){
+                    node.left=null;
+                }else {
+                    TreeNode nodeleft = new TreeNode(Integer.parseInt(split[p]));
+                    rcache[r++]=nodeleft;
+                    node.left=nodeleft;
+                }
+                p++;
+                if(split[p].equals("#")){
+                    node.right=null;
+                }else {
+                    TreeNode noderight = new TreeNode(Integer.parseInt(split[p]));
+                    rcache[r++]=noderight;
+                    node.right=noderight;
+                }
+            }
+        }
+        return root;
+    }
+}
+
+// Your Codec object will be instantiated and called as such:
+// Codec ser = new Codec();
+// Codec deser = new Codec();
+// TreeNode ans = deser.deserialize(ser.serialize(root));
 ```
 
 # 堆
@@ -2250,7 +2325,8 @@ class MedianFinder {
 # =================================================================== 2
 
 # 高等数据结构
-
+- 基础数据结构以0初始索引
+- 高级数据结构以1初始索引
 # 滑动窗口
 - 应用于数组的全子串问题,维护一个滑动的子串窗口,将O(n^2)优化为O(n)
 - 暴力做法以右边为边界从0至n-1 遍历所有子串,每次遍历左指针回退到0重新开始, O(n^2)
@@ -2521,7 +2597,6 @@ class Solution {
      "积分再差分求k":"discrete_oo.∑∫"
 }
 
-
 ```
 - 求<=k 和<= k-1 然后相减差分求k
 ```java
@@ -2566,6 +2641,13 @@ class Solution {
     }
 }
 ```
+
+# 前缀树
+- tree 将线性结构离散成树结构
+- prefix read 使用场景为前缀查询 
+以前缀为查询条件的查询
+
+
 
 # =================================================================== 3
 
@@ -3279,7 +3361,96 @@ public class Code04_LeftToRightAnd {
 # =================================================================== 5
 
 # 递归题目
-- recur_tree
+- recur_tree.basis recover prune
+## [只用递归逆序栈](左肾自造题)
+- recur_tree.basis
+### basis分析
+- 返回栈底元素的算子
+io:返回栈底元素 stack:void
+f(n)={
+    return poll if n==1  //leaf
+
+    poll+g(n-1)+poll
+}
+g=f
+- 逆序栈算子
+stack:逆序栈 io:void
+f(n)={
+    return if n==1  //leaf
+
+    返回栈底元素+g(n-1)+push
+}
+```java
+package class038;
+
+import java.util.Stack;
+
+// 用递归函数逆序栈
+public class Code05_ReverseStackWithRecursive {
+
+	public static void reverse(Stack<Integer> stack) {
+		if (stack.isEmpty()) {
+			return;
+		}
+		int num = bottomOut(stack);
+		reverse(stack);
+		stack.push(num);
+	}
+
+	// 栈底元素移除掉，上面的元素盖下来
+	// 返回移除掉的栈底元素
+	public static int bottomOut(Stack<Integer> stack) {
+		int ans = stack.pop();
+		if (stack.isEmpty()) {
+			return ans;
+		} else {
+			int last = bottomOut(stack);
+			stack.push(ans);
+			return last;
+		}
+	}
+
+	public static void main(String[] args) {
+		Stack<Integer> stack = new Stack<Integer>();
+		stack.push(1);
+		stack.push(2);
+		stack.push(3);
+		stack.push(4);
+		stack.push(5);
+		reverse(stack);
+		while (!stack.isEmpty()) {
+			System.out.println(stack.pop());
+		}
+	}
+
+}
+
+```
+
+## [汉诺塔问题](简简单单的)
+### basis分析
+stack:打印n  a->c的路径 io:void
+f(n)={
+    sout(a,c) if n==1; //leaf
+
+    g(n-1)+g(1)+g(n-1)
+}
+g=f
+```java
+class Solution{
+    public static void dfs(int n,String a,String b,String c){
+        if(n==1){
+            System.out.println(a+"->"+c);
+            return;
+        }
+        dfs(n-1,a,c,b);
+        dfs(1,a,b,c);
+        dfs(n-1,b,a,c);
+        return;
+    }
+}
+```
+
 
 # =================================================================== 6
 
@@ -3309,12 +3480,216 @@ public int gcd (int a,int b){
 # 同余原理
 
 # 组合数学
-- 组合is set-element 排列 is order  组合+order=排列
-
+- 递归basis recover
+- 排列组合递归函数io:void stack:全组合/全排列 [l:]数组
 ## 全组合
-- recur_tree prune
+```json
+{
+    "基底分析":"recur_tree.basis recover",
+}
+```
+
+### 不同元素全组合
+#### recur_tree构建(基底分析)
+- arr中元素皆不同,全组合
+f(l)={
+    return if l==n; //leaf
+
+    arr[l]+g(l+1) + 0*arr[l]+g(l+1) 
+}
+g=f
+```java
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+class Solution{
+    public List<List<Integer>> subsetsWithDup(int[] nums){
+        Arrays.sort(nums);
+        ArrayList<Integer> arr = new ArrayList<>();
+        List<List<Integer>> ans=new ArrayList<>();
+        dfs(nums,0,arr,ans);
+        return ans;
+    }
+    public static void dfs(int[] nums,int l, ArrayList<Integer> arr,List<List<Integer>>ans){
+        if(l==nums.length){
+            ans.add(new ArrayList<>(arr));
+            return;
+        }
+        //basis : 2g*(l+1)+k
+        dfs(nums,l+1,arr,ans);
+        arr.add(nums[l]);
+        dfs(nums,l+1,arr,ans);
+        arr.remove(arr.size()-1);
+        return;
+       
+    }
+}
+```
+
+
+### 去重全组合
+```json
+{
+    "基底分析":"recur_tree.basis recover",
+    "划分出排序后数组相同元素的区域":"partition_pointer"//方便basis
+}
+```
+- 由不同元素全组合进化而来,区别是前者0,1两个0向量 后者是0,1,2,3...多个零向量
+例如11122333  全组合基底是 0个1g(2后边的)+1个1g(2后边的)+...
+f(l)={
+    return if l==n; //leaf
+
+    add0+g(l+1)+remove+add1+g(l+1)+remove...
+    
+}
+g=f
+https://leetcode.cn/problems/subsets-ii
+```java
+import java.util.*;
+
+class Solution {
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        //排序分组
+        Arrays.sort(nums);
+        ans.clear(); // 清空静态结果集,不然力扣会再调用他下一个测试用例的
+        dfs(nums, 0);
+        return ans;
+    }
+
+    private static List<List<Integer>> ans = new ArrayList<>();
+    private static ArrayList<Integer> path = new ArrayList<>();
+
+    private static void dfs(int[] nums, int l) {
+        if (l == nums.length) {
+            ans.add(new ArrayList<>(path));
+            return;
+        }
+        int r = l + 1;
+        //boundary <> 优于 == !=
+        while (r < nums.length && nums[r] == nums[l]) {
+            r++;
+        }
+        // 0 个
+        dfs(nums, r);
+        // 1 ~ (r-l) 个
+        //划分区域
+        for (int i = 0; i < r - l; i++) {
+            path.add(nums[l]);
+            dfs(nums, r);
+        }
+        // 回溯撤销 recover
+        for (int i = 0; i < r - l; i++) {
+            path.remove(path.size() - 1);
+        }
+    }
+}
+
+```
+
 ## 全排列
-- recur_tree prune
+```json
+{
+    "basis分析":"recur_tree.basis recover",
+}
+```
+### 不同元素全排列
+对l以后全排列==l后每个元素放第一个全排列l+1后的
+#### basis分析
+f(l)={
+    return if l==n  //leaf
+
+    swap(l:)+add(l)+n*g(l+1)+remove(l)+swap(l:);
+}
+g=f
+```java
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+class Solution{
+
+        public List<List<Integer>> permute(int[] nums) {
+            List<Integer> arrayList = new ArrayList<>();
+            List<List<Integer>> ans = new ArrayList<>();
+            dfs(nums,0,arrayList,ans);
+            return ans;
+        }
+
+    public static void dfs(int[] nums,int l, List<Integer> arr,List<List<Integer>>ans){
+        if(l>=nums.length){
+            ans.add(new ArrayList<>(arr));
+            return;
+        }
+        for(int i=l;i<nums.length;i++){
+            //栈式recover
+            swap(nums,l,i);
+            arr.add(nums[l]);
+            dfs(nums,l+1,arr,ans);
+            arr.remove(arr.size()-1);
+            swap(nums,l,i);
+        }
+
+    }
+
+    public static void swap(int[] nums,int i,int j){
+            int tmp=nums[i];
+            nums[i]=nums[j];
+            nums[j]=tmp;
+            return;
+    }
+}
+```
+### 去重全排列
+```json
+{
+    "basis分析":"recur_tree.basis recover",
+    "去重":"memo_pointer pointers_container"
+}
+```
+- 由不同元素全排列进化而来
+- 再交换的时候去重即可
+```java
+import java.util.*;
+
+class Solution{
+
+        public List<List<Integer>> permuteUnique(int[] nums) {
+            List<Integer> arrayList = new ArrayList<>();
+            List<List<Integer>> ans = new ArrayList<>();
+            dfs(nums,0,arrayList,ans);
+            return ans;
+        }
+
+    public static void dfs(int[] nums,int l, List<Integer> arr,List<List<Integer>>ans){
+        if(l>=nums.length){
+            ans.add(new ArrayList<>(arr));
+            return;
+        }
+        //用hashset 记录每次交换的变量 再来相同的直接去掉 memo记忆
+        //不能用一个变量memo因为1,1,2,2 交换2的时候这个变量仅记忆了1,第二个2交换也是重复的
+        HashSet<Integer> set = new HashSet<>();
+        for(int i=l;i<nums.length;i++){
+            if(set.contains(nums[i])) continue;
+            set.add(nums[i]);
+            swap(nums,l,i);
+            arr.add(nums[l]);
+            dfs(nums,l+1,arr,ans);
+            arr.remove(arr.size()-1);
+            swap(nums,l,i);
+        }
+
+    }
+
+    public static void swap(int[] nums,int i,int j){
+            int tmp=nums[i];
+            nums[i]=nums[j];
+            nums[j]=tmp;
+            return;
+    }
+}
+```
 
 # =================================================================== 7
 
