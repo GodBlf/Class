@@ -167,8 +167,8 @@ g()=f()
 基底可一致转化
 - 叶子节点表示为0向量+k
 f(N)={
-    0*n+k  is leaf
-    g(n)+k is no-leaf
+    k*0  is leaf
+    kg(n)+k*0 is no-leaf
 }
 g=f 
 ## tree
