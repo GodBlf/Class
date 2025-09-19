@@ -3483,13 +3483,14 @@ public int gcd (int a,int b){
 - 递归basis recover
 - 排列组合递归函数io:void stack:全组合/全排列 [l:]数组
 ## 全组合
+
+
+### 不同元素全组合
 ```json
 {
     "基底分析":"recur_tree.basis recover",
 }
 ```
-
-### 不同元素全组合
 #### recur_tree构建(基底分析)
 - arr中元素皆不同,全组合
 f(l)={
@@ -3588,12 +3589,13 @@ class Solution {
 ```
 
 ## 全排列
+
+### 不同元素全排列
 ```json
 {
     "basis分析":"recur_tree.basis recover",
 }
 ```
-### 不同元素全排列
 对l以后全排列==l后每个元素放第一个全排列l+1后的
 #### basis分析
 f(l)={
