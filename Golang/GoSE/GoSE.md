@@ -156,14 +156,10 @@ var (
 - 迭代器 for _,v := range slice 忽略迭代器索引仅用值
 
 # 函数
-- math input and output stack operate and return
-
+- io stack
 ## 函数类型
-func fabonacci(n int) *big.Int{}  func(n int) *big.Int  func fabonacci(n int) (ans big.Int,err error){}
-其中n和int对应 fabonacci和*big.Int对应
-n和int对应 func类型和*big.Int对应
-多返回值用于标记返回方便return
-- 应该参数写名称和类型 返回值不写名称因为名称就是函数名称
+- 算子输入变量输出变量 输入值输出值 func f(n int) int {} ; 变量n类型是int;f(n int)是算子输出的变量类型是int;
+所以参数有名称返回值不加名称,因为f(n int)本身就是变量
 - 多返回值是给error准备的
 
 - go中函数是一个类型
