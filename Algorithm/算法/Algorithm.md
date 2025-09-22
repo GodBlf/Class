@@ -29,9 +29,216 @@
 
 
 
+## 数据量猜解法-天字一号技巧
+- 一个基本事实
+C/C++运行时间1s，java/python/go等其他语言运行时间1s~2s，
+对应的常数指令操作量是 10^7 ~ 10^8，不管什么测试平台，不管什么cpu，都是这个数量级
+所以可以根据这个基本事实，来猜测自己设计的算法最终有没有可能在规定时间内通过
+
+运用 根据数据量猜解法技巧 的必要条件：
+1，题目要给定各个入参的范围最大值，正式笔试、比赛的题目一定都会给，面试中要和面试官确认
+2，对于自己设计的算法，时间复杂度要有准确的估计
+
+这个技巧太重要了！既可以提前获知自己的方法能不能通过，也可以对题目的分析有引导作用！
+
+
+
 ## 数据结构
 - 所有数据结构底层都是连续结构(数组),跳转结构(指针链表)拼出来的
 - 底层(连续,跳转)->理论(线性表,哈希表,树,图)
+
+# 打表中间件
+- 在另一个程序里做好中间件,在目标程序代码里提前做好中间件数组打表之类的,
+
+## 打表找规律
+
+## 习题
+### [装苹果问题]
+- 打表找规律
+```java
+package class042;
+
+// 有装下8个苹果的袋子、装下6个苹果的袋子，一定要保证买苹果时所有使用的袋子都装满
+// 对于无法装满所有袋子的方案不予考虑，给定n个苹果，返回至少要多少个袋子
+// 如果不存在每个袋子都装满的方案返回-1
+public class Code01_AppleMinBags {
+
+	public static int bags1(int apple) {
+		int ans = f(apple);
+		return ans == Integer.MAX_VALUE ? -1 : ans;
+	}
+
+	// 当前还有rest个苹果，使用的每个袋子必须装满，返回至少几个袋子
+	public static int f(int rest) {
+		if (rest < 0) {
+			return Integer.MAX_VALUE;
+		}
+		if (rest == 0) {
+			return 0;
+		}
+		// 使用8规格的袋子，剩余的苹果还需要几个袋子，有可能返回无效解
+		int p1 = f(rest - 8);
+		// 使用6规格的袋子，剩余的苹果还需要几个袋子，有可能返回无效解
+		int p2 = f(rest - 6);
+		p1 += p1 != Integer.MAX_VALUE ? 1 : 0;
+		p2 += p2 != Integer.MAX_VALUE ? 1 : 0;
+		return Math.min(p1, p2);
+	}
+
+	public static int bags2(int apple) {
+		if ((apple & 1) != 0) {
+			return -1;
+		}
+		if (apple < 18) {
+			if (apple == 0) {
+				return 0;
+			}
+			if (apple == 6 || apple == 8) {
+				return 1;
+			}
+			if (apple == 12 || apple == 14 || apple == 16) {
+				return 2;
+			}
+			return -1;
+		}
+		return (apple - 18) / 8 + 3;
+	}
+
+	public static void main(String[] args) {
+		for (int apple = 0; apple < 100; apple++) {
+			System.out.println(apple + " : " + bags1(apple));
+		}
+	}
+
+}
+
+```
+- 找出来规律
+f(n){
+    return -1 if 奇数
+    rerturn 0 if n==0   
+    return 1  if n==6 || n==8
+    return 2  if n==12 || n==14 || n==16
+    return -1 else
+    return (n-18)/8+3; if n>=18
+}
+
+### [两牛吃草博弈问题]
+```java
+package class042;
+
+// 草一共有n的重量，两只牛轮流吃草，A牛先吃，B牛后吃
+// 每只牛在自己的回合，吃草的重量必须是4的幂，1、4、16、64....
+// 谁在自己的回合正好把草吃完谁赢，根据输入的n，返回谁赢
+public class Code02_EatGrass {
+
+	// "A"  "B"
+	public static String win1(int n) {
+		return f(n, "A");
+	}
+
+	// rest : 还剩多少草
+	// cur  : 当前选手的名字
+	// 返回  : 还剩rest份草，当前选手是cur，按照题目说的，返回最终谁赢 
+	public static String f(int rest, String cur) {
+		String enemy = cur.equals("A") ? "B" : "A";
+		if (rest < 5) {
+			return (rest == 0 || rest == 2) ? enemy : cur;
+		}
+		// rest >= 5
+		// rest == 100
+		// cur : 
+		// 1) 1 ->99,enemy ....
+		// 2) 4 ->96,enemy ....
+		// 3) 16 -> 84,enemy ....
+		// 4) 64 -> 36,enemy ...
+		// 没有cur赢的分支，enemy赢
+		int pick = 1;
+		while (pick <= rest) {
+			if (f(rest - pick, enemy).equals(cur)) {
+				return cur;
+			}
+			pick *= 4;
+		}
+		return enemy;
+	}
+
+	public static String win2(int n) {
+		if (n % 5 == 0 || n % 5 == 2) {
+			return "B";
+		} else {
+			return "A";
+		}
+	}
+
+	public static void main(String[] args) {
+		for (int i = 0; i <= 50; i++) {
+			System.out.println(i + " : " + win1(i));
+		}
+	}
+
+}
+
+```
+- 找出来规律
+babaa 将n映射到0~4上 n mod 5
+
+### [是否为连续正整数之和]
+- 用滑动窗口解决子串问题
+- 打表发现规律 2的幂就是-1
+```java
+import java.io.*;
+import java.lang.invoke.VarHandle;
+import java.util.*;
+class vector{
+    int x;
+    int y;
+    vector(int xx,int yy){
+        x=xx;
+        y=yy;
+    }
+}
+public class Main{
+    public static int[][] mat;
+    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
+        StreamTokenizer in = new StreamTokenizer(reader);
+        //
+        for(int i=1;i<=20;i++){
+            out.println(i+" " + f(i));
+        }
+        //
+        out.flush();
+        out.close();
+    }
+
+    public static int f(int n){
+        int l=1;int r=1;int sum=0;
+        while(r<n){
+            //right
+            int numr=r;
+            r++;
+            sum+=numr;
+            if(sum==n){
+                return r-l;
+            }
+
+            //left
+            while(sum>n){
+                sum-=l++;
+                if(sum==n){
+                    return r-l;
+                }
+            }
+
+        }
+        return -1;
+    }
+
+
+}
+```
 
 # 对数器
 ```json
@@ -398,7 +605,7 @@ class Solution {
 }
 ```
 
-# =================================================================== 1
+# ====================================================================================================================================== 基础数据结构
 
 # 基础数据结构
 - 所有数据结构底层都是连续结构(数组),跳转结构(指针链表)拼出来的
@@ -1096,7 +1303,7 @@ class MyQueue {
 ### [最小栈leetcode](https://leetcode.cn/problems/min-stack/)
 ```json
 {
-    "记忆栈":"memo_pointers pointers_container"//最小栈的每个元素记忆原栈到栈底的最小值,将记忆指针放入容器方便管理
+    "记忆栈":"memo_pointer_container"//最小栈的每个元素记忆原栈到栈底的最小值,将记忆指针放入容器方便管理
 }
 ```
 ```java
@@ -1995,7 +2202,7 @@ public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
 #### [二叉树最大宽度包含null](https://leetcode.cn/problems/maximum-width-of-binary-tree)
 ```json
 {
-    "记忆每个节点的位置":"memo_pointer pointers_container",//方便计算宽度
+    "记忆每个节点的位置":"memo_pointer_container",//方便计算宽度
     "cache容器":"cache"
 }
 ```
@@ -2210,7 +2417,7 @@ public class Codec {
 ```json
 {
     "优先级队列小根堆":"container.cache",
-    "不回退状态指针":"no-backtracking_pointer pointers_container"//进入cache充当不回退指针
+    "不回退状态指针":"no-backtracking_pointer_container"//进入cache充当不回退指针
 }
 ```
 - 合并两个用不回退指针和链表模型
@@ -2322,19 +2529,25 @@ class MedianFinder {
 # 图
 
 
-# =================================================================== 2
+# ====================================================================================================================================== 高等数据结构
 
 # 高等数据结构
 - 基础数据结构以0初始索引
 - 高级数据结构以1初始索引
+- 开头都要写这个高级数据结构要解决什么问题,以及如何构造的
+
+# # =================================================================== 线性结构
+
 # 滑动窗口
-- 应用于数组的全子串问题,维护一个滑动的子串窗口,将O(n^2)优化为O(n)
-- 暴力做法以右边为边界从0至n-1 遍历所有子串,每次遍历左指针回退到0重新开始, O(n^2)
-- 通过左边界的不回退指针,遍历每个字串不回退,优化为O(n)
+
 ```json
 {
+    "解决全子串问题":null,//枚举所有子串
     "滑动窗口":"partition_pointer no-backtracking_pointer"//维护的区域构建为[),左指针不回退
 }
+// 应用于数组的全子串问题,维护一个滑动的子串窗口,将O(n^2)优化为O(n)
+// 暴力做法以右边为边界从0至n-1 遍历所有子串,每次遍历左指针回退到0重新开始, O(n^2)
+// 通过左边界的不回退指针,遍历每个字串不回退,优化为O(n)
 ```
 ## 习题
 ### [累加和>=k的最短子串](https://leetcode.cn/problems/minimum-size-subarray-sum/)
@@ -2642,14 +2855,197 @@ class Solution {
 }
 ```
 
+# # =================================================================== 树结构
+
 # 前缀树
-- tree 将线性结构离散成树结构
+```json
+{
+    "解决前缀查询问题":"prefix read",
+    "前缀树":"tree discrete_oo.prefix"
+}
 - prefix read 使用场景为前缀查询 
 以前缀为查询条件的查询
+- tree 将线性结构离散成树结构
+每个节点记录pass end信息,由于数的结构还记录了从根节点到节点的路径信息
+```
+
+# 并查集
+- find union set
+```json
+{
+    "解决元素查找和集合合并问题":"find union set",
+    "并查集":"tree.tree_arr"
+}
+- 解决查找元素在哪个集合和集合合并的问题
+- tree 每个集合是一个树,树的root是这个集合的代表(名字)
+```
+![alt text](image-9.png)
+![alt text](image-10.png)
+```java
+
+```
+- 小挂大
+维护一个size指向每一个集合中元素的数量
+union 合并集合的时候小集合挂在大集合下边
+
+- 扁平化
+查找元素所在集合的时候用栈将沿途元素记录下来,之后再一个一个弹出挂到root节点上
+![alt text](image-11.png)
+![alt text](image-12.png)
+
+```java
+public class Main {
+
+    public static int MAXN = 1000001;
+
+    public static int[] father = new int[MAXN];
+
+    public static int[] size = new int[MAXN];
+    //栈可用静态数组实现优化
+    public static int[] stack1 = new int[MAXN];
+    //集合的数量
+    public static int sets;
+    //集合的初始数量0
+    public static int n;
+
+    public static void build() {
+        sets=n;
+        //高级数据结构索引1
+        for(int i=0;i<=n;i++){
+            father[i]=i;
+            size[i]=0;
+        }
+    }
 
 
+    public static int find(int i) {
+        int ans=0;
+        ArrayDeque<Integer> stack = new ArrayDeque<>();
+        //state_pointer
+        while(true){
+            //终止条件是到root节点,root节点特征为指向自己
+            if(father[i]==i){
+                ans=i;
+                break;
+            }
+            stack.push(i);
+            i=father[i];
+        }
+        while(true){
+            if(stack.isEmpty()){
+                break;
+            }
+            Integer pop = stack.pop();
+            father[pop]=ans;
+        }
+        return ans;
+    }
 
-# =================================================================== 3
+    public static boolean isSameSet(int x, int y) {
+        return find(x)==find(y);
+    }
+
+    public static void union(int x, int y) {
+        int xroot = find(x);
+        int yroot= find(y);
+        //如果一个集合就不用union
+        if(xroot==yroot) return;
+        //小挂大
+        if(size[xroot]<=size[yroot]){
+            father[xroot]=yroot;
+            size[yroot]+=size[xroot];
+            size[xroot]=-1;
+        }else{
+            father[yroot]=xroot;
+            size[xroot]+=size[yroot];
+            size[yroot]=-1;
+        }
+        //更新集合数量
+        sets--;
+    }
+
+
+}
+
+```
+
+## 时间复杂度
+- O(1) 发明者证明证了15年直接记住
+
+## 习题
+### [情侣牵手问题](https://leetcode.cn/problems/couples-holding-hands/)
+```json
+{
+    "置换环":"graph.permute_ring",
+    "并查集":"tree.tree_arr"
+}
+```
+- 数组中每个元素val/2是一个vertex顶点
+- 每两个一组不符合的vertex点加入到一个环里,符合的顶点形成一个自环,并查集合并
+- 最后图形成置换 环
+- ans=交换次数=∑ring.size()-1=元素个数-环的数量
+```java
+import java.util.ArrayDeque;
+
+class Solution {
+    public static int[] father=new int[34];
+    public static int[] size=new int [34];
+    public static int sets;
+    public int minSwapsCouples(int[] row) {
+        build(row.length/2);
+        for(int i=0;i<row.length;i+=2){
+            int a = row[i]/2;
+            int b=row[i+1]/2;
+            union(a,b);
+        }
+        return row.length/2-sets;
+    }
+    public static void build(int n){
+        sets=n;
+        for(int i=0;i<n;i++){
+            father[i]=i;
+            size[i]=0;
+        }
+    }
+    public static int find(int i){
+        ArrayDeque<Integer> cache = new ArrayDeque<>();
+        int ans=0;
+        int sp=i;
+        while(father[sp]!=sp){
+            cache.push(sp);
+            sp=father[sp];
+        }
+        ans=sp;
+        while(!cache.isEmpty()){
+            Integer pop = cache.pop();
+            father[pop]=ans;
+        }
+        return ans;
+
+    }
+
+    public static void union(int a,int b){
+        int aroot=find(a);
+        int broot=find(b);
+        if(aroot==broot){
+            return;
+        }
+        if(size[aroot]>=size[broot]){
+            father[broot]=aroot;
+            size[aroot]+=size[broot];
+        }else{
+            father[aroot]=broot;
+            size[broot]+=size[aroot];
+        }
+        sets--;
+    }
+}
+```
+
+### [相似字符串]()
+- tree.tree_arr 并查集
+
+# ====================================================================================================================================== 排序相关
 
 # 排序导论
 
@@ -3267,7 +3663,7 @@ RadixSort        O(N)               O(M)               有
 - quicksort相比merge空间少了但是不稳定,守恒
 - quicksort通常常数时间比heapsort好,守恒
 
-# =================================================================== 4
+# ====================================================================================================================================== 二进制位运算题目
 
 # binary-bit题目
 ## 异或题目
@@ -3358,7 +3754,7 @@ public class Code04_LeftToRightAnd {
 ### java关于bit的api 
 - cout hightlowbit trailleading
 
-# =================================================================== 5
+# ====================================================================================================================================== 递归题目
 
 # 递归题目
 - recur_tree.basis recover prune
@@ -3451,8 +3847,143 @@ class Solution{
 }
 ```
 
+## 括号嵌套类递归题目
+## [括号嵌套计算器]()
+```java
 
-# =================================================================== 6
+```
+
+## [嵌套字符串解码](https://leetcode.cn/problems/decode-string/)
+
+
+```java
+class Solution {
+    public String decodeString(String s) {
+        str="";
+        l=0;
+        str=s+"]";
+        return dfs(1);
+    }
+    public static String str;
+    public static int l=0;
+    public static String dfs(int n){
+        StringBuilder stringBuilder = new StringBuilder();
+        int cur=0;
+        while(str.charAt(l)!=']'){
+            if(str.charAt(l)>='0' && str.charAt(l)<='9'){
+                cur=cur*10+(str.charAt(l)-'0');
+                l++;
+            }else if(str.charAt(l)=='['){
+                l++;
+                stringBuilder.append(dfs(cur));
+                cur=0;
+            }else{
+                stringBuilder.append(str.charAt(l));
+                l++;
+            }
+        }
+        if(n==1){
+            l++;
+            return stringBuilder.toString();
+        }else{
+            StringBuilder ans = new StringBuilder();
+            for(int i=0;i<n;i++){
+                ans.append(stringBuilder.toString());
+            }
+            l++;
+            return ans.toString();
+        }
+    }
+}
+```
+## [n皇后]()
+- json:recur_tree prune recover 
+### basis分析
+- io:返回填n行皇后的种类数
+- f(n)={
+    return 0 if n==0 //leaf
+
+    n*g(n-1) 填第n行每一列时对应填n-1行的种类数
+}
+g=f
+
+### 剪枝版本
+- f(n)={
+    return 0 if n==0 //leaf
+ 
+    g(n-1)+...~~g(n-1)~~...g(n-1)  //prune
+}
+g=f
+- prune : 通过记忆之前的路径开g栈时提前剪掉,判断标准为同一列 或者同一斜线
+
+```java
+import java.util.Arrays;
+
+class Solution {
+    public int totalNQueens(int n) {
+        int[] path = new int[n];
+        Arrays.fill(path,-1);
+        return dfs(path,0,n);
+    }
+
+    public static int dfs(int[] path,int i,int n){
+        if(i==n){
+            return 1;
+        }
+        int ans=0;
+        for(int j=0;j<n;j++){
+            if(check(path,i,j)){
+                path[i]=j;
+                ans+=dfs(path,i+1,n);
+                path[i]=-1; //recover
+            }
+        }
+        return ans;
+    }
+
+    public static boolean check(int[] path,int i,int j){
+        for(int k=0;k<i;k++){
+            if(j==path[k]){
+                return false;
+            }
+            if(Math.abs(i-k)==Math.abs(j-path[k])){
+                return false;
+            }
+        }
+        return true;
+    }
+
+}
+```
+### 剪枝位图版本(状态压缩)
+- recur_tree prune recover bitmap
+```java
+class Solution {
+    public int totalNQueens(int n) {
+        int e=(1<<n)-1;
+        return dfs(0,n,0,0,0,e);
+    }//
+    //col left right分别是填在某列时剩下列不能填的位置
+    public static int dfs(int i,int n,int col,int left,int right,int e){
+        if(i==n){
+            return 1;
+        }
+        int ans=0;
+        int ban=col | left | right;
+        //遍历能填的位置,直接剪掉不能填的位置
+        //取反再*e再用lowbit方便取出原bitmap中的0
+        int can=e&(~ban);
+        while(can!=0){
+            int lowbit = can&(-can);
+            ans+=dfs(i+1,n,col+lowbit,(left+lowbit)<<1,(right+lowbit)>>1,e);
+            can-=lowbit;
+        }
+        return ans;
+    }
+}
+```
+
+# ====================================================================================================================================== 高等数学
 
 # 高等数学
 - skills 数学相关指的是数学底层的东西例如集合论soo,mod底层算子原理
@@ -3476,14 +4007,53 @@ public int gcd (int a,int b){
 }
 ```
 ## 习题
+### [第n个神奇的数字](https://leetcode.cn/problems/nth-magical-number/)
+- 简简单单的二分
+```java
+class Solution {
+    public int nthMagicalNumber(int n, int a, int b) {
+        int lcm=lcm(a,b);
+        long l=Math.min(a,b);
+        long r=l*n;
+        long mid=0;
+        //因为整除所以l是< r是>=n 寻找n-1和n的边界
+        while(l+1<r){
+            mid=(r-l)/2+l;
+            if(mid/a+mid/b-mid/lcm>=n){
+                r=mid;
+            }else{
+                l=mid;
+            }
+        }
+        return (int) (r%(1000000000+7));
+    }
+    public static int gcd(int a,int b){
+        while(b!=0){
+            int tmp=a;
+            a=b;
+            b=tmp%b;
+        }
+        return a;
+    }
+
+    public static int lcm(int a,int b){
+        return a/gcd(a,b)*b;
+    }
+}
+```
 
 # 同余原理
-
+- 每步运算都取模=整体取模
+- (a+b+c)mod d =(a+b)mod d+c)mod d = (a +0 mod d+ b+0 mod d) mod d)+c+0 mod d)mod d=(((a mod d)+(b mod d))mod d+(c mod d))mod d
+- 减法出现负数:
+(10 - 7) mod 4->(10 mod 4 - 7 mod 4)mod4出现负数
+加个4就行->(10 mod 4 - 7 mod 4 + 4)mod4
+a mod b=(a + bmodb)mod b =同余原理= (a+b)mod b
 # 组合数学
 - 递归basis recover
 - 排列组合递归函数io:void stack:全组合/全排列 [l:]数组
 ## 全组合
-
+- 全组合是取所有元素进行010101001(bitmap表示存在不存在)
 
 ### 不同元素全组合
 ```json
@@ -3589,7 +4159,7 @@ class Solution {
 ```
 
 ## 全排列
-
+- 全排列是取所有元素进行排列
 ### 不同元素全排列
 ```json
 {
@@ -3647,7 +4217,7 @@ class Solution{
 ```json
 {
     "basis分析":"recur_tree.basis recover",
-    "去重":"memo_pointer pointers_container"
+    "去重":"memo_pointer_container"
 }
 ```
 - 由不同元素全排列进化而来
@@ -3738,8 +4308,10 @@ https://www.bilibili.com/video/BV1Er421K7kF/
 https://oi-wiki.org/string/kmp/
 ```json
 {
-    "前缀算子π":"symmetry discrete_oo",
-    "π算子幂":"pow"
+    "前缀算子π":"symmetry discrete_oo.prefix",
+    "π算子幂":"basis.pow",
+    // "Π算子幂的边界判断":"vars_hubs state_pointer"
+    //因为这俩很基础但在kmp体现的淋漓尽致所以指出来
 }
 ```
 ## 前缀算子π

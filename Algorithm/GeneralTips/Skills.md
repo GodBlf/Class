@@ -42,22 +42,38 @@ Skills->Algorithm ; Skills->JavaSE
 }
 ```
 
+# tree
+- 很多计算机底层都是树结构
+- 例如bfs 和 dfs 的queue stack实现,递归.递归树遍历;
+- 例如状态的枚举,分步乘法通过tree实现,例如a有3个状态,b有四个状态 合起来一共3*4  12 个状态
+## tree_arr
+- 通过arr构造树
+因为树每个节点只有一个father所以 arr索引就是节点索引的值指向father
+构造一个father数组即可 
+例如并查集的father数组
+
+
+
 # vars_hubs
 - if else通过变量状态的划分来进行
 - state divide and choose 变量状态的分划和选择,对象可以是变量,序偶等,例如a>b相当于(a,b)的state;选择某个状态就在假设某个状态成立下进行后续操作;注意合并逻辑
-## enum
-- hub中有多个变量
+## vars_hub
+![alt text](image-6.png)
+### enum
+- hub中有多个变量,枚举所有状态
 - 一个操作由同级的若干变量控制将变量状态的划分相乘
 a:3状态 b:4状态 一共12个if else
 - 例如二叉树判断
 由左右孩子状态共同划分 10,11,01,00 划分为4个if else
-### enum_set
+- 例如kmp的边界判断 sp==0 和 pi[sp]==str[i]
+#### enum_set
 - 主析取范式
 - 二叉树后序遍历将状态s分为左移 右移 弹出三个状态集合 
 
-### dependency
-- 若命题间有依赖关系,那么可以减少enum的数量或将if_else转化为树状嵌套结构
-- 树状结构可扁平化
+## var_hubs
+![alt text](image-7.png)
+- 若命题间有依赖关系,可以设计成多个hub每个hub有一个变量的树形结构
+- 树状结构可通过vars_hub扁平化
 - 例如二叉树判断 加一个左孩子存在那么还会连一个tail
 ```c
 if(left!=null && right!=null){
@@ -117,16 +133,162 @@ if(cur1!=null){
 //4. 先考虑分支结构再考虑叶子结构和短路结构 来简化代码分支;
 ```
 
+## while
+- while就是循环代码块,根据vars_hubs来结束循环,while里嵌套ifelse
+- while就是state_pointer遍历,
+- 直接while再说
+
 # boundary
 - 收纳很多边界判断的技巧
 - >= <= 优于==
 例如快排中叶子节点为 l>=r 防止l在右边界
 
+# 指针技巧
+## 普通迭代状态指针(state_pointer)
+### while
+- while就是循环代码块,根据vars_hubs来结束循环,while里嵌套ifelse
+- while就是state_pointer遍历,
+- 直接while再说
+- 如果指针模拟状态遍历,那么指到哪里就立即更新他的状态
+例如,遍历树的时候指针指向root先把root设置为visited再while遍历
+ while/for
+- 每次迭代都是一个状态
+- e.g.
+fori  
+int i  while{... ;  i++} 末尾i状态变化
+- 例如kmp里的前缀函数循环
+```go
+π(i-1)+1=π(i)
+ππ(i-1)+1=π(i)
+π^3(i-1)+1=π(i)
+...
+π^n(i-1)+1=π(i)
+//终止条件是π^n==0 || π^n(-1)+1==π(i)
+//以1为索引 以0就one_short
+sp=pi[i-1]
+while{
+if...break;
+sp=pi[sp]
+}
+```
 
 
-# tree
-- 很多计算机底层都是树结构
-- 例如bfs 和 dfs 的queue stack实现,递归.递归树遍历;
+- 下面的高级优化指针都是普通迭代状态指针的自己都继承他的特性
+## pointers_container
+### memo_pointer_container
+- 指的是记忆指针特别多放在容器李方便管理进化成容器了
+- memo_pointer_container=memo_pointers+pointers_container
+###
+- 指针过多收集到容器中方便管理
+- 这里指针可以是memo,普通状态指针等
+- 例如最小栈的memo指针容器;合并k个有序链表的小根堆不回退指针
+
+---
+NMP  (no-backtracking memo partition);
+## no-backtracking_pointer/不回退指针
+no backtracking pointer
+- 数组反转
+- 例如将数组排序,kmp算法等,A-Bproblem,滑动窗口,供暖器
+### order
+- 当需要两个指针不断循环的时候可以考虑排序然后改为no-backtracking指针
+### 双指针统计(归并)
+将两部分排序
+n^2的统计通过排序变为n
+```java
+// 统计部分
+		long ans = 0;
+		for (int j = m + 1, i = l, sum = 0; j <= r; j++) {
+			while (i <= m && arr[i] <= arr[j]) {
+				sum += arr[i++];
+			}
+			ans += sum;
+		}
+```
+
+### fast-slow_pointer
+- 快慢指针
+- 距离差,速度差,时间差构筑快慢指针
+
+## memo_pointer/记忆指针
+- 设置sentry 划分一维数组 ;
+- memo pointer
+- 例如(二叉树模拟递归遍历)  用指针记忆是否return的状态;
+```java
+TreeNode head=node;
+TreeNode pop=null;
+ArrayDeque<TreeNode> cache=...;
+static void dfs(TreeNode node){
+     while(true){
+            if(head==null && cache.isEmpty()){
+                break;
+            }
+            if(head!=null){
+                cache.push(head);
+                head=head.left;
+            }else{   // null是叶子节点 return;
+                TreeNode peek = cache.peek();
+                if(peek.right==pop || peek.right==null){  //如果右子树是null或者已被弹出直接return
+                    pop = cache.pop();  //标记
+                    result.add(pop.val);
+                }else{
+                    head=peek.right;        //否则head标记为right然后继续进栈;
+                }
+            }
+
+        }
+}
+```
+- 最小栈记录栈的最小值
+
+## partition_pointer/划分指针
+- 和memopointer的区别 memo自身有记忆的状态,partition也可以有记忆区间状态,但是partition可以逐步扩充memo是瞬移,和flag的区别memo和数据结构本身相关,flag
+例如bool flag cout等与数据结构本身无关
+### 划分
+- []闭区间划分
+很典型,指针就是划分区域的边界
+例如二分算法
+- ()开区间划分
+开区域优点是边界可以充当迭代器的头方便迭代,数组-1和n索引可不设置避免越界
+开区间边界较为常见
+- [)开闭区间划分
+构造[)开闭区间,开区间头是划分指针的迭代头,充当迭代器的作用方便迭代
+例如快排的三个[)区域,<和>区域的闭区间都是数组的-1和n
+```java
+[<)
+  [=)    
+        (>]
+```
+
+- swap 交换来辅助划分区域
+例如快排中如果遇到小的和=区域最左边交换=区域整体右移,小于区域也整体右移实现<区域扩充
+移出数组中某个数,可以直接交换最后一个数,然后划分指针左移
+
+### 例子
+#### 三指针划分(快速)
+<的在a左边 大于的在b右边
+```java
+public static void partition2(int[] arr, int l, int r, int x) {
+		first = l;
+		last = r;
+		int i = l;
+		while (i <= last) {
+			if (arr[i] == x) {
+				i++;
+			} else if (arr[i] < x) {
+				swap(arr, first++, i++);
+			} else {
+				swap(arr, i, last--); //i不变因为交换过来的还没有遍历;
+			}
+		}
+	}
+```
+
+#### 二分搜索划分红蓝区域寻找边界
+
+
+
+
+
 
 
 
@@ -292,149 +454,27 @@ while(!boundary case) 等价于 while if(boundary case) break;
 if() return  等价于  if else
 
 # 递归衍生技巧
+## global
+- dfs()  二叉树dfs反序列化
 
 ## prune
 - 剪枝
+把递归树开的栈提前变为具体的值 or 把非零向量提前变为零向量
+f(N)={
+    k*0 //leaf
+
+    g(n)+ ~~g(n)~~ +k*0 //prune把开的栈提前变成具体的值 or 变为零向量
+}
 斐波那契额递归用记忆数组剪枝
 二分机器人走路问题达到最大值直接剪掉不考虑
 全组合
 
 
 ## recover
+- 对memo_pointer_container recover
 - 回溯的时候要把visit 栈等恢复到上一个状态因为根据basis不同节点状态不一样并不一定都是root节点需要恢复进行下一个节点dfs
 - 按照栈先进先出恢复
-
-# 指针技巧
-## 普通迭代状态指针
-- 如果指针模拟状态遍历,那么指到哪里就立即更新他的状态
-例如,遍历树的时候指针指向root先把root设置为visited再while遍历
- while/for
-- 每次迭代都是一个状态
-- e.g.
-fori  
-int i  while{... ;  i++} 末尾i状态变化
-- 例如kmp里的前缀函数循环
-```go
-π(i-1)+1=π(i)
-ππ(i-1)+1=π(i)
-π^3(i-1)+1=π(i)
-...
-π^n(i-1)+1=π(i)
-//终止条件是π^n==0 || π^n(-1)+1==π(i)
-//以1为索引 以0就one_short
-```
-
-- 下面的高级优化指针都是普通迭代状态指针的自己都继承他的特性
-## pointers_container
-- 指针过多收集到容器中方便管理
-- 这里指针可以是memo,普通状态指针等
-- 例如最小栈的memo指针容器;合并k个有序链表的小根堆不回退指针
-
----
-NMP  (no-backtracking memo partition);
-## no-backtracking_pointer/不回退指针
-no backtracking pointer
-- 数组反转
-- 例如将数组排序,kmp算法等,A-Bproblem,滑动窗口,供暖器
-### order
-- 当需要两个指针不断循环的时候可以考虑排序然后改为no-backtracking指针
-### 双指针统计(归并)
-将两部分排序
-n^2的统计通过排序变为n
-```java
-// 统计部分
-		long ans = 0;
-		for (int j = m + 1, i = l, sum = 0; j <= r; j++) {
-			while (i <= m && arr[i] <= arr[j]) {
-				sum += arr[i++];
-			}
-			ans += sum;
-		}
-```
-
-### fast-slow_pointer
-- 快慢指针
-- 距离差,速度差,时间差构筑快慢指针
-
-## memo_pointer/记忆指针
-- 设置sentry 划分一维数组 ;
-- memo pointer
-- 例如(二叉树模拟递归遍历)  用指针记忆是否return的状态;
-```java
-TreeNode head=node;
-TreeNode pop=null;
-ArrayDeque<TreeNode> cache=...;
-static void dfs(TreeNode node){
-     while(true){
-            if(head==null && cache.isEmpty()){
-                break;
-            }
-            if(head!=null){
-                cache.push(head);
-                head=head.left;
-            }else{   // null是叶子节点 return;
-                TreeNode peek = cache.peek();
-                if(peek.right==pop || peek.right==null){  //如果右子树是null或者已被弹出直接return
-                    pop = cache.pop();  //标记
-                    result.add(pop.val);
-                }else{
-                    head=peek.right;        //否则head标记为right然后继续进栈;
-                }
-            }
-
-        }
-}
-```
-- 最小栈记录栈的最小值
-
-## partition_pointer/划分指针
-- 和memopointer的区别 memo自身有记忆的状态,partition也可以有记忆区间状态,但是partition可以逐步扩充memo是瞬移,和flag的区别memo和数据结构本身相关,flag
-例如bool flag cout等与数据结构本身无关
-### 划分
-- []闭区间划分
-很典型,指针就是划分区域的边界
-例如二分算法
-- ()开区间划分
-开区域优点是边界可以充当迭代器的头方便迭代,数组-1和n索引可不设置避免越界
-开区间边界较为常见
-- [)开闭区间划分
-构造[)开闭区间,开区间头是划分指针的迭代头,充当迭代器的作用方便迭代
-例如快排的三个[)区域,<和>区域的闭区间都是数组的-1和n
-```java
-[<)
-  [=)    
-        (>]
-```
-
-- swap 交换来辅助划分区域
-例如快排中如果遇到小的和=区域最左边交换=区域整体右移,小于区域也整体右移实现<区域扩充
-移出数组中某个数,可以直接交换最后一个数,然后划分指针左移
-
-### 例子
-#### 三指针划分(快速)
-<的在a左边 大于的在b右边
-```java
-public static void partition2(int[] arr, int l, int r, int x) {
-		first = l;
-		last = r;
-		int i = l;
-		while (i <= last) {
-			if (arr[i] == x) {
-				i++;
-			} else if (arr[i] < x) {
-				swap(arr, first++, i++);
-			} else {
-				swap(arr, i, last--); //i不变因为交换过来的还没有遍历;
-			}
-		}
-	}
-```
-
-#### 二分搜索划分红蓝区域寻找边界
-
-
-
-
+- 参数指针recover 参数值不用因为在栈里
 
 # lazy
 -  什么是懒操作？
@@ -529,6 +569,10 @@ int main(){
 - 基数排序也是这样
 
 ## pointers_container
+### memo_pointer_container
+- 指的是记忆指针特别多放在容器李方便管理进化成容器了
+- memo_pointer_container=memo_pointers+pointers_container
+###
 - 指针过多收集到容器中方便管理
 - 这里指针可以是memo,普通状态指针等
 - 例如最小栈的memo指针容器;合并k个有序链表的小根堆不回退指针
@@ -650,6 +694,22 @@ ceil(a/b)=(a+b-1)/b;
 - 画匠问题分的组最开始就是1
 - 数论微小量向上取整
 
+## graph
+- 研究vertex集合和edge集合
+- edge可看作点集合到自身的映射 self operator
+### ring
+### permute ring
+- 置换是集合x到自身的双射
+- 用图表示
+点是集合x 所有点都在环内的图是置换
+计算最少交换次数
+
+任何置换可以分解为 k 个环。
+排序所需的最少交换次数 = 元素数 n - 环的个数。
+判断置换的阶数
+
+阶数 = 各环长度的最小公倍数（LCM）
+
 ## 组合数学
 
 ## discrete_oo
@@ -672,13 +732,15 @@ ceil(a/b)=(a+b-1)/b;
 KV都是交换群
 ||:V->K 三角不等式 内积A*B=|A|x|B|xcosθ 
 - 基底表示 basis
-### pow
+
+## basis
+#### pow
 幂运算可以看作坐标维度的升高
 - 算子的幂次复合 f(x) f(f(x)):f^2(x) ...
 可以用迭代的方式表示每个幂次算子的状态
 p=x int i=0 while(true){i++;p=f(p)} 根据算子的状态立即更新i的状态
 - kmp算法中的Π算子
-###  pow_series
+####  pow_series
 - 幂级数展开就是以 {1,x,x^2,...}的基底 线性表示 在向量空间的坐标表示
 - 以{...,f^-2,f^-1,f^0,f,f^2,...}为基底的线性表示
 - 和进制的关系
@@ -824,7 +886,7 @@ public class BitOpsDemo {
 
 
 
-## bitset 位图
+## bitmap 位图
 - 用二进制结构模拟set这个数据结构,1代表存在0代表不存在
 - bitset的算子用<< >> | & ~ 等拼出来
 
@@ -832,6 +894,8 @@ public class BitOpsDemo {
 e=(1<<n)-1 
 i=i&e 使得i的状态位和e一样
   -1是32位的e
+- -1 逆
+将bitmap取逆&e 再用lowbit方便遍历bitmap中的0
 - create 增
 bitset = bitset | (1<<index)
 - read 查
@@ -852,13 +916,9 @@ bitset=bitset & (~(1<<index))
 - 遍历状态的时候可以用brian算法提取最右侧的1 tmp&-tmp 适当对状态数组取反方便brian算法遍历;while(n!=0){int tmp=n&-n;n=(n^tmp)&limit;...}
 
 
-
-
-
-# 打表
-- 打表找规律
-
-# 预处理优化（Precomputation Optimization）
+# midwear
+## 接口
+## 预处理优化（Precomputation Optimization）
 - 把长时间打表的答案写进源代码,节省评测机中的时间;
 素分解可以先把质数格式化输出成数组再复制粘贴到源代码中;
 http://xmuoj.com/problem/LQ018

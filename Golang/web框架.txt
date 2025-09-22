@@ -10,13 +10,25 @@ goquery
 json:
 标准库-json
 序列化反序列化-easyjson
-查找-gjson
+解析string([]byte)-gjson
 
 爬虫:
 colly
 
-web框架
+后端:
  gin gorm gofram iris wire
+
+配置管理:
+ viper
+
+日志:
+ zap zerolog
+
+测试:
+ gomock(mock接口测试)
+
+依赖注入:
+ wire
 
 API:
 RestfulAPI Swagger OpenAPI
@@ -29,15 +41,6 @@ RestfulAPI Swagger OpenAPI
 
 命令行:
  cobra
-
-配置管理:
- viper
-
-日志:
- zap zerolog
-
-测试:
-
 
 部署:
  docker
