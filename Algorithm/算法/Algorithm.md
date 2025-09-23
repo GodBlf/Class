@@ -350,6 +350,7 @@ public class Code03_StaticSpace {
 
 ```
 
+# ====================================================================================================================================== 指针技巧
 
 # 二分
 ```json 
@@ -2536,7 +2537,7 @@ class MedianFinder {
 - 高级数据结构以1初始索引
 - 开头都要写这个高级数据结构要解决什么问题,以及如何构造的
 
-# # =================================================================== 线性结构
+# =================================================================== 线性结构
 
 # 滑动窗口
 
@@ -2855,7 +2856,7 @@ class Solution {
 }
 ```
 
-# # =================================================================== 树结构
+# =================================================================== 树结构
 
 # 前缀树
 ```json
@@ -3042,8 +3043,66 @@ class Solution {
 }
 ```
 
-### [相似字符串]()
+### [相似字符串](https://leetcode.cn/problems/similar-string-groups/)
 - tree.tree_arr 并查集
+```java
+import java.util.ArrayDeque;
+
+class Solution {
+    public static int[] father=new int[304];
+    //没有使用size 优化时间
+    public static int[] size=new int[304];
+    public static int sets=0;
+    public static void build(int n){
+        sets=n;
+        for(int i=0;i<n;i++){
+            father[i]=i;
+        }
+    }
+    public static int find(int i){
+        ArrayDeque<Integer> stack = new ArrayDeque<>();
+        int sp=i;
+        while(father[sp]!=sp){
+            stack.push(sp);
+            sp=father[sp];
+        }
+        while(!stack.isEmpty()){
+            Integer pop = stack.pop();
+            father[pop]=sp;
+        }
+        return sp;
+    }
+    public static void union(int a,int b){
+        int aroot=find(a);
+        int broot=find(b);
+        if (aroot==broot){
+            return;
+        }
+        father[aroot]=broot;
+        sets--;
+    }
+    public int numSimilarGroups(String[] strs) {
+        build(strs.length);
+        for(int i=0;i<strs.length;i++){
+            loop:
+            for(int j=i+1;j<strs.length;j++){
+                int flag=0;
+                int i1=0;int i2=0;
+                String tmp1=strs[i];
+                String tmp2 = strs[j];
+                while(true){
+                    if(flag>2) continue loop;
+                    if(i1>=tmp1.length()) break;
+                    if(tmp1.charAt(i1)!=tmp2.charAt(i2)) flag++;
+                    i1++;i2++;
+                }
+                union(i,j);
+            }
+        }
+        return sets;
+    }
+}
+```
 
 # ====================================================================================================================================== 排序相关
 
@@ -3754,10 +3813,11 @@ public class Code04_LeftToRightAnd {
 ### java关于bit的api 
 - cout hightlowbit trailleading
 
-# ====================================================================================================================================== 递归题目
+# ====================================================================================================================================== 递归相关
 
 # 递归题目
-- recur_tree.basis recover prune
+- recur_tree.basis recover prune global
+
 ## [只用递归逆序栈](左肾自造题)
 - recur_tree.basis
 ### basis分析
@@ -3847,7 +3907,9 @@ class Solution{
 }
 ```
 
-## 括号嵌套类递归题目
+
+
+# 括号嵌套类递归题目
 ## [括号嵌套计算器]()
 ```java
 
@@ -3896,7 +3958,11 @@ class Solution {
     }
 }
 ```
-## [n皇后]()
+
+# prune recover-memo_p_container  剪枝,带路径恢复的递归问题
+- prune:非零向量提前通过判断转成0向量
+- recover:退回某个节点,memo也要恢复到这个节点的状态
+## [n皇后](https://leetcode.cn/problems/n-queens-ii/description/)
 - json:recur_tree prune recover 
 ### basis分析
 - io:返回填n行皇后的种类数
@@ -3982,6 +4048,49 @@ class Solution {
     }
 }
 ```
+
+## 洪水填充问题 感染问题
+
+## [岛屿数量](https://leetcode.cn/problems/number-of-islands/)
+- basis分析
+io:void stack:感染以ij为起点的所有连起来的1岛屿
+f(i,j)={
+    return if i,j是0||超出边界||已经感染过了 //leaf
+
+    感染i,j+g(ij上)+g(ij下)+g(ij左)+g(ij右)
+}
+g=f
+- prune: 感染的做标记 提前判断有没有感染直接return变成0向量
+```java
+class Solution {
+    public int numIslands(char[][] grid) {
+        int ans=0;
+        for(int i=0;i<grid.length;i++){
+            for(int j=0;j<grid[0].length;j++){
+                if(grid[i][j]=='1'){
+                    ans++;
+                    dfs(grid,i,j);
+                }
+            }
+        }
+        return ans;
+    }
+
+    public static void dfs(char[][]grid,int i,int j){
+        //注意这里是'1'不是1睇错
+        if(i<0 || j<0 || i>=grid.length || j>=grid[0].length || grid[i][j]!='1'){
+            return;
+        }
+        
+        grid[i][j]='2';
+        dfs(grid , i,j+1);
+        dfs(grid , i,j-1);
+        dfs(grid , i+1,j);
+        dfs(grid , i-1,j);
+    }
+}
+```
+
 
 # ====================================================================================================================================== 高等数学
 
@@ -4263,7 +4372,7 @@ class Solution{
 }
 ```
 
-# =================================================================== 7
+# ====================================================================================================================================== 离散函数和动态规划
 
 # discrete_oo
 - 用数组模拟算子,将索引映射的算法
@@ -4271,37 +4380,7 @@ class Solution{
 
 # 前缀和和差分 积分和微分
 
-# 一维动态规划
-- 用空间代替重复计算,用dp数组模拟算子,将索引dp(i)映射到求解值
-## 典中典 fabbnoci 数列
-算子dp,将索引i映射到i的斐波那契值 dp(i)=dp(i-1)+dp(i-2);
-```java
-public static int fabbnoci(int n){
-    int[] dp=new int[n+1];
-    dp[0]=1;dp[1]=1;
-    for(int i=2;i<=n;i++){
-        dp[i]=dp[i-1]+dp[i-2];
-    }
-    return dp[n];
-}
-```
-- 降维优化
-```java
-public static int fabbnoci(int n){
-    int dp1=1;int dp2=1;
-    int i=1;
-    while(true){
-        if(i==n) return dp2;
-        int tmp=dp2;
-        dp2=dp1+dp2;
-        dp1=tmp;
-        i++;
-    }
-}
-```
-
-## 习题
-### [最低票价](https://leetcode.cn/problems/minimum-cost-for-tickets/)
+# =================================================================== 前缀离散函数
 
 # KMP
 https://www.bilibili.com/video/BV1Er421K7kF/
@@ -4317,7 +4396,7 @@ https://oi-wiki.org/string/kmp/
 ## 前缀算子π
 
 
-## symmetry discrete_oo
+## symmetry discrete_oo.prefix
 ![alt text](image-6.png)
 ![alt text](image-7.png)
 ```go
@@ -4383,6 +4462,39 @@ class Solution {
 }
 ```
 
+# =================================================================== 动态规划
+
+# 一维动态规划
+- 用空间代替重复计算,用dp数组模拟算子,将索引dp(i)映射到求解值
+## 典中典 fabbnoci 数列
+算子dp,将索引i映射到i的斐波那契值 dp(i)=dp(i-1)+dp(i-2);
+```java
+public static int fabbnoci(int n){
+    int[] dp=new int[n+1];
+    dp[0]=1;dp[1]=1;
+    for(int i=2;i<=n;i++){
+        dp[i]=dp[i-1]+dp[i-2];
+    }
+    return dp[n];
+}
+```
+- 降维优化
+```java
+public static int fabbnoci(int n){
+    int dp1=1;int dp2=1;
+    int i=1;
+    while(true){
+        if(i==n) return dp2;
+        int tmp=dp2;
+        dp2=dp1+dp2;
+        dp1=tmp;
+        i++;
+    }
+}
+```
+
+## 习题
+### [最低票价](https://leetcode.cn/problems/minimum-cost-for-tickets/)
 
 
 
