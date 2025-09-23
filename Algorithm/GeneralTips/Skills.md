@@ -477,6 +477,11 @@ f(N)={
 - 按照栈先进先出恢复
 - 参数指针recover 参数值不用因为在栈里
 
+### time_return
+- 时光倒流
+- 打砖块问题
+- 倒放从尾一步一步复原现场
+
 # lazy
 -  什么是懒操作？
 懒操作的核心思想是：把本应立即执行的操作延迟到真正需要的时候才去执行。
@@ -573,6 +578,8 @@ int main(){
 ### memo_pointer_container
 - 指的是记忆指针特别多放在容器李方便管理进化成容器了
 - memo_pointer_container=memo_pointers+pointers_container
+- 用hashset 或者 hashmap对元素进行去重
+例如去重全排列标记swap的元素进入set里 先判断是否在set里然后再操作
 ###
 - 指针过多收集到容器中方便管理
 - 这里指针可以是memo,普通状态指针等
@@ -605,7 +612,6 @@ out in
 - 集线器
 - 在基数(桶)排序中用到了
 - 将元素收集到若干个桶中再统一分发
-
 
 
 # sentry 
