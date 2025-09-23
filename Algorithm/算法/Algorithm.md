@@ -4091,6 +4091,198 @@ class Solution {
 }
 ```
 
+## [被围绕的区域](https://leetcode.cn/problems/remove-element/)
+- 上一题岛屿数量的变式
+- 从边缘开始找起,对边缘的o进行感染,感染成f,中间的o不影响,然后中间的o遍历改成x,再把感染的f改回o就可以
+```java
+class Solution {
+    public void solve(char[][] board) {
+        for(int j=0;j<board[0].length;j++){
+            if(board[0][j]=='O'){
+                dfs(board,0,j);
+            }
+        }
+        for(int j=0;j<board[0].length;j++){
+            if(board[board.length-1][j]=='O'){
+                dfs(board,board.length-1,j);
+            }
+        }
+        for(int i=0;i<board.length;i++){
+            if(board[i][0]=='O'){
+                dfs(board,i,0);
+            }
+        }
+        for(int i=0;i<board.length;i++){
+            if(board[i][board[0].length-1]=='O'){
+                dfs(board,i,board[0].length-1);
+            }
+        }
+        for(int i=0;i<board.length;i++){
+            for (int j=0;j<board[0].length;j++){
+                if(board[i][j]=='O'){
+                    board[i][j]='X';
+                }
+                if(board[i][j]=='F'){
+                    board[i][j]='O';
+                }
+            }
+        }
+        return;
+    }
+
+    public static void dfs(char[][] board,int i,int j){
+        if(i<0 || j<0 || i>=board.length || j>=board[0].length || board[i][j]=='X') return;
+        //prune
+        if(board[i][j]=='F') return;
+        board[i][j]='F';
+        dfs(board,i+1,j);
+        dfs(board,i-1,j);
+        dfs(board,i,j+1);
+        dfs(board,i,j-1);
+    }
+}
+```
+
+## [最大人工岛](https://leetcode.cn/problems/making-a-large-island/)
+- 上上题岛屿数量的变式
+- 先感染每座岛屿并为每座岛屿起名,把岛屿对应的数量记录到map里可以dfs时候顺便返回记录,也可以重新遍历记录
+- 遍历所有0,将上下左右的岛屿数量加起来在+1,注意要去重,最后max比较出最大的
+```java
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
+class Solution {
+    public int largestIsland(int[][] grid) {
+        int cnt=2;
+        for(int i=0;i<grid.length;i++){
+            for(int j=0;j<grid[0].length;j++){
+                if(grid[i][j]==1){
+                    dfs(grid,i,j,cnt);
+                    cnt++;
+                }
+            }
+        }
+        Map<Integer, Integer> map = new HashMap<>();
+        //sentry
+        map.put(0,0);
+        for(int i=0;i<grid.length;i++){
+            for(int j=0;j<grid[0].length;j++){
+                if(grid[i][j]!=0){
+                    if(map.containsKey(grid[i][j])){
+                        map.put(grid[i][j],map.get(grid[i][j])+1);
+                    }else{
+                        map.put(grid[i][j],1);
+                    }
+                }
+            }
+        }
+        //找出岛屿中数量最大的
+        int max=0;
+        for (Map.Entry<Integer, Integer> e : map.entrySet()) {
+            max=Math.max(max,e.getValue());
+        }
+
+        for(int i=0;i<grid.length;i++){
+            for(int j=0;j<grid[0].length;j++){
+                if(grid[i][j]==0){
+                    //memo_p_container 去重防止重复记录
+                    HashSet<Integer> set = new HashSet<>();
+                    if(i>0){
+                        set.add(grid[i-1][j]);
+                    }
+                    if(i<grid.length-1){
+                        set.add(grid[i+1][j]);
+                    }
+                    if(j>0){
+                        set.add(grid[i][j-1]);
+                    }
+                    if(j<grid[0].length-1){
+                        set.add(grid[i][j+1]);
+                    }
+                    int sum=0;
+                    for (Integer sp : set) {
+                        sum+=map.get(sp);
+                    }
+                    max=Math.max(max,sum+1);
+                }
+            }
+        }
+        return max;
+    }
+    public void dfs(int[][] grid,int i,int j,int cnt){
+        if(i<0 || j<0 || i>=grid.length || j>=grid[0].length || grid[i][j]!=1){
+            return;
+        }
+        grid[i][j]=cnt;
+        dfs(grid,i,j+1,cnt);
+        dfs(grid,i,j-1,cnt);
+        dfs(grid,i+1,j,cnt);
+        dfs(grid,i-1,j,cnt);
+    }
+}
+```
+
+## [打砖块](https://leetcode.cn/problems/bricks-falling-when-hit)
+- recover.time_return
+- 依然是上上上题的变式,卧槽能变出多少花活来阿
+- 这题的dfs是有io的 io:返回感染的数量
+- 时光倒流,用2表示有粘性的砖块
+先复原顶层砖块,再一步步到访复原
+```java
+class Solution {
+    //防止参数过多设置全局变量
+    public static int n;
+    public static int m;
+    public static int[][] g;
+    public int[] hitBricks(int[][] grid, int[][] hits) {
+        int[] ans = new int[hits.length];
+        n=grid.length;m=grid[0].length;g=grid;
+        for (int[] hit : hits) {
+            g[hit[0]][hit[1]]-=1;
+        }
+        for(int j=0;j<m;j++){
+            dfs(0,j);
+        }
+        //recover 时光倒流,从尾到头一步步还原
+        for (int i = hits.length - 1; i >= 0; i--) {
+            int x=hits[i][0];
+            int y=hits[i][1];
+            g[x][y]++;
+            if(isDfs(x,y)){
+                ans[i]=dfs(x,y)-1;
+            }else{
+                ans[i]=0;
+            }
+        }
+        return ans;
+    }
+
+    public static boolean isDfs(int i,int j){
+        //state-filter 枚举所有状态一共3^4所以进过滤true的选项
+        if(g[i][j]<=0) return false;
+        if(i==0 || g[i-1][j]==2) return true;
+        if(i<n-1 && g[i+1][j]==2 ) return true;
+        if(j>0 && g[i][j-1]==2) return true;
+        if(j<m-1 && g[i][j+1]==2) return true;
+        return false;
+    }
+
+    public static int dfs(int i,int j){
+        if(i<0 || j<0 || i>=n || j>=m || g[i][j]!=1){
+            return 0;
+        }
+        g[i][j]=2;
+        int ans=0;
+        ans+=dfs(i+1,j);
+        ans+=dfs(i-1,j);
+        ans+=dfs(i,j+1);
+        ans+=dfs(i,j-1);
+        //io:返回感染的数量
+        return ans+1;
+    }
+}
+```
 
 # ====================================================================================================================================== 高等数学
 
@@ -4418,14 +4610,22 @@ class Solution {
         int[] pi = new int[sb.length()];
         pi[0]=0;
         for(int i=1;i<pi.length;i++){
-            //j是迭代指数 类似于int i while{ i++}末尾状态更新
-            int j=pi[i-1];
+            //sp是state_pointer 类似于int i while{ i++}末尾状态更新
+            int sp=pi[i-1];
             while(true){
-                if(j==0 || sb.charAt(i)==sb.charAt(j)) break;
-                j=pi[j-1];
-            }
-            if(sb.charAt(i)==sb.charAt(j)){
-                pi[i]=j+1;
+                //vars_hubs 枚举边界状态
+                if(sp==0 && sb.charAt(sp)==sb.charAt(i)){
+                    pi[i]=1;
+                    break;
+                }else if(sp==0 && sb.charAt(sp)!=sb.charAt(i)){
+                    pi[i]=0;
+                    break;
+                }else if(sp!=0 && sb.charAt(sp)==sb.charAt(i)){
+                    pi[i]=sp+1;
+                    break;
+                }else{
+                    sp=pi[sp-1];
+                }
             }
             if(pi[i]==ans){
                 return i-2*ans;
