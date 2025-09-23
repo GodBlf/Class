@@ -143,8 +143,8 @@ if(cur1!=null){
 - >= <= 优于==
 例如快排中叶子节点为 l>=r 防止l在右边界
 
-# 指针技巧
-## 普通迭代状态指针(state_pointer)
+# state_pointer
+## 普通迭代状态指针
 ### while
 - while就是循环代码块,根据vars_hubs来结束循环,while里嵌套ifelse
 - while就是state_pointer遍历,
@@ -360,8 +360,6 @@ branch节点的结构和root节点的结构相同,且仅能够从root节点设�
 - 按照栈先进先出恢复
 - backtrack 记得恢复
 
-
-
 ### dustbin
 
 - f=g+g+k g和f这两个算子是一致那么f=g 子问题g基底表示父问题f 如果f和g是一致的那么f=g
@@ -458,8 +456,9 @@ if() return  等价于  if else
 - dfs()  二叉树dfs反序列化
 
 ## prune
+- 应用于basis表示过程(递归树构建过程)
 - 剪枝
-把递归树开的栈提前变为具体的值 or 把非零向量提前变为零向量
+把递归树开的栈提前变为具体的值 or 非零向量提前通过判断转成0向量
 f(N)={
     k*0 //leaf
 
@@ -471,8 +470,10 @@ f(N)={
 
 
 ## recover
+- 应用于dfs过程(递归树遍历过程)
 - 对memo_pointer_container recover
-- 回溯的时候要把visit 栈等恢复到上一个状态因为根据basis不同节点状态不一样并不一定都是root节点需要恢复进行下一个节点dfs
+- recover:退回某个节点,memo也要恢复到这个节点的状态
+- 回溯的时候要把visit 栈等memo恢复到上一个状态因为根据basis不同节点状态不一样并不一定都是root节点需要恢复进行下一个节点dfs
 - 按照栈先进先出恢复
 - 参数指针recover 参数值不用因为在栈里
 
