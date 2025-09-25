@@ -606,6 +606,199 @@ class Solution {
 }
 ```
 
+## [按奇偶排序数组 II](https://leetcode.cn/problems/sort-array-by-parity-ii/)
+- partition_pointer.swap
+设置为[)区域
+- 设置一个不动的尾部指针不断往奇数区域偶数区域发货简简单单的
+```java
+class Solution {
+    public int[] sortArrayByParityII(int[] nums) {
+        int ji=1;int ou=0;int spy=nums.length-1;
+        while(true){
+            //奇数弄完偶数一定弄完,反之亦然
+            if(ji>=nums.length || ou>=nums.length-1){
+                break;
+            }
+            //是奇数奇数区域扩充,是偶数,偶数区域扩充
+            if(nums[spy]%2==0){
+                swap(nums,spy,ou);
+                ou+=2;
+            }else{
+                swap(nums,spy,ji);
+                ji+=2;
+            }
+
+        }
+        return nums;
+    }
+    
+    public static void swap(int[] arr,int a,int b){
+        int tmp=arr[a];
+        arr[a]=arr[b];
+        arr[b]=tmp;
+    }
+}
+```
+
+## [寻找重复数](https://leetcode.cn/problems/find-the-duplicate-number/)
+- 就是链表题目的寻找入环节点那题[查找链表环起点](https://leetcode.cn/problems/linked-list-cycle-ii/)
+- link_arr fast-slow_pointer 
+- 将数组看作链表 索引是链表节点,这个数组就形成了一个有环的链表,用快慢指针寻找入环起点
+- f指针走两步,s指针走1步,相遇停止,再s从起点开始,s,f都每次走一步,相遇就是入环节点
+```java
+class Solution {
+    public int findDuplicate(int[] nums) {
+        int f=0;int s=0;
+        while(true){
+            //快指针跳两步
+            f=nums[nums[f]];
+            //慢指针跳一步
+            s=nums[s];
+            if(f==s) break;
+        }
+        s=0;
+        while(f!=s){
+            f=nums[f];
+            s=nums[s];
+        }
+        return f;
+    }
+}
+```
+
+## [接雨水](https://leetcode.cn/problems/trapping-rain-water/)
+```json
+{
+    "前缀max后缀max":"discrete_oo.prefix",
+    "指针优化前后缀函数":"reduce_dimension no-backtracking_pointer"
+}
+```
+- 对于i位置能够接雨水的数量为不包含他的前缀最大值和不包含他的后缀最大值的min,min-i就是i位置接的雨水数量
+- 所以构建数组所有位置的前缀后缀函数,再一个一个遍历
+```java
+public static int trap1(int[] nums) {
+		int n = nums.length;
+		int[] lmax = new int[n];
+		int[] rmax = new int[n];
+		lmax[0] = nums[0];
+		// 0~i范围上的最大值，记录在lmax[i]
+		for (int i = 1; i < n; i++) {
+			lmax[i] = Math.max(lmax[i - 1], nums[i]);
+		}
+		rmax[n - 1] = nums[n - 1];
+		// i~n-1范围上的最大值，记录在rmax[i]
+		for (int i = n - 2; i >= 0; i--) {
+			rmax[i] = Math.max(rmax[i + 1], nums[i]);
+		}
+		int ans = 0;
+		//   x              x
+		//   0 1 2 3...n-2 n-1
+		for (int i = 1; i < n - 1; i++) {
+			ans += Math.max(0, Math.min(lmax[i - 1], rmax[i + 1]) - nums[i]);
+		}
+		return ans;
+	}
+```
+
+- reduce_dimension优化
+- 可以将前缀函数构建的数组函数用一个指针代替降维优化,前缀后缀直接用两个不回退指针往中间缩
+- 左指针左侧函数是确定的,右指针右侧函数是确定的所以取左右最小值即可
+```java
+class Solution {
+    public int trap(int[] height) {
+        int l=1;int r=height.length-2;int lmax=0;int rmax=0;
+        int ans=0;
+        while(l<=r){
+            lmax=Math.max(lmax,height[l-1]);
+            rmax=Math.max(rmax,height[r+1]);
+            //lmax和rmax相等的时候不能l++和r--因为如果l==r,那么就会重复计算
+            if(lmax<=rmax){
+                int tmp=lmax-height[l];
+                if(tmp>0){
+                    ans+=tmp;
+                }
+                l++;
+            }else {
+                int tmp=rmax-height[r];
+                if(tmp>0){
+                    ans+=tmp;
+                }
+                r--;
+            }
+        }
+        return ans;
+    }
+}
+```
+
+## [救生艇](https://leetcode.cn/problems/boats-to-save-people/)
+- no-backtracking_pointer 
+先排个序然后就能用两个不回退指针了
+- 注意双指针收缩两个都收缩的去重问题
+```java
+import java.util.Arrays;
+
+class Solution {
+    public int numRescueBoats(int[] people, int limit) {
+        Arrays.sort(people);
+        int ans=0;
+        int l=0;int r=people.length-1;
+        while(l<=r){
+            //注意l==r的时候去重
+            if(l==r){
+                ans++;
+                r--;l++;
+                continue;
+            }
+            if(people[l]+people[r]<=limit){
+                ans++;
+                l++;
+                r--;
+            }else{
+                ans++;
+                r--;
+            }
+
+        }
+        return ans;
+    }
+}
+```
+
+## 扩展
+- 加个条件两人只有偶数才能上船
+- 因为奇数+奇数=偶数 偶数+偶数=偶数
+- 将原数组分成奇数偶数两个数组各自进行操作
+
+## [盛水最多的容器](https://leetcode.cn/problems/container-with-most-water/)
+- 简简单单的双指针+贪心
+- 贪心反证法证明:在最优解是a,b下,双指针不会错过a,b
+假设会错过
+不妨设双指针先到达a,因为会错过说明b右侧有c,c>a,a右移此时a,c组成的容积大于a,b组成的容积因为高度取最小值c>a 这里a最小,min(a,b)<=a 
+又因为宽度所以a,c是最优解矛盾
+原命题成立
+```java
+class Solution {
+    public int maxArea(int[] height) {
+        int l=0;int r=height.length-1;
+        int ans=0;
+        while(l<r){
+            int tmp=(r-l)*Math.min(height[l],height[r]);
+            ans=Math.max(ans,tmp);
+            if(height[l]<=height[r]){
+                l++;
+            }else{
+                r--;
+            }
+        }
+        return ans;
+    }
+}
+```
+
+## [供暖器](https://leetcode.cn/problems/heaters/)
+
+
 # ====================================================================================================================================== 基础数据结构
 
 # 基础数据结构
@@ -1041,7 +1234,7 @@ class Solution {
 }
 ```
 
-### [判断链表相交](https://leetcode.cn/problems/intersection-of-two-linked-lists/)
+### [判断链表相交的交点](https://leetcode.cn/problems/intersection-of-two-linked-lists/)
 ```json
 {
     "距离快慢指针":"fast-slow_pointer"
@@ -1131,7 +1324,7 @@ arr[l++]=poll
 ### [LRU缓存模拟](https://leetcode.cn/problems/lru-cache/)
 ```json
 {
-    "双向链表队列+哈希表":"container"
+    "双向链表队列+哈希表":"map_container.map_link"
 }
 ```
 - 双向链表队列+哈希表
@@ -1304,7 +1497,7 @@ class MyQueue {
 ### [最小栈leetcode](https://leetcode.cn/problems/min-stack/)
 ```json
 {
-    "记忆栈":"memo_pointer_container"//最小栈的每个元素记忆原栈到栈底的最小值,将记忆指针放入容器方便管理
+    "记忆栈":"memo_container"//最小栈的每个元素记忆原栈到栈底的最小值,将记忆指针放入容器方便管理
 }
 ```
 ```java
@@ -1928,6 +2121,7 @@ public class Codec {
 ```json
 {   
     "栈模拟递归树":"recur_tree memo_pointer",
+    "记忆节点路径":"memo_container",
     "虚返回":"lazy",//虚返回可以看作懒操作不用一步步返回
 }
 ```
@@ -2088,7 +2282,7 @@ class Solution {
 ## cache实现bfs
 ```json
 {
-    "cache队列容器实现":"cache"//out in
+    "cache队列容器实现":"cache_container"//out in
 }
 ```
 - 记入每一层cache的数量每次刷新一层
@@ -2203,7 +2397,7 @@ public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
 #### [二叉树最大宽度包含null](https://leetcode.cn/problems/maximum-width-of-binary-tree)
 ```json
 {
-    "记忆每个节点的位置":"memo_pointer_container",//方便计算宽度
+    "记忆每个节点的位置":"memo_container",//方便计算宽度
     "cache容器":"cache"
 }
 ```
@@ -2403,7 +2597,7 @@ public class Codec {
 - 时间复杂度是o(n)
 - 
 
-## discrete_function.∑积分 估计复杂度
+## discrete_oo.∑∫积分 估计复杂度
 - log1+log2+...+logn  is  ∫logn = nlogn
 - 上滤下滤来回两轮
 
@@ -2857,7 +3051,19 @@ class Solution {
 ```
 
 # 单调栈
+```json
+{
+    "解决凹凸问题":null,
+    "单调栈":"container",
+    "重复元素修正":"reverse"//平定山峰从后往前遍历即可 1,2,2,2,0 最后一个2的答案0会直接向前传递所有2
+}
+```
 
+- 栈内元素讨论
+
+- 重复元素修正
+如果遇到重复元素直接弹出记录右侧为这个相等的值最后再修正
+平定山峰修正:1,2,2,2,1 从后忘前遍历 最后一个2答案是1,其余2答案都是2,从后往前遍历一下把2的答案都记录成最右边2的答案1
 
 # =================================================================== 树结构
 
@@ -3577,9 +3783,9 @@ master公式 T(n)=2T(n/2)+O(n)  时间复杂度是O(nlogn)
 
 # 基数(桶)排序
 ```json
-{   "桶":"hubs",//记忆要像桶这个模型倒入倒出起到集线器的作用
+{   "桶":"hub_container",//记忆要像桶这个模型倒入倒出起到集线器的作用
     "前缀和函数优化桶":"discrete_oo.Σ∫",
-    "桶内的次序":"order ordinal_cardinal"//因为前缀,所以排序的时候每个桶内先排大的,所以遍历原数组要从右往左遍历保证大的先排到
+    "继承上一次排序的次序":"reverse"//因为前缀,所以排序的时候每个桶内先排大的,所以遍历原数组要从右往左遍历保证大的先排到,继承上次次序
 }
 ```
 ## 计数排序
@@ -4227,7 +4433,7 @@ class Solution {
 ```
 
 ## [打砖块](https://leetcode.cn/problems/bricks-falling-when-hit)
-- recover.time_return
+- reverse.time_return
 - 依然是上上上题的变式,卧槽能变出多少花活来阿
 - 这题的dfs是有io的 io:返回感染的数量
 - 时光倒流,用2表示有粘性的砖块
@@ -4521,7 +4727,7 @@ class Solution{
 ```json
 {
     "basis分析":"recur_tree.basis recover",
-    "去重":"memo_pointer_container"
+    "去重":"memo_container"
 }
 ```
 - 由不同元素全排列进化而来
