@@ -52,7 +52,17 @@ Skills->Algorithm ; Skills->JavaSE
 构造一个father数组即可 
 例如并查集的father数组
 
+# arr
+- 抽象数组,将数组构造成很多数据结构
 
+## link_arr
+- 将数组构造成链表结构方便用链表方法解题
+- arr索引是节点,索引的值是箭头指向下一个元素
+## tree_arr
+- 通过arr构造树
+因为树每个节点只有一个father所以 arr索引就是节点索引的值指向father
+构造一个father数组即可 
+例如并查集的father数组
 
 # vars_hubs
 - if else通过变量状态的划分来进行
@@ -145,6 +155,8 @@ if(cur1!=null){
 
 # state_pointer
 ## 普通迭代状态指针
+### 迭代器
+- for(i:set){j=i;break} 取set的随机一个元素可以这样
 ### while
 - while就是循环代码块,根据vars_hubs来结束循环,while里嵌套ifelse
 - while就是state_pointer遍历,
@@ -175,14 +187,7 @@ sp=pi[sp]
 
 - 下面的高级优化指针都是普通迭代状态指针的自己都继承他的特性
 ## pointers_container
-### memo_pointer_container
-- 指的是记忆指针特别多放在容器李方便管理进化成容器了
-- memo_pointer_container=memo_pointers+pointers_container
-###
-- 指针过多收集到容器中方便管理
-- 这里指针可以是memo,普通状态指针等
-- 例如最小栈的memo指针容器;合并k个有序链表的小根堆不回退指针
-
+- 参见container
 ---
 NMP  (no-backtracking memo partition);
 ## no-backtracking_pointer/不回退指针
@@ -191,6 +196,7 @@ no backtracking pointer
 - 例如将数组排序,kmp算法等,A-Bproblem,滑动窗口,供暖器
 ### order
 - 当需要两个指针不断循环的时候可以考虑排序然后改为no-backtracking指针
+- 救生艇问题
 ### 双指针统计(归并)
 将两部分排序
 n^2的统计通过排序变为n
@@ -205,9 +211,15 @@ n^2的统计通过排序变为n
 		}
 ```
 
-### fast-slow_pointer
+### 双指针收缩
+两个指针往中间不回退收缩,注意两个都收缩,有可能重复计算例如 0,2,0 
+l,r指针都来到2位置如果两个都收缩会计算两次2,注意要特判
+
+## fast-slow_pointer
 - 快慢指针
 - 距离差,速度差,时间差构筑快慢指针
+- 速度差:应用于寻找中点(等 比例点),寻找入环节点
+- 距离差:应用于寻找倒数某位数,寻找相交节点
 
 ## memo_pointer/记忆指针
 - 设置sentry 划分一维数组 ;
@@ -259,7 +271,8 @@ static void dfs(TreeNode node){
         (>]
 ```
 
-- swap 交换来辅助划分区域
+### swap
+swap 交换来辅助划分区域
 例如快排中如果遇到小的和=区域最左边交换=区域整体右移,小于区域也整体右移实现<区域扩充
 移出数组中某个数,可以直接交换最后一个数,然后划分指针左移
 
@@ -477,10 +490,19 @@ f(N)={
 - 按照栈先进先出恢复
 - 参数指针recover 参数值不用因为在栈里
 
-### time_return
+
+
+# reverse
+- 翻转技巧,有时光倒流,数组从后往前迭代
+- 解决问题是继承或者消除正序所带来的影响
+## 数组倒序迭代
+- 桶排序从后往前迭代,方便继承上一次的排序结果 
+- 单调栈处理重复元素 1,2,2,2,1 第一个2右边是2,第二个2右边是2,第三个二右边结果是1,倒叙迭代可以优化正序一个个到最后一个相同元素才结果
+## time_return
 - 时光倒流
 - 打砖块问题
 - 倒放从尾一步一步复原现场
+
 
 # lazy
 -  什么是懒操作？
@@ -574,16 +596,19 @@ int main(){
 - 例如归并排序中的辅助数组,先写入help再刷回原数组,两个数组交替使用
 - 基数排序也是这样
 
-## pointers_container
-### memo_pointer_container
-- 指的是记忆指针特别多放在容器李方便管理进化成容器了
-- memo_pointer_container=memo_pointers+pointers_container
-- 用hashset 或者 hashmap对元素进行去重
-例如去重全排列标记swap的元素进入set里 先判断是否在set里然后再操作
-###
+## pointer_container
+
 - 指针过多收集到容器中方便管理
 - 这里指针可以是memo,普通状态指针等
 - 例如最小栈的memo指针容器;合并k个有序链表的小根堆不回退指针
+
+## memo_container
+- memo_p_container=memo_pointers+pointers_container
+- 指的是记忆指针特别多放在容器李方便管理进化成容器了
+- 例如带路径的递归,路径就用memo_container
+### set_container 去重
+- 用hashset 或者 hashmap对元素进行去重
+例如去重全排列标记swap的元素进入set里 先判断是否在set里然后再操作
 
 ## map_container
 - 经常需要一个容器其中元素同样存入哈希表中,方便直接O(1)查到对应元素和在容器中的位置 
@@ -599,7 +624,7 @@ int main(){
 ## pow_container
 - 二维栈(最大频率栈),用栈,栈中元素是栈(栈套栈),类比向量空间
 
-## cache
+## cache_container
 - 快速去出放入
 out in
 每次out / in都必须边界判断;
@@ -608,7 +633,7 @@ out in
 - 将第一个节点压入(offer/push)cache来启动
 - 父节点拉出(poll/pop),符合要求的子节点进入(push/offer)cache再进行操作;
 
-## hubs
+## hub_container
 - 集线器
 - 在基数(桶)排序中用到了
 - 将元素收集到若干个桶中再统一分发
@@ -637,6 +662,8 @@ flag和数据结构无关 memo和数据结构相关
 
 
 # 数学相关
+## 反证法 贪心
+- 假设否命题真推矛盾
 
 ## order
 - 数轴
@@ -778,6 +805,13 @@ int min=(a+b-abs(a-b))/2;
 - 定义一个很小的数double epsilon=1e-10
 - (a-Math.round(a)) < epsilon  ? true : 
 - 为什么要用round因为double运算可能出现15.99999这种;
+
+# 动态规划衍生技巧
+## reduce_dimension
+- 将二维数组构造的函数降维成一维数组构造的函数
+- 将一维数组构造的函数降维成一个指针标记
+- 很多动态规划题目都是例如背包问题,fabbonacci...
+- 接雨水问题也是将前缀函数降维成指针标记处理
 
 # binary_bit
 - 二进制和位操作
