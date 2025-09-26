@@ -379,8 +379,8 @@ log(2^32)=32 所以二分非常快
 ## 二分峰值
 ```json
 {
-    "数组离散函数":"discrete_function",
-    "导函数介值定理":null,//达布定理Darboux's theorem
+    "数组离散函数":"discrete_oo",
+    "导函数介值定理":"discrete_oo",//达布定理Darboux's theorem
     "划分指针":"partition_pointer"//特殊的划分(l,r)必有峰值
 }
 ```
@@ -469,7 +469,7 @@ class Solution {
 ```
 
 #### [画匠问题leetcode](https://leetcode.cn/problems/split-array-largest-sum/)
-- flag nobacktracking_pointer
+- flag state_pointer 指针到哪个位置就立即更新对应的状态
 - 单调区间
 [0,nums.sum],从0到累加和
 - 二分区间
@@ -563,8 +563,52 @@ public class Main{
 }
 ```
 
-#### []()
+#### [第k小的数对距离](https://leetcode.cn/problems/find-k-th-smallest-pair-distance/)
+```json
+{
+    "二分答案":"partition_pointer",
+    "滑动窗口统计对数":"partition_pointer nb_pointer"
+}
+```
+- 第k小是数量是k个
+```java
+import java.util.Arrays;
 
+class Solution {
+    public int smallestDistancePair(int[] nums, int k) {
+        Arrays.sort(nums);
+        int l=-1;int r=nums[nums.length-1]-nums[0]+1;int mid=0;
+        while(l+1!=r){
+            mid =(l+r)>>1;
+            int tmp=tongji(nums,mid);
+            if(tmp>=k){
+                r=mid;
+            }else{
+                l=mid;
+            }
+        }
+        return r;
+    }
+
+    public static  int tongji(int[] arr,int num){
+        int r=1;int l=0;int ans=0;
+        while(r<arr.length){
+            int rnum=arr[r];
+            r++;
+            while(true){
+                int tmp=Math.abs(arr[l]-rnum);
+                if(tmp>num){
+                    l++;
+                }else{
+                    break;
+                }
+            }
+            ans+=r-1-l;
+        }
+        return ans;
+    }
+}
+```
 
 ---
 
@@ -797,7 +841,95 @@ class Solution {
 ```
 
 ## [供暖器](https://leetcode.cn/problems/heaters/)
+```json
+{
+    "排序优化为不回退指针":"no-backtracking_pointer",
+    "寻找houses匹配的供暖器":"discrete_oo.extrema"
+}
+```
+- 传统解法是遍历每个房子每次再遍历每个供暖期找出每个房子最短半径再max O(n*m)
+- 先对两个数组排序能够使用不回退指针 O(n+m)
+- 供暖器的指针不回退寻找和房子匹配的最短的供暖器
+- 通过求解房子到供暖器距离的极值点来确定匹配的
+- 第i个房子匹配第j个供暖器,那么第i+1个房子前j-1个供暖器具一定不是极值点,判断后边即可
+j-1 i j i+1
+j-1 i i+1 j
+j-1 j i i+1
+ 以上情况前j-1个均不是极值点
+```java
+class Solution {
+    public int findRadius(int[] houses, int[] heaters) {
+        Arrays.sort(houses);
+		Arrays.sort(heaters);
+        int j=0;int ans=0;
+        for(int i=0;i<houses.length;i++){
+            while (true) {
+                if(j==heaters.length-1){
+                    ans=Math.max(ans,Math.abs(houses[i]-heaters[j]));
+                    break;
+                }
+                int tmp1 = Math.abs(houses[i] - heaters[j]);
+                int tmp2=Math.abs(houses[i]-heaters[j+1]);
+                if(tmp1<tmp2){
+                    ans=Math.max(ans,Math.abs(houses[i]-heaters[j]));
+                    break;
+                }else{
+                    j++;
+                }
+            }
+        }
+        return ans;
+    }
+}
+```
 
+
+## [缺失的第一个正数](https://leetcode.cn/problems/first-missing-positive/) 
+```json
+{
+    "构建和垃圾区":"partition_pointer.swap",//设计成(]区域
+    "上确界":"sup"
+}
+```
+
+- 左指针要用数组的元素构建1,2,3,...,n数列 数列个数的上确界是n就是r+1,如果发现
+元素超了r,意味着上确界-1,r元素和l元素交换,r--;
+
+```java
+class Solution {
+    public int firstMissingPositive(int[] nums) {
+        int l=0;int r=nums.length-1;
+        while(l<=r){
+            //用state filter减少状态组合
+            //如果l指针位置就是需要构建的数那么就构建l++
+            if(nums[l]==l+1){
+                l++;
+                continue;
+            }
+            //如果l位置超过r+1就发往垃圾区,剩下的数仅能构建1~r,r--
+            //如果l位置数<l+1说明已经构建过了发往垃圾区r--;
+            if(nums[l]>r+1 || nums[l]<l+1){
+                swap(nums,l,r);
+                r--;
+                continue;
+            }
+            //如果l位置数重复,上确界-- r--
+            if(nums[nums[l]-1]==nums[l]){
+                swap(nums,l,r);
+                r--;
+                continue;
+            }
+            swap(nums,l,nums[l]-1);
+        }
+        return l+1;
+    }
+    public static void swap(int[] arr,int a,int b){
+        int tmp=arr[a];
+        arr[a]=arr[b];
+        arr[b]=tmp;
+    }
+}
+```
 
 # ====================================================================================================================================== 基础数据结构
 
