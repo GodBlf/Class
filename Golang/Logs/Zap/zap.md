@@ -23,6 +23,27 @@ func InitLogger() {
 }
 
 ```
+or
+
+```go
+func main(){
+    InitLogger()
+    zap.L().Info(
+		"",
+		zap.String("","",)
+	)
+}
+func InitLogger() {
+	config := zap.NewDevelopmentConfig()
+	config.OutputPaths = []string{"stdout"}
+	logger, err := config.Build()
+	if err != nil {
+		panic(err)
+	}
+	zap.ReplaceGlobals(logger)
+}
+```
+
 - zap日志格式
 ```json
 {
