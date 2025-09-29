@@ -1,6 +1,7 @@
 # 安装
 - wsl --install or wsl --update
-- 如果失败就下载.msi镜像来安装 https://learn.microsoft.com/en-us/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package
+- 如果失败就下载.msi镜像来安装https://github.com/microsoft/wsl/releases
+- 别去wsl的说明页面下那个是垃圾艹了--version都不能用的too old版本艹!!!!
 - 下载一个发行版例如ubuntu https://ubuntu.com/desktop/wsl
 - 安装到文件夹wsl --import Ubuntu D:\wsl_ubuntu\faxing D:\wsl_ubuntu\ubuntu-24.04.3-wsl-amd64.gz --version 2
 
@@ -34,4 +35,8 @@ wsl --import Ubuntu D:\WSL\Ubuntu D:\backup\ubuntu_snapshot_2024_07_01.tar
 
 - 本机:wsl --export Ubuntu D:\wsl_ubuntu\backup\ubuntu_snapshot_2025_9_29.tar
 
-# vscode
+# docker for wsl
+
+## 汉化
+https://github.com/asxez/DockerDesktop-CN
+
