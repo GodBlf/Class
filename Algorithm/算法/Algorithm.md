@@ -3134,7 +3134,8 @@ class Solution {
 ```json
 {
      "滑动窗口":"partition_pointer no-backtracking_pointer",//维护的区域构建为[),左指针不回退
-     "积分再差分求k":"discrete_oo.∑∫"
+     "积分再差分求k":"discrete_oo.∑∫",
+     "记录答案":"container.map_container"
 }
 
 ```
