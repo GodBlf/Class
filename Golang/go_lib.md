@@ -36,7 +36,7 @@ nhooyr/websocket
 goquery
 
 # llm
-eino
+eino go-openai
 
 # 命令行
 cobra
