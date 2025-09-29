@@ -14,7 +14,7 @@ Skills->Algorithm ; Skills->JavaSE
 {
     "set_theory":"math", //具体参见/Class/Math/集合论 
     "memory":"算法以计算机内存和集合论为基础",
-    "var state":["variable is one field of memory","state is the variables' value " ],//variable是计算机内存的一块区域,具体取值是state,系统多个变量取值组合也可是系统整体状态
+    "var state":["variable is one field of memory","state is the variables' value " ],//variable是计算机内存ram的一块区域,具体取值是state,系统多个变量取值组合也可是系统整体状态
     "operator":{
         "process_quantity":null,
         "operator_evolve":null,
@@ -505,6 +505,7 @@ f(N)={
 
 
 # lazy
+## 懒操作
 -  什么是懒操作？
 懒操作的核心思想是：把本应立即执行的操作延迟到真正需要的时候才去执行。
 - 二叉树的栈模拟后序递归遍历,返回的时候仅当memo没标记右节点且右节点不null才返回到右节点,否则不返回懒住栈一直弹出
@@ -639,6 +640,7 @@ out in
 - 将第一个节点压入(offer/push)cache来启动
 - 父节点拉出(poll/pop),符合要求的子节点进入(push/offer)cache再进行操作;
 
+
 ## hub_container
 - 集线器
 - 在基数(桶)排序中用到了
@@ -668,7 +670,8 @@ flag和数据结构无关 memo和数据结构相关
 
 
 # 数学相关
-## 反证法 贪心
+## contradict_proof (反证法 贪心)
+- 前提条件->原命题   !原命题->矛盾
 - 假设否命题真推矛盾
 
 ## order
@@ -688,7 +691,9 @@ flag和数据结构无关 memo和数据结构相关
 - 基数 n [0,n-1]
 - 序数+1=基数 基数-1=序数 先有序数数轴(从0开始)再有基数所以序数+1
 
-## (G,*,e,-1) 有序n元组 group_theory
+## symmetry
+- 对称代数结构 
+- (G,*,e,-1) 有序n元组 group_theory
 
 
 ### 数组索引
@@ -703,7 +708,8 @@ f(x)=x%n : 将序数x映射到[0,n)上 可以看作循环
 //先x-1转为序数 最后整体+1转为基数
 (x-1)%n+1 根据同余原理 -> x%n-1%n+1 == x%n
 x%n : 整除n后剩余的数量
-
+- mod和环循环相关,m mod n可以加上若干个n方便计算
+例如同余原理的减法,环形结构加上n方便计算
 #### mod_arr
 - 当数组是环形结构:遍历n-1下一个要求是0需要mod进行转换
 - 可以在原数组增加若干个一样的help数组实现环型
@@ -727,8 +733,12 @@ ceil(a/b)=(a+b-1)/b;
 - 边界条件+-个1;
 - 1起始的mod运算 (n-1)mod m  +1;
 ### 同余原理
-- 每次运算都mod
-
+- 每步运算都取模=整体取模
+- (a+b+c)mod d =(a+b)mod d+c)mod d = (a +0 mod d+ b+0 mod d) mod d)+c+0 mod d)mod d=(((a mod d)+(b mod d))mod d+(c mod d))mod d
+- 减法出现负数:
+(10 - 7) mod 4->(10 mod 4 - 7 mod 4)mod4出现负数
+加个4就行->(10 mod 4 - 7 mod 4 + 4)mod4
+a mod b=(a + bmodb)mod b =同余原理= (a+b)mod b
 ## one_short
 - 差一问题
 - 画匠问题分的组最开始就是1
@@ -752,12 +762,26 @@ ceil(a/b)=(a+b-1)/b;
 
 ## 组合数学
 
+## 分析学
+
 ## discrete_oo
 - discrete_operator_order_set
 - 将数组dp 当成一个算子;dp(索引) 输出一个值到数组索引对应的位置上,那么这个数组整体构成一个order_set
-### prefix
 
-### 二分峰值(导函数介值定理)
+### prefix
+- 接雨水问题构建前后缀函数,最后可以用不回退指针优化
+
+### sup
+- 上界
+- 上确界:最小上界
+- 下界 下确界(inf)同理
+- 
+例如缺失的第一个正数,右指针的垃圾区
+左指针找到一个垃圾元素意味着构筑数量的上确界-1所以右指针左移
+
+
+### mid_value(导函数介值定理)
+- 二分峰值问题
 
 ### extrema
 - 函数的局部极值点,求两侧差分如果变号就是极值点
@@ -773,12 +797,6 @@ ceil(a/b)=(a+b-1)/b;
 - ∫f(k) - ∫(f(k-1))=f(k) 类似于夹逼定理
 ### Δd 差分(微分)
 
-## sup
-- 上界
-- 上确界:最小上界
-- 下界 下确界(inf)同理
-例如缺失的第一个正数,右指针的垃圾区
-左指针找到一个垃圾元素意味着构筑数量的上确界-1所以右指针左移
 
 ## vector_space
 - (K,+,x)-(V,+,||): aA+bB |A|
@@ -786,7 +804,7 @@ KV都是交换群
 ||:V->K 三角不等式 内积A*B=|A|x|B|xcosθ 
 - 基底表示 basis
 
-## basis
+### basis
 #### pow
 幂运算可以看作坐标维度的升高
 - 算子的幂次复合 f(x) f(f(x)):f^2(x) ...
