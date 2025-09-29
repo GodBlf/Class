@@ -1,0 +1,19 @@
+# 原理
+llm调优
+prompt提示词工程
+rag
+react
+mcp
+知识图谱
+SFT
+Multi-Agent
+
+# 课程论文
+UC Berkeley CS194-196
+## 姚顺雨
+ReAct Agent论文
+SWE Agent论文
+
+# 框架
+langchain langGraph LlamaIndex
+eino
