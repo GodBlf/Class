@@ -13,3 +13,4 @@ query 询问
 postform post表格
 process status进程状态
 bash猛烈敲击 命令行
+schema就是json的意思
