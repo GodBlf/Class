@@ -35,6 +35,12 @@ wsl --import Ubuntu D:\WSL\Ubuntu D:\backup\ubuntu_snapshot_2024_07_01.tar
 
 - 本机:wsl --export Ubuntu D:\wsl_ubuntu\backup\ubuntu_snapshot_2025_9_29.tar
 
+# 命令
+- wsl -d Ubuntu
+- 设置默认发行版
+wsl --set-default Ubuntu-22.04
+
+
 # docker for wsl
 
 ## 汉化
