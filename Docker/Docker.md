@@ -57,6 +57,7 @@ mysql:8 8版本的mysql默认最新
 - docker start 
 启动虚拟机容器
 - docker exec -it 容器 bash
+进入虚拟机bash
 - docker logs -f 容器
 查看容器日志
 
@@ -154,3 +155,4 @@ PING mysql (172.18.0.2) 56(84) bytes of data.
 
 # dockercompose
 - 自动化创建多个容器和网络
+- sudo docker compose up -d
