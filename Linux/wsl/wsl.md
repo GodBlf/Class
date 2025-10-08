@@ -39,7 +39,8 @@ wsl --import Ubuntu D:\WSL\Ubuntu D:\backup\ubuntu_snapshot_2024_07_01.tar
 - wsl -d Ubuntu
 - 设置默认发行版
 wsl --set-default Ubuntu-22.04
-
+- wsl --shutdown 
+wsl --terminate Ubuntu //强制删除
 
 # docker for wsl
 
