@@ -1,3 +1,67 @@
+# jwtboot
+```go
+package utils
+
+import (
+	"errors"
+	"time"
+
+	"github.com/golang-jwt/jwt/v5"
+)
+
+// 密钥本质是字节序列
+var jwtSecret = []byte("hello")
+
+// MyClaims结构体
+// 只需传入UserID和Username，其他字段自动生成
+type MyClaims struct {
+	UserID   string `json:"user_id"`
+	Username string `json:"username"`
+	jwt.RegisteredClaims
+}
+
+// 生成token，只需传入id和name
+func GenerateToken(id, name string) (string, error) {
+	now := time.Now()
+	exp := now.Add(24 * time.Hour)
+	claims := MyClaims{
+		UserID:   id,
+		Username: name,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Issuer:    "sky-take-out-go",
+			Subject:   "user",
+			Audience:  []string{"app"},
+			ExpiresAt: jwt.NewNumericDate(exp),
+			IssuedAt:  jwt.NewNumericDate(now),
+			NotBefore: jwt.NewNumericDate(now),
+			ID:        "jti-" + id + "-" + now.Format("20060102150405"),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString(jwtSecret)
+}
+
+// 解析token，自动校验exp/nbf/iat等
+func ParseToken(tokenString string) (*MyClaims, error) {
+	claims := &MyClaims{}
+	result, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+		//防止算法none混淆攻击
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("unexpected signing method")
+		}
+		return jwtSecret, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	if !result.Valid {
+		return nil, errors.New("invalid result")
+	}
+	return claims, nil
+}
+
+```
+
 JWT（JSON Web Token）是一种开放标准（RFC 7519），它定义了一种紧凑且自包含的方式，用于在各方之间安全地传输信息，并将其作为JSON对象。这些信息可以通过数字签名进行验证和信任。
 
 ### 简洁JWT鉴权
