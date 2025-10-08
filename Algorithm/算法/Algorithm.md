@@ -4253,6 +4253,58 @@ class Solution{
 ```
 
 
+## [同时运行n台电脑最长时间](https://leetcode.cn/problems/maximum-running-time-of-n-computers)
+- recur_tree.basis
+f(n)={
+    sum/n
+    g(n-1)
+}
+g=f
+
+- 理论连续可供电时间为sum/n 如果遍历电池大于sum/n 那么就让他自己供一台电脑
+转化为basis 子问题n-1台电脑和剩下的电池进行供电,
+直到遍历电池<=sum/n 为0向量
+
+```java
+class Solution {
+    public long maxRunTime(int n, int[] batteries) {
+        Arrays.sort(batteries);
+        long sum = 0;
+        for (int b : batteries) {
+            sum += b;
+        }
+        return dfs(n,batteries.length-1,batteries,sum);
+    }
+    public static long dfs(int n,int p,int[] arr,long sum){
+        int  cur=arr[p];
+        long junzhi=sum/n;
+        if(junzhi<arr[p]){
+            return dfs(n-1,p-1,arr,sum-cur);
+        }
+        return junzhi;
+    }
+}
+```
+
+- 迭代优化递归
+```java
+class Solution {
+    public long maxRunTime(int n, int[] batteries) {
+        Arrays.sort(batteries);
+        long sum = 0;
+        for (int b : batteries) {
+            sum += b;
+        }
+        for (int i = batteries.length - 1; ; i--) {
+            if (batteries[i] <= sum / n) {
+                return sum / n;
+            }
+            sum -= batteries[i];
+            n--;
+        }
+    }
+}
+```
 
 # 括号嵌套类递归题目
 ## [括号嵌套计算器]()
