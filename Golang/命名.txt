@@ -1,0 +1,5 @@
+接口用结尾用Mdw(midwear)
+lazyglobal 用Var
+具体实现的结构体用Ram
+依赖注入的变量用P(pointer)
+
