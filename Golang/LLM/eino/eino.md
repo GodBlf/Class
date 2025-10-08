@@ -14,6 +14,7 @@ A(input)-->B(indexer)
 B-->C(retriever)
 C-->D(llm)
 E(embedder)-->B
+D-->F(tool)
 ```
 
 ## embeder
@@ -22,3 +23,6 @@ E(embedder)-->B
 
 
 ## transformer
+
+## tool
+
