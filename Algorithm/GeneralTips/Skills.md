@@ -311,8 +311,10 @@ public static void partition2(int[] arr, int l, int r, int x) {
     "operator":"io stack"
     //io定义为输入状态和返回结果,结果可以是集合,值
     //stack是具体的dfs遍历,用函数栈模拟递归树节点
+    //basis consis dfs prune recover
 }
 ```
+
 
 - 递归树
 ![alt text](7113268cadc2876214b893736260c100.jpg)![alt text](image-3.png)
@@ -558,6 +560,8 @@ f(N)={
 
 # container
 - 构造的所有容器都要全面维护,如果为空就要移出全面考虑,等boundary边界条件
+- 队列,栈,优先级队列等都是常用的container
+- problem->container->slice,map,tree,vertexedge...
 ## new_container
 对某个对象进行操作的时候,最好把结果弄到一个new的对象上例如矩阵转置结果,new在一个新矩阵里否则原矩阵操作困难;
 ```c
@@ -792,6 +796,7 @@ a mod b=(a + bmodb)mod b =同余原理= (a+b)mod b
 ### prefix
 - 接雨水问题构建前后缀函数,最后可以用不回退指针优化
 
+##### +.basis
 
 ### Σ∫ 前缀和(积分) 
 - 桶排序优化桶
