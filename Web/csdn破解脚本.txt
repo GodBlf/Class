@@ -1,0 +1,2 @@
+- https://linux.do/t/topic/996101
+https://greasyfork.org/zh-CN/scripts/551010-unlockvip
