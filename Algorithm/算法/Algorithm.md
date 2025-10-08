@@ -380,7 +380,7 @@ log(2^32)=32 所以二分非常快
 ```json
 {
     "数组离散函数":"discrete_oo",
-    "导函数介值定理":"discrete_oo",//达布定理Darboux's theorem
+    "导函数介值定理":"discrete_oo.mid_value",//达布定理Darboux's theorem
     "划分指针":"partition_pointer"//特殊的划分(l,r)必有峰值
 }
 ```
@@ -421,6 +421,9 @@ class Solution {
 ```
 
 ## 二分答案
+- boot
+将答案分为两个区间,若mid是右区间则r来到mid 若是左区间l来到mid,直到l+1==r
+最终答案就在l或者r上,
 - 单调区间
 1）估计 最终答案可能的范围 是什么，可以定的粗略，反正二分不了几次
 2）分析 问题的答案 和 给定条件 之间的 单调性，大部分时候只需要用到 自然智慧
@@ -3186,7 +3189,7 @@ class Solution {
 # 单调栈
 ```json
 {
-    "解决凹凸问题":null,
+    "解决凹凸问题":"discrete_oo.extrema",
     "单调栈":"container",
     "重复元素修正":"reverse"//平定山峰从后往前遍历即可 1,2,2,2,0 最后一个2的答案0会直接向前传递所有2
 }
