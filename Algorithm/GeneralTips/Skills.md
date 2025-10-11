@@ -487,7 +487,7 @@ f(N)={
 ## recover
 - 应用于dfs过程(递归树遍历过程)
 - 对memo_pointer_container recover
-- recover:退回某个节点,memo也要恢复到这个节点的状态
+- recover:退回某个节点,memo也要恢复到这个节点的状态,state_pointer遍历到哪里状态就恢复成那里的样子
 - 回溯的时候要把visit 栈等memo恢复到上一个状态因为根据basis不同节点状态不一样并不一定都是root节点需要恢复进行下一个节点dfs
 - 按照栈先进先出恢复
 - 参数指针recover 参数值不用因为在栈里
@@ -678,7 +678,7 @@ flag和数据结构无关 memo和数据结构相关
 - 前提条件->原命题   !原命题->矛盾
 - 假设否命题真推矛盾
 
-## order
+## axis
 - 数轴
 通过考虑距离,序数,移动思考
 - 取自有序n元组 序偶
