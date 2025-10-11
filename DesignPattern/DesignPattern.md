@@ -1,3 +1,30 @@
+# 生成器（Generator）- 工厂
+- 对象的创建交给生成器,框架或者工厂,仅提供配置信息
+## 变量生成器
+- new(&config{})
+- 这种是常见的第三方库生成对象的方式,使用new函数
+```go
+func NewXxxVar(&XxxCfg{})
+```
+## 函数生成器
+- 常用于钩子函数的注册
+- 解决的问题:钩子函数通常被框架限制类型所以,通过函数生成器闭包的形式可以传递额外自定义信息
+```go
+func NewRegexFilterHook(pattern string) gin.HandlerFunc {
+    regex, err := regexp.Compile(pattern) // 只编译一次
+    if err != nil {
+        log.Fatalf("Invalid regex pattern: %s", pattern)
+    }
+    return func(c *gin.Context) {
+        if regex.MatchString(c.Request.URL.Path) {
+            // ... do something ...
+        }
+        c.Next()
+    }
+}
+gin.get("/",NewRegexFilterHook("test"))
+```
+
 # Hook
 - 框架
 you call library , framework call you
@@ -20,17 +47,18 @@ D<-->E
 - callback实现
 gin框架路由仅注册传入回调函数,gin.run()路由请求方法再调用注册的回调函数,hook会传递一个框架参数方便hook函数和框架的通信
 
+- 解决的问题:钩子函数通常被框架限制类型所以,通过函数生成器闭包的形式可以传递额外自定义信息
+
 # Singleton 单例设计模式
 - 设计global全局变量和initialize初始化函数,程序或者测试运行前加载initialize初始化全局变量和全局运行环境
 - 单例设计模式和依赖注入这两个互为反,全局的工具性的变量设置为单例执行前初始化,其他需要用到的时候在注入是依赖注入
 
 
 
-# IoC-DI
+# Var Ram Pointer 结构体,依赖注入
 ## var ram
-- 本质还是var ram 
-var ram(type) new 需要啥就通过new()注入到结构体中直接
-type结构体是var所在的内存区域中包含哪些变量,new是在ram中生成具体的var
+- 结构体中表示在ram中,var包含的具体的变量有什么
+- :=&{} 生成具体的变量在ram中
 
 ## pointer
 - 指针设计模式,不关心内部变量的创建直接传递来指针直接用
@@ -69,9 +97,6 @@ func NewServiceImpl(d InterfaceOrImpl){
 - 需要设置为lazy global的就是依赖注入变量,不需要的就是变量包含,依赖注入的直接传参数里交给wire框架,变量包含自己赋值
 
 详见wire
-## new(&config{})
-- 这种也是常见的lib第三方库依赖注入实现的
-
 
 # Midwear
 - 封装具体实现,仅能通过中间层调用实现,实现抽象,扩展,通信,缓冲等
@@ -85,7 +110,12 @@ abstract抽象中文垃圾翻译,改成摘要,提取一个物体的关键部分�
 - interface是一个tree他链接这多个实现的变量,父节点是midwear子节点是具体的实现
 - 因为调用具体实现需要通过接口所以生成接口变量的New由配置好的wire框架实现,在wire框架中配置生成接口变量所需的所有实现和接口;
 
-## 并发控制
+## 函数栈中间件
+在原本运行的函数栈之间加入一个函数栈这样访问先访问中间件,return,后return中间件
+### 并发控制
+![alt text](image.png)
+加入并发控制中间件
+![alt text](image-1.png)
 等待组的并发控制外移分离并发控制和业务逻辑
 - 树形结构考虑线程,go func在主线程节点分出一个子线程,子线程root下就是这个func函数,控制外移就是在root和func之间加一个中间控制函数
 - 匿名函数+defer实现并发控制外移
@@ -110,6 +140,8 @@ wg := &sync.WaitGroup{}
 
 }
 ```
+
+### gin中间件
 
 ## channel <->
 - 在两个对象间加入一个管道实现数据的传输通信
