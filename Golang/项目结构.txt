@@ -1,0 +1,14 @@
+common:
+- utils
+
+global
+
+initialize
+
+config
+
+pojo(model)
+
+router:
+- routermid
+
