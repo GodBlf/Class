@@ -2,4 +2,7 @@
 lazyglobal 用Var
 具体实现的结构体用Ram
 依赖注入的变量用P(pointer)
+钩子函数用Hook
+例如gin中间件既是Mdw又是Hook俩都加后缀里
 
+New前缀是初始化的意思
