@@ -46,6 +46,7 @@ C/C++运行时间1s，java/python/go等其他语言运行时间1s~2s，
 ## 数据结构
 - 所有数据结构底层都是连续结构(数组),跳转结构(指针链表)拼出来的
 - 底层(连续,跳转)->理论(线性表,哈希表,树,图)
+- problem->container->slice map tree vertex-edge
 
 # 打表中间件
 - 在另一个程序里做好中间件,在目标程序代码里提前做好中间件数组打表之类的,
@@ -2071,7 +2072,7 @@ class AllOne {
 ### [setall](https://www.nowcoder.com/practice/7c4559f138e74ceb9ba57d76fd169967)
 ```json
 {
-    "时间戳":"order"
+    "时间戳":"axis"
 }
 ```
 ```java
@@ -2250,6 +2251,212 @@ public class Codec {
 ```
 #### [二叉树后序序列化和反序列化]
 - 反序列化把数组reverse就是先序反序列化,简简单单的
+
+#### [二叉树最近公共祖先lca](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/)
+- recur_tree.basis
+f(root)={
+    root if root==null || q || p
+    g(root.left)+g(root.right)
+}
+g=f
+```java
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        return dfs(root,p,q);   
+    }
+    public static TreeNode dfs(TreeNode root,TreeNode p, TreeNode q){
+        if(root ==null || root==p || root == q){
+            return root;
+        }
+        TreeNode left=dfs(root.left,p,q);
+        TreeNode right=dfs(root.right,p,q);
+        //如果都找到就返回root
+        if(left!=null && right!=null){
+            return root;
+        }
+        //只找到一个返回这个
+        else if(left==null && right!=null){
+            return right;
+        }else if(left !=null && right ==null){
+            return left;
+        }else{
+            return null;
+        }
+
+    }
+}
+```
+
+#### [搜索二叉树lca](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree)
+##### 搜索二叉树
+- root节点的值大于左树所有节点的值且小于右树所有节点的值
+- left.allvalue<mid.value<right.allvalue
+```json
+{
+    "数轴点逼近线段":"axis",
+    "节点指针遍历树":"state_pointer"
+}
+```
+二叉搜索树可以扁平化为数轴,root为中间的点
+从root开始的sp在数轴上游走逼近(min,max)组成的线段
+sp碰到就返回这个值
+```java
+
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        TreeNode sp=root;
+        int min=Math.min(p.val,q.val);
+        int max=Math.max(p.val,q.val);
+        while(true){
+            //逼近
+            if(min>sp.val){
+                sp=sp.right;
+            }else if(max<sp.val){
+                sp=sp.left;
+            }
+            //碰到
+            if(sp==null || sp==p || sp==q){
+                break;
+            }
+            if(sp.val>min && sp.val<max){
+                break;
+            }
+        }
+        return sp;
+    }
+}
+```
+
+#### [二叉树到叶节点的路径之和](https://leetcode.cn/problems/path-sum-ii/)
+```json
+{
+    "递归树遍历":"recur_tree.basis recover",//路径恢复到节点的状态
+    "叶节点branch节点":"vars_hubs.enum"//划分为左branch 右branch leaf和纯branch三种节点进行递归调用
+}
+```
+
+```java
+
+class Solution {
+    public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
+        ans=new ArrayList<>();
+        if(root==null){
+            return ans;
+        }
+        ArrayList<Integer> memo = new ArrayList<>();
+        dfs(root,targetSum,0,memo);
+        return ans;
+    }
+    public static List<List<Integer>> ans=new ArrayList<>();
+    public static void dfs(TreeNode root,int tg,int sum,ArrayList<Integer> memo) {
+        sum+=root.val;
+        memo.add(root.val);
+        //vars_hubs.enum
+        if(root.left==null&&root.right==null){
+            if(sum==tg){
+                List<Integer> ret = new ArrayList<>(memo);
+                ans.add(ret);
+            }
+        }else if(root.left!=null && root.right==null){
+            dfs(root.left,tg,sum,memo);
+        }else if(root.left==null && root.right!=null){
+            dfs(root.right,tg,sum,memo);
+        }else{
+            dfs(root.left,tg,sum,memo);
+            dfs(root.right,tg,sum,memo);
+        }
+        //recover
+        memo.remove(memo.size()-1);
+        //这里sum没必要recover因为函数栈
+        sum-=root.val;
+        return;
+    }
+}
+
+```
+
+#### [判断平衡二叉树](https://leetcode.cn/problems/balanced-binary-tree/)
+- recur_tree.basis globalflag
+- 就是求二叉树最大深度加了个全局标记
+f(p)={
+    max(g(left),g(right))+1
+}
+g=f
+```java
+class Solution {
+    public boolean isBalanced(TreeNode root) {
+        flag=true;
+        int num=dfs(root);
+        return flag;
+    }
+    public static boolean flag=true;
+    public static int dfs(TreeNode p){
+        if(p==null) return 0;
+        int l=dfs(p.left);
+        int r=dfs(p.right);
+        if(Math.abs(r-l)>1){
+            flag=false;
+        }
+        return Math.max(l,r)+1;
+    }
+}
+```
+
+#### [判断搜索二叉树]()
+- recur_tree.basis flag axis memo_pointer
+- 用记忆指针记忆上次遍历的结果
+- 搜索二叉树中序遍历是一个递增序列依照这个性质如果不满足axis就将flag设置为flag
+```java
+class Solution {
+    public boolean isValidBST(TreeNode root) {
+        flag=true;
+        memo=Long.MIN_VALUE;
+        dfs(root);
+        return flag;
+    }
+    public static boolean flag=true;
+    public static long memo;
+    public static void dfs(TreeNode p){
+        if(p==null){
+            return;
+        }
+        dfs(p.left);
+        //遍历这个节点如果比上次小就不是
+        if(memo>=p.val){
+            flag=false;
+        }
+        memo=p.val;
+        dfs(p.right);
+    }
+}
+```
+
+#### [修建二叉搜索树](https://leetcode.cn/problems/trim-a-binary-search-tree/)
+- recur_tree.basis axis
+- 递归函数f:修建并返回节点
+```java
+class Solution {
+    public TreeNode trimBST(TreeNode root, int low, int high) {
+        return dfs(root,low,high);
+    }
+
+    public static TreeNode dfs(TreeNode p,int l,int r){
+        if(p==null){
+            return null;
+        }
+        if(p.val<l){
+            return dfs(p.right,l,r);
+        }
+        if(p.val>r){
+            return dfs(p.left,l,r);
+        }
+        p.left=dfs(p.left,l,r);
+        p.right=dfs(p.right,l,r);
+        return p;
+    }
+}
+```
+
 
 ## 栈模拟递归
 
@@ -4446,7 +4653,7 @@ class Solution {
 }
 ```
 
-## 洪水填充问题 感染问题
+## 感染问题(洪水填充问题)
 
 ## [岛屿数量](https://leetcode.cn/problems/number-of-islands/)
 - basis分析
@@ -4488,7 +4695,7 @@ class Solution {
 }
 ```
 
-## [被围绕的区域](https://leetcode.cn/problems/remove-element/)
+## [被围绕的区域](https://leetcode.cn/problems/surrounded-regions/description/)
 - 上一题岛屿数量的变式
 - 从边缘开始找起,对边缘的o进行感染,感染成f,中间的o不影响,然后中间的o遍历改成x,再把感染的f改回o就可以
 ```java
