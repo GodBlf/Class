@@ -7,7 +7,7 @@
 # math_refactor公理
 - 借鉴数学的ZFC集合论公理体系
 Skills->Algorithm ; Skills->JavaSE
-- math_refactor是公理体系的公理;Skills里的例如no-backtracking_pointer等都是定理
+- math_refactor是公理体系的公理;Skills里的例如nobacktracking_pointer等都是定理
 
 # math_refactor
 ```json
@@ -189,13 +189,13 @@ sp=pi[sp]
 ## pointers_container
 - 参见container
 ---
-NMP  (no-backtracking memo partition);
-## no-backtracking_pointer/不回退指针
+NMP  (nobacktracking memo partition);
+## nobacktracking_pointer/不回退指针
 no backtracking pointer
 - 数组反转
 - 例如将数组排序,kmp算法等,A-Bproblem,滑动窗口,供暖器
 ### order
-- 当需要两个指针不断循环的时候可以考虑排序然后改为no-backtracking指针
+- 当需要两个指针不断循环的时候可以考虑排序然后改为nobacktracking指针
 - 救生艇问题
 ### 双指针统计(归并)
 将两部分排序
@@ -305,21 +305,23 @@ public static void partition2(int[] arr, int l, int r, int x) {
 
 
 
-# recur_tree:
+# recur:
 ```json
 {
     "operator":"io stack"
     //io定义为输入状态和返回结果,结果可以是集合,值
     //stack是具体的dfs遍历,用函数栈模拟递归树节点
-    //basis consis dfs prune recover
+    //subset consis dfs prune recover
 }
 ```
 
 
 - 递归树
-![alt text](7113268cadc2876214b893736260c100.jpg)![alt text](image-3.png)
+![alt text](image-3.png)
 递归是对递归树的dfs遍历
-## basis 基底表示
+
+
+## subset 子集表示
 ### consis_operator 一致算子
 - 用于构建递归树
 - io:f(a,b) 解决a,b状态的问题构建math算子
@@ -338,16 +340,20 @@ k+g()+g()+k
 g()=f()
 
 ```
-### basis
-- Vn=∑kiVi+k*0  向量空间那个图来记忆
-- 不同状态节点由其子状态向量基底表示
-基底可一致转化
-- 叶子节点表示为0向量+k
+### subset
+- Vn=∑kiVi+k*0  集合韦恩图来记忆
+- 不同状态节点由其子状态子集表示
+子集可一致转化
+- 叶子节点表示为空集+k,空集就是没有子问题了直接返回值
 f(N)={
     k*0  is leaf
     kg(n)+k*0 is no-leaf
 }
 g=f 
+
+### order 多维递归问题
+- subset子集可以是一个有序n元组,通过三维空间的函数思考,相当于是二维dp的recur版本
+
 ## tree
 ### Node
 - args state or varible state 函数栈节点的状态
@@ -368,7 +374,7 @@ g=f
 ### Root
 - leaf和branch的区分就是开没开栈
 branch节点的结构和root节点的结构相同,且仅能够从root节点设计递归树的结构
-## dfs遍历 
+### dfs遍历 
 ![alt text](image-2.png)
 递归是对递归树的遍历,采取包裹(dfs)式的遍历,遇到叶子节点就返回;
 具体例子可思考fabonacci 01背包 n皇后问题 全排列等
@@ -377,7 +383,7 @@ branch节点的结构和root节点的结构相同,且仅能够从root节点设�
 
 ### dustbin
 
-- f=g+g+k g和f这两个算子是一致那么f=g 子问题g基底表示父问题f 如果f和g是一致的那么f=g
+- f=g+g+k g和f这两个算子是一致那么f=g 子问题g子集表示父问题f 如果f和g是一致的那么f=g
 - operator的设计有自指的含义,
 例如二叉树递归中root处io为返回节点stack为建好这课树,实际root处还没完成,对于两个子树可以直接当作完成了再拼接到一起,加了拼接这个语句,所有子问题都加上了拼接这个语句,自指
 例如快排中io为返回空 stack为
@@ -389,6 +395,11 @@ branch节点的结构和root节点的结构相同,且仅能够从root节点设�
     c. 如果log(b,a)  > c，复杂度为：O(n^log(b,a))
     d. 如果log(b,a) == c，复杂度为：O(n^c * logn)
     T(n) = 2*T(n/2) + O(n*logn)，时间复杂度是O(n * ((logn)的平方))，证明过程比较复杂，记住即可
+
+## multi_return
+- 设计的递归算子可以多返回值
+- 是将多维递归问题降维的优化方法,是对order子集的降维优化,通常将2个维度的子问题转化成2个返回值1个维度的子问题
+- 打家劫舍二叉树
 
 ## dustbin
 - 模板
@@ -471,24 +482,24 @@ if() return  等价于  if else
 - dfs()  二叉树dfs反序列化
 
 ## prune
-- 应用于basis表示过程(递归树构建过程)
+- 应用于subset表示过程(递归树构建过程)
 - 剪枝
-把递归树开的栈提前变为具体的值 or 非零向量提前通过判断转成0向量
+把递归树开的栈提前变为具体的值 or 非空子集提前通过判断转成空集
 f(N)={
     k*0 //leaf
 
-    g(n)+ ~~g(n)~~ +k*0 //prune把开的栈提前变成具体的值 or 变为零向量
+    g(n)+ ~~g(n)~~ +k*0 //prune把开的栈提前变成具体的值 or 变为空集合
 }
 斐波那契额递归用记忆数组剪枝
 二分机器人走路问题达到最大值直接剪掉不考虑
 全组合
-
+- 搭配memocontainer实现记忆化搜索的剪枝实现(dp递归版本)
 
 ## recover
 - 应用于dfs过程(递归树遍历过程)
 - 对memo_pointer_container recover
 - recover:退回某个节点,memo也要恢复到这个节点的状态,state_pointer遍历到哪里状态就恢复成那里的样子
-- 回溯的时候要把visit 栈等memo恢复到上一个状态因为根据basis不同节点状态不一样并不一定都是root节点需要恢复进行下一个节点dfs
+- 回溯的时候要把visit 栈等memo恢复到上一个状态因为根据subset不同节点状态不一样并不一定都是root节点需要恢复进行下一个节点dfs
 - 按照栈先进先出恢复
 - 参数指针recover 参数值不用因为在栈里
 
@@ -681,6 +692,18 @@ flag和数据结构无关 memo和数据结构相关
 ## axis
 - 数轴
 通过考虑距离,序数,移动思考
+两坐相减等于他们之间线段(距离)的个数
+通过两坐标相减得到之间线段个数在一一映射到他们之间的[) 或者(]区间可得坐标元素个数
+- 数轴上索引表示他左边所有元素的数量例如索引n表示从0到n-1共n个
+可以通过列方程判断某个索引
+例如  . . . [i . . . . . .] x
+已知i处索引和中括号之间的个数n求x的索引
+列方程:
+x右边的个数为nx i右边个数为ni: nx-ni=n
+由数轴索引的含义可得nx=x ni=i
+所以 x-i=n  x=n+i
+
+
 - 取自有序n元组 序偶
 - cmp函数 返回-1在左边1在右边
 - 全排列的规范序列
@@ -694,7 +717,7 @@ flag和数据结构无关 memo和数据结构相关
 - 序数 从0开始数轴
 - 基数 n [0,n-1]
 - 序数+1=基数 基数-1=序数 先有序数数轴(从0开始)再有基数所以序数+1
-
+- 一般以cardinal进行分析,涉及axis再转成ordinal
 ## symmetry
 - 对称代数结构 
 - (G,*,e,-1) 有序n元组 group_theory
@@ -704,16 +727,15 @@ flag和数据结构无关 memo和数据结构相关
 arr[i] 数量为i+1 n个数的数组是[0,n-1]
 
 ## 数论
-### mod(%)
-- 序数
-对于数量n,mod本质是将数轴上的序数映射到0,1,...,n-1
-f(x)=x%n : 将序数x映射到[0,n)上 可以看作循环
-- 基数
-//先x-1转为序数 最后整体+1转为基数
-(x-1)%n+1 根据同余原理 -> x%n-1%n+1 == x%n
-x%n : 整除n后剩余的数量
-- mod和环循环相关,m mod n可以加上若干个n方便计算
-例如同余原理的减法,环形结构加上n方便计算
+### mod(%)/
+- x / cardinal = cardinal ... y
+- x mod cardinal = y
+- 划分
+x为cardinal 那么y也是cardinal
+含义是将x划分每组n个,最后余多少个
+- 映射
+如果x是ordinal,y也是ordinal
+含义是将x映射到0,n-1上,可看作循环,最后循环到哪个哪个就是映射的值
 #### mod_arr
 - 当数组是环形结构:遍历n-1下一个要求是0需要mod进行转换
 - 可以在原数组增加若干个一样的help数组实现环型
@@ -728,8 +750,7 @@ for i:=0;i<6;i++{
 ```
 - 滑动窗口的加油出发点问题
 
-### /
-- 模映射,经过了多少数量的循环
+
 
 ### 数论微小量1
 - 向上取整减去一个微小量1
@@ -784,20 +805,6 @@ a mod b=(a + bmodb)mod b =同余原理= (a+b)mod b
 ### mid_value(导函数介值定理)
 - 二分峰值问题
 
-### extrema
-- 函数的局部极值点,求两侧差分如果变号就是极值点
-供暖器问题
-- 导函数介值定理,区间左端点导函数值为a,右端点为b那么 区间内部一定能取到a,b所有值
-经常判断极值点
-
-#### + .basis
-
-
-### prefix
-- 接雨水问题构建前后缀函数,最后可以用不回退指针优化
-
-##### +.basis
-
 ### Σ∫ 前缀和(积分) 
 - 桶排序优化桶
 - 1/1+1/2+1/3+...+1/n  is  ∫1/n=lnn的复杂度
@@ -805,23 +812,38 @@ a mod b=(a + bmodb)mod b =同余原理= (a+b)mod b
 - ∫f(k) - ∫(f(k-1))=f(k) 类似于夹逼定理
 ### Δd 差分(微分)
 
+### extrema
+- 函数的局部极值点,求两侧差分如果变号就是极值点
+供暖器问题
+- 导函数介值定理,区间左端点导函数值为a,右端点为b那么 区间内部一定能取到a,b所有值
+经常判断极值点
+
+
+### prefix
+- 接雨水问题构建前后缀函数,最后可以用不回退指针优化
+
+---
+
+### subset
+- n处函数值可由前边的subset函数值组合得出
+- 由于有subset所以每一个doo.subset问题都能转化为一个recur问题
 
 ## vector_space
 - (K,+,x)-(V,+,||): aA+bB |A|
 KV都是交换群
 ||:V->K 三角不等式 内积A*B=|A|x|B|xcosθ 
-- 基底表示 basis
+- 基底表示为basis
 
 ### basis
-#### pow
+#### pow_basis
 幂运算可以看作坐标维度的升高
 - 算子的幂次复合 f(x) f(f(x)):f^2(x) ...
 可以用迭代的方式表示每个幂次算子的状态
 p=x int i=0 while(true){i++;p=f(p)} 根据算子的状态立即更新i的状态
 - kmp算法中的Π算子
 ####  pow_series
-- 幂级数展开就是以 {1,x,x^2,...}的基底 线性表示 在向量空间的坐标表示
-- 以{...,f^-2,f^-1,f^0,f,f^2,...}为基底的线性表示
+- 幂级数展开就是以 {1,x,x^2,...}的子集 线性表示 在向量空间的坐标表示
+- 以{...,f^-2,f^-1,f^0,f,f^2,...}为子集的线性表示
 - 和进制的关系
 对一个数进行幂级数展开如二进制 1,2,4,8
 x^5+2x^4+3x^3+4x^2+5x^1+6这个泰勒级数可以转化为以x为进制的123456
