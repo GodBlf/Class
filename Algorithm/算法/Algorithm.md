@@ -717,8 +717,8 @@ class Solution {
 ## [接雨水](https://leetcode.cn/problems/trapping-rain-water/)
 ```json
 {
-    "前缀max后缀max":"discrete_oo.prefix",
-    "指针优化前后缀函数":"reduce_dimension no-backtracking_pointer"
+    "前缀max后缀max":"discrete_oo.prefix+.subset",
+    "指针优化前后缀函数":"reduce_dimension _pointer"
 }
 ```
 - 对于i位置能够接雨水的数量为不包含他的前缀最大值和不包含他的后缀最大值的min,min-i就是i位置接的雨水数量
@@ -780,7 +780,7 @@ class Solution {
 ```
 
 ## [救生艇](https://leetcode.cn/problems/boats-to-save-people/)
-- no-backtracking_pointer 
+- _pointer 
 先排个序然后就能用两个不回退指针了
 - 注意双指针收缩两个都收缩的去重问题
 ```java
@@ -847,7 +847,7 @@ class Solution {
 ## [供暖器](https://leetcode.cn/problems/heaters/)
 ```json
 {
-    "排序优化为不回退指针":"no-backtracking_pointer",
+    "排序优化为不回退指针":"_pointer",
     "寻找houses匹配的供暖器":"discrete_oo.extrema"
 }
 ```
@@ -951,8 +951,8 @@ class Solution {
 ```json
 {
     "链表构造模型":"sentry memo_pointer container.new_container",//memo_pointer记忆尾节点
-    "指针技巧":"memo_pointer no-backtracking_pointer",
-    "快慢指针":"no-backtracking_pointer"
+    "指针技巧":"memo_pointer _pointer",
+    "快慢指针":"_pointer"
 }
 ```
 ## 函数参数
@@ -965,7 +965,7 @@ class Solution {
 - memo指针
 指向链表的尾节点实现正序插入,记忆尾节点,也是memo指针的一种
 
-- no-backtracking指针
+- 指针
 ## 习题
 ### [链表反转leetcode](https://leetcode.cn/problems/reverse-linked-list/)
 ```java
@@ -1346,7 +1346,7 @@ class Solution {
     "距离快慢指针":"fast-slow_pointer"
 }
 ```
-- 快慢指针 no-backtracking_pointer 设置不回退指针的距离差
+- 快慢指针 _pointer 设置不回退指针的距离差
 ```java
 class Solution {
     public ListNode removeNthFromEnd(ListNode head, int n) {
@@ -2118,7 +2118,7 @@ public static HashMap<Integer, int[]> map = new HashMap<>();
 - 递归设计整体考虑树的左子树和右子树
 ```json
 {
-    "递归树":"recur_tree"
+    "递归树":"recur"
 }
 ```
 - 先序
@@ -2146,7 +2146,7 @@ public void dfs(treenode root){
 #### [二叉树最小深度](https://leetcode.cn/problems/minimum-depth-of-binary-tree/)
 ```json
 {
-    "递归树":"recur_tree",
+    "递归树":"recur",
     "剪枝剪掉null":"prune",
     "分为四种节点状态":"state_enum"
 }
@@ -2190,7 +2190,7 @@ class Solution {
 #### [二叉树先序序列化和反序列化](https://leetcode.cn/problems/serialize-and-deserialize-binary-tree/)
 ```json
 {
-    "递归树简简单单的":"recur_tree",
+    "递归树简简单单的":"recur",
     "cnt作为状态指针游走":"state_pointer"
 }
 ```
@@ -2252,8 +2252,107 @@ public class Codec {
 #### [二叉树后序序列化和反序列化]
 - 反序列化把数组reverse就是先序反序列化,简简单单的
 
+#### [先序中序序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal)
+- recur.subset map_container 加速查询
+- 先序数组为[头节点,左树,右数] 中序数组为[左树,头节点,右树]
+- f()={
+    g(左树先序数组,左树中序数组)
+    g(右树先序数组,右树中序数组)
+    返回的头节点拼接为整个树
+}
+g=f
+
+```java
+class Solution {
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < inorder.length; i++) {
+            map.put(inorder[i],i);
+        }
+        return dfs(preorder,0,preorder.length-1,inorder,0,inorder.length-1,map);
+    }
+    public static TreeNode dfs(int[] xian, int xl, int xr, int[] zhong, int zl, int zr, HashMap<Integer,Integer> map){
+        if(xl>xr){
+            return null;
+        }
+        if(xl==xr){
+            return new TreeNode(xian[xl]);
+        }
+        TreeNode root = new TreeNode(xian[xl]);
+        Integer index = map.get(root.val);
+        int zuoshucnt=index-zl;
+        int youshucnt=zr-index;
+        //用axis列方程判断具体索引
+        root.left=dfs(xian,xl+1,zuoshucnt+xl,zhong,zl,index-1,map);
+        root.right=dfs(xian,zuoshucnt+xl+1,xr,zhong,index+1,zr,map);
+        return root;
+    }
+}
+```
+
+#### [判断完全二叉树](https://leetcode.cn/problems/check-completeness-of-a-binary-tree/)
+- cache_container flag全局标记变量
+- 判断标准
+1. 左空右不空直接false
+2. 孩子不全(左有,或全没有)后边遇到的都是叶子节点用flag全局标记实现
+```java
+class Solution {
+    public static TreeNode[] cache=new TreeNode[104];
+    public static boolean flag=false;
+    public boolean isCompleteTree(TreeNode root) {
+        flag=false;
+        int l=0;int r=0;int n=0;
+        cache[r++]=root;n=1;
+        //特判
+        if(root.right!=null && root.left==null){
+            return false;
+        }
+        if(root.right==null && root.left!=null && !(root.left.left==null && root.left.right==null)){
+            return false;
+        }
+        //遍历
+        while(l<r){
+            for(int i=0;i<n;i++){
+                TreeNode node=cache[l++];
+                n--;
+                TreeNode lnode=node.left;
+                TreeNode rnode=node.right;
+                if(lnode !=null){
+                    cache[r++]=lnode;
+                    n++;
+                    if(lnode.right!=null && lnode.left==null){
+                        return false;
+                    }
+                    if(flag==true && !(lnode.left==null && lnode.right==null)){
+                        return false;
+                    }
+                    if(lnode.left==null || lnode.right==null){
+                        flag=true;
+                    }
+                }
+                if(rnode!=null){
+                    cache[r++]=rnode;
+                    n++;
+                    if(rnode.right!=null && rnode.left==null){
+                        return false;
+                    }
+                    if(flag==true && !(rnode.left==null && rnode.right==null)){
+                        return false;
+                    }
+                    if(rnode.left==null || rnode.right==null){
+                        flag=true;
+                    }
+                }
+
+            }
+        }
+        return true;
+    }
+}
+```
+
 #### [二叉树最近公共祖先lca](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/)
-- recur_tree.basis
+- recur.subset
 f(root)={
     root if root==null || q || p
     g(root.left)+g(root.right)
@@ -2330,7 +2429,7 @@ class Solution {
 #### [二叉树到叶节点的路径之和](https://leetcode.cn/problems/path-sum-ii/)
 ```json
 {
-    "递归树遍历":"recur_tree.basis recover",//路径恢复到节点的状态
+    "递归树遍历":"recur.subset recover",//路径恢复到节点的状态
     "叶节点branch节点":"vars_hubs.enum"//划分为左branch 右branch leaf和纯branch三种节点进行递归调用
 }
 ```
@@ -2376,7 +2475,7 @@ class Solution {
 ```
 
 #### [判断平衡二叉树](https://leetcode.cn/problems/balanced-binary-tree/)
-- recur_tree.basis globalflag
+- recur.subset globalflag
 - 就是求二叉树最大深度加了个全局标记
 f(p)={
     max(g(left),g(right))+1
@@ -2402,14 +2501,15 @@ class Solution {
 }
 ```
 
-#### [判断搜索二叉树]()
-- recur_tree.basis flag axis memo_pointer
+#### [判断搜索二叉树](https://leetcode.cn/problems/validate-binary-search-tree/)
+- recur.subset flag axis memo_pointer
 - 用记忆指针记忆上次遍历的结果
 - 搜索二叉树中序遍历是一个递增序列依照这个性质如果不满足axis就将flag设置为flag
 ```java
 class Solution {
     public boolean isValidBST(TreeNode root) {
         flag=true;
+        //一开始设置为long.min方便记忆也可以多用一个全局flag记忆
         memo=Long.MIN_VALUE;
         dfs(root);
         return flag;
@@ -2431,8 +2531,8 @@ class Solution {
 }
 ```
 
-#### [修建二叉搜索树](https://leetcode.cn/problems/trim-a-binary-search-tree/)
-- recur_tree.basis axis
+#### [修剪二叉搜索树](https://leetcode.cn/problems/trim-a-binary-search-tree/)
+- recur.subset axis
 - 递归函数f:修建并返回节点
 ```java
 class Solution {
@@ -2457,12 +2557,71 @@ class Solution {
 }
 ```
 
+#### [二叉树打家劫舍](https://leetcode.cn/problems/house-robber-iii/)
+- recur.subset+.multi_return 
+- 通过多返回值降维优化二维的递归问题将2个order转化为2个返回值1个参数
+- 递归多返回值问题,
+f(root)={
+    return 0,0 if null
+    return1: g(root.left).return1+g(root.right).return2
+    return2: max(g(root.l).return1,.return2 )+max(g(root.r).return1,.return2)
+    return
+}
+g=f
+
+```java
+class Solution {
+    public int rob(TreeNode root) {
+        int ans1=dfs2(root,0);
+        int ans2=dfs2(root,1);
+        return Math.max(ans1,ans2);
+    }
+    public static int dfs2(TreeNode sp,int state){
+        if(sp==null){
+            return 0;
+        }
+        int l0=dfs2(sp.left,0);
+        int l1=dfs2(sp.left,1);
+        int r0=dfs2(sp.right,0);
+        int r1=dfs2(sp.right,1);
+        if(state==0){
+             return Math.max(l0,l1)+Math.max(r0,r1);
+        }
+        return l0+r0+ sp.val;
+    }
+}
+//可加map优化为记忆化搜索
+```
+
+- 降维多返回值优化
+```java
+class Solution {
+    public int rob(TreeNode root) {
+        int[] ans = dfs(root);
+        return Math.max(ans[0],ans[1]);
+    }
+    public static int[] dfs(TreeNode sp){
+        if(sp==null){
+            return new int[]{0,0};
+        }
+        int[] l = dfs(sp.left);
+        int[] r = dfs(sp.right);
+        int[] ans = new int[2];
+        ans[0]=l[1]+r[1]+sp.val;
+        ans[1]=Math.max(l[0],l[1])+Math.max(r[0],r[1]);
+        return ans;
+    }
+}
+//这里的dfs是求每个节点的两个值
+```
+
+
 
 ## 栈模拟递归
 
 ```json
 {   
-    "栈模拟递归树":"recur_tree memo_pointer",
+    "栈模拟递归树":"recur memo_pointer",
     "记忆节点路径":"memo_container",
     "虚返回":"lazy",//虚返回可以看作懒操作不用一步步返回
 }
@@ -2516,7 +2675,7 @@ class Solution {
             if(cache.isEmpty() && p==null){
                 return ans;
             }
-            //模拟recur_tree
+            //模拟recur
             if(p!=null){
                 cache.push(p);
                 p=p.left;
@@ -2954,7 +3113,7 @@ public class Codec {
 ```json
 {
     "优先级队列小根堆":"container.cache",
-    "不回退状态指针":"no-backtracking_pointer_container"//进入cache充当不回退指针
+    "不回退状态指针":"_pointer_container"//进入cache充当不回退指针
 }
 ```
 - 合并两个用不回退指针和链表模型
@@ -3080,7 +3239,7 @@ class MedianFinder {
 ```json
 {
     "解决全子串问题":null,//枚举所有子串
-    "滑动窗口":"partition_pointer no-backtracking_pointer"//维护的区域构建为[),左指针不回退
+    "滑动窗口":"partition_pointer _pointer"//维护的区域构建为[),左指针不回退
 }
 // 应用于数组的全子串问题,维护一个滑动的子串窗口,将O(n^2)优化为O(n)
 // 暴力做法以右边为边界从0至n-1 遍历所有子串,每次遍历左指针回退到0重新开始, O(n^2)
@@ -3117,7 +3276,7 @@ class Solution {
 {
     "记录索引方便查询是否在窗口内":"map_container",
     "懒得删":"lazy",//不删除不包含在窗口中map里的元素,仅关注在窗口中的元素即可,懒得删了
-    "滑动窗口":"no-backtracking_pointer partition_pointer"
+    "滑动窗口":"_pointer partition_pointer"
 }
 ```
 - 用一个mapcontainer 储存窗口中的元素 及其 索引
@@ -3159,7 +3318,7 @@ class Solution {
 {
     "窗口内需要包含的字符数量":"map_container",
     "控制ans答案收集":"flag",//flag是负债标记不标记盈余实现控制
-    "滑动窗口":"no-backtracking_pointer partition_pointer"
+    "滑动窗口":"_pointer partition_pointer"
 }
 ```
 - 用map储存滑动窗口里含小字符串字符的数量,
@@ -3299,7 +3458,7 @@ class Solution {
 ### [加油站出发点](https://leetcode.cn/problems/gas-station/)
 ```json
 {
-    "滑动窗口":"no-backtracking_pointer partition_pointer",
+    "滑动窗口":"_pointer partition_pointer",
     "复制一份数组模拟环":"help_container mod"//将复制的数组索引mod映射到原来数组索引
 }
 ```
@@ -3343,7 +3502,7 @@ class Solution {
 ### [k个不同数的子串](https://leetcode.cn/problems/subarrays-with-k-different-integers/)
 ```json
 {
-     "滑动窗口":"partition_pointer no-backtracking_pointer",//维护的区域构建为[),左指针不回退
+     "滑动窗口":"partition_pointer _pointer",//维护的区域构建为[),左指针不回退
      "积分再差分求k":"discrete_oo.∑∫",
      "记录答案":"container.map_container"
 }
@@ -3663,14 +3822,14 @@ class Solution {
 # 归并(分治)
 ```json
 {
-    "递归树":"recur_tree",
-    "merge":"no-backtracking_pointer",//这里merge的时候有一个简单的statefilter
-    "统计部分":"partition_pointer no-backtracking_pointer"//这里是开区间的划分指针,开区间更常见仅二分为了方便用闭区间
+    "递归树":"recur",
+    "merge":"_pointer",//这里merge的时候有一个简单的statefilter
+    "统计部分":"partition_pointer _pointer"//这里是开区间的划分指针,开区间更常见仅二分为了方便用闭区间
 
 }
 ```
 - 原理：
-1）思考一个问题在大范围上的答案，是否等于，左部分的答案 + 右部分的答案 + 跨越左右产生的答案 //recur_tree state为区间范围
+1）思考一个问题在大范围上的答案，是否等于，左部分的答案 + 右部分的答案 + 跨越左右产生的答案 //recur state为区间范围
 2）计算“跨越左右产生的答案”时，如果加上左、右各自有序这个设定，会不会获得计算的便利性  //函数设计为return答案stack数组变有序,需要划分指针不回退指针实现
 3）如果以上两点都成立，那么该问题很可能被归并分治解决（话不说满，因为总有很毒的出题人）
 4）求解答案的过程中只需要加入归并排序的过程即可，因为要让左、右各自有序，来获得计算的便利性
@@ -3686,7 +3845,7 @@ class Solution {
         dfs(nums,0,nums.length-1);
         return nums;
     }
-    //recur_tree
+    //recur
     public void dfs(int[] arr,int l,int r){
         if(l==r) return;
         int m=(l+r)>>1;
@@ -3733,9 +3892,9 @@ class Solution {
 ### [小和问题nowcoder](https://www.nowcoder.com/practice/edfe05a1d45c4ea89101d936cac32469)
 ```json
 {
-    "递归树":"recur_tree",
-    "merge排序":"no-backtracking_pointer",
-    "统计部分":"partition_pointer no-backtracking_pointer"//这里是开区间的划分指针,开区间更常见仅二分为了方便用闭区间
+    "递归树":"recur",
+    "merge排序":"_pointer",
+    "统计部分":"partition_pointer _pointer"//这里是开区间的划分指针,开区间更常见仅二分为了方便用闭区间
 }
 ```
 ```java
@@ -3833,9 +3992,9 @@ public class Main {
 - 和第一题几乎一模一样
 ```json
 {
-    "递归树":"recur_tree",
-    "merge排序":"no-backtracking_pointer",
-    "统计部分":"partition_pointer no-backtracking_pointer"//这里是开区间的划分指针,开区间更常见仅二分为了方便用闭区间
+    "递归树":"recur",
+    "merge排序":"_pointer",
+    "统计部分":"partition_pointer _pointer"//这里是开区间的划分指针,开区间更常见仅二分为了方便用闭区间
 }
 ```
 ```java
@@ -3895,7 +4054,7 @@ public class Solution {
 # 随机快速(分治)
 ```json
 {
-    "递归":"recur_tree",
+    "递归":"recur",
     "划分区域":"partition_pointer",//划分成< = >三个区域,注意着三个区域的开闭关系,<是) =是[) >是(
     "边界判断技巧":"boundary"
 }
@@ -3976,7 +4135,7 @@ class Solution {
 ### [第k小的数luogu](https://www.luogu.com.cn/problem/P1923)
 ```json
 {
-    "递归树":"recur_tree",
+    "递归树":"recur",
     "划分区域":"partition_pointer",
     "剪枝为一叉树":"prune"
 }
@@ -4368,11 +4527,11 @@ public class Code04_LeftToRightAnd {
 # ====================================================================================================================================== 递归相关
 
 # 递归题目
-- recur_tree.basis recover prune global
+- recur.subset recover prune global
 
 ## [只用递归逆序栈](左肾自造题)
-- recur_tree.basis
-### basis分析
+- recur.subset
+### subset分析
 - 返回栈底元素的算子
 io:返回栈底元素 stack:void
 f(n)={
@@ -4436,7 +4595,7 @@ public class Code05_ReverseStackWithRecursive {
 ```
 
 ## [汉诺塔问题](简简单单的)
-### basis分析
+### subset分析
 stack:打印n  a->c的路径 io:void
 f(n)={
     sout(a,c) if n==1; //leaf
@@ -4461,7 +4620,7 @@ class Solution{
 
 
 ## [同时运行n台电脑最长时间](https://leetcode.cn/problems/maximum-running-time-of-n-computers)
-- recur_tree.basis
+- recur.subset
 f(n)={
     sum/n
     g(n-1)
@@ -4469,7 +4628,7 @@ f(n)={
 g=f
 
 - 理论连续可供电时间为sum/n 如果遍历电池大于sum/n 那么就让他自己供一台电脑
-转化为basis 子问题n-1台电脑和剩下的电池进行供电,
+转化为subset 子问题n-1台电脑和剩下的电池进行供电,
 直到遍历电池<=sum/n 为0向量
 
 ```java
@@ -4567,8 +4726,8 @@ class Solution {
 - prune:非零向量提前通过判断转成0向量
 - recover:退回某个节点,memo也要恢复到这个节点的状态
 ## [n皇后](https://leetcode.cn/problems/n-queens-ii/description/)
-- json:recur_tree prune recover 
-### basis分析
+- json:recur prune recover 
+### subset分析
 - io:返回填n行皇后的种类数
 - f(n)={
     return 0 if n==0 //leaf
@@ -4626,7 +4785,7 @@ class Solution {
 }
 ```
 ### 剪枝位图版本(状态压缩)
-- recur_tree prune recover bitmap
+- recur prune recover bitmap
 ```java
 class Solution {
     public int totalNQueens(int n) {
@@ -4656,7 +4815,7 @@ class Solution {
 ## 感染问题(洪水填充问题)
 
 ## [岛屿数量](https://leetcode.cn/problems/number-of-islands/)
-- basis分析
+- subset分析
 io:void stack:感染以ij为起点的所有连起来的1岛屿
 f(i,j)={
     return if i,j是0||超出边界||已经感染过了 //leaf
@@ -4888,6 +5047,70 @@ class Solution {
 }
 ```
 
+# 多维递归问题
+- 多维递归就是参数有若干个,子集是order,通过3维空间函数思考
+
+## [二叉树打家劫舍](https://leetcode.cn/problems/house-robber-iii/)
+- recur.subset.order+.multi_return 
+- 通过多返回值降维优化二维的递归问题将2个order转化为2个返回值1个参数
+- 递归多返回值问题,
+f(root)={
+    return 0,0 if null
+    return1: g(root.left).return1+g(root.right).return2
+    return2: max(g(root.l).return1,.return2 )+max(g(root.r).return1,.return2)
+    return
+}
+g=f
+
+```java
+class Solution {
+    public int rob(TreeNode root) {
+        int ans1=dfs2(root,0);
+        int ans2=dfs2(root,1);
+        return Math.max(ans1,ans2);
+    }
+    public static int dfs2(TreeNode sp,int state){
+        if(sp==null){
+            return 0;
+        }
+        int l0=dfs2(sp.left,0);
+        int l1=dfs2(sp.left,1);
+        int r0=dfs2(sp.right,0);
+        int r1=dfs2(sp.right,1);
+        if(state==0){
+             return Math.max(l0,l1)+Math.max(r0,r1);
+        }
+        return l0+r0+ sp.val;
+    }
+}
+//可加map优化为记忆化搜索
+```
+
+- 降维多返回值优化
+```java
+class Solution {
+    public int rob(TreeNode root) {
+        int[] ans = dfs(root);
+        return Math.max(ans[0],ans[1]);
+    }
+    public static int[] dfs(TreeNode sp){
+        if(sp==null){
+            return new int[]{0,0};
+        }
+        int[] l = dfs(sp.left);
+        int[] r = dfs(sp.right);
+        int[] ans = new int[2];
+        ans[0]=l[1]+r[1]+sp.val;
+        ans[1]=Math.max(l[0],l[1])+Math.max(r[0],r[1]);
+        return ans;
+    }
+}
+//这里的dfs是求每个节点的两个值
+```
+
+
+
+
 # ====================================================================================================================================== 高等数学
 
 # 高等数学
@@ -4955,7 +5178,7 @@ class Solution {
 加个4就行->(10 mod 4 - 7 mod 4 + 4)mod4
 a mod b=(a + bmodb)mod b =同余原理= (a+b)mod b
 # 组合数学
-- 递归basis recover
+- 递归subset recover
 - 排列组合递归函数io:void stack:全组合/全排列 [l:]数组
 ## 全组合
 - 全组合是取所有元素进行010101001(bitmap表示存在不存在)
@@ -4963,10 +5186,10 @@ a mod b=(a + bmodb)mod b =同余原理= (a+b)mod b
 ### 不同元素全组合
 ```json
 {
-    "基底分析":"recur_tree.basis recover",
+    "子集分析":"recur.subset recover",
 }
 ```
-#### recur_tree构建(基底分析)
+#### recur构建(子集分析)
 - arr中元素皆不同,全组合
 f(l)={
     return if l==n; //leaf
@@ -4992,7 +5215,7 @@ class Solution{
             ans.add(new ArrayList<>(arr));
             return;
         }
-        //basis : 2g*(l+1)+k
+        //subset : 2g*(l+1)+k
         dfs(nums,l+1,arr,ans);
         arr.add(nums[l]);
         dfs(nums,l+1,arr,ans);
@@ -5007,12 +5230,12 @@ class Solution{
 ### 去重全组合
 ```json
 {
-    "基底分析":"recur_tree.basis recover",
-    "划分出排序后数组相同元素的区域":"partition_pointer"//方便basis
+    "子集分析":"recur.subset recover",
+    "划分出排序后数组相同元素的区域":"partition_pointer"//方便subset
 }
 ```
 - 由不同元素全组合进化而来,区别是前者0,1两个0向量 后者是0,1,2,3...多个零向量
-例如11122333  全组合基底是 0个1g(2后边的)+1个1g(2后边的)+...
+例如11122333  全组合子集是 0个1g(2后边的)+1个1g(2后边的)+...
 f(l)={
     return if l==n; //leaf
 
@@ -5068,11 +5291,11 @@ class Solution {
 ### 不同元素全排列
 ```json
 {
-    "basis分析":"recur_tree.basis recover",
+    "subset分析":"recur.subset recover",
 }
 ```
 对l以后全排列==l后每个元素放第一个全排列l+1后的
-#### basis分析
+#### subset分析
 f(l)={
     return if l==n  //leaf
 
@@ -5121,7 +5344,7 @@ class Solution{
 ### 去重全排列
 ```json
 {
-    "basis分析":"recur_tree.basis recover",
+    "subset分析":"recur.subset recover",
     "去重":"memo_container"
 }
 ```
@@ -5184,7 +5407,7 @@ https://oi-wiki.org/string/kmp/
 ```json
 {
     "前缀算子π":"symmetry discrete_oo.prefix",
-    "π算子幂":"basis.pow",
+    "π算子幂":"vector_space.pow_basis",
     // "Π算子幂的边界判断":"vars_hubs state_pointer"
     //因为这俩很基础但在kmp体现的淋漓尽致所以指出来
 }
@@ -5267,9 +5490,10 @@ class Solution {
 ```
 
 # =================================================================== 动态规划
-
+- 动态规划就是将递归转化为离散空间上的算子例如数组上二叉树上,所以任何动态规划都能转化成递归
+- 递归的某个子集重复计算且每个节点在一个离散空间上就可以转化成动态规划
+- dp=doo.subset=recur.subset+重叠子问题+离散空间
 # 一维动态规划
-- 用空间代替重复计算,用dp数组模拟算子,将索引dp(i)映射到求解值
 ## 典中典 fabbnoci 数列
 算子dp,将索引i映射到i的斐波那契值 dp(i)=dp(i-1)+dp(i-2);
 ```java
@@ -5301,6 +5525,11 @@ public static int fabbnoci(int n){
 ### [最低票价](https://leetcode.cn/problems/minimum-cost-for-tickets/)
 
 
+# ====================================================================================================================================== 贪心
+- 每步局部最优可以得到全局最优的问题
+- 证明采取贪心策略局部最优可以得到全局最优证明很难,一般用反证法,或者对数器和暴力解对拍证明
+
+# 贪心题目
 
 
 
