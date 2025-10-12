@@ -2351,6 +2351,59 @@ class Solution {
 }
 ```
 
+#### [完全二叉树节点个数](https://leetcode.cn/problems/count-complete-tree-nodes/)
+- recur.subset prune
+- 子集分析
+f(root){
+    0 if root==null
+    g(root.left)+g(root.right)+1
+}
+g=f
+prune:剪枝
+计算左右树ln和rn 如果ln==rn说明左树肯定完全用等比数列求和搭配左移运算剪掉左树递归
+如果ln>rn说明右树肯定完全同理剪枝
+```java
+class Solution {
+    public int countNodes(TreeNode root) {
+        return dfs(root);
+    }
+
+    public static int dfs(TreeNode root){
+        if(root==null){
+            return 0;
+        }
+        int ln=0;int rn=0;
+         TreeNode sp=root.left;
+         //state pointer
+        while(true){
+            if(sp==null){
+                break;
+            }
+            ln++;
+            sp=sp.left;
+        }
+        sp=root.right;
+        while(true){
+            if(sp==null){
+                break;
+            }
+            rn++;
+            sp=sp.left;
+        }
+        int ans=0;
+        if(ln==rn){
+            ans+=(1<<ln);
+            ans+=dfs(root.right);
+        }else{
+            ans+=(1<<rn);
+            ans+=dfs(root.left);
+        }
+        return ans;
+
+    }
+}
+```
+
 #### [二叉树最近公共祖先lca](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/)
 - recur.subset
 f(root)={
