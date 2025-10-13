@@ -305,7 +305,7 @@ public static void partition2(int[] arr, int l, int r, int x) {
 
 
 
-# recur:
+# recur
 ```json
 {
     "operator":"io stack"
@@ -314,15 +314,36 @@ public static void partition2(int[] arr, int l, int r, int x) {
     //subset consis dfs prune recover
 }
 ```
-
-
 - 递归树
 ![alt text](image-3.png)
 递归是对递归树的dfs遍历
 
 
 ## subset 子集表示
-### consis_operator 一致算子
+- f(S0)=∑g(Si)+g({}) 集合韦恩图来记忆
+- 不同问题节点由其子问题子集表示
+子集可一致转化
+- 叶子节点表示为空集+k,空集就是没有子问题了直接返回值
+f(N)={
+    k*0  is leaf
+    kg(n)+k*0 is no-leaf
+}
+g=f 
+
+#### 空集nullset
+空集直接返回函数值相当于k常数
+
+
+### multidim 多维递归问题
+- 由一维到多维这种更一般的空间是很自然的过度
+- subset子集可以是一个有序n元组,通过三维空间的函数思考,相当于是二维dp的recur版本
+
+#### multi_return
+- 设计的递归算子可以多返回值
+- 是将多维递归问题降维的优化方法,是对order子集的降维优化,通常将2个维度的子问题转化成2个返回值1个维度的子问题
+- 打家劫舍二叉树
+
+## consis_operator 一致算子
 - 用于构建递归树
 - io:f(a,b) 解决a,b状态的问题构建math算子
 - stack:用函数栈模拟递归树
@@ -340,19 +361,8 @@ k+g()+g()+k
 g()=f()
 
 ```
-### subset
-- Vn=∑kiVi+k*0  集合韦恩图来记忆
-- 不同状态节点由其子状态子集表示
-子集可一致转化
-- 叶子节点表示为空集+k,空集就是没有子问题了直接返回值
-f(N)={
-    k*0  is leaf
-    kg(n)+k*0 is no-leaf
-}
-g=f 
 
-### order 多维递归问题
-- subset子集可以是一个有序n元组,通过三维空间的函数思考,相当于是二维dp的recur版本
+
 
 ## tree
 ### Node
@@ -387,6 +397,7 @@ branch节点的结构和root节点的结构相同,且仅能够从root节点设�
 - operator的设计有自指的含义,
 例如二叉树递归中root处io为返回节点stack为建好这课树,实际root处还没完成,对于两个子树可以直接当作完成了再拼接到一起,加了拼接这个语句,所有子问题都加上了拼接这个语句,自指
 例如快排中io为返回空 stack为
+
 ## master公式
 - T(N)=a*T(N/b)+O(N^c)
 - 符合这个公式的递归可以估计复杂度,仅能估计子状态规模相等的情况
@@ -396,10 +407,6 @@ branch节点的结构和root节点的结构相同,且仅能够从root节点设�
     d. 如果log(b,a) == c，复杂度为：O(n^c * logn)
     T(n) = 2*T(n/2) + O(n*logn)，时间复杂度是O(n * ((logn)的平方))，证明过程比较复杂，记住即可
 
-## multi_return
-- 设计的递归算子可以多返回值
-- 是将多维递归问题降维的优化方法,是对order子集的降维优化,通常将2个维度的子问题转化成2个返回值1个维度的子问题
-- 打家劫舍二叉树
 
 ## dustbin
 - 模板
@@ -643,7 +650,7 @@ int main(){
 - 经常搭配双向链表出现,因为实现了索引和方便增删的链表和数组两个的共同优点
 - 例如LRU缓存 https://leetcode.cn/problems/all-oone-data-structure/description/
 
-## pow_container
+## multidim_container
 - 二维栈(最大频率栈),用栈,栈中元素是栈(栈套栈),类比向量空间
 
 ## cache_container
@@ -874,7 +881,7 @@ int min=(a+b-abs(a-b))/2;
 - 为什么要用round因为double运算可能出现15.99999这种;
 
 # 动态规划衍生技巧
-## reduce_dimension
+## reduce_dim
 - 将二维数组构造的函数降维成一维数组构造的函数
 - 将一维数组构造的函数降维成一个指针标记
 - 很多动态规划题目都是例如背包问题,fabbonacci...
