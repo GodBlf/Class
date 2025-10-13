@@ -2527,6 +2527,39 @@ class Solution {
 
 ```
 
+#### [二叉树最大路径和](https://leetcode.cn/problems/binary-tree-maximum-path-sum/)
+- recur.subset
+- recur算子是返回左或右一直垂直连到这里的最大路径
+有三种情况
+1. 左右节点较大是负数那么直接返回此节点值
+2. 不是负数返回左右节点较大的加上这个节点
+```java
+class Solution {
+public int maxPathSum(TreeNode root) {
+    max=Integer.MIN_VALUE;
+    dfs(root);
+    return max;
+}
+public static int max;
+
+public static int dfs(TreeNode sp){
+    if(sp==null){
+        return 0;
+    }
+    int l=dfs(sp.left);
+    int r=dfs(sp.right);
+    int lrmax=Math.max(l,r);
+    //横跨左右的路径
+    max=Math.max(l+r+sp.val,max);
+    //加上此节点的路径
+    max= Math.max(max,lrmax+sp.val);
+    //仅有这个节点的路径
+    max=Math.max(max,sp.val);
+    return Math.max(sp.val,sp.val+lrmax);
+}
+}
+```
+
 #### [判断平衡二叉树](https://leetcode.cn/problems/balanced-binary-tree/)
 - recur.subset globalflag
 - 就是求二叉树最大深度加了个全局标记
@@ -2669,6 +2702,88 @@ class Solution {
 ```
 
 
+#### 递归同时遍历两颗二叉树问题 
+
+#### [合并二叉树](https://leetcode.cn/problems/merge-two-binary-trees/)
+
+```java
+class Solution {
+    public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
+        return dfs(root1,root2);
+
+    }
+    public static TreeNode dfs(TreeNode sp1,TreeNode sp2){
+        if(sp1==null && sp2==null){
+            return null;
+        }else if(sp1!=null && sp2==null){
+            TreeNode ans = new TreeNode(sp1.val);
+            ans.left=sp1.left;
+            ans.right=sp1.right;
+            return ans;
+        }else if(sp1==null && sp2!=null){
+            TreeNode ans=new TreeNode(sp2.val);
+            ans.left=sp2.left;
+            ans.right=sp2.right;
+            return ans;
+
+        }
+        TreeNode ans = new TreeNode(sp1.val + sp2.val);
+        TreeNode l=dfs(sp1.left,sp2.left);
+        TreeNode r=dfs(sp1.right,sp2.right);
+        ans.left=l;
+        ans.right=r;
+        return ans;
+    }
+}
+```
+
+```java
+class Solution {
+    public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
+        return dfs(root1,root2);
+    }
+    public static TreeNode dfs(TreeNode sp1,TreeNode sp2){
+        if(sp1==null && sp2==null){
+            return null;
+        }else if(sp1!=null && sp2==null){
+            return sp1;
+        }else if(sp1==null && sp2!=null){
+            return sp2;
+        }
+        TreeNode ans = new TreeNode(sp1.val + sp2.val);
+        ans.left=dfs(sp1.left,sp2.left);
+        ans.right=dfs(sp1.right,sp2.right);
+        return ans;
+    }
+}
+```
+
+#### [对称二叉树](https://leetcode.cn/problems/symmetric-tree/)
+
+```java
+class Solution {
+    public boolean isSymmetric(TreeNode root) {
+        flag=true;
+        dfs(root,root);
+        return flag;
+    }
+    public static boolean flag=true;
+    public static void dfs(TreeNode sp1,TreeNode sp2){
+        if(sp1==null && sp2==null){
+            return ;
+        }
+        if(sp1==null || sp2 == null){
+            flag=false;
+            return;
+        }
+        if(sp1.val!=sp2.val){
+            flag=false;
+        }
+        dfs(sp1.left,sp2.right);
+        dfs(sp1.right,sp2.left);
+    }
+}
+```
 
 ## 栈模拟递归
 
@@ -5100,13 +5215,14 @@ class Solution {
 }
 ```
 
-# 多维递归问题
+# 多维递归和多返回值递归题目
 - 多维递归就是参数有若干个,子集是order,通过3维空间函数思考
 
 ## [二叉树打家劫舍](https://leetcode.cn/problems/house-robber-iii/)
-- recur.subset.order+.multi_return 
+- recur.subset.multidim or .multi_return 
 - 通过多返回值降维优化二维的递归问题将2个order转化为2个返回值1个参数
-- 递归多返回值问题,
+- 也可以看作本质就是一个多返回值得算子
+递归多返回值问题,
 f(root)={
     return 0,0 if null
     return1: g(root.left).return1+g(root.right).return2
@@ -5139,7 +5255,7 @@ class Solution {
 //可加map优化为记忆化搜索
 ```
 
-- 降维多返回值优化
+- 多返回值优化
 ```java
 class Solution {
     public int rob(TreeNode root) {
@@ -5161,6 +5277,34 @@ class Solution {
 //这里的dfs是求每个节点的两个值
 ```
 
+## [二叉树直径](https://leetcode.cn/problems/diameter-of-binary-tree/)
+- recur.subset.multidim or .multi_return
+- 设计成多维递归优化为多返回值
+- 返回到节点左树得最大值和右树的最大值
+
+```java
+class Solution {
+    public int diameterOfBinaryTree(TreeNode root) {
+        max=0;
+        dfs(root);
+        return max-1;
+    }
+    public static int max;
+    public static int[] dfs(TreeNode sp){
+        if(sp==null){
+            return new int[]{0,0};
+        }
+        int[] l=dfs(sp.left);
+        int[] r=dfs(sp.right);
+        int lmax=Math.max(l[0],l[1]);
+        int rmax=Math.max(r[0],r[1]);
+        int ans=lmax+rmax+1;
+        max=Math.max(ans,max);
+        return new int[]{lmax+1,rmax+1};
+
+    }
+}
+```
 
 
 
