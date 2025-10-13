@@ -320,7 +320,16 @@ public static void partition2(int[] arr, int l, int r, int x) {
 
 
 ## subset 子集表示
-- f(S0)=∑g(Si)+g({}) 集合韦恩图来记忆
+- f(S0)=∑g(Si)+g({}) 
+f(n)=∑g(ni)+g(0);
+
+- 记忆图
+venn韦恩集合图->axis数轴坐标系->函数分析
+![alt text](image-11.png)
+![alt text](image-8.png)
+![alt text](image-9.png)
+将集合,子集放到数轴上,方便进行函数分析,也方便记忆空集0和多维递归问题
+
 - 不同问题节点由其子问题子集表示
 子集可一致转化
 - 叶子节点表示为空集+k,空集就是没有子问题了直接返回值
@@ -330,11 +339,12 @@ f(N)={
 }
 g=f 
 
-#### 空集nullset
+#### 空集  0set
 空集直接返回函数值相当于k常数
 
 
 ### multidim 多维递归问题
+![alt text](image-10.png)
 - 由一维到多维这种更一般的空间是很自然的过度
 - subset子集可以是一个有序n元组,通过三维空间的函数思考,相当于是二维dp的recur版本
 
