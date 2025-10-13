@@ -343,7 +343,21 @@ f=func(a,b int) int{
 return函数栈返回从下到上依次执行函数体内的defer语句
 延迟在return后执行,defer 常用于资源释放、panic 恢复
 当一个函数中有多个 defer 语句时，它们会被推送到一个栈上，并在函数即将返回时，按照 后进先出 (LIFO) 的顺序执行。
+
 # type
+## 类型
+- int64 byte这些相当于在ram的定义区开辟了一个变量,这个变量记录了类型包含的内容,不能直接使用
+需要用他来在ram中创建变量
+
+## type 运算符
+type 类型1 类型2
+在ram定义区开辟一个类型1变量他和类型2变量全等
+例如 type time int64;  time类型和int64类型全等
+
+## struct结构体
+- struct{} 也是一中类型,是一种集合类型
+
+
 - 自定义类型是定义了一个全新的类型。我们可以基于内置的基本类型定义，也可以通过struct定义。例如：
     //将MyInt定义为int类型
     type MyInt int
