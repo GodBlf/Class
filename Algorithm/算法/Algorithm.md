@@ -718,7 +718,7 @@ class Solution {
 ```json
 {
     "前缀max后缀max":"discrete_oo.prefix+.subset",
-    "指针优化前后缀函数":"reduce_dimension _pointer"
+    "指针优化前后缀函数":"reduce_dim nobacktracking_pointer"
 }
 ```
 - 对于i位置能够接雨水的数量为不包含他的前缀最大值和不包含他的后缀最大值的min,min-i就是i位置接的雨水数量
@@ -748,7 +748,7 @@ public static int trap1(int[] nums) {
 	}
 ```
 
-- reduce_dimension优化
+- reduce_dim优化
 - 可以将前缀函数构建的数组函数用一个指针代替降维优化,前缀后缀直接用两个不回退指针往中间缩
 - 左指针左侧函数是确定的,右指针右侧函数是确定的所以取左右最小值即可
 ```java
@@ -780,7 +780,7 @@ class Solution {
 ```
 
 ## [救生艇](https://leetcode.cn/problems/boats-to-save-people/)
-- _pointer 
+- nobacktracking_pointer 
 先排个序然后就能用两个不回退指针了
 - 注意双指针收缩两个都收缩的去重问题
 ```java
@@ -951,8 +951,8 @@ class Solution {
 ```json
 {
     "链表构造模型":"sentry memo_pointer container.new_container",//memo_pointer记忆尾节点
-    "指针技巧":"memo_pointer _pointer",
-    "快慢指针":"_pointer"
+    "指针技巧":"memo_pointer nobacktracking_pointer",
+    "快慢指针":"fastslow_pointer"
 }
 ```
 ## 函数参数
@@ -1346,7 +1346,7 @@ class Solution {
     "距离快慢指针":"fast-slow_pointer"
 }
 ```
-- 快慢指针 _pointer 设置不回退指针的距离差
+- 快慢指针 fastslow_pointer 设置不回退指针的距离差
 ```java
 class Solution {
     public ListNode removeNthFromEnd(ListNode head, int n) {
@@ -1673,7 +1673,7 @@ class MinStack1 {
 ### [最大频率栈(二维栈)](https://leetcode.cn/problems/maximum-frequency-stack/)
 ```json
 {
-    "构造一个二维栈套栈":"pow_container",
+    "构造一个二维栈套栈":"multidim_container",
     "map记忆频率":"map_container"
 }
 ```
@@ -3292,7 +3292,7 @@ class MedianFinder {
 ```json
 {
     "解决全子串问题":null,//枚举所有子串
-    "滑动窗口":"partition_pointer _pointer"//维护的区域构建为[),左指针不回退
+    "滑动窗口":"partition_pointer nobacktracking_pointer"//维护的区域构建为[),左指针不回退
 }
 // 应用于数组的全子串问题,维护一个滑动的子串窗口,将O(n^2)优化为O(n)
 // 暴力做法以右边为边界从0至n-1 遍历所有子串,每次遍历左指针回退到0重新开始, O(n^2)
@@ -3555,7 +3555,7 @@ class Solution {
 ### [k个不同数的子串](https://leetcode.cn/problems/subarrays-with-k-different-integers/)
 ```json
 {
-     "滑动窗口":"partition_pointer _pointer",//维护的区域构建为[),左指针不回退
+     "滑动窗口":"partition_pointer nobacktracking_pointer",//维护的区域构建为[),左指针不回退
      "积分再差分求k":"discrete_oo.∑∫",
      "记录答案":"container.map_container"
 }
@@ -3877,7 +3877,7 @@ class Solution {
 {
     "递归树":"recur",
     "merge":"_pointer",//这里merge的时候有一个简单的statefilter
-    "统计部分":"partition_pointer _pointer"//这里是开区间的划分指针,开区间更常见仅二分为了方便用闭区间
+    "统计部分":"partition_pointer nobacktracking_pointer"//这里是开区间的划分指针,开区间更常见仅二分为了方便用闭区间
 
 }
 ```
@@ -3946,8 +3946,8 @@ class Solution {
 ```json
 {
     "递归树":"recur",
-    "merge排序":"_pointer",
-    "统计部分":"partition_pointer _pointer"//这里是开区间的划分指针,开区间更常见仅二分为了方便用闭区间
+    "merge排序":"nobacktracking_pointer",
+    "统计部分":"partition_pointer nobacktracking_pointer"//这里是开区间的划分指针,开区间更常见仅二分为了方便用闭区间
 }
 ```
 ```java
@@ -4046,8 +4046,8 @@ public class Main {
 ```json
 {
     "递归树":"recur",
-    "merge排序":"_pointer",
-    "统计部分":"partition_pointer _pointer"//这里是开区间的划分指针,开区间更常见仅二分为了方便用闭区间
+    "merge排序":"nobacktracking_pointer",
+    "统计部分":"partition_pointer nobacktracking_pointer"//这里是开区间的划分指针,开区间更常见仅二分为了方便用闭区间
 }
 ```
 ```java
