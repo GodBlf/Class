@@ -355,13 +355,8 @@ type 类型1 类型2
 例如 type time int64;  time类型和int64类型全等
 
 ## struct结构体
-- struct{} 也是一中类型,是一种集合类型
+- struct{} 也是一种类型,是一种集合类型
 
-
-- 自定义类型是定义了一个全新的类型。我们可以基于内置的基本类型定义，也可以通过struct定义。例如：
-    //将MyInt定义为int类型
-    type MyInt int
-通过Type关键字的定义，MyInt就是一种新的类型，它具有int的特性。
 ```go
 type IntHeap []int
 
@@ -385,6 +380,7 @@ func (h *IntHeap) Pop() any {
 	return x
 }
 ```
+
 ## 结构体
 - variable set is struct
 ### 结构体使用
