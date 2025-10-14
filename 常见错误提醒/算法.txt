@@ -1,0 +1,11 @@
+# 算法常见错误
+- 力扣的全局变量...每次使用都要recover 清空
+- 位运算一定要加括号艹了,不建议使用位运算计算加减乘除因为jvm有优化
+- 用list套list收集递归的list结果一定要copy一份不然add的是list的指针会随着一起更改艹指针问题
+- mapset 远远慢于 数组
+- 这几天一直忘state filter 的if  return 记住一定要return
+造的container全面维护都要update到
+
+
+# acm输入输出
+输出到数组统一输出,要么控制空格
