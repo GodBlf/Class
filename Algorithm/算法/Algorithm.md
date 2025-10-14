@@ -250,8 +250,9 @@ public class Main{
 - 和暴力解对拍
 - 打表找规律
 
-# io优化
-## 一般string int读入
+# 语言优化
+## io优化
+### 一般string int读入
 ```java
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         PrintWriter out=new PrintWriter(new OutputStreamWriter(System.out));
@@ -266,13 +267,19 @@ while (st.nextToken() != StreamTokenizer.TT_EOF) { // 文件没有结束就继�
 			out.println(maxSumSubmatrix(mat, n, m));
 		}
 ```
-## 读一行
+### 读一行
 ```java
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         PrintWriter out=new PrintWriter(new OutputStreamWriter(System.out));
         StringTokenizer st=new StringTokenizer("");
         st=new StringTokenizer(reader.readLine());
 ```
+
+## 随机数优化
+public static  Random rand = new Random();
+int random=(int)rand.nextInt(r+1-l)+l;
+全局定义一个静态的随机数生成器不用每次生成,java的new非常耗时间
+Random比math包的快
 
 ## 全局静态空间
 ```java
@@ -4222,8 +4229,10 @@ public class Solution {
 # 随机快速(分治)
 ```json
 {
-    "递归":"recur",
-    "划分区域":"partition_pointer",//划分成< = >三个区域,注意着三个区域的开闭关系,<是) =是[) >是(
+    "递归":"recur.subset boundary",//递归中涉及边界得判断技巧,>= <= 优于==
+    "划分区域函数":"multi_return partition_pointer+.swap",
+    //划分函数设计成多返回值得形式返回两个边界方便解决问题
+    //划分成< = >三个区域,注意着三个区域的开闭关系,<是) =是[) >是( , <区域扩充用到划分指针典型的swap
     "边界判断技巧":"boundary"
 }
 ```
@@ -4241,70 +4250,68 @@ j是>区域的左(开区间
 这样设计一开始所有区间都没元素
 ```java
 class Solution {
-        public int[] sortArray(int[] nums) {
-            dfs(nums,0,nums.length-1);
-            return nums;
-        }
-        public static void swap(int[] arr,int l,int r){
-            int tmp=arr[l];
-            arr[l]=arr[r];
-            arr[r]=tmp;
-        }
-        public static void dfs(int[]arr,int l,int r){
-            //boundary技巧
-            //注意这里的叶子节点为>= 因为划分指针如果在最右端会出现>的情况
-            if(l>=r){
-                return ;
-            }
-            int x=arr[(int)(Math.random()*(r-l+1))+l];
-            partition(arr,l,r,x);
-            // 为了防止底层的递归过程覆盖全局变量
-		    // 这里用临时变量记录first、last
-            //如果是golang直接返回两个值就可以
-            int left=i-1;
-            int right=j+1;
-            dfs(arr,l,left);
-            dfs(arr,right,r);
-        }
-        //java没多返回值用两个静态变量当划分指针
-        public static int i=0;
-        public static int j=0;
-        //划分完=区域就排好序确定了
-        public static void partition(int[]arr,int l,int r,int x){
-            //< 和 >区域的划分指针 注意i也是=区域的左闭区间
-            i=l;j=r;
-            //k是=区域的)右开区间,这样设计一开始所有区间都没元素
-            int k=l;
-            while(true){
-                if(k>j){
-                    break;
-                }
-                if(arr[k]<x){
-                    //        i     k     j
-                    //1,2,3,4,5,5,5,4,4,...
-                    //k和=区域的左闭区间调换k++扩充=区域,i++扩充<区域
-                    swap(arr,i,k);
-                    k++;
-                    i++;
-                }else if(arr[k]==x){
-                    //=区域扩充
-                    k++;
-                }else{
-                    swap(arr,j,k);
-                    //k不变,因为右边调换过来的数还没检查过
-                    j--;
-                }
-            }
-        }
+    public int[] sortArray(int[] nums) {
+        dfs(nums,0,nums.length-1);
+        return nums;
     }
-```
+    //随机数优化
+    public static Random rand = new Random();
+    public static void dfs(int [] arr,int l,int r){
+        //boundary技巧
+        //注意这里的叶子节点为>= 因为划分指针如果在最右端会出现>的情况
+        if(l>=r){
+            return ;
+        }
+        int[] xiaoda = partition(arr, l, r);
+        dfs(arr,l,xiaoda[0]-1);
+        dfs(arr,xiaoda[1]+1,r);
+    }
+    //划分完=区域就排好序确定了
+    public static int[] partition(int [] arr,int l,int r) {
+        int random=(int)rand.nextInt(r+1-l)+l;
+        int num=arr[random];
+        //ll是<区域右开区间同时也是=区域左闭区间
+        //mm是=区域的右开区间
+        //rr是>区域左开区间
+        //这样设计一开始所有区间都没元素,且有迭代头
+        int ll=l;int mm=l;int rr=r;
+        while(mm<=rr){
+            int tmp = arr[mm];
+            if(tmp>num){
+                swap(arr,mm,rr);
+                //mm不变因为右边调换过来的数没有检查过
+                rr--;
+            }else if(tmp<num){
+                swap(arr,ll,mm);
+                //        ll     mm     rr
+                //1,2,3,4,5,5,5,4,4,...
+                //划分指针典型的swap将=区域末尾的数swap<区域++ =区域也++正好实现
+                mm++;
+                ll++;
+            }else{
+                //遇到相等的中间等于区域直接扩充
+                mm++;
+            }
+        }
+        return new int[]{ll,rr};
+    }
+    public static void swap(int []arr ,int a,int b){
+        int tmp=arr[a];
+        arr[a]=arr[b];
+        arr[b]=tmp;
+    }
 
+}
+```
 ## 习题 
-### [第k小的数luogu](https://www.luogu.com.cn/problem/P1923)
+### [第k大的数](https://leetcode.cn/problems/kth-largest-element-in-an-array/)
 ```json
 {
-    "递归树":"recur",
-    "划分区域":"partition_pointer",
+    "递归":"recur.subset boundary",//递归中涉及边界得判断技巧,>= <= 优于==
+    "划分区域函数":"multi_return partition_pointer+.swap",
+    //划分函数设计成多返回值得形式返回两个边界方便解决问题
+    //划分成< = >三个区域,注意着三个区域的开闭关系,<是) =是[) >是( , <区域扩充用到划分指针典型的swap
+    "边界判断技巧":"boundary",
     "剪枝为一叉树":"prune"
 }
 ```
@@ -4312,134 +4319,58 @@ class Solution {
 - 这里递归树只走一个分支并不会遍历所有节点
 - 时间复杂度参考快排的期望计算,每次分一半n/2+n/4+n/8+...+1=log(n)等比数列
 - io:输入区域返回第k小的数 stack:划分好区域
+
 ```java
-import java.io.*;
-import java.util.Scanner;
-
-// 注意类名必须为 Main, 不要有任何 package xxx 信息
-public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        StreamTokenizer in = new StreamTokenizer(reader);
-        PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
-        in.nextToken();
-        int n=(int)in.nval;
-        in.nextToken();
-        int k=(int)in.nval;
-        int[] arr = new int[n];
-        in.nextToken();
-        for (int i = 0; i < n; i++) {
-            arr[i]=(int)in.nval;
-            in.nextToken();
-        }
-        dfs(arr,0,arr.length-1,k);
-        out.println(ans);
-        out.flush();
-        out.close();
-
+class Solution {
+    //随机数优化 用全局静态遍量和Random类
+    public static  Random rand = new Random();
+    public int findKthLargest(int[] nums, int k) {
+        int kk=nums.length-k;
+        return dfs(kk,nums,0,nums.length-1);
     }
-    public static int i=0;
-    public static int j=0;
-    public static int ans=0;
-    public static int dfs(int[] arr,int l,int r,int k){
-        //注意这里的Boundary
-        if(l==r){
+    public static int dfs(int k,int [] arr,int l,int r){
+        //boundary技巧
+        if(l>=r){
             return arr[l];
-        }//if(l>r){
-           // return; //因为只走递归树的一个分支所以不会出现l>r的情况
-        //}
-        int x=(l+(int)(Math.random()*(r-l+1)));
-        partition(arr,l,r,x);
-        if(k>=i && k<=j){
-            ans=arr[i];
-            return ans;
         }
-        int left=i-1;
-        int right=j+1;
-        if(k<i){
-           return dfs(arr,l,left,k);
+        int[] xiaoda = partition(arr, l, r);
+        if(k>=xiaoda[0] && k<=xiaoda[1]){
+            return arr[k];
+        }else if(k<xiaoda[0]){
+            return dfs(k,arr,l,xiaoda[0]-1);
         }else{
-           return dfs(arr,right,r,k);
+            return dfs(k,arr,xiaoda[1]+1,r);
         }
     }
-    public static void partition(int[] arr,int l,int r,int x){
-        i=l;j=r;int k=l;
-        while(k<=j){
-            if(arr[k]<x){
-                swap(arr,i,k);
-                i++;
-                k++;
-            }else if(arr[k]==x){
-                k++;
+    //多返回值返回两个边界
+    //划分指针有三个都是左闭右开最左边充当两个作用小于的右开区间和等于的左必须见
+    public static int[] partition(int [] arr,int l,int r) {
+        int random=(int)rand.nextInt(r+1-l)+l;
+        int num=arr[random];
+        int ll=l;int mm=l;int rr=r;
+        while(mm<=rr){
+            int tmp = arr[mm];
+            if(tmp>num){
+                swap(arr,mm,rr);
+                rr--;
+            }else if(tmp<num){
+                swap(arr,ll,mm);
+                mm++;
+                ll++;
             }else{
-                swap(arr,k,j);
-                j--;
+                mm++;
             }
         }
+        return new int[]{ll,rr};
     }
-
-    public static void swap(int[] arr,int a,int b){
+    public static void swap(int []arr ,int a,int b){
         int tmp=arr[a];
         arr[a]=arr[b];
         arr[b]=tmp;
     }
+
 }
 ```
-- 迭代改写递归
-因为递归树是一叉树所以简易迭代改写
-```java
-	// 随机选择算法，时间复杂度O(n)
-	public static int findKthLargest(int[] nums, int k) {
-		return randomizedSelect(nums, nums.length - k);
-	}
-
-	// 如果arr排序的话，在i位置的数字是什么
-	public static int randomizedSelect(int[] arr, int i) {
-		int ans = 0;
-		for (int l = 0, r = arr.length - 1; l <= r;) {
-			// 随机这一下，常数时间比较大
-			// 但只有这一下随机，才能在概率上把时间复杂度收敛到O(n)
-			partition(arr, l, r, arr[l + (int) (Math.random() * (r - l + 1))]);
-			// 因为左右两侧只需要走一侧
-			// 所以不需要临时变量记录全局的first、last
-			// 直接用即可
-			if (i < first) {
-				r = first - 1;
-			} else if (i > last) {
-				l = last + 1;
-			} else {
-				ans = arr[i];
-				break;
-			}
-		}
-		return ans;
-	}
-
-	// 荷兰国旗问题
-	public static int first, last;
-
-	public static void partition(int[] arr, int l, int r, int x) {
-		first = l;
-		last = r;
-		int i = l;
-		while (i <= last) {
-			if (arr[i] == x) {
-				i++;
-			} else if (arr[i] < x) {
-				swap(arr, first++, i++);
-			} else {
-				swap(arr, i, last--);
-			}
-		}
-	}
-
-	public static void swap(int[] arr, int i, int j) {
-		int tmp = arr[i];
-		arr[i] = arr[j];
-		arr[j] = tmp;
-	}
-```
-
 ## 时间复杂度分析
 - 随机过程用期望值,因为如果用最差情况概率会等于零
 - 差
