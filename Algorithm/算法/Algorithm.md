@@ -2121,6 +2121,7 @@ public static HashMap<Integer, int[]> map = new HashMap<>();
 ## 二叉树数组
 - 父节点 (i-1)/2
 - 子节点 i*2+1  i*2+2 以0为初始索引
+
 ## 递归实现dfs
 - 递归设计整体考虑树的左子树和右子树
 ```json
@@ -2293,6 +2294,36 @@ class Solution {
         root.left=dfs(xian,xl+1,zuoshucnt+xl,zhong,zl,index-1,map);
         root.right=dfs(xian,zuoshucnt+xl+1,xr,zhong,index+1,zr,map);
         return root;
+    }
+}
+```
+
+#### [中序后序序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-inorder-and-postorder-traversal/)
+- 完全和上题一样
+```java
+class Solution {
+    public static HashMap<Integer,Integer> map=new HashMap<>();
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        map.clear();
+        for (int i = 0; i < inorder.length; i++) {
+            map.put(inorder[i],i);
+        }
+        return dfs(inorder,0,inorder.length-1,postorder,0,postorder.length-1,map);
+    }
+    public static TreeNode dfs(int[] zhong,int lz,int rz,int [] hou,int lh,int rh,HashMap<Integer,Integer> map){
+        if(lz>rz){
+            return null;
+        }
+        if(lz==rz){
+            return new TreeNode(zhong[lz]);
+        }
+        TreeNode node = new TreeNode(hou[rh]);
+        Integer index = map.get(hou[rh]);
+        int zuocnt=index-lz;
+        int youcnt=rz-index;
+        node.left=dfs(zhong,lz,index-1,hou,lh,rh-youcnt-1,map);
+        node.right=dfs(zhong,index+1,rz,hou,rh-youcnt,rh-1,map);
+        return node;
     }
 }
 ```
