@@ -63,6 +63,9 @@ Skills->Algorithm ; Skills->JavaSE
 因为树每个节点只有一个father所以 arr索引就是节点索引的值指向father
 构造一个father数组即可 
 例如并查集的father数组
+## map_arr
+- map设计成数组的形式比hashmap快非常多
+
 
 # vars_hubs
 - if else通过变量状态的划分来进行
@@ -107,7 +110,7 @@ if(left.tail !=null){
 ```
 
 
-## state_filter e.g.
+## state_filter 
 - 因为状态的枚举太多了所以设计成filter结构减少枚举条件
 - state filter(Priority sequence) 建议设计成过滤器的结构,记得加continue return break等
 - 归并排序
@@ -158,8 +161,8 @@ if(cur1!=null){
 ### 迭代器
 - for(i:set){j=i;break} 取set的随机一个元素可以这样
 ### while
-- while就是循环代码块,根据vars_hubs来结束循环,while里嵌套ifelse
 - while就是state_pointer遍历,
+- while就是循环代码块,根据vars_hubs来结束循环,while里嵌套ifelse
 - 直接while再说
 - 如果指针模拟状态遍历,那么指到哪里就立即更新他的状态
 例如,遍历树的时候指针指向root先把root设置为visited再while遍历
@@ -186,10 +189,12 @@ sp=pi[sp]
 
 
 - 下面的高级优化指针都是普通迭代状态指针的自己都继承他的特性
+
 ## pointers_container
 - 参见container
 ---
 NMP  (nobacktracking memo partition);
+
 ## nobacktracking_pointer/不回退指针
 no backtracking pointer
 - 数组反转
@@ -707,9 +712,11 @@ flag和数据结构无关 memo和数据结构相关
 
 
 # 数学相关
-## contradict_proof (反证法 贪心)
+## inverse_reverse_contradict_proof (反证法) (ircp)
 - 前提条件->原命题   !原命题->矛盾
 - 假设否命题真推矛盾
+- 常用于证明贪心策略,边界条件的判定
+- lca搜索二叉树的证明
 
 ## axis
 - 数轴
@@ -740,6 +747,7 @@ x右边的个数为nx i右边个数为ni: nx-ni=n
 - 基数 n [0,n-1]
 - 序数+1=基数 基数-1=序数 先有序数数轴(从0开始)再有基数所以序数+1
 - 一般以cardinal进行分析,涉及axis再转成ordinal
+
 ## symmetry
 - 对称代数结构 
 - (G,*,e,-1) 有序n元组 group_theory
@@ -795,7 +803,6 @@ a mod b=(a + bmodb)mod b =同余原理= (a+b)mod b
 - 研究vertex集合和edge集合
 - edge可看作点集合到自身的映射 self operator
 ### ring
-### permute ring
 - 置换是集合x到自身的双射
 - 用图表示
 点是集合x 所有点都在环内的图是置换
@@ -824,8 +831,12 @@ a mod b=(a + bmodb)mod b =同余原理= (a+b)mod b
 左指针找到一个垃圾元素意味着构筑数量的上确界-1所以右指针左移
 
 
-### mid_value(导函数介值定理)
+### continue_oo
+
+#### mid_value(介值定理)
+- a,b是连续函数的两个坐标的y值那么这两点之间的函数必能取到a,b之间的任意值
 - 二分峰值问题
+- 表现良好的最长时间段
 
 ### Σ∫ 前缀和(积分) 
 - 桶排序优化桶
@@ -894,6 +905,13 @@ int min=(a+b-abs(a-b))/2;
 - 定义一个很小的数double epsilon=1e-10
 - (a-Math.round(a)) < epsilon  ? true : 
 - 为什么要用round因为double运算可能出现15.99999这种;
+
+## data_mapping 数据映射
+- 将数据映射到另一个集合中通常是整数集合 方便解决问题
+- 经常映射到0,1,-1
+- 例如bitmap位图 
+计算正负数量相等的子串问题将元素映射到{1,-1,0}在构建前缀和
+将数据分奇数偶数映射到1,0
 
 # 动态规划衍生技巧
 ## reduce_dim
