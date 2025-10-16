@@ -358,6 +358,11 @@ public class Code03_StaticSpace {
 
 ```
 
+## 哈希表优化
+- 全局静态hashmap用的时候clear和用的时候new没啥差距
+- map设计成数组的形式比hashmap快非常多
+- 
+
 # ====================================================================================================================================== 指针技巧
 
 # 二分
@@ -388,7 +393,7 @@ log(2^32)=32 所以二分非常快
 ```json
 {
     "数组离散函数":"discrete_oo",
-    "导函数介值定理":"discrete_oo.mid_value",//达布定理Darboux's theorem
+    "导函数介值定理":"discrete_oo.continue_oo",//达布定理Darboux's theorem
     "划分指针":"partition_pointer"//特殊的划分(l,r)必有峰值
 }
 ```
@@ -2477,10 +2482,36 @@ class Solution {
 }
 ```
 
-#### [搜索二叉树lca](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree)
+#### [搜索二叉树lca](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-search-tree/)
 ##### 搜索二叉树
 - root节点的值大于左树所有节点的值且小于右树所有节点的值
 - left.allvalue<mid.value<right.allvalue
+##### 递归剪枝解法
+- recur.subset prune 反证法
+- p,q组成的线段,如果此节点<min说明一定不在左树,剪掉左树,右树同理;
+- 由搜索树性质可得第一次到达线段中间位置就是最近公共祖先,反证法可证
+```java
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        return dfs(root,p,q);
+    }
+    public static TreeNode dfs(TreeNode node,TreeNode p, TreeNode q){
+        // if(node == null){
+        //     return node;
+        // }
+        if(node.val>p.val && node.val>q.val){
+          return dfs(node.left,p,q);
+        }
+        if(node.val<p.val && node.val<q.val){
+           return dfs(node.right,p,q);
+        }else{
+            return node;
+        }
+    }
+}
+```
+
+##### 递归转state_pointer 迭代解法
 ```json
 {
     "数轴点逼近线段":"axis",
@@ -2489,6 +2520,7 @@ class Solution {
 ```
 二叉搜索树可以扁平化为数轴,root为中间的点
 从root开始的sp在数轴上游走逼近(min,max)组成的线段
+- 由搜索树性质可得第一次到达线段中间位置就是最近公共祖先,反证法可证
 sp碰到就返回这个值
 ```java
 
@@ -3441,7 +3473,6 @@ class MedianFinder {
 # =================================================================== 线性结构
 
 # 滑动窗口
-
 ```json
 {
     "解决全子串问题":null,//枚举所有子串
@@ -4802,6 +4833,68 @@ class Solution {
 }
 ```
 
+## [至少有k个重复字符的最长子串](https://leetcode.cn/problems/longest-substring-with-at-least-k-repeating-characters/)
+- recur.subset map_container
+- map容器设计成数组的形式比hashmap快非常多
+- 这里是java里的split搭配正则表达式首次使用,正则表达式里的[]表示从集合中任意选取字符做分割点
+- subset分析
+f(s)={
+    0 if s中字符都小于k
+    max(g(s1),g(s2),...)  这里的si是将s中小于k的字符做分割点分割出来的字符串
+}
+g=f
+```java
+class Solution {
+    public int longestSubstring(String s, int k) {
+        return dfs(s,k);
+    }
+    public static int dfs(String s,int k){
+        //小于k直接返回
+        if(s.length()<k){
+            return 0;
+        }
+        HashMap<Character,Integer> map=new HashMap<>();
+        for(int i=0;i<s.length();i++) {
+            char ch = s.charAt(i);
+            if (map.containsKey(ch)) {
+                map.put(ch, map.get(ch) + 1);
+            } else {
+                map.put(ch, 1);
+            }
+        }
+        //两个标记控制全<k 和 全>=k
+        boolean flag1=true;
+        boolean flag2=true;
+        String delim="[";
+        for (Map.Entry<Character, Integer> sp : map.entrySet()) {
+            if(sp.getValue()<k){
+                flag1=false;
+                //正则表达式
+                delim=delim+""+sp.getKey();
+                continue;
+            }
+            flag2=false;
+        }
+        //如果全<k直接return0;
+        if(flag2){
+         return 0;
+        }
+        //如果 全>=k直接return
+        if(flag1){
+            return s.length();
+        }
+        delim=delim+"]";
+        String[] splits = s.split(delim);
+        int ans=0;
+        //subset
+        for(int i=0;i<splits.length;i++){
+            ans=Math.max(ans,dfs(splits[i],k));
+        }
+        return ans;
+    }
+}
+```
+
 # 括号嵌套类递归题目
 ## [括号嵌套计算器]()
 ```java
@@ -5551,26 +5644,275 @@ class Solution{
 ```
 
 # ====================================================================================================================================== 离散函数和动态规划
-
-# discrete_oo
 - 用数组模拟算子,将索引映射的算法
 - 动态规划可以看作递归树的逆从leaf到root的遍历,递归可改成dp
 
 # 前缀和积分
-- 前缀和解决查询区间和问题,实现原理是先积分,再积分函数相减得到区间和
-∫f(b)-∫f(a) 得到a,b区间和
-- 
+```json
+{
+    "解决查询区间和问题":null,//前缀和解决查询区间和问题,实现原理是先积分,再积分函数相减得到区间和,∫f(b)-∫f(a) 得到a,b区间和
+    "积分数组":"doo.∫∑+.subset sentry"
+    //doo.subset i处积分值有i-1和arr[i]获得
+    //积分数组设置一个sum(0,)的sentry,因为经常需要查询[0,n]区间和问题方便查询
+}
+```
+```java
+class NumArray {
+    public int[] sum;
+    public NumArray(int[] nums) {
+        //0sentry
+        sum=new int[nums.length+1];
+        for(int i=1;i<=nums.length;i++){
+            //doo.subset
+            sum[i]=sum[i-1]+nums[i-1];
+        }
+    }
+
+    public int sumRange(int left, int right) {
+        return sum[right+1]-sum[left];
+    }
+}
+
+```
 
 ## 习题
+ 
+### [累加和为k的最长子串](https://www.nowcoder.com/practice/36fb0fd3c656480c92b569258a1223d5)
+- 典中典区间查询问题
+- 前缀和 map_container.map_arr 
+```java
+public class Main {
+    public static int[] sum=new int[100004];
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StreamTokenizer in = new StreamTokenizer(br);
+        PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
+        //
+        in.nextToken();int n=(int)in.nval;in.nextToken();int tg=(int)in.nval;
+        //用map容器记忆前缀和和索引方便快速查询
+        HashMap<Integer, Integer> map = new HashMap<>();
+        map.put(0,0);
+        //前缀和区间查询问题设置一个sum(0,0)sentry,方便查询0,n区间的sum
+        for(int i=1;i<=n;i++){
+            in.nextToken();
+            sum[i]=sum[i-1]+(int)in.nval;
+
+            if(!map.containsKey(sum[i])){
+               map.put(sum[i],i);
+            }
+        }
+        int ans=-1;
+        for(int i=1;i<=n;i++){
+            int cha=sum[i]-tg;
+            if(map.containsKey(cha)){
+                //注意这里去重,参见滑动窗口,子串以右边界为基准,遍历全子串
+                //注意这里是小于防止长度为0的空子串
+                if(map.get(cha)<i) {
+                    ans = Math.max(i - map.get(cha), ans);
+                }
+            }
+        }
+        out.println(ans);
+        //
+        out.flush();
+        out.close();
+        br.close();
+    }
+
+}
+
+```
+
+### [正负数量相等的最长子串](https://www.nowcoder.com/practice/545544c060804eceaed0bb84fcd992fb)
+- data_mapping 数据映射 前缀和
+- 将正数映射到1,负数映射到-1,0映射到0 正数数量 负数数量 这样做前缀和就可以计算出某个区间正数和负数的数量之差,再进行区间查询
+```java
+public class Main {
+    public static int[] sum=new int[100004];
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StreamTokenizer in = new StreamTokenizer(br);
+        PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
+        //
+        in.nextToken();int n=(int) in.nval;
+        HashMap<Integer,Integer> map=new HashMap<>();
+        for(int i=1;i<=n;i++){
+            in.nextToken();
+            int tmp=(int)in.nval;
+            int num=0;
+            if(tmp>0){
+                num=1;
+            }else if(tmp<0){
+                num=-1;
+            }else{
+                num=0;
+            }
+            sum[i]=num+sum[i-1];
+            if(!map.containsKey(sum[i])){
+                map.put(sum[i],i);
+            }
+        }
+        int ans=0;
+        for(int i=1;i<=n;i++){
+            if(map.containsKey(sum[i])){
+                if(map.get(sum[i])<i){
+                    ans= Math.max(ans,i-map.get(sum[i]));
+                }
+            }
+        }
+        out.println(ans);
+        //
+        out.flush();
+        out.close();
+        br.close();
+    }
+
+}
+
+```
+
+### [累加和为k的子串数量](https://leetcode.cn/problems/subarray-sum-equals-k/)
+- 前缀和 nobacktracking_pointer 不回退指针既优化了sum数组空间又解决了顺序问题防止出现长度为0子串的情况,喵!
+```java
+class Solution {
+    public int subarraySum(int[] nums, int k) {
+        HashMap<Integer,Integer> map=new HashMap<>();
+        int ans=0;
+        map.put(0,1);
+        int sum=0;
+        for(int i=1;i<=nums.length;i++){
+            sum+=nums[i-1];
+            int cha=sum-k;
+            if(map.containsKey(cha)){
+                ans+=map.get(cha);
+            }    
+            //注意这里应该先寻找,在加入map里,因为有可能k=0;出现长度为0子串的情况
+            if(map.containsKey(sum)){
+                map.put(sum,map.get(sum)+1);
+            }else{
+                map.put(sum,1);
+            }
+        }
+        return ans;
+    }
+}
+```
+
+### [良好上班的最长时间](https://leetcode.cn/problems/longest-well-performing-interval/)
+- 前缀和 data_mapping doo.continue_oo nobacktracking_pointer map_container
+- 将>8映射到1 <=8映射到-1 
+- 最后原数组都是1,-1 所以生成的积分sum数组从0开始是"连续"的每次索引增加1 sum函数值仅能变化+1 -1,所以sum函数满足连续函数的介值定理
+- 因为每次遍历要寻找之前的所以用nobacktracking_pointer 不回退指针既优化了sum数组空间又解决了不访问之后数组的顺序问题
+- 遍历sum 到i如果sum[i]=-3  那么仅需要找到i之前-4所在的最左边的位置就是最长的
+- 反证法证明,如果-4左边还有-5之类的,那么根据连续函数介值定理,原点值是0,从原点到-5这个点,sum函数绝对能取到0~-5任何值,所以再-5左边仍然有-4;
+- 用map记住值对应的索引遍历即可
+```java
+class Solution {
+    public int longestWPI(int[] hours) {
+        int ans=0;
+        int sum=0;
+        HashMap<Integer,Integer> map=new HashMap<>();
+        map.put(0,-1);
+        for(int i=0;i<hours.length;i++){
+            int num=0;
+            if(hours[i]>8){
+                num=1;
+            }else{
+                num=-1;
+            }
+            sum+=num;
+            if(sum>0){
+                ans=i+1;
+                continue;
+            }
+            int cha=sum-1;
+            if(map.containsKey(cha)){
+                ans=Math.max(ans,(i-map.get(cha)));
+            }
+
+            if(!map.containsKey(sum)){
+                map.put(sum,i);
+            }
+        }
+        return ans;
+    }
+}
+```
 
 
 # 差分微分
 
 
+# doo.prefix
 
-# =================================================================== 前缀离散函数
+## 题目
+### [接雨水](https://leetcode.cn/problems/trapping-rain-water/)
+```json
+{
+    "前缀max后缀max":"discrete_oo.prefix+.subset",
+    "指针优化前后缀函数":"reduce_dim nobacktracking_pointer"
+}
+```
+- 对于i位置能够接雨水的数量为不包含他的前缀最大值和不包含他的后缀最大值的min,min-i就是i位置接的雨水数量
+- 所以构建数组所有位置的前缀后缀函数,再一个一个遍历
+```java
+public static int trap1(int[] nums) {
+		int n = nums.length;
+		int[] lmax = new int[n];
+		int[] rmax = new int[n];
+		lmax[0] = nums[0];
+		// 0~i范围上的最大值，记录在lmax[i]
+		for (int i = 1; i < n; i++) {
+			lmax[i] = Math.max(lmax[i - 1], nums[i]);
+		}
+		rmax[n - 1] = nums[n - 1];
+		// i~n-1范围上的最大值，记录在rmax[i]
+		for (int i = n - 2; i >= 0; i--) {
+			rmax[i] = Math.max(rmax[i + 1], nums[i]);
+		}
+		int ans = 0;
+		//   x              x
+		//   0 1 2 3...n-2 n-1
+		for (int i = 1; i < n - 1; i++) {
+			ans += Math.max(0, Math.min(lmax[i - 1], rmax[i + 1]) - nums[i]);
+		}
+		return ans;
+	}
+```
 
-# KMP
+- reduce_dim优化
+- 可以将前缀函数构建的数组函数用一个指针代替降维优化,前缀后缀直接用两个不回退指针往中间缩
+- 左指针左侧函数是确定的,右指针右侧函数是确定的所以取左右最小值即可
+```java
+class Solution {
+    public int trap(int[] height) {
+        int l=1;int r=height.length-2;int lmax=0;int rmax=0;
+        int ans=0;
+        while(l<=r){
+            lmax=Math.max(lmax,height[l-1]);
+            rmax=Math.max(rmax,height[r+1]);
+            //lmax和rmax相等的时候不能l++和r--因为如果l==r,那么就会重复计算
+            if(lmax<=rmax){
+                int tmp=lmax-height[l];
+                if(tmp>0){
+                    ans+=tmp;
+                }
+                l++;
+            }else {
+                int tmp=rmax-height[r];
+                if(tmp>0){
+                    ans+=tmp;
+                }
+                r--;
+            }
+        }
+        return ans;
+    }
+}
+```
+
+
+## KMP
 https://www.bilibili.com/video/BV1Er421K7kF/
 https://oi-wiki.org/string/kmp/
 ```json
@@ -5581,10 +5923,10 @@ https://oi-wiki.org/string/kmp/
     //因为这俩很基础但在kmp体现的淋漓尽致所以指出来
 }
 ```
-## 前缀算子π
+### 前缀算子π
 
 
-## symmetry discrete_oo.prefix
+### symmetry discrete_oo.prefix
 ![alt text](image-6.png)
 ![alt text](image-7.png)
 ```go
