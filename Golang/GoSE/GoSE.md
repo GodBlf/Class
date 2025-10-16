@@ -356,6 +356,12 @@ type 类型1 类型2
 
 ## struct结构体
 - struct{} 也是一种类型,是一种集合类型
+- 经常搭配type运算符使用定义新的类型
+```go
+type ClientRam struct{
+    ...
+}
+```
 
 ```go
 type IntHeap []int
