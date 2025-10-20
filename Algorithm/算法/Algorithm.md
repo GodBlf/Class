@@ -2504,9 +2504,9 @@ class Solution {
         }
         if(node.val<p.val && node.val<q.val){
            return dfs(node.right,p,q);
-        }else{
-            return node;
         }
+
+        return node;
     }
 }
 ```
