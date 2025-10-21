@@ -2131,7 +2131,7 @@ public static HashMap<Integer, int[]> map = new HashMap<>();
 - 递归设计整体考虑树的左子树和右子树
 ```json
 {
-    "递归树":"recur"
+    "递归树":"recur_oo"
 }
 ```
 - 先序
@@ -2159,7 +2159,7 @@ public void dfs(treenode root){
 #### [二叉树最小深度](https://leetcode.cn/problems/minimum-depth-of-binary-tree/)
 ```json
 {
-    "递归树":"recur",
+    "递归树":"recur_oo",
     "剪枝剪掉null":"prune",
     "分为四种节点状态":"state_enum"
 }
@@ -2185,7 +2185,7 @@ class Solution {
 }
 ```
 #### [二叉树最大深度](https://leetcode.cn/problems/maximum-depth-of-binary-tree/)
-- recurtree 简简单单的
+- recur_ootree 简简单单的
 - io:输入节点状态,返回节点到叶子节点的最大深度
 ```java
 class Solution {
@@ -2203,12 +2203,12 @@ class Solution {
 #### [二叉树先序序列化和反序列化](https://leetcode.cn/problems/serialize-and-deserialize-binary-tree/)
 ```json
 {
-    "递归树简简单单的":"recur",
+    "递归树简简单单的":"recur_oo",
     "cnt作为状态指针游走":"state_pointer"
 }
 ```
 
-- 反序列化recurtree
+- 反序列化recur_ootree
 io:返回一个树节点
 stack:构建一颗树,并把左右孩子链接起来
 state:由cnt游走的指针控制
@@ -2266,14 +2266,14 @@ public class Codec {
 - 反序列化把数组reverse就是先序反序列化,简简单单的
 
 #### [先序中序序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal)
-- recur.subset map_container 加速查询
+- recur_oo.subset map_container 加速查询
 - 先序数组为[头节点,左树,右数] 中序数组为[左树,头节点,右树]
 - f()={
-    g(左树先序数组,左树中序数组)
-    g(右树先序数组,右树中序数组)
+    f(左树先序数组,左树中序数组)
+    f(右树先序数组,右树中序数组)
     返回的头节点拼接为整个树
 }
-g=f
+
 
 ```java
 class Solution {
@@ -2395,13 +2395,13 @@ class Solution {
 ```
 
 #### [完全二叉树节点个数](https://leetcode.cn/problems/count-complete-tree-nodes/)
-- recur.subset prune
+- recur_oo.subset prune
 - 子集分析
 f(root){
     0 if root==null
-    g(root.left)+g(root.right)+1
+    f(root.left)+f(root.right)+1
 }
-g=f
+
 prune:剪枝
 计算左右树ln和rn 如果ln==rn说明左树肯定完全用等比数列求和搭配左移运算剪掉左树递归
 如果ln>rn说明右树肯定完全同理剪枝
@@ -2448,12 +2448,12 @@ class Solution {
 ```
 
 #### [二叉树最近公共祖先lca](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/)
-- recur.subset
+- recur_oo.subset
 f(root)={
     root if root==null || q || p
-    g(root.left)+g(root.right)
+    f(root.left)+f(root.right)
 }
-g=f
+
 ```java
 class Solution {
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
@@ -2487,7 +2487,7 @@ class Solution {
 - root节点的值大于左树所有节点的值且小于右树所有节点的值
 - left.allvalue<mid.value<right.allvalue
 ##### 递归剪枝解法
-- recur.subset prune 反证法
+- recur_oo.subset prune 反证法
 - p,q组成的线段,如果此节点<min说明一定不在左树,剪掉左树,右树同理;
 - 由搜索树性质可得第一次到达线段中间位置就是最近公共祖先,反证法可证
 ```java
@@ -2552,7 +2552,7 @@ class Solution {
 #### [二叉树到叶节点的路径之和](https://leetcode.cn/problems/path-sum-ii/)
 ```json
 {
-    "递归树遍历":"recur.subset recover",//路径恢复到节点的状态
+    "递归树遍历":"recur_oo.subset recover",//路径恢复到节点的状态
     "叶节点branch节点":"vars_hubs.enum"//划分为左branch 右branch leaf和纯branch三种节点进行递归调用
 }
 ```
@@ -2598,8 +2598,8 @@ class Solution {
 ```
 
 #### [二叉树最大路径和](https://leetcode.cn/problems/binary-tree-maximum-path-sum/)
-- recur.subset
-- recur算子是返回左或右一直垂直连到这里的最大路径
+- recur_oo.subset
+- recur_oo算子是返回左或右一直垂直连到这里的最大路径
 有三种情况
 1. 左右节点较大是负数那么直接返回此节点值
 2. 不是负数返回左右节点较大的加上这个节点
@@ -2631,12 +2631,12 @@ public static int dfs(TreeNode sp){
 ```
 
 #### [判断平衡二叉树](https://leetcode.cn/problems/balanced-binary-tree/)
-- recur.subset globalflag
+- recur_oo.subset globalflag
 - 就是求二叉树最大深度加了个全局标记
 f(p)={
-    max(g(left),g(right))+1
+    max(f(left),f(right))+1
 }
-g=f
+
 ```java
 class Solution {
     public boolean isBalanced(TreeNode root) {
@@ -2658,7 +2658,7 @@ class Solution {
 ```
 
 #### [判断搜索二叉树](https://leetcode.cn/problems/validate-binary-search-tree/)
-- recur.subset flag axis memo_pointer
+- recur_oo.subset flag axis memo_pointer
 - 用记忆指针记忆上次遍历的结果
 - 搜索二叉树中序遍历是一个递增序列依照这个性质如果不满足axis就将flag设置为flag
 ```java
@@ -2688,7 +2688,7 @@ class Solution {
 ```
 
 #### [修剪二叉搜索树](https://leetcode.cn/problems/trim-a-binary-search-tree/)
-- recur.subset axis
+- recur_oo.subset axis
 - 递归函数f:修建并返回节点
 ```java
 class Solution {
@@ -2714,16 +2714,16 @@ class Solution {
 ```
 
 #### [二叉树打家劫舍](https://leetcode.cn/problems/house-robber-iii/)
-- recur.subset+.multi_return 
+- recur_oo.subset+.multi_return 
 - 通过多返回值降维优化二维的递归问题将2个order转化为2个返回值1个参数
 - 递归多返回值问题,
 f(root)={
     return 0,0 if null
-    return1: g(root.left).return1+g(root.right).return2
-    return2: max(g(root.l).return1,.return2 )+max(g(root.r).return1,.return2)
+    return1: f(root.left).return1+f(root.right).return2
+    return2: max(f(root.l).return1,.return2 )+max(f(root.r).return1,.return2)
     return
 }
-g=f
+
 
 ```java
 class Solution {
@@ -2859,7 +2859,7 @@ class Solution {
 
 ```json
 {   
-    "栈模拟递归树":"recur memo_pointer",
+    "栈模拟递归树":"recur_oo memo_pointer",
     "记忆节点路径":"memo_container",
     "虚返回":"lazy",//虚返回可以看作懒操作不用一步步返回
 }
@@ -2913,7 +2913,7 @@ class Solution {
             if(cache.isEmpty() && p==null){
                 return ans;
             }
-            //模拟recur
+            //模拟recur_oo
             if(p!=null){
                 cache.push(p);
                 p=p.left;
@@ -4059,14 +4059,14 @@ class Solution {
 # 归并(分治)
 ```json
 {
-    "递归树":"recur",
+    "递归树":"recur_oo",
     "merge":"_pointer",//这里merge的时候有一个简单的statefilter
     "统计部分":"partition_pointer nobacktracking_pointer"//这里是开区间的划分指针,开区间更常见仅二分为了方便用闭区间
 
 }
 ```
 - 原理：
-1）思考一个问题在大范围上的答案，是否等于，左部分的答案 + 右部分的答案 + 跨越左右产生的答案 //recur state为区间范围
+1）思考一个问题在大范围上的答案，是否等于，左部分的答案 + 右部分的答案 + 跨越左右产生的答案 //recur_oo state为区间范围
 2）计算“跨越左右产生的答案”时，如果加上左、右各自有序这个设定，会不会获得计算的便利性  //函数设计为return答案stack数组变有序,需要划分指针不回退指针实现
 3）如果以上两点都成立，那么该问题很可能被归并分治解决（话不说满，因为总有很毒的出题人）
 4）求解答案的过程中只需要加入归并排序的过程即可，因为要让左、右各自有序，来获得计算的便利性
@@ -4082,7 +4082,7 @@ class Solution {
         dfs(nums,0,nums.length-1);
         return nums;
     }
-    //recur
+    //recur_oo
     public void dfs(int[] arr,int l,int r){
         if(l==r) return;
         int m=(l+r)>>1;
@@ -4119,7 +4119,7 @@ class Solution {
 ```
 ### 时空复杂度
 	// 假设l...r一共n个数
-    //merge()操作额外复杂度是O(n)通过分析recurtree可以简易得出
+    //merge()操作额外复杂度是O(n)通过分析recur_ootree可以简易得出
 	// T(n) = 2 * T(n/2) + O(n)
 	// a = 2, b = 2, c = 1
 	// 根据master公式，时间复杂度O(n * logn)
@@ -4129,7 +4129,7 @@ class Solution {
 ### [小和问题nowcoder](https://www.nowcoder.com/practice/edfe05a1d45c4ea89101d936cac32469)
 ```json
 {
-    "递归树":"recur",
+    "递归树":"recur_oo",
     "merge排序":"nobacktracking_pointer",
     "统计部分":"partition_pointer nobacktracking_pointer"//这里是开区间的划分指针,开区间更常见仅二分为了方便用闭区间
 }
@@ -4229,7 +4229,7 @@ public class Main {
 - 和第一题几乎一模一样
 ```json
 {
-    "递归树":"recur",
+    "递归树":"recur_oo",
     "merge排序":"nobacktracking_pointer",
     "统计部分":"partition_pointer nobacktracking_pointer"//这里是开区间的划分指针,开区间更常见仅二分为了方便用闭区间
 }
@@ -4291,7 +4291,7 @@ public class Solution {
 # 随机快速(分治)
 ```json
 {
-    "递归":"recur.subset boundary",//递归中涉及边界得判断技巧,>= <= 优于==
+    "递归":"recur_oo.subset boundary",//递归中涉及边界得判断技巧,>= <= 优于==
     "划分区域函数":"multi_return partition_pointer+.swap",
     //划分函数设计成多返回值得形式返回两个边界方便解决问题
     //划分成< = >三个区域,注意着三个区域的开闭关系,<是) =是[) >是( , <区域扩充用到划分指针典型的swap
@@ -4369,7 +4369,7 @@ class Solution {
 ### [第k大的数](https://leetcode.cn/problems/kth-largest-element-in-an-array/)
 ```json
 {
-    "递归":"recur.subset boundary",//递归中涉及边界得判断技巧,>= <= 优于==
+    "递归":"recur_oo.subset boundary",//递归中涉及边界得判断技巧,>= <= 优于==
     "划分区域函数":"multi_return partition_pointer+.swap",
     //划分函数设计成多返回值得形式返回两个边界方便解决问题
     //划分成< = >三个区域,注意着三个区域的开闭关系,<是) =是[) >是( , <区域扩充用到划分指针典型的swap
@@ -4688,19 +4688,19 @@ public class Code04_LeftToRightAnd {
 # ====================================================================================================================================== 递归相关
 
 # 递归题目
-- recur.subset recover prune global
+- recur_oo.subset recover prune global
 
 ## [只用递归逆序栈](左肾自造题)
-- recur.subset
+- recur_oo.subset
 ### subset分析
 - 返回栈底元素的算子
 io:返回栈底元素 stack:void
 f(n)={
     return poll if n==1  //leaf
 
-    poll+g(n-1)+poll
+    poll+f(n-1)+poll
 }
-g=f
+
 - 逆序栈算子
 stack:逆序栈 io:void
 f(n)={
@@ -4761,9 +4761,9 @@ stack:打印n  a->c的路径 io:void
 f(n)={
     sout(a,c) if n==1; //leaf
 
-    g(n-1)+g(1)+g(n-1)
+    f(n-1)+f(1)+f(n-1)
 }
-g=f
+
 ```java
 class Solution{
     public static void dfs(int n,String a,String b,String c){
@@ -4781,12 +4781,12 @@ class Solution{
 
 
 ## [同时运行n台电脑最长时间](https://leetcode.cn/problems/maximum-running-time-of-n-computers)
-- recur.subset
+- recur_oo.subset
 f(n)={
     sum/n
-    g(n-1)
+    f(n-1)
 }
-g=f
+
 
 - 理论连续可供电时间为sum/n 如果遍历电池大于sum/n 那么就让他自己供一台电脑
 转化为subset 子问题n-1台电脑和剩下的电池进行供电,
@@ -4834,15 +4834,15 @@ class Solution {
 ```
 
 ## [至少有k个重复字符的最长子串](https://leetcode.cn/problems/longest-substring-with-at-least-k-repeating-characters/)
-- recur.subset map_container
+- roo.subset map_container
 - map容器设计成数组的形式比hashmap快非常多
 - 这里是java里的split搭配正则表达式首次使用,正则表达式里的[]表示从集合中任意选取字符做分割点
 - subset分析
 f(s)={
     0 if s中字符都小于k
-    max(g(s1),g(s2),...)  这里的si是将s中小于k的字符做分割点分割出来的字符串
+    max(f(s1),f(s2),...)  这里的si是将s中小于k的字符做分割点分割出来的字符串
 }
-g=f
+
 ```java
 class Solution {
     public int longestSubstring(String s, int k) {
@@ -4949,23 +4949,23 @@ class Solution {
 - prune:非零向量提前通过判断转成0向量
 - recover:退回某个节点,memo也要恢复到这个节点的状态
 ## [n皇后](https://leetcode.cn/problems/n-queens-ii/description/)
-- json:recur prune recover 
+- json:recur_oo prune recover 
 ### subset分析
 - io:返回填n行皇后的种类数
 - f(n)={
     return 0 if n==0 //leaf
 
-    n*g(n-1) 填第n行每一列时对应填n-1行的种类数
+    n*f(n-1) 填第n行每一列时对应填n-1行的种类数
 }
-g=f
+
 
 ### 剪枝版本
 - f(n)={
     return 0 if n==0 //leaf
  
-    g(n-1)+...~~g(n-1)~~...g(n-1)  //prune
+    f(n-1)+...~~f(n-1)~~...f(n-1)  //prune
 }
-g=f
+
 - prune : 通过记忆之前的路径开g栈时提前剪掉,判断标准为同一列 或者同一斜线
 
 ```java
@@ -5008,7 +5008,7 @@ class Solution {
 }
 ```
 ### 剪枝位图版本(状态压缩)
-- recur prune recover bitmap
+- recur_oo prune recover bitmap
 ```java
 class Solution {
     public int totalNQueens(int n) {
@@ -5043,9 +5043,9 @@ io:void stack:感染以ij为起点的所有连起来的1岛屿
 f(i,j)={
     return if i,j是0||超出边界||已经感染过了 //leaf
 
-    感染i,j+g(ij上)+g(ij下)+g(ij左)+g(ij右)
+    感染i,j+f(ij上)+f(ij下)+f(ij左)+f(ij右)
 }
-g=f
+
 - prune: 感染的做标记 提前判断有没有感染直接return变成0向量
 ```java
 class Solution {
@@ -5274,7 +5274,7 @@ class Solution {
 - 多维递归就是参数有若干个,子集是order,通过3维空间函数思考
 
 ## [二叉树打家劫舍](https://leetcode.cn/problems/house-robber-iii/)
-- recur.subset.multidim or .multi_return 
+- recur_oo.subset+.multidim or .multi_return 
 - 通过多返回值降维优化二维的递归问题将2个order转化为2个返回值1个参数
 - 也可以看作本质就是一个多返回值得算子
 递归多返回值问题,
@@ -5333,7 +5333,7 @@ class Solution {
 ```
 
 ## [二叉树直径](https://leetcode.cn/problems/diameter-of-binary-tree/)
-- recur.subset.multidim or .multi_return
+- roo.subset+.multidim or .multi_return
 - 设计成多维递归优化为多返回值
 - 返回到节点左树得最大值和右树的最大值
 
@@ -5438,10 +5438,10 @@ a mod b=(a + bmodb)mod b =同余原理= (a+b)mod b
 ### 不同元素全组合
 ```json
 {
-    "子集分析":"recur.subset recover",
+    "子集分析":"recur_oo.subset recover",
 }
 ```
-#### recur构建(子集分析)
+#### recur_oo构建(子集分析)
 - arr中元素皆不同,全组合
 f(l)={
     return if l==n; //leaf
@@ -5482,7 +5482,7 @@ class Solution{
 ### 去重全组合
 ```json
 {
-    "子集分析":"recur.subset recover",
+    "子集分析":"recur_oo.subset recover",
     "划分出排序后数组相同元素的区域":"partition_pointer"//方便subset
 }
 ```
@@ -5543,7 +5543,7 @@ class Solution {
 ### 不同元素全排列
 ```json
 {
-    "subset分析":"recur.subset recover",
+    "subset分析":"recur_oo.subset recover",
 }
 ```
 对l以后全排列==l后每个元素放第一个全排列l+1后的
@@ -5596,7 +5596,7 @@ class Solution{
 ### 去重全排列
 ```json
 {
-    "subset分析":"recur.subset recover",
+    "subset分析":"recur_oo.subset recover",
     "去重":"memo_container"
 }
 ```
@@ -6003,7 +6003,9 @@ class Solution {
 # =================================================================== 动态规划
 - 动态规划就是将递归转化为离散空间上的算子例如数组上二叉树上,所以任何动态规划都能转化成递归
 - 递归的某个子集重复计算且每个节点在一个离散空间上就可以转化成动态规划
-- dp=doo.subset=recur.subset+重叠子问题+离散空间
+- dp=recur_oo.subset+重叠子问题+离散空间reverse(doo.subset)
+- 所以先写出来递归算法再把递归过程中的return转化为dp[i]=?; continue;在离散空间中反向迭代遍历即可
+
 # 一维动态规划
 ## 典中典 fabbnoci 数列
 算子dp,将索引i映射到i的斐波那契值 dp(i)=dp(i-1)+dp(i-2);
@@ -6034,7 +6036,188 @@ public static int fabbnoci(int n){
 
 ## 习题
 ### [最低票价](https://leetcode.cn/problems/minimum-cost-for-tickets/)
+```json
+{
+    "dp=recur_oo.subset+重叠子问题+离散空间reverse(doo.subset)":"recur_oo.subset doo.subset"
+}
+```
+- subset子集分析
+f(i)={
+    0 if i==n
+    min(g(i->1)+cost[1],g(i->7)+cost[7],g(i->30)+cost[30])
+}
+g=f
+f(i):数组i以后所有天数花费的最小值
+f(i->k):
+例如day{1,4,6,7,8,20}  1,2,3,4,5,6,7,8,9,10
+k==7时i=1时 日期开始是1 那么能管的日期是1~1+7-1 截止日期是7所以 1->7是4
+```java
+class Solution {
+    //静态数组优化
+    public static int[] duration={1,7,30};
+    public static int[] dp=new int[340];
+    public int mincostTickets(int[] days, int[] costs) {
+        int n=days.length;
+        Arrays.fill(dp,Integer.MAX_VALUE);
+        //sentry
+        dp[n]=0;
+        for(int i=n-1;i>=0;i--){
+            int sp=i;
+            for(int k=0;k<3;k++){
+                int jiezhi=days[i]+duration[k]-1;
+                //state_pointer
+                while(true){
+                    if(sp>=days.length) break;
+                    if(days[sp]>jiezhi) break;
+                    sp++;
+                }
+                dp[i]=Math.min(dp[i],costs[k]+dp[sp]);
+            }
+        }
+        return dp[0];
+    }
+    //纯递归
+    public static int dfs(int[]days,int[] costs,int i){
+        if(i>=days.length) return 0;
+        int ans=Integer.MAX_VALUE;
+        int sp=i;
+        for(int k=0;k<3;k++){
+            int jiezhi=days[i]+duration[k]-1;
+            //state_pointer
+            while(true){
+                if(sp>=days.length){
+                    break;
+                }
+                if(days[sp]>jiezhi){
+                    break;
+                }
+                sp++;
+            }
+            ans=Math.min(ans,costs[k]+dfs(days,costs,sp));
+        }
+        return ans;
+    }
+    //剪枝递归加一个map记录答案就行
+}
+```
 
+### [解码方法](https://leetcode.cn/problems/decode-ways)
+- recur_oo.subset doo.subset state_filter reduce_dim
+- subset分析
+f(i)={
+    1 if i=n;
+    g(i+1)+g(i+2);
+}
+g=f
+详见dfs函数
+```java
+class Solution {
+    public static int[] dp=new int[108];
+    public int numDecodings(String s) {
+        int n=s.length();
+        Arrays.fill(dp,0);
+        dp[n]=1;
+        for(int i=n-1;i>=0;i--){
+            char c1;char c2;
+            //第一个字符进行state_filter
+            c1=s.charAt(i);
+            if(c1=='0'){
+                dp[i]=0;
+                continue;
+            }
+            int ans=0;
+            ans+=dp[i+1];
+            //第二个字符进行state_filter
+            if(i==s.length()-1){
+               dp[i]=1;
+               continue;
+            }
+            c2=s.charAt(i+1);
+            int tmp=(c1-'0')*10+(c2-'0');
+            if(tmp>26){
+                dp[i]=ans;
+                continue;
+            }
+            ans+=dp[i+2];
+            dp[i]=ans;
+            continue;
+        }
+        return dp[0];
+    }
+    public static int dfs(String s,int i){
+        if(i==s.length()) return 1;
+        char c1;char c2;
+        //第一个字符进行state_filter
+        c1=s.charAt(i);
+        if(c1=='0'){
+            return 0;
+        }
+        int ans=0;
+        ans+=dfs(s,i+1);
+        //第二个字符进行state_filter
+        if(i==s.length()-1){
+            return 1;
+        }
+        c2=s.charAt(i+1);
+        int tmp=(c1-'0')*10+(c2-'0');
+        if(tmp>26){
+            return ans;
+        }
+        ans+=dfs(s,i+2);
+        return ans;
+    }
+}
+```
+- 降维优化
+用两个变量代替数组降维
+```java
+class Solution {
+    public static int[] dp=new int[108];
+    public int numDecodings(String s) {
+        int n=s.length();
+        //降维处理
+        int sp1=1;int sp2=0;
+        for(int i=n-1;i>=0;i--){
+            char c1;char c2;
+            //第一个字符进行state_filter
+            c1=s.charAt(i);
+            if(c1=='0'){
+                sp2=sp1;
+                sp1=0;
+                continue;
+            }
+            int ans=0;
+            ans+=sp1;
+            //第二个字符进行state_filter
+            if(i==s.length()-1){
+               sp2=sp1;
+               sp1=1;
+               continue;
+            }
+            c2=s.charAt(i+1);
+            int tmp=(c1-'0')*10+(c2-'0');
+            if(tmp>26){
+                sp2=sp1;
+                sp1=ans;
+                continue;
+            }
+            ans+=sp2;
+            sp2=sp1;
+            sp1=ans;
+            continue;
+        }
+        return sp1;
+    }
+}
+```
+
+###  [解码方法2](https://leetcode.cn/problems/decode-ways-ii)
+
+```java
+大模拟我草泥马
+```
+
+### [丑数]()
 
 # ====================================================================================================================================== 贪心
 - 每步局部最优可以得到全局最优的问题
