@@ -225,6 +225,24 @@ l,r指针都来到2位置如果两个都收缩会计算两次2,注意要特判
 - 距离差,速度差,时间差构筑快慢指针
 - 速度差:应用于寻找中点(等 比例点),寻找入环节点
 - 距离差:应用于寻找倒数某位数,寻找相交节点
+### 速度差两倍寻找中点
+```java
+//快慢指针找中点
+        ListNode fast=head;
+        ListNode slow=head;
+        while(true){
+            fast=fast.next;
+            if(fast==null){
+                break;
+            }
+            fast=fast.next;
+            if(fast==null){
+                break;
+            }
+            slow=slow.next;
+        }
+```
+这样写fast先走每一步都判断,slow后走可以实现,slow最后在奇数长度的中点和偶数长度中点向下取整的位置
 
 ## memo_pointer/记忆指针
 - 设置sentry 划分一维数组 ;
@@ -308,20 +326,23 @@ public static void partition2(int[] arr, int l, int r, int x) {
 - 函数可以多返回值java通过返回int[] 实现,golang自带多返回值,多返回值方便解决问题
 - 递归中多返回值可以优化multidim多维递归问题
 
-# recur_oo
+# recur_o
 ```json
 {
-    "operator":"io stack",
-    "order_set":"evolve"
+    "set-element":null,
+    "operator":"io stack process",
     //io定义为输入状态和返回结果,结果可以是集合,值
     //stack是具体的dfs遍历,用函数栈模拟递归树节点
-    //subset pr 0mm
+    //通过axis和venn这两个图来记忆递归过程,ospr
 }
 ```
-- 递归树
-![alt text](image-3.png)
-递归是对递归树的dfs遍历
-
+![alt text](image-13.png)
+- 先讨论1维
+再讨论多维
+1dim->1_return
+1dim->multi_return
+multidim->1_return
+multidim->multi_return
 
 ## subset 子集表示
 - f(S0)=∑f(Si)+f({}) 
@@ -343,15 +364,9 @@ f(N)={
 }
 g=f 
 
-#### 空集  0set
+### 空集  0set
 空集直接返回函数值相当于k常数
 
-
-## multidim 多维递归问题
-![alt text](image-10.png)
-- 由一维到多维这种更一般的空间是很自然的过度
-- subset子集可以是一个有序n元组,通过三维空间的函数思考,相当于是二维dp的recur_oo版本
-- 例如f(n,1) f(n,0)
 
 ## multi_return
 - 设计的递归算子可以多返回值,例如golang,使得解决的问题非常自然,算子的值是一个序偶将集合映射到序偶集合很自然
@@ -366,7 +381,22 @@ g=f
 
 
 
+
+
+## multidim 多维递归问题
+![alt text](image-10.png)
+- 由一维到多维这种更一般的空间是很自然的过度
+- 递归算子的参数可以是一个有序n元组,通过三维空间的函数思考,相当于是二维dp的recur_o版本
+- 例如f(n,1) f(n,0)
+
+
+
 ## tree
+- 递归树
+![alt text](image-3.png)
+递归是对递归树的dfs遍历
+
+
 ### Node
 - args state or varible state 函数栈节点的状态
 - return state 函数返回会变成具体的值
@@ -841,7 +871,7 @@ a mod b=(a + bmodb)mod b =同余原理= (a+b)mod b
 
 ### subset
 - n处函数值可由前边的subset函数值组合得出
-- 由于有subset所以每一个doo.subset问题都能转化为一个recur_oo问题
+- 由于有subset所以每一个doo.subset问题都能转化为一个recur_o问题
 
 ## vector_space
 - (K,+,x)-(V,+,||): aA+bB |A|
