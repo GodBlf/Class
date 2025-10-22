@@ -55,10 +55,17 @@ gin框架路由仅注册传入回调函数,gin.run()路由请求方法再调用�
 
 
 
-# Var Ram Pointer 结构体,依赖注入
-## var ram
-- 结构体中表示在ram中,var包含的具体的变量有什么
-- :=&{} 生成具体的变量在ram中
+# Ram-Var Pointer 结构体,依赖注入
+## ram-var
+- 变量
+变量就是内存ram中的一块区域
+var在内存中的大小表示包含什么变量,例如struct{int,string},在内存中很大var包含很多
+- 内存定义区
+内存定义区里边存放着定义好的变量,基础变量有int32 int64等
+自定义变量可以是结构体 struct{...} []int 切片等
+- type运算符
+type这个是全等运算符,type Duration int  相当于Duration全等于int,在内存定义区又加入了一个全等于int的Duration变量
+定义区变量不能直接使用只能用他们创造新的变量例如 x:=&MyDVar{...}
 
 ## pointer
 - 指针设计模式,不关心内部变量的创建直接传递来指针直接用
