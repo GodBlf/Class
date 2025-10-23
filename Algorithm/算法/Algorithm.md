@@ -1407,6 +1407,81 @@ class Solution {
 }
 ```
 
+### [链表排序](https://leetcode.cn/problems/sort-list/)
+```json
+{
+    "寻找中点,归并排序":"fast-slow_pointer ro.subset help_container/sentry memo_pointer"
+}
+```
+- 就是个链表的归并排序,用快慢指针寻找中点
+- 然后递归两部分,再将两部分归并到辅助空间上,这个辅助空间就是链表模型(sentry memo_pointer)
+- 子集分析
+f(head)={
+    head if head就一个next就是null
+    merge(f(head.l),f(head.r));
+}
+- 每次递归的链表都最后指向null规范化方便操作
+```java
+class Solution {
+    //链表模型辅助空间
+    public static ListNode sentry=new ListNode(-1);
+    public ListNode sortList(ListNode head) {
+        if(head==null) return null;
+        sentry.next=null;
+        return dfs(head);
+    }
+    public static ListNode dfs(ListNode head){
+        if(head.next==null ){
+            return head;
+        }
+        //快慢指针找中点
+        ListNode fast=head;
+        ListNode slow=head;
+        while(true){
+            fast=fast.next;
+            if(fast==null) break;
+            fast=fast.next;
+            if(fast==null) break;
+            slow=slow.next;
+        }
+        ListNode tmp=slow.next;
+        slow.next=null;
+        //
+        ListNode head1=dfs(head);
+        ListNode head2=dfs(tmp);
+        //链表模型辅助空间,用的时候next=null实现清空
+        sentry.next=null;
+        ListNode pre=sentry;
+        ListNode sp1=head1;
+        ListNode sp2=head2;
+        ListNode memo1=sp1;
+        ListNode memo2=sp2;
+        while(sp1!=null && sp2!=null){
+            if(sp1.val<=sp2.val){
+                memo1=sp1.next;
+                sp1.next=pre.next;
+                pre.next=sp1;
+                pre=pre.next;
+                sp1=memo1;
+            }else{
+                memo2=sp2.next;
+                sp2.next=pre.next;
+                pre.next=sp2;
+                pre=pre.next;
+                sp2=memo2;
+            }
+        }
+        if(sp1!=null){
+            pre.next=sp1;
+        }
+        if(sp2!=null){
+            pre.next=sp2;
+        }
+        return sentry.next;
+    }
+}
+```
+
 ### [判断链表是不是回文](https://leetcode.cn/problems/palindrome-linked-list/)
 - 快慢指针寻找中点然后,将右部分反转左右对比;
 - 用额外空间的是将节点值存入数组然后不回退双指针遍历即可简简单单的
