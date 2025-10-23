@@ -666,6 +666,39 @@ class Solution {
 }
 ```
 
+## [颜色分类](https://leetcode.cn/problems/sort-colors/)
+```json
+{
+    "划分三个区域":"partition_pointer.swap"
+}
+//和快排一模一样
+```
+```java
+class Solution {
+    public void sortColors(int[] nums) {
+        int l=0;int m=0;int r=nums.length-1;
+        while(m<=r){
+            if(nums[m]==0){
+                swap(nums,l,m);
+                l++;
+                m++;
+            }else if(nums[m]==1){
+                m++;
+            }else{
+                swap(nums,m,r);
+                r--;
+            }
+        }
+    }
+    public static void swap(int[] arr,int a,int b){
+        int tmp=0;
+        tmp=arr[a];
+        arr[a]=arr[b];
+        arr[b]=tmp;
+    }
+}
+```
+
 ## [按奇偶排序数组 II](https://leetcode.cn/problems/sort-array-by-parity-ii/)
 - partition_pointer.swap
 设置为[)区域
@@ -4556,7 +4589,7 @@ class Solution {
     "剪枝为一叉树":"prune"
 }
 ```
-- 参见随机快排划分完=区域已经排好序已经确定不再改变,据此来寻找剪枝寻找第k小的树
+- 参见随机快排划分完=区域已经排好序已经确定不再改变(原理是axis定义左边都小于此元素,右边都大于此元素就是数轴元素的定义),据此来寻找剪枝寻找第k小的树
 - 这里递归树只走一个分支并不会遍历所有节点
 - 时间复杂度参考快排的期望计算,每次分一半n/2+n/4+n/8+...+1=log(n)等比数列
 - io:输入区域返回第k小的数 stack:划分好区域
@@ -4612,6 +4645,41 @@ class Solution {
 
 }
 ```
+
+## [颜色分类](https://leetcode.cn/problems/sort-colors/)
+```json
+{
+    "划分三个区域":"partition_pointer.swap"
+}
+//和快排一模一样
+```
+```java
+class Solution {
+    public void sortColors(int[] nums) {
+        int l=0;int m=0;int r=nums.length-1;
+        while(m<=r){
+            if(nums[m]==0){
+                swap(nums,l,m);
+                l++;
+                m++;
+            }else if(nums[m]==1){
+                m++;
+            }else{
+                swap(nums,m,r);
+                r--;
+            }
+        }
+    }
+    public static void swap(int[] arr,int a,int b){
+        int tmp=0;
+        tmp=arr[a];
+        arr[a]=arr[b];
+        arr[b]=tmp;
+    }
+}
+```
+
+
 ## 时间复杂度分析
 - 随机过程用期望值,因为如果用最差情况概率会等于零
 - 差
