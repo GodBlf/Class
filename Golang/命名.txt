@@ -1,6 +1,6 @@
 接口用结尾用Mdw(midwear)
 lazyglobal 用Var
-具体实现的结构体用Ram
+具体实现的结构体用DVar(define var)
 依赖注入的变量用P(pointer)
 钩子函数用Hook
 例如gin中间件既是Mdw又是Hook俩都加后缀里
