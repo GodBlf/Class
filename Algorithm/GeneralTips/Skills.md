@@ -352,8 +352,6 @@ multidim->multi_return
 
 ## subset 子集表示
 - f(S0)=∑f(Si)+f(Sb) 
- 
-
 - 记忆图
 ![alt text](image-13.png)
 - 不同问题节点由其子问题子集表示
