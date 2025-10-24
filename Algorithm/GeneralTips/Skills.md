@@ -1,9 +1,14 @@
 [TOC]  
-# 格式
+# 命名方式
 - 全部用c++命名方式,如果有个命名想用下边的子分类不想用大分类就中文命名
 例如 指针技巧下有memo_pointer
 - 可用.  discrete_fuction.∑∫
 - 描述本质不要拘泥于学术定义例如递归函数改为集合算子
+## 单词选取
+- 数学
+集合论,
+- 计算机底层
+pointer,move(汇编),ram等
 
 # math_refactor公理
 - 借鉴数学的ZFC集合论公理体系
@@ -153,7 +158,7 @@ if(cur1!=null){
 
 ## while
 - while就是循环代码块,根据vars_hubs来结束循环,while里嵌套ifelse
-- while就是state_pointer遍历,
+- while就是move_pointer遍历,
 - 直接while再说
 
 # boundary
@@ -161,12 +166,12 @@ if(cur1!=null){
 - >= <= 优于==
 例如快排中叶子节点为 l>=r 防止l在右边界
 
-# state_pointer
-## 普通迭代状态指针
+# move_pointer
+## 普通移动指针
 ### 迭代器
 - for(i:set){j=i;break} 取set的随机一个元素可以这样
 ### while
-- while就是state_pointer遍历,
+- while就是move_pointer遍历,
 - while就是循环代码块,根据vars_hubs来结束循环,while里嵌套ifelse
 - 直接while再说
 - 如果指针模拟状态遍历,那么指到哪里就立即更新他的状态
@@ -193,7 +198,7 @@ sp=pi[sp]
 ```
 
 
-- 下面的高级优化指针都是普通迭代状态指针的自己都继承他的特性
+- 下面的高级优化指针都是普通移动指针的自己都继承他的特性
 
 ## pointers_container
 - 参见container
@@ -534,7 +539,7 @@ f(N)={
 ## recover
 - 应用于dfs过程(递归树遍历过程)
 - 对memo_pointer_container recover
-- recover:退回某个节点,memo也要恢复到这个节点的状态,state_pointer遍历到哪里状态就恢复成那里的样子
+- recover:退回某个节点,memo也要恢复到这个节点的状态,move_pointer遍历到哪里状态就恢复成那里的样子
 - 回溯的时候要把visit 栈等memo恢复到上一个状态因为根据subset不同节点状态不一样并不一定都是root节点需要恢复进行下一个节点dfs
 - 按照栈先进先出恢复
 - 参数指针recover 参数值不用因为在栈里
@@ -657,7 +662,7 @@ int main(){
 ## pointer_container
 
 - 指针过多收集到容器中方便管理
-- 这里指针可以是memo,普通状态指针等
+- 这里指针可以是memo,普通指针等
 - 例如最小栈的memo指针容器;合并k个有序链表的小根堆不回退指针
 
 ## memo_container
