@@ -485,7 +485,7 @@ class Solution {
 ```
 
 #### [画匠问题leetcode](https://leetcode.cn/problems/split-array-largest-sum/)
-- flag state_pointer 指针到哪个位置就立即更新对应的状态
+- flag move_pointer 指针到哪个位置就立即更新对应的状态
 - 单调区间
 [0,nums.sum],从0到累加和
 - 二分区间
@@ -994,7 +994,7 @@ class Solution {
 
 ## 习题
 ### [螺旋矩阵](https://leetcode.cn/problems/spiral-matrix/)
-- sp vars_hubs.statefilter  (sentry memo_container)
+- mp vars_hubs.statefilter  (sentry memo_container)
 - 简简单单的
 ```java
 class Solution {
@@ -1103,32 +1103,32 @@ class Solution {
 - 指针
 ## 习题
 ### [两两交换链表中的节点](https://leetcode.cn/problems/swap-nodes-in-pairs)
-- 链表模型(sentry memo_pointer) memo_pointer state_pointer
+- 链表模型(sentry memo_pointer) memo_pointer move_pointer
 ```java
 class Solution {
     public ListNode swapPairs(ListNode head) {
         ListNode sentry=new ListNode(-1);
         ListNode pre=sentry;
-        ListNode sp=head;
+        ListNode mp=head;
         ListNode memo1= head;
         ListNode memo2=head;
         while(true){
-            if(sp==null || sp.next == null){
+            if(mp==null || mp.next == null){
                 break;
             }
-            memo1=sp.next;
+            memo1=mp.next;
             memo2=memo1.next;
             memo1.next=pre.next;
             pre.next=memo1;
             pre=pre.next;
-            sp.next=pre.next;
-            pre.next=sp;
+            mp.next=pre.next;
+            pre.next=mp;
             pre=pre.next;
-            sp=memo2;
+            mp=memo2;
         }
-        if(sp!=null){
-            sp.next=pre.next;
-            pre.next=sp;
+        if(mp!=null){
+            mp.next=pre.next;
+            pre.next=mp;
         }
         return sentry.next;
     }
@@ -1525,7 +1525,7 @@ class Solution {
 ```
 
 ### [重排链表](https://leetcode.cn/problems/reorder-list)
-- fast-slow_pointer 链表模型(sentry memo_pointer) memo_pointer sp
+- fast-slow_pointer 链表模型(sentry memo_pointer) memo_pointer mp
 - 和上一题做法一样
 ```java
 class Solution {
@@ -1546,13 +1546,13 @@ class Solution {
         }
         //逆序链表
         ListNode sentry=new ListNode(-1);
-        ListNode sp=slow.next;
-        ListNode memo=sp;
-        while(sp!=null){
-            memo=sp.next;
-            sp.next=sentry.next;
-            sentry.next=sp;
-            sp=memo;
+        ListNode mp=slow.next;
+        ListNode memo=mp;
+        while(mp!=null){
+            memo=mp.next;
+            mp.next=sentry.next;
+            sentry.next=mp;
+            mp=memo;
         }
         //归并
         ListNode sp1=head;ListNode memo1=sp1;
@@ -2491,7 +2491,7 @@ class Solution {
 ```json
 {
     "递归树简简单单的":"set_o",
-    "cnt作为状态指针游走":"state_pointer"
+    "cnt作为状态指针游走":"move_pointer"
 }
 ```
 
@@ -2703,22 +2703,22 @@ class Solution {
             return 0;
         }
         int ln=0;int rn=0;
-         TreeNode sp=root.left;
+         TreeNode mp=root.left;
          //state pointer
         while(true){
-            if(sp==null){
+            if(mp==null){
                 break;
             }
             ln++;
-            sp=sp.left;
+            mp=mp.left;
         }
-        sp=root.right;
+        mp=root.right;
         while(true){
-            if(sp==null){
+            if(mp==null){
                 break;
             }
             rn++;
-            sp=sp.left;
+            mp=mp.left;
         }
         int ans=0;
         if(ln==rn){
@@ -2798,40 +2798,40 @@ class Solution {
 }
 ```
 
-##### 递归转state_pointer 迭代解法
+##### 递归转move_pointer 迭代解法
 ```json
 {
     "数轴点逼近线段":"axis",
-    "节点指针遍历树":"state_pointer"
+    "节点指针遍历树":"move_pointer"
 }
 ```
 二叉搜索树可以扁平化为数轴,root为中间的点
-从root开始的sp在数轴上游走逼近(min,max)组成的线段
+从root开始的mp在数轴上游走逼近(min,max)组成的线段
 - 由搜索树性质可得第一次到达线段中间位置就是最近公共祖先,反证法可证
-sp碰到就返回这个值
+mp碰到就返回这个值
 ```java
 
 class Solution {
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        TreeNode sp=root;
+        TreeNode mp=root;
         int min=Math.min(p.val,q.val);
         int max=Math.max(p.val,q.val);
         while(true){
             //逼近
-            if(min>sp.val){
-                sp=sp.right;
-            }else if(max<sp.val){
-                sp=sp.left;
+            if(min>mp.val){
+                mp=mp.right;
+            }else if(max<mp.val){
+                mp=mp.left;
             }
             //碰到
-            if(sp==null || sp==p || sp==q){
+            if(mp==null || mp==p || mp==q){
                 break;
             }
-            if(sp.val>min && sp.val<max){
+            if(mp.val>min && mp.val<max){
                 break;
             }
         }
-        return sp;
+        return mp;
     }
 }
 ```
@@ -2899,20 +2899,20 @@ public int maxPathSum(TreeNode root) {
 }
 public static int max;
 
-public static int dfs(TreeNode sp){
-    if(sp==null){
+public static int dfs(TreeNode mp){
+    if(mp==null){
         return 0;
     }
-    int l=dfs(sp.left);
-    int r=dfs(sp.right);
+    int l=dfs(mp.left);
+    int r=dfs(mp.right);
     int lrmax=Math.max(l,r);
     //横跨左右的路径
-    max=Math.max(l+r+sp.val,max);
+    max=Math.max(l+r+mp.val,max);
     //加上此节点的路径
-    max= Math.max(max,lrmax+sp.val);
+    max= Math.max(max,lrmax+mp.val);
     //仅有这个节点的路径
-    max=Math.max(max,sp.val);
-    return Math.max(sp.val,sp.val+lrmax);
+    max=Math.max(max,mp.val);
+    return Math.max(mp.val,mp.val+lrmax);
 }
 }
 ```
@@ -3019,18 +3019,18 @@ class Solution {
         int ans2=dfs2(root,1);
         return Math.max(ans1,ans2);
     }
-    public static int dfs2(TreeNode sp,int state){
-        if(sp==null){
+    public static int dfs2(TreeNode mp,int state){
+        if(mp==null){
             return 0;
         }
-        int l0=dfs2(sp.left,0);
-        int l1=dfs2(sp.left,1);
-        int r0=dfs2(sp.right,0);
-        int r1=dfs2(sp.right,1);
+        int l0=dfs2(mp.left,0);
+        int l1=dfs2(mp.left,1);
+        int r0=dfs2(mp.right,0);
+        int r1=dfs2(mp.right,1);
         if(state==0){
              return Math.max(l0,l1)+Math.max(r0,r1);
         }
-        return l0+r0+ sp.val;
+        return l0+r0+ mp.val;
     }
 }
 //可加map优化为记忆化搜索
@@ -3043,14 +3043,14 @@ class Solution {
         int[] ans = dfs(root);
         return Math.max(ans[0],ans[1]);
     }
-    public static int[] dfs(TreeNode sp){
-        if(sp==null){
+    public static int[] dfs(TreeNode mp){
+        if(mp==null){
             return new int[]{0,0};
         }
-        int[] l = dfs(sp.left);
-        int[] r = dfs(sp.right);
+        int[] l = dfs(mp.left);
+        int[] r = dfs(mp.right);
         int[] ans = new int[2];
-        ans[0]=l[1]+r[1]+sp.val;
+        ans[0]=l[1]+r[1]+mp.val;
         ans[1]=Math.max(l[0],l[1])+Math.max(r[0],r[1]);
         return ans;
     }
@@ -3467,7 +3467,7 @@ class Solution {
 ```json
 {
     "层序遍历队列容器":"cache",
-    "p作为状态指针游走":"state_pointer"
+    "p作为状态指针游走":"move_pointer"
 }
 ```
 
@@ -4157,7 +4157,7 @@ public class Main {
     public static int find(int i) {
         int ans=0;
         ArrayDeque<Integer> stack = new ArrayDeque<>();
-        //state_pointer
+        //move_pointer
         while(true){
             //终止条件是到root节点,root节点特征为指向自己
             if(father[i]==i){
@@ -4246,12 +4246,12 @@ class Solution {
     public static int find(int i){
         ArrayDeque<Integer> cache = new ArrayDeque<>();
         int ans=0;
-        int sp=i;
-        while(father[sp]!=sp){
-            cache.push(sp);
-            sp=father[sp];
+        int mp=i;
+        while(father[mp]!=mp){
+            cache.push(mp);
+            mp=father[mp];
         }
-        ans=sp;
+        ans=mp;
         while(!cache.isEmpty()){
             Integer pop = cache.pop();
             father[pop]=ans;
@@ -4296,16 +4296,16 @@ class Solution {
     }
     public static int find(int i){
         ArrayDeque<Integer> stack = new ArrayDeque<>();
-        int sp=i;
-        while(father[sp]!=sp){
-            stack.push(sp);
-            sp=father[sp];
+        int mp=i;
+        while(father[mp]!=mp){
+            stack.push(mp);
+            mp=father[mp];
         }
         while(!stack.isEmpty()){
             Integer pop = stack.pop();
-            father[pop]=sp;
+            father[pop]=mp;
         }
-        return sp;
+        return mp;
     }
     public static void union(int a,int b){
         int aroot=find(a);
@@ -5188,11 +5188,11 @@ class Solution {
         boolean flag1=true;
         boolean flag2=true;
         String delim="[";
-        for (Map.Entry<Character, Integer> sp : map.entrySet()) {
-            if(sp.getValue()<k){
+        for (Map.Entry<Character, Integer> mp : map.entrySet()) {
+            if(mp.getValue()<k){
                 flag1=false;
                 //正则表达式
-                delim=delim+""+sp.getKey();
+                delim=delim+""+mp.getKey();
                 continue;
             }
             flag2=false;
@@ -5509,8 +5509,8 @@ class Solution {
                         set.add(grid[i][j+1]);
                     }
                     int sum=0;
-                    for (Integer sp : set) {
-                        sum+=map.get(sp);
+                    for (Integer mp : set) {
+                        sum+=map.get(mp);
                     }
                     max=Math.max(max,sum+1);
                 }
@@ -5615,18 +5615,18 @@ class Solution {
         int ans2=dfs2(root,1);
         return Math.max(ans1,ans2);
     }
-    public static int dfs2(TreeNode sp,int state){
-        if(sp==null){
+    public static int dfs2(TreeNode mp,int state){
+        if(mp==null){
             return 0;
         }
-        int l0=dfs2(sp.left,0);
-        int l1=dfs2(sp.left,1);
-        int r0=dfs2(sp.right,0);
-        int r1=dfs2(sp.right,1);
+        int l0=dfs2(mp.left,0);
+        int l1=dfs2(mp.left,1);
+        int r0=dfs2(mp.right,0);
+        int r1=dfs2(mp.right,1);
         if(state==0){
              return Math.max(l0,l1)+Math.max(r0,r1);
         }
-        return l0+r0+ sp.val;
+        return l0+r0+ mp.val;
     }
 }
 //可加map优化为记忆化搜索
@@ -5639,14 +5639,14 @@ class Solution {
         int[] ans = dfs(root);
         return Math.max(ans[0],ans[1]);
     }
-    public static int[] dfs(TreeNode sp){
-        if(sp==null){
+    public static int[] dfs(TreeNode mp){
+        if(mp==null){
             return new int[]{0,0};
         }
-        int[] l = dfs(sp.left);
-        int[] r = dfs(sp.right);
+        int[] l = dfs(mp.left);
+        int[] r = dfs(mp.right);
         int[] ans = new int[2];
-        ans[0]=l[1]+r[1]+sp.val;
+        ans[0]=l[1]+r[1]+mp.val;
         ans[1]=Math.max(l[0],l[1])+Math.max(r[0],r[1]);
         return ans;
     }
@@ -5667,12 +5667,12 @@ class Solution {
         return max-1;
     }
     public static int max;
-    public static int[] dfs(TreeNode sp){
-        if(sp==null){
+    public static int[] dfs(TreeNode mp){
+        if(mp==null){
             return new int[]{0,0};
         }
-        int[] l=dfs(sp.left);
-        int[] r=dfs(sp.right);
+        int[] l=dfs(mp.left);
+        int[] r=dfs(mp.right);
         int lmax=Math.max(l[0],l[1]);
         int rmax=Math.max(r[0],r[1]);
         int ans=lmax+rmax+1;
@@ -6241,7 +6241,7 @@ https://oi-wiki.org/string/kmp/
 {
     "前缀算子π":"symmetry doo.prefix",
     "π算子幂":"doo.subset vector_space.pow_basis",
-    // "Π算子幂的边界判断":"vars_hubs state_pointer"
+    // "Π算子幂的边界判断":"vars_hubs move_pointer"
     //因为这俩很基础但在kmp体现的淋漓尽致所以指出来
 }
 ```
@@ -6287,21 +6287,21 @@ class Solution {
         int[] pi = new int[sb.length()];
         pi[0]=0;
         for(int i=1;i<pi.length;i++){
-            //sp是state_pointer 类似于int i while{ i++}末尾状态更新
-            int sp=pi[i-1];
+            //mp是move_pointer 类似于int i while{ i++}末尾状态更新
+            int mp=pi[i-1];
             while(true){
                 //vars_hubs 枚举边界状态
-                if(sp==0 && sb.charAt(sp)==sb.charAt(i)){
+                if(mp==0 && sb.charAt(mp)==sb.charAt(i)){
                     pi[i]=1;
                     break;
-                }else if(sp==0 && sb.charAt(sp)!=sb.charAt(i)){
+                }else if(mp==0 && sb.charAt(mp)!=sb.charAt(i)){
                     pi[i]=0;
                     break;
-                }else if(sp!=0 && sb.charAt(sp)==sb.charAt(i)){
-                    pi[i]=sp+1;
+                }else if(mp!=0 && sb.charAt(mp)==sb.charAt(i)){
+                    pi[i]=mp+1;
                     break;
                 }else{
-                    sp=pi[sp-1];
+                    mp=pi[mp-1];
                 }
             }
             if(pi[i]==ans){
@@ -6401,16 +6401,16 @@ class Solution {
         //sentry
         dp[n]=0;
         for(int i=n-1;i>=0;i--){
-            int sp=i;
+            int mp=i;
             for(int k=0;k<3;k++){
                 int jiezhi=days[i]+duration[k]-1;
-                //state_pointer
+                //move_pointer
                 while(true){
-                    if(sp>=days.length) break;
-                    if(days[sp]>jiezhi) break;
-                    sp++;
+                    if(mp>=days.length) break;
+                    if(days[mp]>jiezhi) break;
+                    mp++;
                 }
-                dp[i]=Math.min(dp[i],costs[k]+dp[sp]);
+                dp[i]=Math.min(dp[i],costs[k]+dp[mp]);
             }
         }
         return dp[0];
@@ -6419,20 +6419,20 @@ class Solution {
     public static int dfs(int[]days,int[] costs,int i){
         if(i>=days.length) return 0;
         int ans=Integer.MAX_VALUE;
-        int sp=i;
+        int mp=i;
         for(int k=0;k<3;k++){
             int jiezhi=days[i]+duration[k]-1;
-            //state_pointer
+            //move_pointer
             while(true){
-                if(sp>=days.length){
+                if(mp>=days.length){
                     break;
                 }
-                if(days[sp]>jiezhi){
+                if(days[mp]>jiezhi){
                     break;
                 }
-                sp++;
+                mp++;
             }
-            ans=Math.min(ans,costs[k]+dfs(days,costs,sp));
+            ans=Math.min(ans,costs[k]+dfs(days,costs,mp));
         }
         return ans;
     }
