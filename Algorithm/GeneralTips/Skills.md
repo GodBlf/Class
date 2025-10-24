@@ -3,6 +3,7 @@
 - 全部用c++命名方式,如果有个命名想用下边的子分类不想用大分类就中文命名
 例如 指针技巧下有memo_pointer
 - 可用.  discrete_fuction.∑∫
+- 描述本质不要拘泥于学术定义例如递归函数改为集合算子
 
 # math_refactor公理
 - 借鉴数学的ZFC集合论公理体系
@@ -13,7 +14,7 @@ Skills->Algorithm ; Skills->JavaSE
 ```json
 {
     "set_theory":"math", //具体参见/Class/Math/集合论 
-    "memory":"算法以计算机内存和集合论为基础",
+    "ram":"算法以计算机内存和集合论为基础",
     "var state":["variable is one field of memory","state is the variables' value " ],//variable是计算机内存ram的一块区域,具体取值是state,系统多个变量取值组合也可是系统整体状态
     "operator":{
         "process_quantity":null,
@@ -32,7 +33,11 @@ Skills->Algorithm ; Skills->JavaSE
 }
 ```
 ![alt text](image-5.png)
+## boot
+- ram-var
+- operator ↑
 
+## 工程
 ```json
 {
     "set":"",
@@ -326,7 +331,7 @@ public static void partition2(int[] arr, int l, int r, int x) {
 - 函数可以多返回值java通过返回int[] 实现,golang自带多返回值,多返回值方便解决问题
 - 递归中多返回值可以优化multidim多维递归问题
 
-# recur_o
+# set_o
 ```json
 {
     "set-element":null,
@@ -336,6 +341,7 @@ public static void partition2(int[] arr, int l, int r, int x) {
     //通过axis和venn这两个图来记忆递归过程,ospr
 }
 ```
+- 递归函数本质就是在问题集合上的算子,这个集合是可分子集的
 ![alt text](image-13.png)
 - 先讨论1维
 再讨论多维
@@ -345,13 +351,12 @@ multidim->1_return
 multidim->multi_return
 
 ## subset 子集表示
-- f(S0)=∑f(Si)+f({}) 
+- f(S0)=∑f(Si)+f(Sb) 
  
 
 - 记忆图
 ![alt text](image-13.png)
 - 不同问题节点由其子问题子集表示
-子集可一致转化
 - 叶子节点表示为空集+k,空集就是没有子问题了直接返回值
 f(N)={
     k*0  is leaf
@@ -359,8 +364,9 @@ f(N)={
 }
 g=f 
 
-### 空集  0set
-空集直接返回函数值相当于k常数
+### base_set
+当某个子集不可再分时就是base集合
+base集合的算子直接返回值不可子集表示
 
 
 ## multi_return
@@ -381,7 +387,7 @@ g=f
 ## multidim 多维递归问题
 ![alt text](image-10.png)
 - 由一维到多维这种更一般的空间是很自然的过度
-- 递归算子的参数可以是一个有序n元组,通过三维空间的函数思考,相当于是二维dp的recur_o版本
+- 递归算子的参数可以是一个有序n元组,通过三维空间的函数思考,相当于是二维dp的set_o版本
 - 例如f(n,1) f(n,0)
 
 ## tree
@@ -864,7 +870,7 @@ a mod b=(a + bmodb)mod b =同余原理= (a+b)mod b
 
 ### subset
 - n处函数值可由前边的subset函数值组合得出
-- 由于有subset所以每一个doo.subset问题都能转化为一个recur_o问题
+- 由于有subset所以每一个doo.subset问题都能转化为一个set_o问题
 
 ## vector_space
 - (K,+,x)-(V,+,||): aA+bB |A|
