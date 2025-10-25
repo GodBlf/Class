@@ -4126,6 +4126,7 @@ union 合并集合的时候小集合挂在大集合下边
 
 - 扁平化
 查找元素所在集合的时候用栈将沿途元素记录下来,之后再一个一个弹出挂到root节点上
+或者用递归实现
 ![alt text](image-11.png)
 ![alt text](image-12.png)
 
@@ -4174,6 +4175,15 @@ public class Main {
             Integer pop = stack.pop();
             father[pop]=ans;
         }
+        return ans;
+    }
+    //递归实现
+    public static int find_recur(int i){
+        if(father[i]==i){
+            return i;
+        }
+        int ans=find_recur(father[i]);
+        father[i]=ans;
         return ans;
     }
 
@@ -5224,8 +5234,6 @@ class Solution {
 ```
 
 ## [嵌套字符串解码](https://leetcode.cn/problems/decode-string/)
-
-
 ```java
 class Solution {
     public String decodeString(String s) {
@@ -5356,6 +5364,46 @@ class Solution {
     }
 }
 ```
+
+## [n对括号的有效组合](https://leetcode.cn/problems/generate-parentheses)
+- set_o.subset recover
+```java
+class Solution {
+    public static List<String> ans=new ArrayList<>();
+    public static StringBuilder stack=new StringBuilder();
+    public List<String> generateParenthesis(int n) {
+        stack.delete(0,stack.length());
+        ans.clear();
+        StringBuilder stack = new StringBuilder();
+        dfs(n,0);
+        return ans;
+    }
+    public static void dfs(int n,int bu){
+        if(n==0){
+            StringBuilder tmp = new StringBuilder(stack);
+            for(int i=0;i<bu;i++){
+                tmp.append(")");
+            }
+            ans.add(tmp.toString());
+            return;
+        }
+        stack.append("(");
+        dfs(n-1,bu+1);
+        stack.deleteCharAt(stack.length()-1);
+        for(int i=0;i<bu;i++){
+            stack.append(")");
+            stack.append("(");
+            dfs(n-1,bu-i);
+            stack.deleteCharAt(stack.length()-1);
+        }
+        for(int i=0;i<bu;i++){
+            stack.deleteCharAt(stack.length()-1);
+        }
+
+    }
+}
+```
+
 
 ## 感染问题(洪水填充问题)
 
