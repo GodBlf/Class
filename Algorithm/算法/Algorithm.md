@@ -6388,10 +6388,10 @@ class Solution {
 ```
 
 # =================================================================== 动态规划
-- 动态规划就是将递归转化为离散空间上的算子例如数组上二叉树上,所以任何动态规划都能转化成递归
-- 递归的某个子集重复计算且每个节点在一个离散空间上就可以转化成动态规划
-- dp=set_o.subset+重叠子问题+离散空间reverse(doo.subset)
-- 所以先写出来递归算法再把递归过程中的return转化为dp[i]=?; continue;在离散空间中反向迭代遍历即可
+- 动态规划就是将递归转化为数组(离散空间)上的算子例如数组上,所以任何动态规划都能转化成递归
+- 递归的某个子集重复计算且每个节点在一个数组(离散空间)上就可以转化成动态规划
+- dp=set_o.subset(doo.subset)+重叠子问题+数组(离散空间)
+- 所以先写出来递归算法再把递归过程中的return转化为dp[i]=?; continue;在数组离散空间中反向迭代遍历即可
 
 # 一维动态规划
 ## 典中典 fabbnoci 数列
@@ -6425,7 +6425,7 @@ public static int fabbnoci(int n){
 ### [最低票价](https://leetcode.cn/problems/minimum-cost-for-tickets/)
 ```json
 {
-    "dp=set_o.subset+重叠子问题+离散空间reverse(doo.subset)":"set_o.subset doo.subset"
+    "dp=set_o.subset(doo.subset)+重叠子问题+数组(离散空间)":"set_o.subset doo.subset"
 }
 ```
 - subset子集分析
