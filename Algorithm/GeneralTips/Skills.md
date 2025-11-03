@@ -58,22 +58,35 @@ Skills->Algorithm ; Skills->JavaSE
 - 例如bfs 和 dfs 的queue stack实现,递归.递归树遍历;
 - 例如状态的枚举,分步乘法通过tree实现,例如a有3个状态,b有四个状态 合起来一共3*4  12 个状态
 ## tree_arr
+### up
 - 通过arr构造树
 因为树每个节点只有一个father所以 arr索引就是节点索引的值指向father
 构造一个father数组即可 
 例如并查集的father数组
+### down
+- 邻接表
+
+## tree_mat
+- 邻接矩阵
 
 # arr
 - 抽象数组,将数组构造成很多数据结构
+- 本质是将数组的索引看作vertex
 
 ## link_arr
 - 将数组构造成链表结构方便用链表方法解题
 - arr索引是节点,索引的值是箭头指向下一个元素
+- eg:链式前向星建图
+
 ## tree_arr
+### up
 - 通过arr构造树
 因为树每个节点只有一个father所以 arr索引就是节点索引的值指向father
 构造一个father数组即可 
 例如并查集的father数组
+### down
+- 邻接表
+
 ## map_arr
 - map设计成数组的形式比hashmap快非常多
 
