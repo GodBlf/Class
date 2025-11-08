@@ -3754,10 +3754,53 @@ class MedianFinder {
 - link_arr 链式前向星
 
 ## 拓扑排序(依赖排序)
-- cache_container
-- 应用于包依赖的排序,也可以叫依赖排序
+```json
+{
+    "解决依赖排序问题":null,//应用于包依赖的排序,也可以叫依赖排序
+    "具体实现":"cache_container"//第一个指针用于遍历节点,container的指针来遍历收集结果
+}
+```
+- 将入度为零的点加入队列然后out/in再将弹出节点的chid节点入度全都-1后为0的加入队列
 
+```java
+class Solution {
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        List<ArrayList<Integer>> graph = new ArrayList<>();
+        int[] degree = new int[numCourses];
+        for(int i=0;i<numCourses;i++){
+            graph.add(new ArrayList<Integer>());
+        }
+        for (int[] ints : prerequisites) {
+            graph.get(ints[1]).add(ints[0]);
+            degree[ints[0]]++;
+        }
+        //用数组实现队列(partition_pointer)方便收集结果
+        int[] queue = new int[numCourses];
+        int l=0;int r=0;
+        int anscnt=0;
+        for (int i = 0; i < degree.length; i++) {
+            if(degree[i]==0){
+                queue[r++]=i;
+            }
+        }
+        while(l<r){
+            int cur=queue[l++];
+            //根据container的mp进行计数
+            anscnt++;
+            for (Integer i : graph.get(cur)) {
+                degree[i]--;
+                if(degree[i]==0){
+                    queue[r++]=i;
+                }
+            }
+        }
+        return anscnt == numCourses ? queue : new int[0];
 
+    }
+}
+```
+
+### 习题
 # ====================================================================================================================================== 高等数据结构
 
 # 高等数据结构
