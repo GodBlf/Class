@@ -89,7 +89,7 @@ str="hello fhhf",token=strtoken(str," ");token=strtoken(NULL," ");
 - 二分自己写
 
 ## 数学
-
+fmax(double , double)
 
 # 数学
 矩阵快速幂
