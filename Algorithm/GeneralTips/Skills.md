@@ -350,7 +350,7 @@ public static void partition2(int[] arr, int l, int r, int x) {
 - 函数可以多返回值java通过返回int[] 实现,golang自带多返回值,多返回值方便解决问题
 - 递归中多返回值可以优化multidim多维递归问题
 
-# set_o
+# dc
 ```json
 {
     "set-element":null,
@@ -369,7 +369,7 @@ public static void partition2(int[] arr, int l, int r, int x) {
 multidim->1_return
 multidim->multi_return
 
-## subset 子集表示
+## subset 子集分解
 - f(S0)=∑f(Si)+f(Sb) 
 - 记忆图
 ![alt text](image-13.png)
@@ -402,7 +402,7 @@ base集合的算子直接返回值不可子集表示
 ## multidim 多维递归问题
 ![alt text](image-10.png)
 - 由一维到多维这种更一般的空间是很自然的过度
-- 递归算子的参数可以是一个有序n元组,通过三维空间的函数思考,相当于是二维dp的set_o版本
+- 递归算子的参数可以是一个有序n元组,通过三维空间的函数思考,相当于是二维dp的dc版本
 - 例如f(n,1) f(n,0)
 
 ## tree
@@ -886,7 +886,7 @@ a mod b=(a + bmodb)mod b =同余原理= (a+b)mod b
 
 ### subset
 - n处函数值可由前边的subset函数值组合得出
-- 由于有subset所以每一个doo.subset问题都能转化为一个set_o问题
+- 由于有subset所以每一个doo.subset问题都能转化为一个dc问题
 
 ## vector_space
 - (K,+,x)-(V,+,||): aA+bB |A|
@@ -898,7 +898,7 @@ KV都是交换群
 #### pow_basis
 幂运算可以看作坐标维度的升高
 - 算子的幂次复合 f(x) f(f(x)):f^2(x) ...
-可以用迭代的方式表示每个幂次算子的状态
+可以用mp迭代的方式表示每个幂次算子的状态
 p=x int i=0 while(true){i++;p=f(p)} 根据算子的状态立即更新i的状态
 - kmp算法中的Π算子
 ####  pow_series
