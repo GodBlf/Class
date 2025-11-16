@@ -1,0 +1,57 @@
+// ==UserScript==
+// @name         Bilibili Auto Wide Screen
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  Automatically enter wide screen mode when opening a Bilibili video page
+// @author       Grok
+// @match        https://www.bilibili.com/video/*
+// @match        https://www.bilibili.com/watchroom/*
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    let hasClicked = false; // Flag to ensure only one click
+
+    function enterWideScreen() {
+        const wideButton = document.querySelector('.bpx-player-ctrl-btn.bpx-player-ctrl-wide');
+        if (wideButton && !hasClicked) {
+            wideButton.click();
+            hasClicked = true;
+            console.log('Auto-entered wide screen mode on Bilibili.');
+        }
+    }
+
+    // Wait for the player to load using MutationObserver
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes.length > 0) {
+                // Check if the wide button is now present
+                if (document.querySelector('.bpx-player-ctrl-btn.bpx-player-ctrl-wide')) {
+                    enterWideScreen();
+                    observer.disconnect(); // Stop observing once clicked
+                }
+            }
+        });
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    // Fallback: Poll every 500ms up to 10 seconds
+    const maxAttempts = 20;
+    let attempts = 0;
+    const interval = setInterval(() => {
+        attempts++;
+        enterWideScreen();
+        if (hasClicked || attempts >= maxAttempts) {
+            clearInterval(interval);
+        }
+    }, 500);
+
+    // Also try immediately in case it's already loaded
+    enterWideScreen();
+})();
