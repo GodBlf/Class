@@ -1,5 +1,7 @@
 infini bybit fiat24 roogoo fotoncard bitget 万里汇
+bybit 澳卡、欧卡；savo; 雪崩卡；safepal;YPT; 小红卡；
 ## fiat24
+bitget 和 safepal都有
 https://linux.do/t/topic/1093338
 如何充值,币安c2c买usdc币,链上转到bitget 钱包,bitget钱包再冲到fiat24虚拟银行卡里
 踩坑点:仅能通过ali链充值银行卡,最少充值5u
