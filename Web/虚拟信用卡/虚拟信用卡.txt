@@ -1,0 +1,22 @@
+infini bybit fiat24 roogoo fotoncard bitget 万里汇
+## fiat24
+https://linux.do/t/topic/1093338
+如何充值,币安c2c买usdc币,链上转到bitget 钱包,bitget钱包再冲到fiat24虚拟银行卡里
+踩坑点:仅能通过ali链充值银行卡,最少充值5u
+多充点，上币安炒炒币，每个月赚的钱存到 fiat24 里
+
+ 正经点的
+币安上面 C2C 买点 USDT
+在市场上吧 USDT 换成 USDC
+（C2C 直接买 USDC 会很贵）
+
+建议第一次用之前，买上 0.1 个 Polygon 从币安提到钱包里（大概 0.02U），后面转换 / 转账作为 gas 用
+如果实在没有 pol，我做了个自助水龙头，佬们可以打开自助领取
+
+钱包里你开启 Polygon 链的 USDC
+币安提现到 Polygon 链的 USDC 钱包，手续费只需要几美分
+钱包里的 DAPP 用 uniswap 换成 Arbitrum 链的 USDC，每 10 刀手续费大概也是几美分
+浏览器装一个 safepal 的插件，去 uniswap 网站上把 Polygon 链的 USDC 换成 Arbitrum 链的 USDC
+（直接提到 arb 手续费要 0.44 刀，太贵）
+
+最后再用这个直接充，入金损耗 1%（最近做活动攒满 5 刀手续费可以提现，相当于入金损耗 = 0）
