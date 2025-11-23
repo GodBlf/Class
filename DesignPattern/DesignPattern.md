@@ -55,17 +55,20 @@ gin框架路由仅注册传入回调函数,gin.run()路由请求方法再调用�
 
 
 
-# Ram-Var Pointer 结构体,依赖注入
+# Ram-Var Pointer 内存-变量,依赖注入
 ## ram-var
 - 变量
 变量就是内存ram中的一块区域
 var在内存中的大小表示包含什么变量,例如struct{int,string},在内存中很大var包含很多
-- 内存定义区
-内存定义区里边存放着定义好的变量,基础变量有int32 int64等
-自定义变量可以是结构体 struct{...} []int 切片等
+- 类型区
+为什么要有类型,因为方便编译器给变量分配内存空间;
+类型区存放着类型的信息有描述了某个变量的大小,适合的运算符等
+类型和 变量总是成对出现的,在项目中设计类型往往比变量重要
 - type运算符
-type这个是全等运算符,type Duration int  相当于Duration全等于int,在内存定义区又加入了一个全等于int的Duration变量
-定义区变量不能直接使用只能用他们创造新的变量例如 x:=&MyDVar{...}
+type这个是全等运算符,type Duration int  相当于Duration全等于int,将Duration类型再放到类型区中
+类型不能直接使用只能用他们创造新的变量例如 x:=&MyDVar{...},编译器会通过类型的信息给 变量分配空间
+- 函数也是个变量 func(int) int 是类型也存放在类型区
+func myfunction(x int) int{} 这是func(int) int 类型的一个实例变量
 
 ## pointer
 - 指针设计模式,不关心内部变量的创建直接传递来指针直接用
