@@ -1,5 +1,6 @@
 infini bybit fiat24 roogoo fotoncard bitget 万里汇
 bybit 澳卡、欧卡；savo; 雪崩卡；safepal;YPT; 小红卡；
+据说tg上也有虚拟卡bot
 ## fiat24
 bitget 和 safepal都有
 https://linux.do/t/topic/1093338
