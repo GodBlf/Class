@@ -392,8 +392,8 @@ log(2^32)=32 所以二分非常快
 ## 二分峰值
 ```json
 {
-    "数组离散函数":"discrete_oo",
-    "导函数介值定理":"discrete_oo.continue_oo",//达布定理Darboux's theorem
+    "数组离散函数":"dr",
+    "导函数介值定理":"dr.continue_r",//达布定理Darboux's theorem
     "划分指针":"partition_pointer"//特殊的划分(l,r)必有峰值
 }
 ```
@@ -762,7 +762,7 @@ class Solution {
 ## [接雨水](https://leetcode.cn/problems/trapping-rain-water/)
 ```json
 {
-    "前缀max后缀max":"discrete_oo.prefix+.subset",
+    "前缀max后缀max":"dr.prefix+.subset",
     "指针优化前后缀函数":"reduce_dim nobacktracking_pointer"
 }
 ```
@@ -893,7 +893,7 @@ class Solution {
 ```json
 {
     "排序优化为不回退指针":"_pointer",
-    "寻找houses匹配的供暖器":"discrete_oo.extrema"
+    "寻找houses匹配的供暖器":"dr.extrema"
 }
 ```
 - 传统解法是遍历每个房子每次再遍历每个供暖期找出每个房子最短半径再max O(n*m)
@@ -3623,7 +3623,7 @@ public class Codec {
 - 时间复杂度是o(n)
 - 
 
-## discrete_oo.∑∫积分 估计复杂度
+## dr.∑∫积分 估计复杂度
 - log1+log2+...+logn  is  ∫logn = nlogn
 - 上滤下滤来回两轮
 
@@ -4078,7 +4078,7 @@ class Solution {
 ```json
 {
      "滑动窗口":"partition_pointer nobacktracking_pointer",//维护的区域构建为[),左指针不回退
-     "积分再差分求k":"discrete_oo.∑∫",
+     "积分再差分求k":"dr.∑∫",
      "记录答案":"container.map_container"
 }
 
@@ -4130,7 +4130,7 @@ class Solution {
 # 单调栈
 ```json
 {
-    "解决凹凸问题":"discrete_oo.extrema",
+    "解决凹凸问题":"dr.extrema",
     "单调栈":"container",
     "重复元素修正":"reverse"//平定山峰从后往前遍历即可 1,2,2,2,0 最后一个2的答案0会直接向前传递所有2
 }
@@ -4148,7 +4148,7 @@ class Solution {
 ```json
 {
     "解决前缀查询问题":"prefix read",
-    "前缀树":"tree discrete_oo.prefix"
+    "前缀树":"tree dr.prefix"
 }
 - prefix read 使用场景为前缀查询 
 以前缀为查询条件的查询
@@ -4830,7 +4830,7 @@ master公式 T(n)=2T(n/2)+O(n)  时间复杂度是O(nlogn)
 # 基数(桶)排序
 ```json
 {   "桶":"hub_container",//记忆要像桶这个模型倒入倒出起到集线器的作用
-    "前缀和函数优化桶":"discrete_oo.Σ∫",
+    "前缀和函数优化桶":"dr.Σ∫",
     "继承上一次排序的次序":"reverse"//因为前缀,所以排序的时候每个桶内先排大的,所以遍历原数组要从右往左遍历保证大的先排到,继承上次次序
 }
 ```
@@ -6072,8 +6072,8 @@ class Solution{
 ```json
 {
     "解决查询区间和问题":null,//前缀和解决查询区间和问题,实现原理是先积分,再积分函数相减得到区间和,∫f(b)-∫f(a) 得到a,b区间和
-    "积分数组":"doo.∫∑+.subset sentry"
-    //doo.subset i处积分值有i-1和arr[i]获得
+    "积分数组":"dr.∫∑+.subset sentry"
+    //dr.subset i处积分值有i-1和arr[i]获得
     //积分数组设置一个sum(0,)的sentry,因为经常需要查询[0,n]区间和问题方便查询
 }
 ```
@@ -6084,7 +6084,7 @@ class NumArray {
         //0sentry
         sum=new int[nums.length+1];
         for(int i=1;i<=nums.length;i++){
-            //doo.subset
+            //dr.subset
             sum[i]=sum[i-1]+nums[i-1];
         }
     }
@@ -6220,7 +6220,7 @@ class Solution {
 ```
 
 ### [良好上班的最长时间](https://leetcode.cn/problems/longest-well-performing-interval/)
-- 前缀和 data_mapping doo.continue_oo nobacktracking_pointer map_container
+- 前缀和 data_mapping dr.continue_r nobacktracking_pointer map_container
 - 将>8映射到1 <=8映射到-1 
 - 最后原数组都是1,-1 所以生成的积分sum数组从0开始是"连续"的每次索引增加1 sum函数值仅能变化+1 -1,所以sum函数满足连续函数的介值定理
 - 因为每次遍历要寻找之前的所以用nobacktracking_pointer 不回退指针既优化了sum数组空间又解决了不访问之后数组的顺序问题
@@ -6264,13 +6264,13 @@ class Solution {
 # 差分微分
 
 
-# doo.prefix
+# dr.prefix
 
 ## 题目
 ### [接雨水](https://leetcode.cn/problems/trapping-rain-water/)
 ```json
 {
-    "前缀max后缀max":"discrete_oo.prefix+.subset",
+    "前缀max后缀max":"dr.prefix+.subset",
     "指针优化前后缀函数":"reduce_dim nobacktracking_pointer"
 }
 ```
@@ -6338,14 +6338,14 @@ https://www.bilibili.com/video/BV1Er421K7kF/
 https://oi-wiki.org/string/kmp/
 ```json
 {
-    "前缀算子π":"symmetry doo.prefix",
-    "π算子幂":"doo.subset vector_space.pow_basis",
+    "前缀算子π":"symmetry dr.prefix",
+    "π算子幂":"dr.subset vector_space.pow_basis",
     // "Π算子幂的边界判断":"vars_hubs move_pointer"
     //因为这俩很基础但在kmp体现的淋漓尽致所以指出来
 }
 ```
-### doo前缀算子π
-- 用doo数组构建前缀算子Π,Π(i)=[0,i]闭区间上这个串的对称最长真子串长度
+### dr前缀算子π
+- 用dr数组构建前缀算子Π,Π(i)=[0,i]闭区间上这个串的对称最长真子串长度
 
 ### subset分析
 - Π(i)={
@@ -6364,7 +6364,7 @@ https://oi-wiki.org/string/kmp/
 ![alt text](image-7.png)
 发现成pow_basis幂级数关系,不用仔细考虑直接pow_basis上
 
-### symmetry doo.prefix
+### symmetry dr.prefix
 ![alt text](image-6.png)
 ![alt text](image-7.png)
 ```go
@@ -6441,7 +6441,7 @@ class Solution {
 # =================================================================== 动态规划
 - 动态规划就是将递归转化为数组(离散空间)上的算子例如数组上,所以任何动态规划都能转化成递归
 - 递归的某个子集重复计算且每个节点在一个数组(离散空间)上就可以转化成动态规划
-- dp=dc.subset(doo.subset)+重叠子问题+数组(离散空间)
+- dp=dc.subset(dr.subset)+重叠子问题+数组(离散空间)
 - 所以先写出来递归算法再把递归过程中的return转化为dp[i]=?; continue;在数组离散空间中反向迭代遍历即可
 
 # 一维动态规划
@@ -6476,7 +6476,7 @@ public static int fabbnoci(int n){
 ### [最低票价](https://leetcode.cn/problems/minimum-cost-for-tickets/)
 ```json
 {
-    "dp=dc.subset(doo.subset)+重叠子问题+数组(离散空间)":"dc.subset doo.subset"
+    "dp=dc.subset(dr.subset)+重叠子问题+数组(离散空间)":"dc.subset dr.subset"
 }
 ```
 - subset子集分析
@@ -6540,7 +6540,7 @@ class Solution {
 ```
 
 ### [解码方法](https://leetcode.cn/problems/decode-ways)
-- dc.subset doo.subset state_filter reduce_dim
+- dc.subset dr.subset state_filter reduce_dim
 - subset分析
 f(i)={
     1 if i=n;
