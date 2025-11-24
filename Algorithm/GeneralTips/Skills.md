@@ -5,6 +5,7 @@
 - 可用.  discrete_fuction.∑∫
 ## 命名的一致性
 - 命名应该描述本质不要拘泥于学术定义例如递归函数改为集合算子
+- 简易选取学术工业界定义名词 方便沟通
 ## 单词选取
 - 数学
 集合论,
@@ -39,6 +40,16 @@ Skills->Algorithm ; Skills->JavaSE
 }
 ```
 ![alt text](image-5.png)
+```json
+{
+    "set_theory":"math", //具体参见/Class/Math/集合论 
+    "ram":"算法以计算机内存和集合论为基础",
+    "var state":["variable is one field of memory","state is the variables' value " ],//variable是计算机内存ram的一块区域,具体取值是state,系统多个变量取值组合也可是系统整体状态
+    "function":"简单起见,类计算机io stack这种称作函数", 
+    "relation":"简单起见,类数学中研究的连续函数 order_set 点的集合叫做关系"
+}
+```
+
 ## boot
 - ram-var
 - operator ↑
@@ -374,9 +385,9 @@ multidim->multi_return
 - 记忆图
 ![alt text](image-13.png)
 - 不同问题集合由其子问题集合(子集)表示
-- 和doo.prefix的讨论
+- 和dr.prefix的讨论
 因为在set问题集合上进行o所以很自然的可以构建前缀算子,因为前缀就是表示集合上的信息
-而doo是在数组离散空间上的更关注点的信息,需要用doo.prefix加以讨论
+而dr是在数组离散空间上的更关注点的信息,需要用dr.prefix加以讨论
 
 ### base_set
 当某个子集不可再分时就是base集合
@@ -845,8 +856,9 @@ a mod b=(a + bmodb)mod b =同余原理= (a+b)mod b
 
 ## 分析学
 
-## discrete_oo
-- discrete_operator_order_set
+## dr
+- discrete_relation(这里relation表示数学中的函数(order_set))
+- 离散函数研究的是数学中连续的函数离散到数组中
 - 将数组dp 当成一个算子;dp(索引) 输出一个值到数组索引对应的位置上,那么这个数组整体构成一个order_set
 
 ### sup
@@ -858,7 +870,7 @@ a mod b=(a + bmodb)mod b =同余原理= (a+b)mod b
 左指针找到一个垃圾元素意味着构筑数量的上确界-1所以右指针左移
 
 
-### continue_oo
+### continue_r 
 
 #### mid_value(介值定理)
 - a,b是连续函数的两个坐标的y值那么这两点之间的函数必能取到a,b之间的任意值
@@ -886,7 +898,7 @@ a mod b=(a + bmodb)mod b =同余原理= (a+b)mod b
 
 ### subset
 - n处函数值可由前边的subset函数值组合得出
-- 由于有subset所以每一个doo.subset问题都能转化为一个dc问题
+- 由于有subset所以每一个dr.subset问题都能转化为一个dc问题
 
 ## vector_space
 - (K,+,x)-(V,+,||): aA+bB |A|
