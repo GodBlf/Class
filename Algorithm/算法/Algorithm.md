@@ -3801,6 +3801,145 @@ class Solution {
 ```
 
 ### 习题
+#### [有顺序的依赖排序](https://www.luogu.com.cn/problem/U107394)
+cache容器由队列改为优先级队列
+```java
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StreamTokenizer in = new StreamTokenizer(br);
+        PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
+        //
+        int n=0;int m=0;
+        in.nextToken();n=(int)in.nval;in.nextToken();m=(int)in.nval;
+        ArrayList<ArrayList<Integer>> graph = new ArrayList<>();
+        PriorityQueue<Integer> cache = new PriorityQueue<>();
+        int[] degree = new int[n + 1];
+        //建图
+        for(int i=0;i<n+1;i++){
+            graph.add(new ArrayList<>());
+        }
+        while(in.nextToken()!=-1){
+            int num1=(int)in.nval;
+            in.nextToken();
+            int num2=(int)in.nval;
+            graph.get(num1).add(num2);
+            degree[num2]++;
+        }
+        int anscnt=0;
+        for(int i=1;i<n+1;i++){
+            if(degree[i]==0){
+                cache.offer(i);
+            }
+        }
+        int[] ans=new int[n];
+        //依赖排序
+        while(!cache.isEmpty()){
+            Integer poll = cache.poll();
+            out.printf("%d ",poll);
+            ans[anscnt++]=poll;
+            for (Integer i : graph.get(poll)) {
+                degree[i]--;
+                if(degree[i]==0){
+                    cache.offer(i);
+                }
+            }
+        }
+
+        //
+        out.flush();
+        out.close();
+        br.close();
+    }
+}
+
+```
+
+## 最小生成树
+
+### kuruskal
+```json
+{
+    "并查集":"tree_arr.up",//合并节点
+    "优先级队列":"container"//边的容器
+}
+```
+
+```java
+public class Main {
+    //并查集tree up树
+    public static int[] father=new int[5004];
+    public static int sets=0;
+    //find union方法
+    public static int find(int num){
+        if(father[num]==num){
+            return num;
+        }
+        int tmp=find(father[num]);
+        father[num]=tmp;
+        return tmp;
+    }
+    public static boolean union(int  a,int b){
+        int aa=find(a);
+        int bb=find(b);
+        if(aa==bb){
+            return false;
+        }
+        father[bb]=aa;
+        sets--;
+        return true;
+    }
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StreamTokenizer in = new StreamTokenizer(br);
+        PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
+        //
+
+        //并查集(tree_arr.up)初始化
+        in.nextToken();int n=(int)in.nval;
+        in.nextToken();int m=(int)in.nval;
+        sets=n;
+        for(int i=1;i<n+1;i++){
+            father[i]=i;
+        }
+        //edge to priorityqueue
+        PriorityQueue<int[]> container = new PriorityQueue<int[]>((a, b) -> {
+            return a[2]-b[2];
+        });
+        for(int i=0;i<m;i++){
+            in.nextToken();
+            int x=(int)in.nval;
+            in.nextToken();
+            int y=(int)in.nval;
+            in.nextToken();
+            int z=(int)in.nval;
+            int[] tmp = new int[3];
+            tmp[0]=x;tmp[1]=y;tmp[2]=z;
+            container.offer(tmp);
+        }
+        int ans=0;
+        //kuruskal
+        while(!container.isEmpty()){
+            int[] poll = container.poll();
+            int x=poll[0];int y=poll[1];int z=poll[2];
+            if(union(x,y)){
+                ans+=z;
+            }
+        }
+        if(sets==1){
+            out.println(ans+"");
+        }else {
+            out.println("orz");
+        }
+
+        //
+        out.flush();
+        out.close();
+        br.close();
+    }
+}
+```
+
 # ====================================================================================================================================== 高等数据结构
 
 # 高等数据结构
@@ -4161,7 +4300,7 @@ class Solution {
 ```json
 {
     "解决元素查找和集合合并问题":"find union set",
-    "并查集":"tree.tree_arr"
+    "并查集":"tree_arr.up"
 }
 - 解决查找元素在哪个集合和集合合并的问题
 - tree 每个集合是一个树,树的root是这个集合的代表(名字)
