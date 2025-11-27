@@ -380,7 +380,8 @@ public static void partition2(int[] arr, int l, int r, int x) {
 multidim->1_return
 multidim->multi_return
 
-## subset 子集分解
+## subset 子集の分解
+- 将原集合问题分解为子集合问题:  P=f(P,P)
 - f(S0)=∑f(Si)+f(Sb) 
 - 记忆图
 ![alt text](image-13.png)
@@ -416,7 +417,7 @@ base集合的算子直接返回值不可子集表示
 - 递归算子的参数可以是一个有序n元组,通过三维空间的函数思考,相当于是二维dp的dc版本
 - 例如f(n,1) f(n,0)
 
-## tree
+## tree_ram (递归树底层内存函数栈)
 - 递归树
 ![alt text](image-3.png)
 递归是对递归树的dfs遍历
