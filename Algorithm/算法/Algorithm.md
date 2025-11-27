@@ -2945,6 +2945,57 @@ class Solution {
 ```
 
 #### [判断搜索二叉树](https://leetcode.cn/problems/validate-binary-search-tree/)
+##### 方法1
+- dc.multi_return global prune vars_hubs.enum
+- 返回每个子树的最小最大值(多返回值)
+```java
+class Solution {
+    public boolean isValidBST(TreeNode root) {
+        flag=true;
+        int[] ans=dfs(root);
+        return flag;
+    }
+    public static boolean flag=true;
+    public static int memo=0;
+    public static int[] dfs(TreeNode root){
+        //剪枝 如果是false了直接返回
+        if(flag==false){
+            return new int[]{0,0};
+        }
+        //enum枚举
+        if(root.left==null&& root.right==null){
+            return new int[]{root.val,root.val};
+        }
+        if(root.left==null&& root.right!=null){
+            int[] right=dfs(root.right);
+            if(!(right[0]>root.val)){
+                flag=false;
+            }
+            return new int[]{root.val,right[1]};
+        }
+        if(root.left!=null&& root.right==null){
+            int[] right=dfs(root.left);
+            if(!(right[1]<root.val)){
+                flag=false;
+            }
+            return new int[]{right[0],root.val};
+        }
+        //正常dc
+        int[] left=dfs(root.left);
+        int[] right=dfs(root.right);
+        if(!(left[1]<root.val && right[0]>root.val)){
+            flag=false;
+        }
+        if(flag){
+            return new int[]{left[0],right[1]};
+        }else{
+            return left;
+        }
+    }
+}
+```
+
+##### 方法2
 - dc.subset flag axis memo_pointer
 - 用记忆指针记忆上次遍历的结果
 - 搜索二叉树中序遍历是一个递增序列依照这个性质如果不满足axis就将flag设置为flag
