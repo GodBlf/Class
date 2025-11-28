@@ -35,6 +35,10 @@ tab tab 提示
 ↑↓曾经用过的
 ctrl+l clear 清屏
 ctlr+c 退出
+
+## 管理员
+sudo 其他命令
+
 ## ip
 - ip addr
 192.168.100.128/24 这里24代表前24位就是前3大位不能变进最后一位可以变动
@@ -143,15 +147,14 @@ i 或 a 或 o
   - find  /itcast  -name "*.java"             在/itcast目录及其子目录下查找.java结尾的文件
 ## grep
 
+## ufw 防火墙
+- ufw enable 启用 ufw disable 禁用防火墙
+- ufw status 
+- ufw allow 8080 启用端口  ufw deny 8080
+- ufw allow from 192.168.1.100 允许ip访问所有端口 ufw allow from 192.168.1.100 to any port 3306 允许ip访问特定端口
+- 
 
-# linux 软件安装
-## 安装方式
-![alt text](image-2.png)
-## 二进制解压安装
-![alt text](image-3.png)
-- 注意重启/etc/profile 
-
-# 防火墙
+### centos防火墙
 #开发防火墙的3306端口号
 firewall-cmd --zone=public --add-port=3306/tcp --permanent
 
@@ -162,6 +165,15 @@ firewall-cmd --reload
 firewall-cmd --zone=public --list-ports
 #关闭防火墙
 systemctl stop firewalld
+
+# linux 软件安装
+## 安装方式
+![alt text](image-2.png)
+## 二进制解压安装
+![alt text](image-3.png)
+- 注意重启/etc/profile 
+
+
 
 # 虚拟机网络链接模式
 好的，我们来详细讲解一下 **VMware 虚拟机中的三种常见网络连接模式**，它们分别是 **仅主机模式 (Host-Only)**、**NAT 模式 (Network Address Translation)** 和 **桥接模式 (Bridged)**。
