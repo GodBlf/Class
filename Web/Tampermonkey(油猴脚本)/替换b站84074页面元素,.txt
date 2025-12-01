@@ -1,0 +1,18 @@
+写一个油猴脚本,替换b站页面元素,
+# https://live.bilibili.com/84074
+仅在b站这个网址使用
+
+# 接口
+https://api.live.bilibili.com//xlive/general-interface/v1/rank/getOnlineGoldRank?roomId=14709735&ruid=299013902&page=3&pageSize=20
+{
+  "code": 0,
+  "message": "0",
+  "ttl": 1,
+  "data": {
+    "onlineNum": 9012,
+    "OnlineRankItem": [],
+...
+}
+将网页的<div data-v-111e801c="" data-v-0a6c6537="" class="item live-skin-normal-text dp-i-block live-skin-separate-border border-box t-center pointer tab-item active">房间观众(8988)</div>
+
+这个前端元素替换为  接口人数(data.onlineNum的数)
