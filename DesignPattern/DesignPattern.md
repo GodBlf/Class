@@ -1,4 +1,4 @@
-# 生成器（Generator）- 工厂
+# 生成器（generator）- 工厂
 - 对象的创建交给生成器,框架或者工厂,仅提供配置信息
 ## 变量生成器
 - new(&config{})
@@ -25,7 +25,7 @@ func NewRegexFilterHook(pattern string) gin.HandlerFunc {
 gin.get("/",NewRegexFilterHook("test"))
 ```
 
-# Hook
+# hook
 - 框架
 you call library , framework call you
 you call library function,framework call your function
@@ -49,19 +49,19 @@ gin框架路由仅注册传入回调函数,gin.run()路由请求方法再调用�
 
 - 解决的问题:钩子函数通常被框架限制类型所以,通过函数生成器闭包的形式可以传递额外自定义信息
 
-# Singleton 单例设计模式
+# singleton 单例设计模式
 - 设计global全局变量和initialize初始化函数,程序或者测试运行前加载initialize初始化全局变量和全局运行环境
 - 单例设计模式和依赖注入这两个互为反,全局的工具性的变量设置为单例执行前初始化,其他需要用到的时候在注入是依赖注入
 
 
 
-# Ram-Var Pointer 内存-变量,依赖注入
-## ram-var
+# type-var pointer 类型-变量,依赖注入
+## type-var
 - 变量
 变量就是内存ram中的一块区域
 var在内存中的大小表示包含什么变量,例如struct{int,string},在内存中很大var包含很多
 - 类型区
-为什么要有类型,因为方便编译器给变量分配内存空间;
+为什么要有类型,因为方便编译器给变量分配内存空间,和运算规则;
 类型区存放着类型的信息有描述了某个变量的大小,适合的运算符等
 类型和 变量总是成对出现的,在项目中设计类型往往比变量重要
 - type运算符
@@ -108,7 +108,7 @@ func NewServiceImpl(d InterfaceOrImpl){
 
 详见wire
 
-# Midwear
+# midwear
 - 封装具体实现,仅能通过中间层调用实现,实现抽象,扩展,通信,缓冲等
 
 ## 接口
