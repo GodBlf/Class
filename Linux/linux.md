@@ -12,7 +12,8 @@
 - 电脑会给虚拟机分配两个网卡(mac地址)
 - ![alt text](image-1.png)
 
-# finalshell
+# ssh客户端
+- xshell finalshell
 - ssh链接客户端,用ssh协议链接虚拟机ip
 - ip addr查看虚拟机ip(ens33网卡) 192.168.100.128 端口号22 链接即可
 
@@ -35,6 +36,16 @@ tab tab 提示
 ↑↓曾经用过的
 ctrl+l clear 清屏
 ctlr+c 退出
+exit推出
+
+## 服务相关
+systemctl: 
+           start 临时开启
+           stop   临时关闭
+           restart 临时重启
+           enable 永久开启
+           disable 永久关闭
+
 
 ## 管理员
 sudo 其他命令
@@ -43,32 +54,47 @@ sudo 其他命令
 - ip addr
 192.168.100.128/24 这里24代表前24位就是前3大位不能变进最后一位可以变动
 
+## pwd
+查看当前绝对路径
+
 ## ls
-- ls -a [dir]
+- ls -a [dir] 
+列出全部文件包括隐藏文件
 - ls -l [dir]
+列出所有文件的详细信息
 - ls -al [dir]
+-a+-l
 - ll [dir]
+ll是ls -l简写
+
 ## cd
-- cd ./[dir] == cd [dir]
+绝对路径和相对路径
+./ 这级目录  ../上级目录
+- cd ./[dir] == cd [dir] 
+相对路径
 - cd ..
 - cd ../..
-- cd ~
-- cd -
+上上级目录
 - cd /
+绝对路径
 
-## mkdir
+## mkdir 创建目录
 - mkdir dir
 - mkdir -p xxh/a/b   -p不存在目录就创建一个
 
-## rm
+## touch 创建空文件
+touch test.txt
+
+## 现代不用了
+### rm 不建议用直接用mv移动到垃圾箱
 - rm -r dir 递归删除
 - rm -f filename 强制删除不能删除目录
 - rm -rf 递归强制删除
 
-## cat
+### cat 不好用
 - cat -n fileneam
 
-## more
+### more 也不好用
 - more filename
 - enter spacebar b ctrl+c
 
@@ -91,6 +117,19 @@ sudo 其他命令
   - mv itcast/ itheima/                 如果itheima目录不存在，将itcast目录改名为itheima
   - mv itcast/ itheima/                 如果itheima目录存在，将itcast目录移动到itheima目录中
 
+## echo
+echo $PATH
+
+## 覆盖追加
+> 覆盖
+>> 追加
+将命令的结果覆盖追加到对应的文件里
+echo $PATH > test.txt
+
+## 软链接
+- ln -s /root/test.txt /root/test2
+一定是绝对路径
+
 ## tar
 - tar -zcvf [.tar.gz] [dir]
 - tar -zxvf [.tar.gz] -C dir
@@ -106,6 +145,7 @@ sudo 其他命令
     - A. 命令模式下可以查看文件内容、移动光标（上下左右箭头、gg、G)
     - B. 通过vim命令打开文件后，默认进入命令模式
     - C. 另外两种模式需要首先进入命令模式，才能进入彼此
+### 命令模式
 命令模式指令
 含义
 gg
@@ -120,11 +160,13 @@ u
 撤销操作
 i 或 a 或 o 
 进入插入模式(进入后光标所处的位置不同而已)
+### 插入模式
   - 插入模式
     - A. 插入模式下可以对文件内容进行编辑
     - B. 在命令模式下按下[i,a,o]任意一个，可以进入插入模式。进入插入模式后，下方会出现【insert】字样
     - C. 在插入模式下按下ESC键，回到命令模式
     
+### 底行模式
   - 底行模式
     - A. 底行模式下可以通过命令对文件内容进行查找、显示行号、退出等操作
     - B. 在命令模式下按下[:,/]任意一个，可以进入底行模式
@@ -142,6 +184,12 @@ i 或 a 或 o
 取消行号显示
 :n
 定位到第n行，如 :10 就是定位到第10行
+
+## date
+date  "+%Y-%m-%d %H:%M:%S"
+
+
+
 ## find 
   - find  .  –name "*.java"                        在当前目录及其子目录下查找.java结尾文件
   - find  /itcast  -name "*.java"             在/itcast目录及其子目录下查找.java结尾的文件
@@ -165,6 +213,16 @@ firewall-cmd --reload
 firewall-cmd --zone=public --list-ports
 #关闭防火墙
 systemctl stop firewalld
+
+# 进程管理
+- ps -ef | grep xxx
+- ps -aux | grep xxx
+- htop 先安装过apt install htop
+- kill PID   
+kill -9 PID 强制删除某个进程
+- killall xxx
+
+- 
 
 # linux 软件安装
 ## 安装方式
