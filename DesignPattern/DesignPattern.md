@@ -1,4 +1,4 @@
-# 生成器（generator）- 工厂
+# generator(生成器)- 工厂
 - 对象的创建交给生成器,框架或者工厂,仅提供配置信息
 ## 变量生成器
 - new(&config{})
@@ -25,7 +25,7 @@ func NewRegexFilterHook(pattern string) gin.HandlerFunc {
 gin.get("/",NewRegexFilterHook("test"))
 ```
 
-# hook
+# hook(钩子)
 - 框架
 you call library , framework call you
 you call library function,framework call your function
@@ -108,10 +108,11 @@ func NewServiceImpl(d InterfaceOrImpl){
 
 详见wire
 
-# midwear
+# midwear(中间层)
 - 封装具体实现,仅能通过中间层调用实现,实现抽象,扩展,通信,缓冲等
 
 ## 接口
+- 类型的中间层
 abstract抽象中文垃圾翻译,改成摘要,提取一个物体的关键部分方便研究
 接口等都是具体struct的抽象
 - 给具体的变量实现加一个中间层,这个中间层是函数的集合,调用变量仅能通过接口 
