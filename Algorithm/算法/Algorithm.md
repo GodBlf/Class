@@ -3915,6 +3915,48 @@ public class Main {
 }
 ```
 - 连通的节点收集到一颗树中
+- 模板
+```java
+public class Main {
+    //连通树(并查集)tree up树
+    public static int[] father=new int[5004];
+    public static int[] size=new int[5004];
+    public static int sets=0;
+    // 0~n-1 n个节点初始化连通树
+    public static void build(int n){
+        for(int i=0;i<n;i++){
+            father[i]=i;
+        }
+        for(int i=0;i<n;i++){
+            size[i]=1;
+        }
+        sets=n;
+    }
+    //find union方法
+    public static int find(int num){
+        if(father[num]==num){
+            return num;
+        }
+        //dc.fuction.divide
+        int tmp=find(father[num]);
+        //扁平化
+        father[num]=tmp;
+        return tmp;
+    }
+    public static boolean union(int  a,int b){
+        int aa=find(a);
+        int bb=find(b);
+        if(aa==bb){
+            return false;
+        }
+        //小挂大(一般不需要)
+        //if(size[aa]>size[bb]) father[bb]=aa;else father[aa]=bb;
+        father[bb]=aa;
+        sets--;
+        return true;
+    }
+}
+```
 
 ### Kruskal最小生成树
 ```json
