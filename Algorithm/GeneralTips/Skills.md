@@ -364,11 +364,7 @@ public static void partition2(int[] arr, int l, int r, int x) {
 # dc
 ```json
 {
-    "set-element":null,
-    "operator":"io stack process",
-    //io定义为输入状态和返回结果,结果可以是集合,值
-    //stack是具体的dfs遍历,用函数栈模拟递归树节点
-    //通过axis和venn这两个图来记忆递归过程,ospr
+    "divide and conquer":"function tree",
 }
 ```
 - 递归函数本质就是在问题集合上的算子,这个集合是可分子集的
@@ -380,8 +376,13 @@ public static void partition2(int[] arr, int l, int r, int x) {
 multidim->1_return
 multidim->multi_return
 
-## subset 子集の分解
-- 将原集合问题分解为子集合问题:  P=f(P,P)
+## function (计算机函数层面)
+- 以下为构建dc的计算机函数的过程先d2s构建P=f(P) 再baseset 再考虑多返回多维问题
+之后再考虑计算机底层树函数栈的递归过程
+- 这是一个线性过程
+
+### d2s (divide to subset)分解到子集
+- 将原集合问题分解为子集合问题:  P(n)=f(P(n-1),P(n-2),..) -> P=f(P)
 - f(S0)=∑f(Si)+f(Sb) 
 - 记忆图
 ![alt text](image-13.png)
@@ -390,13 +391,13 @@ multidim->multi_return
 因为在set问题集合上进行o所以很自然的可以构建前缀算子,因为前缀就是表示集合上的信息
 而dr是在数组离散空间上的更关注点的信息,需要用dr.prefix加以讨论
 
-### base_set
+#### base_set
 当某个子集不可再分时就是base集合
 base集合的算子直接返回值不可子集表示
 
 
 
-## multi_return
+### multi_return
 - 设计的递归算子可以多返回值,例如golang,使得解决的问题非常自然,算子的值是一个序偶将集合映射到序偶集合很自然
   
 - 题目
@@ -411,13 +412,13 @@ base集合的算子直接返回值不可子集表示
 
 
 
-## multidim 多维递归问题
+### multidim 多维递归问题
 ![alt text](image-10.png)
 - 由一维到多维这种更一般的空间是很自然的过度
 - 递归算子的参数可以是一个有序n元组,通过三维空间的函数思考,相当于是二维dp的dc版本
 - 例如f(n,1) f(n,0)
 
-## tree_ram (递归树底层内存函数栈)
+## tree (递归树底层内存函数栈)
 - 递归树
 ![alt text](image-3.png)
 递归是对递归树的dfs遍历
@@ -547,7 +548,7 @@ if() return  等价于  if else
 - dfs()  二叉树dfs反序列化
 
 ## prune
-- 应用于subset表示过程(递归树构建过程)
+- 应用于分解到子集过程(递归树构建过程)
 - 剪枝
 把递归树开的栈提前变为具体的值 or 非空子集提前通过判断转成空集
 f(N)={
@@ -897,9 +898,9 @@ a mod b=(a + bmodb)mod b =同余原理= (a+b)mod b
 
 ---
 
-### subset
+### d2s (divide to subset 分解到子集)
 - n处函数值可由前边的subset函数值组合得出
-- 由于有subset所以每一个dr.subset问题都能转化为一个dc问题
+- 由于有subset所以每一个dr.d2s问题都能转化为一个dc问题
 
 ## vector_space
 - (K,+,x)-(V,+,||): aA+bB |A|
@@ -1108,6 +1109,7 @@ bitset=bitset & (~(1<<index))
 
 
 # midwear
+- 中间层
 ## 接口
 ## 预处理优化（Precomputation Optimization）
 - 把长时间打表的答案写进源代码,节省评测机中的时间;
