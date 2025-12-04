@@ -377,12 +377,13 @@ multidim->1_return
 multidim->multi_return
 
 ## function (计算机函数层面)
-- 以下为构建dc的计算机函数的过程先d2s构建P=f(P) 再baseset 再考虑多返回多维问题
+- 以下为构建dc的计算机函数的过程先divide to subset构建P=f(P) 再baseset 再考虑多返回多维问题
 之后再考虑计算机底层树函数栈的递归过程
 - 这是一个线性过程
 
-### d2s (divide to subset)分解到子集
-- 将原集合问题分解为子集合问题:  P(n)=f(P(n-1),P(n-2),..) -> P=f(P)
+### divide (divide to subset)分解到子集
+- divide 表示集合的划分 很自然的有分解到子集的意思
+将原集合问题分解为子集合问题:  P(n)=f(P(n-1),P(n-2),..) -> P=f(P)
 - f(S0)=∑f(Si)+f(Sb) 
 - 记忆图
 ![alt text](image-13.png)
@@ -391,7 +392,7 @@ multidim->multi_return
 因为在set问题集合上进行o所以很自然的可以构建前缀算子,因为前缀就是表示集合上的信息
 而dr是在数组离散空间上的更关注点的信息,需要用dr.prefix加以讨论
 
-#### base_set
+#### conquer (base_set)基集/基例归并答案
 当某个子集不可再分时就是base集合
 base集合的算子直接返回值不可子集表示
 
@@ -898,9 +899,9 @@ a mod b=(a + bmodb)mod b =同余原理= (a+b)mod b
 
 ---
 
-### d2s (divide to subset 分解到子集)
+### divide (divide to subset 分解到子集)
 - n处函数值可由前边的subset函数值组合得出
-- 由于有subset所以每一个dr.d2s问题都能转化为一个dc问题
+- 由于有subset所以每一个dr.divide问题都能转化为一个dc问题
 
 ## vector_space
 - (K,+,x)-(V,+,||): aA+bB |A|
