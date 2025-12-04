@@ -762,7 +762,7 @@ class Solution {
 ## [接雨水](https://leetcode.cn/problems/trapping-rain-water/)
 ```json
 {
-    "前缀max后缀max":"dr.prefix+.subset",
+    "前缀max后缀max":"dr.prefix+.divide2subset",
     "指针优化前后缀函数":"reduce_dim nobacktracking_pointer"
 }
 ```
@@ -1410,7 +1410,7 @@ class Solution {
 ### [链表排序](https://leetcode.cn/problems/sort-list/)
 ```json
 {
-    "寻找中点,归并排序":"fast-slow_pointer ro.subset help_container/sentry memo_pointer"
+    "寻找中点,归并排序":"fast-slow_pointer ro.divide2subset help_container/sentry memo_pointer"
 }
 ```
 - 就是个链表的归并排序,用快慢指针寻找中点
@@ -2553,7 +2553,7 @@ public class Codec {
 - 反序列化把数组reverse就是先序反序列化,简简单单的
 
 #### [先序中序序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal)
-- dc.subset map_container 加速查询
+- dc.divide2subset map_container 加速查询
 - 先序数组为[头节点,左树,右数] 中序数组为[左树,头节点,右树]
 - f()={
     f(左树先序数组,左树中序数组)
@@ -2682,7 +2682,7 @@ class Solution {
 ```
 
 #### [完全二叉树节点个数](https://leetcode.cn/problems/count-complete-tree-nodes/)
-- dc.subset prune
+- dc.divide2subset prune
 - 子集分析
 f(root){
     0 if root==null
@@ -2735,7 +2735,7 @@ class Solution {
 ```
 
 #### [二叉树最近公共祖先lca](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/)
-- dc.subset
+- dc.divide2subset
 f(root)={
     root if root==null || q || p
     f(root.left)+f(root.right)
@@ -2774,7 +2774,7 @@ class Solution {
 - root节点的值大于左树所有节点的值且小于右树所有节点的值
 - left.allvalue<mid.value<right.allvalue
 ##### 递归剪枝解法
-- dc.subset prune 反证法
+- dc.divide2subset prune 反证法
 - p,q组成的线段,如果此节点<min说明一定不在左树,剪掉左树,右树同理;
 - 由搜索树性质可得第一次到达线段中间位置就是最近公共祖先,反证法可证
 ```java
@@ -2839,7 +2839,7 @@ class Solution {
 #### [二叉树到叶节点的路径之和](https://leetcode.cn/problems/path-sum-ii/)
 ```json
 {
-    "递归树遍历":"dc.subset recover",//路径恢复到节点的状态
+    "递归树遍历":"dc.divide2subset recover",//路径恢复到节点的状态
     "叶节点branch节点":"vars_hubs.enum"//划分为左branch 右branch leaf和纯branch三种节点进行递归调用
 }
 ```
@@ -2885,7 +2885,7 @@ class Solution {
 ```
 
 #### [二叉树最大路径和](https://leetcode.cn/problems/binary-tree-maximum-path-sum/)
-- dc.subset
+- dc.divide2subset
 - dc算子是返回左或右一直垂直连到这里的最大路径
 有三种情况
 1. 左右节点较大是负数那么直接返回此节点值
@@ -2918,7 +2918,7 @@ public static int dfs(TreeNode mp){
 ```
 
 #### [判断平衡二叉树](https://leetcode.cn/problems/balanced-binary-tree/)
-- dc.subset globalflag
+- dc.divide2subset globalflag
 - 就是求二叉树最大深度加了个全局标记
 f(p)={
     max(f(left),f(right))+1
@@ -2996,7 +2996,7 @@ class Solution {
 ```
 
 ##### 方法2
-- dc.subset flag axis memo_pointer
+- dc.divide2subset flag axis memo_pointer
 - 用记忆指针记忆上次遍历的结果
 - 搜索二叉树中序遍历是一个递增序列依照这个性质如果不满足axis就将flag设置为flag
 ```java
@@ -3026,7 +3026,7 @@ class Solution {
 ```
 
 #### [修剪二叉搜索树](https://leetcode.cn/problems/trim-a-binary-search-tree/)
-- dc.subset axis
+- dc.divide2subset axis
 - 递归函数f:修建并返回节点
 ```java
 class Solution {
@@ -3052,7 +3052,7 @@ class Solution {
 ```
 
 #### [二叉树打家劫舍](https://leetcode.cn/problems/house-robber-iii/)
-- dc.subset+.multi_return 
+- dc.divide2subset+.multi_return 
 - 通过多返回值降维优化二维的递归问题将2个order转化为2个返回值1个参数
 - 递归多返回值问题,
 f(root)={
@@ -4838,7 +4838,7 @@ public class Solution {
 # 随机快速(分治)
 ```json
 {
-    "递归":"dc.subset boundary",//递归中涉及边界得判断技巧,>= <= 优于==
+    "递归":"dc.divide2subset boundary",//递归中涉及边界得判断技巧,>= <= 优于==
     "划分区域函数":"multi_return partition_pointer+.swap",
     //划分函数设计成多返回值得形式返回两个边界方便解决问题
     //划分成< = >三个区域,注意着三个区域的开闭关系,<是) =是[) >是( , <区域扩充用到划分指针典型的swap
@@ -4916,7 +4916,7 @@ class Solution {
 ### [第k大的数](https://leetcode.cn/problems/kth-largest-element-in-an-array/)
 ```json
 {
-    "递归":"dc.subset boundary",//递归中涉及边界得判断技巧,>= <= 优于==
+    "递归":"dc.divide2subset boundary",//递归中涉及边界得判断技巧,>= <= 优于==
     "划分区域函数":"multi_return partition_pointer+.swap",
     //划分函数设计成多返回值得形式返回两个边界方便解决问题
     //划分成< = >三个区域,注意着三个区域的开闭关系,<是) =是[) >是( , <区域扩充用到划分指针典型的swap
@@ -5270,11 +5270,11 @@ public class Code04_LeftToRightAnd {
 # ====================================================================================================================================== 递归相关
 
 # 递归题目
-- dc.subset recover prune global
+- dc.divide2subset recover prune global
 
 ## [只用递归逆序栈](左肾自造题)
-- dc.subset
-### subset分析
+- dc.divide2subset
+### divide2subset分析
 - 返回栈底元素的算子
 io:返回栈底元素 stack:void
 f(n)={
@@ -5338,7 +5338,7 @@ public class Code05_ReverseStackWithsetsive {
 ```
 
 ## [汉诺塔问题](简简单单的)
-### subset分析
+### divide2subset分析
 stack:打印n  a->c的路径 io:void
 f(n)={
     sout(a,c) if n==1; //leaf
@@ -5363,7 +5363,7 @@ class Solution{
 
 
 ## [同时运行n台电脑最长时间](https://leetcode.cn/problems/maximum-running-time-of-n-computers)
-- dc.subset
+- dc.divide2subset
 f(n)={
     sum/n
     f(n-1)
@@ -5371,7 +5371,7 @@ f(n)={
 
 
 - 理论连续可供电时间为sum/n 如果遍历电池大于sum/n 那么就让他自己供一台电脑
-转化为subset 子问题n-1台电脑和剩下的电池进行供电,
+转化为divide2subset 子问题n-1台电脑和剩下的电池进行供电,
 直到遍历电池<=sum/n 为0向量
 
 ```java
@@ -5416,10 +5416,10 @@ class Solution {
 ```
 
 ## [至少有k个重复字符的最长子串](https://leetcode.cn/problems/longest-substring-with-at-least-k-repeating-characters/)
-- roo.subset map_container
+- roo.divide2subset map_container
 - map容器设计成数组的形式比hashmap快非常多
 - 这里是java里的split搭配正则表达式首次使用,正则表达式里的[]表示从集合中任意选取字符做分割点
-- subset分析
+- divide2subset分析
 f(s)={
     0 if s中字符都小于k
     max(f(s1),f(s2),...)  这里的si是将s中小于k的字符做分割点分割出来的字符串
@@ -5468,7 +5468,7 @@ class Solution {
         delim=delim+"]";
         String[] splits = s.split(delim);
         int ans=0;
-        //subset
+        //divide2subset
         for(int i=0;i<splits.length;i++){
             ans=Math.max(ans,dfs(splits[i],k));
         }
@@ -5530,7 +5530,7 @@ class Solution {
 - recover:退回某个节点,memo也要恢复到这个节点的状态
 ## [n皇后](https://leetcode.cn/problems/n-queens-ii/description/)
 - json:dc prune recover 
-### subset分析
+### divide2subset分析
 - io:返回填n行皇后的种类数
 - f(n)={
     return 0 if n==0 //leaf
@@ -5616,7 +5616,7 @@ class Solution {
 ```
 
 ## [n对括号的有效组合](https://leetcode.cn/problems/generate-parentheses)
-- dc.subset recover
+- dc.divide2subset recover
 ```java
 class Solution {
     public static List<String> ans=new ArrayList<>();
@@ -5658,7 +5658,7 @@ class Solution {
 ## 感染问题(洪水填充问题)
 
 ## [岛屿数量](https://leetcode.cn/problems/number-of-islands/)
-- subset分析
+- divide2subset分析
 io:void stack:感染以ij为起点的所有连起来的1岛屿
 f(i,j)={
     return if i,j是0||超出边界||已经感染过了 //leaf
@@ -5894,7 +5894,7 @@ class Solution {
 - 多维递归就是参数有若干个,子集是order,通过3维空间函数思考
 
 ## [二叉树打家劫舍](https://leetcode.cn/problems/house-robber-iii/)
-- dc.subset+.multidim or .multi_return 
+- dc.divide2subset+.multidim or .multi_return 
 - 通过多返回值降维优化二维的递归问题将2个order转化为2个返回值1个参数
 - 也可以看作本质就是一个多返回值得算子
 递归多返回值问题,
@@ -5953,7 +5953,7 @@ class Solution {
 ```
 
 ## [二叉树直径](https://leetcode.cn/problems/diameter-of-binary-tree/)
-- roo.subset+.multidim or .multi_return
+- roo.divide2subset+.multidim or .multi_return
 - 设计成多维递归优化为多返回值
 - 返回到节点左树得最大值和右树的最大值
 
@@ -6050,7 +6050,7 @@ class Solution {
 加个4就行->(10 mod 4 - 7 mod 4 + 4)mod4
 a mod b=(a + bmodb)mod b =同余原理= (a+b)mod b
 # 组合数学
-- 递归subset recover
+- 递归divide2subset recover
 - 排列组合递归函数io:void stack:全组合/全排列 [l:]数组
 ## 全组合
 - 全组合是取所有元素进行010101001(bitmap表示存在不存在)
@@ -6058,7 +6058,7 @@ a mod b=(a + bmodb)mod b =同余原理= (a+b)mod b
 ### 不同元素全组合
 ```json
 {
-    "子集分析":"dc.subset recover",
+    "子集分析":"dc.divide2subset recover",
 }
 ```
 #### dc构建(子集分析)
@@ -6075,7 +6075,7 @@ import java.util.Arrays;
 import java.util.List;
 
 class Solution{
-    public List<List<Integer>> subsetsWithDup(int[] nums){
+    public List<List<Integer>> divide2subsetsWithDup(int[] nums){
         Arrays.sort(nums);
         ArrayList<Integer> arr = new ArrayList<>();
         List<List<Integer>> ans=new ArrayList<>();
@@ -6087,7 +6087,7 @@ class Solution{
             ans.add(new ArrayList<>(arr));
             return;
         }
-        //subset : 2g*(l+1)+k
+        //divide2subset : 2g*(l+1)+k
         dfs(nums,l+1,arr,ans);
         arr.add(nums[l]);
         dfs(nums,l+1,arr,ans);
@@ -6102,8 +6102,8 @@ class Solution{
 ### 去重全组合
 ```json
 {
-    "子集分析":"dc.subset recover",
-    "划分出排序后数组相同元素的区域":"partition_pointer"//方便subset
+    "子集分析":"dc.divide2subset recover",
+    "划分出排序后数组相同元素的区域":"partition_pointer"//方便divide2subset
 }
 ```
 - 由不同元素全组合进化而来,区别是前者0,1两个0向量 后者是0,1,2,3...多个零向量
@@ -6115,12 +6115,12 @@ f(l)={
     
 }
 g=f
-https://leetcode.cn/problems/subsets-ii
+https://leetcode.cn/problems/divide2subsets-ii
 ```java
 import java.util.*;
 
 class Solution {
-    public List<List<Integer>> subsetsWithDup(int[] nums) {
+    public List<List<Integer>> divide2subsetsWithDup(int[] nums) {
         //排序分组
         Arrays.sort(nums);
         ans.clear(); // 清空静态结果集,不然力扣会再调用他下一个测试用例的
@@ -6163,11 +6163,11 @@ class Solution {
 ### 不同元素全排列
 ```json
 {
-    "subset分析":"dc.subset recover",
+    "divide2subset分析":"dc.divide2subset recover",
 }
 ```
 对l以后全排列==l后每个元素放第一个全排列l+1后的
-#### subset分析
+#### divide2subset分析
 f(l)={
     return if l==n  //leaf
 
@@ -6216,7 +6216,7 @@ class Solution{
 ### 去重全排列
 ```json
 {
-    "subset分析":"dc.subset recover",
+    "divide2subset分析":"dc.divide2subset recover",
     "去重":"memo_container"
 }
 ```
@@ -6271,8 +6271,8 @@ class Solution{
 ```json
 {
     "解决查询区间和问题":null,//前缀和解决查询区间和问题,实现原理是先积分,再积分函数相减得到区间和,∫f(b)-∫f(a) 得到a,b区间和
-    "积分数组":"dr.∫∑+.subset sentry"
-    //dr.subset i处积分值有i-1和arr[i]获得
+    "积分数组":"dr.∫∑+.divide2subset sentry"
+    //dr.divide2subset i处积分值有i-1和arr[i]获得
     //积分数组设置一个sum(0,)的sentry,因为经常需要查询[0,n]区间和问题方便查询
 }
 ```
@@ -6283,7 +6283,7 @@ class NumArray {
         //0sentry
         sum=new int[nums.length+1];
         for(int i=1;i<=nums.length;i++){
-            //dr.subset
+            //dr.divide2subset
             sum[i]=sum[i-1]+nums[i-1];
         }
     }
@@ -6469,7 +6469,7 @@ class Solution {
 ### [接雨水](https://leetcode.cn/problems/trapping-rain-water/)
 ```json
 {
-    "前缀max后缀max":"dr.prefix+.subset",
+    "前缀max后缀max":"dr.prefix+.divide2subset",
     "指针优化前后缀函数":"reduce_dim nobacktracking_pointer"
 }
 ```
@@ -6538,7 +6538,7 @@ https://oi-wiki.org/string/kmp/
 ```json
 {
     "前缀算子π":"symmetry dr.prefix",
-    "π算子幂":"dr.subset vector_space.pow_basis",
+    "π算子幂":"dr.divide2subset vector_space.pow_basis",
     // "Π算子幂的边界判断":"vars_hubs move_pointer"
     //因为这俩很基础但在kmp体现的淋漓尽致所以指出来
 }
@@ -6546,7 +6546,7 @@ https://oi-wiki.org/string/kmp/
 ### dr前缀算子π
 - 用dr数组构建前缀算子Π,Π(i)=[0,i]闭区间上这个串的对称最长真子串长度
 
-### subset分析
+### divide2subset分析
 - Π(i)={
     Π(i-1)+1
     Π^2+1
@@ -6640,7 +6640,7 @@ class Solution {
 # =================================================================== 动态规划
 - 动态规划就是将递归转化为数组(离散空间)上的算子例如数组上,所以任何动态规划都能转化成递归
 - 递归的某个子集重复计算且每个节点在一个数组(离散空间)上就可以转化成动态规划
-- dp=dc.subset(dr.subset)+重叠子问题+数组(离散空间)
+- dp=dc.divide2subset(dr.divide2subset)+重叠子问题+数组(离散空间)
 - 所以先写出来递归算法再把递归过程中的return转化为dp[i]=?; continue;在数组离散空间中反向迭代遍历即可
 
 # 一维动态规划
@@ -6675,10 +6675,10 @@ public static int fabbnoci(int n){
 ### [最低票价](https://leetcode.cn/problems/minimum-cost-for-tickets/)
 ```json
 {
-    "dp=dc.subset(dr.subset)+重叠子问题+数组(离散空间)":"dc.subset dr.subset"
+    "dp=dc.divide2subset(dr.divide2subset)+重叠子问题+数组(离散空间)":"dc.divide2subset dr.divide2subset"
 }
 ```
-- subset子集分析
+- divide2subset子集分析
 f(i)={
     0 if i==n
     min(g(i->1)+cost[1],g(i->7)+cost[7],g(i->30)+cost[30])
@@ -6739,8 +6739,8 @@ class Solution {
 ```
 
 ### [解码方法](https://leetcode.cn/problems/decode-ways)
-- dc.subset dr.subset state_filter reduce_dim
-- subset分析
+- dc.divide2subset dr.divide2subset state_filter reduce_dim
+- divide2subset分析
 f(i)={
     1 if i=n;
     g(i+1)+g(i+2);
