@@ -1,0 +1,39 @@
+## U卡大部分是虚拟信用卡
+- 通过用加密货币直接/间接支付
+
+## 运用国内币圈 监管松允许炒币这个bug,国内可以通过c2c在币安欧易上买到币进行炒币,这样这些炒币的人赚了钱需要能够"出金"在国内进行消费,于是很多虚拟信用卡厂商(国内套壳)就出现了,有需求就有市场
+
+## 类型
+infini bybit fiat24 roogoo fotoncard bitget 万里汇
+bybit 澳卡、欧卡；savo; 雪崩卡；safepal;YPT; 小红卡；
+据说tg上也有虚拟卡bot
+
+## bybit
+亚洲区 澳洲区 欧洲区
+现在就亚洲区能申请,亚洲澳洲是预付卡prepaid card,非常容易开
+卡等级 credit,debit>prepaid
+
+## fiat24
+bitget 和 safepal都有
+https://linux.do/t/topic/1093338
+如何充值,币安c2c买usdc币,链上转到bitget 钱包,bitget钱包再冲到fiat24虚拟银行卡里
+踩坑点:仅能通过ali链充值银行卡,最少充值5u
+多充点，上币安炒炒币，每个月赚的钱存到 fiat24 里
+
+### 买 usdt
+ 正经点的,usdt市场占比高价格低
+币安上面 C2C 买点 USDT
+在市场上吧 USDT 换成 USDC
+（C2C 直接买 USDC 会很贵）
+
+### 
+建议第一次用之前，买上 0.1 个 Polygon 从币安提到钱包里（大概 0.02U），后面转换 / 转账作为 gas 用
+如果实在没有 pol，我做了个自助水龙头，佬们可以打开自助领取
+
+钱包里你开启 Polygon 链的 USDC
+币安提现到 Polygon 链的 USDC 钱包，手续费只需要几美分
+钱包里的 DAPP 用 uniswap 换成 Arbitrum 链的 USDC，每 10 刀手续费大概也是几美分
+浏览器装一个 safepal 的插件，去 uniswap 网站上把 Polygon 链的 USDC 换成 Arbitrum 链的 USDC
+（直接提到 arb 手续费要 0.44 刀，太贵）
+
+最后再用这个直接充，入金损耗 1%（最近做活动攒满 5 刀手续费可以提现，相当于入金损耗 = 0）
