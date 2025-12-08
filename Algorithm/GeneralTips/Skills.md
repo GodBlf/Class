@@ -718,6 +718,8 @@ int main(){
 out in
 每次out / in都必须边界判断;
 - dfs bfs dijkstra都是 dad out child in的过程
+### start
+需要手动遍历将头节点放入cache容器中才能启动out/in循环
 ### mp
 外边有一个mp,container的顶部或者头部有一个mp实现第一个mp遍历节点,另一个mp收集结果,两个合适时机选取
 - 节点in or out cache 时候标记为ture相应的 进入 或者拉出的时候判断是否需要continue
