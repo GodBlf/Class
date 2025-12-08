@@ -32,7 +32,7 @@
 # 代码层面快捷键
 - ctlr+点击 跳转
 - ctrl+p 查看函数参数 pram
-- ctrl+i 实现接口 implements
+- ctrl+i 实现接口 implements,golangd直接点击
 - alt+ctlr+m 抽取方法
 - f2 shift f2 跳转问题
 
