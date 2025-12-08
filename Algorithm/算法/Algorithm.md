@@ -1085,9 +1085,9 @@ class Solution {
 # 链表
 ```json
 {
-    "链表构造模型":"sentry memo_pointer container.new_container",//memo_pointer记忆尾节点
-    "指针技巧":"memo_pointer nobacktracking_pointer",
-    "快慢指针":"fastslow_pointer"
+    "链表构造模型":"sentry mp.memo_pointer container.new_container",//memo_pointer记忆尾节点
+    "指针技巧":"mp.memo_pointer mp.nobacktracking_pointer",
+    "快慢指针":"mp.fastslow_pointer"
 }
 ```
 ## 函数参数
@@ -4040,6 +4040,279 @@ public class Main {
     }
 }
 ```
+
+### 习题
+#### [买礼物/水资源分配](https://www.luogu.com.cn/problem/P1194)
+- 最小生成树 sentry
+- 设置一个0sentry节点他到每个点的距离为A 方便操作
+
+```java
+import java.io.*;
+import java.util.*;
+import java.math.*;
+import java.lang.*;
+
+public class Main {
+   public static  int[][] edge =new int[504][504];
+    public static    int[] father=new int[504];
+    public static int sets=0;
+    public static int find(int n){
+        if(father[n]==n){
+            return n;
+        }
+        int tmp = find(father[n]);
+        father[n]=tmp;
+        return tmp;
+    }
+    public static boolean union(int a,int b){
+        int aa=find(a);
+        int bb=find(b);
+        if(aa==bb){
+            return false;
+        }
+        father[bb]=aa;
+        sets--;
+        return true;
+    }
+    public static void main(String[] args) throws IOException {
+        PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        StreamTokenizer in = new StreamTokenizer(reader);
+        //
+         in.nextToken();int A=(int)in.nval;
+         in.nextToken();int B=(int)in.nval;
+         int n=B;
+         //init
+        sets=n+1;
+        for(int i=0;i<=n;i++){
+            father[i]=i;
+        }
+        for(int j=1;j<=n;j++){
+            edge[0][j]=A;
+        }
+        for(int i=1;i<=n;i++){
+            edge[i][0]=A;
+        }
+        for(int i=1;i<=n;i++){
+            for(int j=1;j<=n;j++){
+                in.nextToken();
+                int tmp=(int)in.nval;
+                //特判,0的时候无优惠用最大值
+                if(tmp==0){
+                    edge[i][j]=1004;
+                    continue;
+                }
+                edge[i][j]=tmp;
+            }
+        }
+        PriorityQueue<int[]> container = new PriorityQueue<>(
+                (a,b)->{
+                    return edge[a[0]][a[1]]-edge[b[0]][b[1]];
+                }
+        );
+        for(int i=0;i<=n;i++){
+            for(int j=0;j<i;j++){
+                container.offer(new int[]{i,j});
+            }
+        }
+        //conect
+        int ans=0;
+        while(!container.isEmpty()){
+            int[] poll = container.poll();
+            if(union(poll[0],poll[1])){
+                ans+=edge[poll[0]][poll[1]];
+            }
+        }
+        out.println(ans);
+        //
+        reader.close();
+        out.close();
+    }
+}
+
+
+
+```
+
+#### [检查边长度限制的路径是否存在](https://leetcode.cn/problems/checking-existence-of-edge-length-limited-paths/)
+- 连通树,no-backtracking pointer优化
+```java
+class Solution {
+    public static int[] father=new int[100004];
+    public static int sets=0;
+    public static void build(int n){
+        for(int i=0;i<n;i++){
+            father[i]=i;
+        }
+        sets=n;
+    }
+    public static int find(int n){
+        if(father[n]==n){
+            return n;
+        }
+        int tmp=find(father[n]);
+        father[n]=tmp;
+        return tmp;
+    }
+    public static boolean union(int a, int b){
+        int aa=find(a);int bb=find(b);
+        if(aa==bb) return false;
+        father[bb]=aa;
+        sets--;
+        return true;
+    }
+    public boolean[] distanceLimitedPathsExist(int n, int[][] edgeList, int[][] queries) {
+        Arrays.sort(edgeList,(a,b)->{
+            return a[2]-b[2];
+        });
+        int[][] quest = new int[queries.length][4];
+        for(int i=0;i<queries.length;i++){
+            quest[i][0]=queries[i][0];
+            quest[i][1]=queries[i][1];
+            quest[i][2]=queries[i][2];
+            quest[i][3]=i;
+        }
+        Arrays.sort(quest,(a,b)->{
+            return a[2]-b[2];
+        });
+        boolean[] ans=new boolean[queries.length];
+        build(n);
+        //no-backtracking pointer优化
+        int emp=0;
+        loop:
+        for(int i=0;i<quest.length;i++){
+            int a=quest[i][0];
+            int b=quest[i][1];
+            int limit=quest[i][2];
+            int index=quest[i][3];
+            while(emp<edgeList.length){
+                if(edgeList[emp][2]>=limit){
+                    break;
+                }
+                union(edgeList[emp][0],edgeList[emp][1]);
+                emp++;
+            }
+            if(find(a)==find(b)){
+                ans[index]=true;
+            }
+        }
+        return ans;
+    }
+}
+```
+
+#### [最小瓶颈树]()
+- 反证法:最小生成树=>最小瓶颈树(连通图的最大边值最小)
+
+## bfs
+```json
+{
+    "宽度遍历":"mp memo_container cache_container",
+    "解决距离问题":"global"//一整层out
+}
+```
+- mp遍历遍历完memo容器记入已经访问,加进cache容器里启动下一次遍历
+- 先自己进行第一次遍历,将头节点加进cache容器里才能启动out/in循环
+
+### 多源bfs
+- 多个cache容器作用都是一样的就用一个即可
+
+### 距离问题
+- 要求图边权相等
+
+=
+
+
+### 习题
+#### []()
+
+
+####
+
+## dijkstra
+```json
+{
+    "节点从未确定的集合通过中间层到以确定的集合":"midwear cache_container"
+     //两重贪心,父节点最短把我变短了进入cache,我又是cache最短的,进入S集合
+
+}
+```
+将结点分成两个集合：已确定最短路长度的点集（记为 𝑆
+S 集合）的和未确定最短路长度的点集（记为 𝑇
+T 集合）。一开始所有的点都属于 𝑇
+T 集合。
+初始化 𝑑𝑖𝑠(𝑠) =0
+dis(s)=0，其他点的 𝑑𝑖𝑠
+dis 均为 +∞
++\infty。
+然后重复这些操作：
+1. 从 T 集合中，选取一个最短路长度最小的结点，移到 S 集合中。
+2. 对那些刚刚被加入 S 集合的结点的所有出边执行松弛操作。直到 T 集合为空，算法结束。
+
+![alt text](image-13.png)
+- 板子
+```java
+class Solution {
+    public static int[] dist=new int[108];
+    public static boolean[] S =new boolean[108];
+    public int networkDelayTime(int[][] times, int n, int k) {
+        ArrayList<ArrayList<int[]>> graph = new ArrayList<>();
+        Arrays.fill(dist,Integer.MAX_VALUE);
+        Arrays.fill(S,false);
+        for(int i=0;i<=n;i++){
+            graph.add(new ArrayList<int[]>());
+        }
+        for (int[] time : times) {
+            int a=time[0];int b=time[1];int c= time[2];
+            graph.get(a).add(new int[]{b,c});
+        }
+        //
+        PriorityQueue<Integer> cache = new PriorityQueue<>(
+                (a,b)->{
+                    return dist[a]-dist[b];
+                }
+        );
+        dist[k]=0;
+        cache.offer(k);
+        while(!cache.isEmpty()){
+            Integer poll = cache.poll();
+            //out filter
+            if(S[poll]){
+                continue;
+            }
+            //两重贪心,父节点最短把我变短了进入cache,我又是cache最短的,进入S集合
+            S[poll]=true;
+            for (int[] edge : graph.get(poll)) {
+                int v=edge[0];int w=edge[1];
+                //in filter
+                if(S[v]) continue;
+                int tmp=dist[poll]+w;
+                if(tmp>=dist[v]) continue;
+                dist[v]=tmp;
+                cache.offer(v);
+            }
+        }
+        int ans = Integer.MIN_VALUE;
+        for (int i = 1; i <= n; i++) {
+            if (dist[i] == Integer.MAX_VALUE) {
+                return -1;
+            }
+            ans = Math.max(ans, dist[i]);
+        }
+        return ans;
+    }
+}
+```
+
+## A*
+- 有dijkstra改编解决单单最短路径,启发式dj算法
+- dj算法是单源到所有点,为了加快找到目标点的最短路径
+优化中间层cache的cmp函数使得目标点在中间层中更靠前容易找到
+
+
+
+## dfs
+- function.divide tree.prune+recover
 
 # ====================================================================================================================================== 高等数据结构
 
