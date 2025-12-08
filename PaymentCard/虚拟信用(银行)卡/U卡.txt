@@ -4,7 +4,7 @@
 ## 运用国内币圈 监管松允许炒币这个bug,国内可以通过c2c在币安欧易上买到币进行炒币,这样这些炒币的人赚了钱需要能够"出金"在国内进行消费,于是很多虚拟信用卡厂商(国内套壳)就出现了,有需求就有市场
 
 ## 类型
-infini bybit fiat24 roogoo fotoncard bitget 万里汇
+infini bybit fiat24 pokepay roogoo fotoncard bitget 万里汇
 bybit 澳卡、欧卡；savo; 雪崩卡；safepal;YPT; 小红卡；
 据说tg上也有虚拟卡bot
 
