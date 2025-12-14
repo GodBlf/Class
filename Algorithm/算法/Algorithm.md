@@ -4237,6 +4237,7 @@ class Solution {
 
 }
 ```
+
 将结点分成两个集合：已确定最短路长度的点集（记为 𝑆
 S 集合）的和未确定最短路长度的点集（记为 𝑇
 T 集合）。一开始所有的点都属于 𝑇
@@ -4248,6 +4249,9 @@ dis 均为 +∞
 然后重复这些操作：
 1. 从 T 集合中，选取一个最短路长度最小的结点，移到 S 集合中。
 2. 对那些刚刚被加入 S 集合的结点的所有出边执行松弛操作。直到 T 集合为空，算法结束。
+
+### 坏堆问题
+不要用外部数组当作cmp函数因为会破坏堆结构用静态结构体
 
 ![alt text](image-13.png)
 - 板子
@@ -4267,29 +4271,31 @@ class Solution {
             graph.get(a).add(new int[]{b,c});
         }
         //
-        PriorityQueue<Integer> cache = new PriorityQueue<>(
+        PriorityQueue<int[]> cache = new PriorityQueue<>(
                 (a,b)->{
-                    return dist[a]-dist[b];
+                    return a[1]-b[1];
                 }
         );
         dist[k]=0;
-        cache.offer(k);
+        //坏堆问题
+        cache.offer(new int[]{k,0});
         while(!cache.isEmpty()){
-            Integer poll = cache.poll();
+            int[] poll = cache.poll();
             //out filter
-            if(S[poll]){
+            if(S[poll[0]]){
                 continue;
             }
             //两重贪心,父节点最短把我变短了进入cache,我又是cache最短的,进入S集合
-            S[poll]=true;
-            for (int[] edge : graph.get(poll)) {
+            S[poll[0]]=true;
+            for (int[] edge : graph.get(poll[0])) {
                 int v=edge[0];int w=edge[1];
                 //in filter
                 if(S[v]) continue;
-                int tmp=dist[poll]+w;
+                int tmp=dist[poll[0]]+w;
                 if(tmp>=dist[v]) continue;
+                //这里一定要先更新dist因为优先级队列的性质只有加进去才会刷新
                 dist[v]=tmp;
-                cache.offer(v);
+                cache.offer(new int[]{v,tmp});
             }
         }
         int ans = Integer.MIN_VALUE;
