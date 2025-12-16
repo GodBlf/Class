@@ -64,6 +64,15 @@ Skills->Algorithm ; Skills->JavaSE
 }
 ```
 
+# function
+- io stack
+## multi_return
+- 函数可以多返回值java通过返回int[] 实现,golang自带多返回值,多返回值方便解决问题
+- 递归中多返回值可以优化multidim多维递归问题
+
+## multidim
+- 参数可以是多维的
+
 # tree
 - 很多计算机底层都是树结构
 - 例如bfs 和 dfs 的queue stack实现,递归.递归树遍历;
@@ -357,11 +366,9 @@ public static void partition2(int[] arr, int l, int r, int x) {
 #### 二分搜索划分红蓝区域寻找边界
 
 
-# multi_return
-- 函数可以多返回值java通过返回int[] 实现,golang自带多返回值,多返回值方便解决问题
-- 递归中多返回值可以优化multidim多维递归问题
 
-# dc
+
+# 递归/分治(divide and conquer dc)
 ```json
 {
     "divide and conquer":"function tree",
@@ -450,6 +457,8 @@ branch节点的结构和root节点的结构相同,且仅能够从root节点设�
 具体例子可思考fabonacci 01背包 n皇后问题 全排列等
 - 按照栈先进先出恢复
 - backtrack 记得恢复
+
+### global prune recover
 
 ### dustbin
 
@@ -637,6 +646,19 @@ f(N)={
 例如 归并排序题目先排序方便将来的统计
 例如 缺失的数字发货到对应位置方便将来状态直接划走
 
+# midwear
+- 中间层
+## bfs
+未访问集合到已经访问且孩子也访问集合
+## dijkstra
+T集合到S集合中间用buffer容器
+## 接口
+## 预处理优化（Precomputation Optimization）
+- 把长时间打表的答案写进源代码,节省评测机中的时间;
+素分解可以先把质数格式化输出成数组再复制粘贴到源代码中;
+http://xmuoj.com/problem/LQ018
+http://xmuoj.com/problem/LQ386
+
 
 # container
 - 构造的所有容器都要全面维护,如果为空就要移出全面考虑,等boundary边界条件
@@ -715,14 +737,15 @@ int main(){
 ## multidim_container
 - 二维栈(最大频率栈),用栈,栈中元素是栈(栈套栈),类比向量空间
 
-## cache_container
+## buffer_container
+缓冲容器,经常作为midwear中间层使用
+### start
+需要手动遍历将头节点放入buffer容器中才能启动out/in循环
+### cache旧理解
 - 快速去出放入
 out in
 每次out / in都必须边界判断;
 - dfs bfs dijkstra都是 dad out child in的过程
-### start
-需要手动遍历将头节点放入cache容器中才能启动out/in循环
-### mp
 外边有一个mp,container的顶部或者头部有一个mp实现第一个mp遍历节点,另一个mp收集结果,两个合适时机选取
 - 节点in or out cache 时候标记为ture相应的 进入 或者拉出的时候判断是否需要continue
 - 将第一个节点压入(offer/push)cache来启动
@@ -863,7 +886,7 @@ a mod b=(a + bmodb)mod b =同余原理= (a+b)mod b
 
 ## 分析学
 
-## dr
+## relation
 - discrete_relation(这里relation表示数学中的函数(order_set))
 - 离散函数研究的是数学中连续的函数离散到数组中
 - 将数组dp 当成一个算子;dp(索引) 输出一个值到数组索引对应的位置上,那么这个数组整体构成一个order_set
@@ -1117,14 +1140,6 @@ bitset=bitset & (~(1<<index))
 - 遍历状态的时候可以用brian算法提取最右侧的1 tmp&-tmp 适当对状态数组取反方便brian算法遍历;while(n!=0){int tmp=n&-n;n=(n^tmp)&limit;...}
 
 
-# midwear
-- 中间层
-## 接口
-## 预处理优化（Precomputation Optimization）
-- 把长时间打表的答案写进源代码,节省评测机中的时间;
-素分解可以先把质数格式化输出成数组再复制粘贴到源代码中;
-http://xmuoj.com/problem/LQ018
-http://xmuoj.com/problem/LQ386
 
 # 异常
 ## 数组越界
