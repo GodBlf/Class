@@ -6,13 +6,14 @@
 ## 动态变量不要做循环指标
 例如 队列的l,r是变化的,for(int i=0;i<r-l;i++){
 r-l一直变化操蛋 应该用int cnt=r-l在循环
-
+##
+- 用list套list收集递归的list结果一定要copy一份不然add的是list的指针会随着一起更改艹指针问题
 ## 坏堆问题
 不要用外部数组当作cmp函数因为会破坏堆结构用静态结构体
 
 ##
 - 位运算一定要加括号艹了,不建议使用位运算计算加减乘除因为jvm有优化
-- 用list套list收集递归的list结果一定要copy一份不然add的是list的指针会随着一起更改艹指针问题
+
 - mapset 远远慢于 数组
 - 这几天一直忘state filter 的if  return 记住一定要return
 造的container全面维护都要update到
