@@ -6,9 +6,17 @@
 # goの简化
 ```json
 {
+    "x:=&type{:}"//{}是在内存中生成变量var相当于java中的new 用json赋值方法
+}
+
+```
+
+## dustbin
+```json
+{
     "x:=newfunc()":":=()", //1
     "x:=&json{:}":":=&{}"//2
-    //都表示在内存ram中开辟变量var的意思 var ram
+    //都表示在内存ram中开辟变量var的意思
 }
 
 ```
