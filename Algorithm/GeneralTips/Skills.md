@@ -399,7 +399,7 @@ multidim->multi_return
 因为在set问题集合上进行o所以很自然的可以构建前缀算子,因为前缀就是表示集合上的信息
 而dr是在数组离散空间上的更关注点的信息,需要用dr.prefix加以讨论
 
-#### conquer (base_set)基集/基例归并答案
+#### base_set(conquer)基集/基例归并答案
 当某个子集不可再分时就是base集合
 base集合的算子直接返回值不可子集表示
 
@@ -648,6 +648,7 @@ f(N)={
 
 # midwear
 - 中间层
+- bfs和dijkstra都是T集合到S集合应用buffer容器作为中间层
 ## bfs
 未访问集合到已经访问且孩子也访问集合
 ## dijkstra
