@@ -393,7 +393,7 @@ log(2^32)=32 所以二分非常快
 ```json
 {
     "数组离散函数":"dr",
-    "导函数介值定理":"dr.continue_r",//达布定理Darboux's theorem
+    "导函数介值定理":"relation.continue_r",//达布定理Darboux's theorem
     "划分指针":"partition_pointer"//特殊的划分(l,r)必有峰值
 }
 ```
@@ -762,7 +762,7 @@ class Solution {
 ## [接雨水](https://leetcode.cn/problems/trapping-rain-water/)
 ```json
 {
-    "前缀max后缀max":"dr.prefix+.divide2subset",
+    "前缀max后缀max":"relation.prefix+.divide2subset",
     "指针优化前后缀函数":"reduce_dim nobacktracking_pointer"
 }
 ```
@@ -893,7 +893,7 @@ class Solution {
 ```json
 {
     "排序优化为不回退指针":"_pointer",
-    "寻找houses匹配的供暖器":"dr.extrema"
+    "寻找houses匹配的供暖器":"relation.extrema"
 }
 ```
 - 传统解法是遍历每个房子每次再遍历每个供暖期找出每个房子最短半径再max O(n*m)
@@ -1765,7 +1765,7 @@ arr[l++]=poll
 - 双向链表队列+哈希表
 - 用双向链表做队列方便O(1)复杂度找到container中的元素并remove,正常队列只能头部和尾部
 ```java
-class LRUCache {
+class LRUbuffer {
     class DoubleNode {
         public int key;
         public int val;
@@ -1783,7 +1783,7 @@ class LRUCache {
     int len=0;
     int cap;
     HashMap<Integer,DoubleNode> map=new HashMap<>();
-    public LRUCache(int capacity) {
+    public LRUbuffer(int capacity) {
         cap=capacity;
         sentryHead.next=sentryTail;
         sentryTail.last=sentryHead;
@@ -2158,7 +2158,7 @@ class RandomizedCollection {
 - 双向链表队列+哈希表
 - 用双向链表做队列方便O(1)复杂度找到container中的元素并remove,正常队列只能头部和尾部
 ```java
-class LRUCache {
+class LRUbuffer {
     class DoubleNode {
         public int key;
         public int val;
@@ -2176,7 +2176,7 @@ class LRUCache {
     int len=0;
     int cap;
     HashMap<Integer,DoubleNode> map=new HashMap<>();
-    public LRUCache(int capacity) {
+    public LRUbuffer(int capacity) {
         cap=capacity;
         sentryHead.next=sentryTail;
         sentryTail.last=sentryHead;
@@ -2621,18 +2621,18 @@ class Solution {
 ```
 
 #### [判断完全二叉树](https://leetcode.cn/problems/check-completeness-of-a-binary-tree/)
-- cache_container flag全局标记变量
+- buffer_container midwear flag全局标记变量
 - 判断标准
 1. 左空右不空直接false
 2. 孩子不全(左有,或全没有)后边遇到的都是叶子节点用flag全局标记实现
 ```java
 class Solution {
-    public static TreeNode[] cache=new TreeNode[104];
+    public static TreeNode[] buffer=new TreeNode[104];
     public static boolean flag=false;
     public boolean isCompleteTree(TreeNode root) {
         flag=false;
         int l=0;int r=0;int n=0;
-        cache[r++]=root;n=1;
+        buffer[r++]=root;n=1;
         //特判
         if(root.right!=null && root.left==null){
             return false;
@@ -2643,12 +2643,12 @@ class Solution {
         //遍历
         while(l<r){
             for(int i=0;i<n;i++){
-                TreeNode node=cache[l++];
+                TreeNode node=buffer[l++];
                 n--;
                 TreeNode lnode=node.left;
                 TreeNode rnode=node.right;
                 if(lnode !=null){
-                    cache[r++]=lnode;
+                    buffer[r++]=lnode;
                     n++;
                     if(lnode.right!=null && lnode.left==null){
                         return false;
@@ -2661,7 +2661,7 @@ class Solution {
                     }
                 }
                 if(rnode!=null){
-                    cache[r++]=rnode;
+                    buffer[r++]=rnode;
                     n++;
                     if(rnode.right!=null && rnode.left==null){
                         return false;
@@ -3210,19 +3210,19 @@ class Solution {
 class Solution {
     public List<Integer> preorderTraversal(TreeNode root) {
             TreeNode p=root;
-        ArrayDeque<TreeNode> cache = new ArrayDeque<>();
+        ArrayDeque<TreeNode> buffer = new ArrayDeque<>();
         List<Integer> ans = new ArrayList<>();
         while(true){
             //终止条件
-            if(cache.isEmpty() && p==null){
+            if(buffer.isEmpty() && p==null){
                 return ans;
             }
             if(p!=null){
                 ans.add(p.val);
-                cache.push(p);
+                buffer.push(p);
                 p=p.left;
             }else{
-                TreeNode pop = cache.pop();
+                TreeNode pop = buffer.pop();
                 //这里return的箭头是虚线,虚返回但是返回到了pop右孩子
                 p=pop.right;
             }
@@ -3244,20 +3244,20 @@ class Solution {
 class Solution {
     public List<Integer> inorderTraversal(TreeNode root) {
         List<Integer> ans = new ArrayList<>();
-        ArrayDeque<TreeNode> cache = new ArrayDeque<>();
+        ArrayDeque<TreeNode> buffer = new ArrayDeque<>();
         TreeNode p=root;
         while (true){
             //终止条件
-            if(cache.isEmpty() && p==null){
+            if(buffer.isEmpty() && p==null){
                 return ans;
             }
             //模拟dc
             if(p!=null){
-                cache.push(p);
+                buffer.push(p);
                 p=p.left;
             }else{
                 //这里return的箭头是虚线,虚返回但是返回到了pop右孩子
-                TreeNode tmp = cache.pop();
+                TreeNode tmp = buffer.pop();
                 ans.add(tmp.val);
                 p=tmp.right;
             }
@@ -3310,7 +3310,7 @@ class Solution {
         List<Integer> ans = new ArrayList<Integer>();
         if (root == null) return ans;
 
-        ArrayDeque<Pair> cache = new ArrayDeque<>();
+        ArrayDeque<Pair> buffer = new ArrayDeque<>();
         Pair pairroot = new Pair(root, 1);
         Pair p=pairroot;
         while(true){
@@ -3320,20 +3320,20 @@ class Solution {
             }
             if(p.node!=null){
                 if(p.state==1){
-                    cache.push(p);
+                    buffer.push(p);
                     Pair tmp = new Pair(p.node.left, 1);
                     p=tmp;
                 }else if(p.state==2){
                     Pair tmp = new Pair(p.node.right, 1);
                     p=tmp;
                 }else{
-                    Pair pop = cache.pop();
+                    Pair pop = buffer.pop();
                     ans.add(pop.node.val);
-                    p=cache.peek();
+                    p=buffer.peek();
                     p.state++;
                 }
             }else{
-                Pair peek = cache.peek();
+                Pair peek = buffer.peek();
                 p=peek;
                 p.state++;
             }
@@ -3356,41 +3356,41 @@ class Solution {
 
 
 
-## cache实现bfs
+## buffer实现bfs
 ```json
 {
-    "cache队列容器实现":"cache_container"//out in
+    "buffer队列容器实现":"buffer_container midwear"//out in
 }
 ```
-- 记入每一层cache的数量每次刷新一层
+- 记入每一层buffer的数量每次刷新一层
 ```java
 class Solution {
     public List<List<Integer>> levelOrder(TreeNode root) {
-        ArrayDeque<TreeNode> cache = new ArrayDeque<>();
+        ArrayDeque<TreeNode> buffer = new ArrayDeque<>();
         List<List<Integer>> ans = new ArrayList<>();
         if(root==null) return ans;
         int cnt=0;
-        cache.offer(root);
+        buffer.offer(root);
         //state pointer 状态要立即更新好
-        cnt=cache.size();
-        while(cache.isEmpty()!=true){
+        cnt=buffer.size();
+        while(buffer.isEmpty()!=true){
             ArrayList<Integer> tmp = new ArrayList<>();
             //每次while循环刷新一层节点
             for(int i=0;i<cnt;i++){
-                TreeNode poll = cache.poll();
-                if(poll.left!=null) cache.offer(poll.left);
-                if(poll.right!=null) cache.offer(poll.right);
+                TreeNode poll = buffer.poll();
+                if(poll.left!=null) buffer.offer(poll.left);
+                if(poll.right!=null) buffer.offer(poll.right);
                 tmp.add(poll.val);
             }
             ans.add(tmp);
-            cnt=cache.size();
+            cnt=buffer.size();
         }
         return ans;
     }
 }
 ```
 
-### 数组实现队列cache
+### 数组实现队列buffer
 - 数组实现队列方便索引查询
 ```json
 {
@@ -3401,25 +3401,25 @@ class Solution {
 public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
         List<List<Integer>> ans=new ArrayList<>();
         if(root==null) return ans;
-        TreeNode[] cache = new TreeNode[2002];
+        TreeNode[] buffer = new TreeNode[2002];
         int l=0;int r=1;int cnt=1;
-        cache[l]=root;int flag=0;
+        buffer[l]=root;int flag=0;
         while(r>l){
             List<Integer> tmp = new ArrayList<>();
             //先收集这里数组构建的queue方便索引
             for(int i=l;i<r;i++){
-                tmp.add(cache[i].val);
+                tmp.add(buffer[i].val);
             }
             flag ^=1;
             for(int i=0;i<cnt;i++){
-                TreeNode poll = cache[l];
+                TreeNode poll = buffer[l];
                 l++;
                 if(poll.left!=null){
-                    cache[r]=poll.left;
+                    buffer[r]=poll.left;
                     r++;
                 }
                 if(poll.right!=null){
-                    cache[r]=poll.right;
+                    buffer[r]=poll.right;
                     r++;
                 }
             }
@@ -3436,31 +3436,31 @@ public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
 public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
         List<List<Integer>> ans=new ArrayList<>();
         if(root==null) return ans;
-        TreeNode[] cache = new TreeNode[2002];
+        TreeNode[] buffer = new TreeNode[2002];
         int l=0;int r=1;int cnt=1;
-        cache[l]=root;int flag=0;
+        buffer[l]=root;int flag=0;
         while(r>l){
             List<Integer> tmp = new ArrayList<>();
             //先收集这里数组构建的queue方便索引
             if(flag==0){
                 for(int i=l;i<r;i++){
-                    tmp.add(cache[i].val);
+                    tmp.add(buffer[i].val);
                 }
             }else{
                 for(int i=r-1;i>=l;i--){
-                    tmp.add(cache[i].val);
+                    tmp.add(buffer[i].val);
                 }
             }
             flag ^=1;
             for(int i=0;i<cnt;i++){
-                TreeNode poll = cache[l];
+                TreeNode poll = buffer[l];
                 l++;
                 if(poll.left!=null){
-                    cache[r]=poll.left;
+                    buffer[r]=poll.left;
                     r++;
                 }
                 if(poll.right!=null){
-                    cache[r]=poll.right;
+                    buffer[r]=poll.right;
                     r++;
                 }
             }
@@ -3475,35 +3475,35 @@ public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
 ```json
 {
     "记忆每个节点的位置":"memo_container",//方便计算宽度
-    "cache容器":"cache"
+    "buffer容器":"buffer"
 }
 ```
-- 将cache中的树节点在数组中的位置记录下来方便计算宽度
-- 数组实现队列cache,每次刷新一层
+- 将buffer中的树节点在数组中的位置记录下来方便计算宽度
+- 数组实现队列buffer,每次刷新一层
 ```java
 class Solution {
     public int widthOfBinaryTree(TreeNode root) {
         if(root==null) return 0;
         int ans=0;
-        TreeNode[] cache = new TreeNode[3004];
-        int[] memocache = new int[3004];
+        TreeNode[] buffer = new TreeNode[3004];
+        int[] memobuffer = new int[3004];
         int l=0;int r=0;int cnt=0;
-        cache[l]=root;r++;memocache[l]=0;
+        buffer[l]=root;r++;memobuffer[l]=0;
         cnt=1;
         while(r>l){
-            ans= Math.max(memocache[r-1]-memocache[l]+1,ans);
+            ans= Math.max(memobuffer[r-1]-memobuffer[l]+1,ans);
             for(int i=0;i<cnt;i++){
-                TreeNode poll=cache[l];
-                int memopoll=memocache[l];
+                TreeNode poll=buffer[l];
+                int memopoll=memobuffer[l];
                 l++;
                 if(poll.left!=null){
-                    cache[r]=poll.left;
-                    memocache[r]=memopoll*2+1;
+                    buffer[r]=poll.left;
+                    memobuffer[r]=memopoll*2+1;
                     r++;
                 }
                 if(poll.right!=null){
-                    cache[r]=poll.right;
-                    memocache[r]=memopoll*2+2;
+                    buffer[r]=poll.right;
+                    memobuffer[r]=memopoll*2+2;
                     r++;
                 }
             }
@@ -3517,7 +3517,7 @@ class Solution {
 #### [二叉树层序序列化和反序列化](https://leetcode.cn/problems/serialize-and-deserialize-binary-tree/)
 ```json
 {
-    "层序遍历队列容器":"cache",
+    "层序遍历队列容器":"buffer",
     "p作为状态指针游走":"move_pointer"
 }
 ```
@@ -3526,29 +3526,29 @@ class Solution {
 
 
 public class Codec {
-    public static TreeNode[] cache=new TreeNode[10004];
+    public static TreeNode[] buffer=new TreeNode[10004];
     // Encodes a tree to a single string.
     public String serialize(TreeNode root) {
         int l=0;int r=0;
         StringBuilder stringBuilder = new StringBuilder("");
         if(root==null) return "";
         stringBuilder.append(root.val+",");
-        cache[r++]=root;
+        buffer[r++]=root;
         while(l<r){
             int size=r-l;
             for(int i=0;i<size;i++){
-                TreeNode node=cache[l++];
+                TreeNode node=buffer[l++];
                 TreeNode left = node.left;
                 TreeNode right = node.right;
                 if(left!=null){
                     stringBuilder.append(left.val+",");
-                    cache[r++]=left;
+                    buffer[r++]=left;
                 }else{
                     stringBuilder.append("#,");
                 }
                 if(right!=null){
                     stringBuilder.append(right.val+",");
-                    cache[r++]=right;
+                    buffer[r++]=right;
                 }else{
                     stringBuilder.append("#,");
                 }
@@ -3556,7 +3556,7 @@ public class Codec {
         }
         return stringBuilder.toString();
     }
-    TreeNode[] rcache=new TreeNode[10004];
+    TreeNode[] rbuffer=new TreeNode[10004];
     // Decodes your encoded data to tree.
     public TreeNode deserialize(String data) {
         int l=0;int r=0;
@@ -3564,17 +3564,17 @@ public class Codec {
         String[] split = data.split(",");
         int p=0;
         TreeNode root = new TreeNode(Integer.parseInt(split[p]));
-        rcache[r++]=root;
+        rbuffer[r++]=root;
         while(l<r){
             int size=r-l;
             for(int i=0;i<size;i++){
-                TreeNode node = rcache[l++];
+                TreeNode node = rbuffer[l++];
                 p++;
                 if(split[p].equals("#")){
                     node.left=null;
                 }else {
                     TreeNode nodeleft = new TreeNode(Integer.parseInt(split[p]));
-                    rcache[r++]=nodeleft;
+                    rbuffer[r++]=nodeleft;
                     node.left=nodeleft;
                 }
                 p++;
@@ -3582,7 +3582,7 @@ public class Codec {
                     node.right=null;
                 }else {
                     TreeNode noderight = new TreeNode(Integer.parseInt(split[p]));
-                    rcache[r++]=noderight;
+                    rbuffer[r++]=noderight;
                     node.right=noderight;
                 }
             }
@@ -3674,7 +3674,7 @@ public class Codec {
 - 时间复杂度是o(n)
 - 
 
-## dr.∑∫积分 估计复杂度
+## relation.∑∫积分 估计复杂度
 - log1+log2+...+logn  is  ∫logn = nlogn
 - 上滤下滤来回两轮
 
@@ -3688,30 +3688,30 @@ public class Codec {
 ### [合并k个有序链表leetcode](https://leetcode.cn/problems/merge-k-sorted-lists/)
 ```json
 {
-    "优先级队列小根堆":"container.cache",
-    "不回退状态指针":"_pointer_container"//进入cache充当不回退指针
+    "优先级队列小根堆":"container.buffer",
+    "不回退状态指针":"_pointer_container"//进入buffer充当不回退指针
 }
 ```
 - 合并两个用不回退指针和链表模型
-- 注意进入cache充当不回退指针
+- 注意进入buffer充当不回退指针
 ```java
 public class Solution {
     public ListNode mergeKLists(ListNode[] lists) {
-        PriorityQueue<ListNode> cache = new PriorityQueue<>((a,b)->{return a.val-b.val;});
+        PriorityQueue<ListNode> buffer = new PriorityQueue<>((a,b)->{return a.val-b.val;});
         ListNode sentry = new ListNode(666, null);
         ListNode pre=sentry;
         for (ListNode i : lists) {
             if(i!=null){
-                cache.offer(i);
+                buffer.offer(i);
             }
             
         }
-        while(!cache.isEmpty()){
-            ListNode poll = cache.poll();
+        while(!buffer.isEmpty()){
+            ListNode poll = buffer.poll();
             pre.next=poll;
             pre=pre.next;
             if(pre.next!=null){
-                cache.offer(pre.next);
+                buffer.offer(pre.next);
             }
         }
         return sentry.next;
@@ -3808,7 +3808,7 @@ class MedianFinder {
 ```json
 {
     "解决依赖排序问题":null,//应用于包依赖的排序,也可以叫依赖排序
-    "具体实现":"cache_container"//第一个指针用于遍历节点,container的指针来遍历收集结果
+    "具体实现":"buffer_container midwear"//第一个指针用于遍历节点,container的指针来遍历收集结果
 }
 ```
 - 将入度为零的点加入队列然后out/in再将弹出节点的chid节点入度全都-1后为0的加入队列
@@ -3853,7 +3853,7 @@ class Solution {
 
 ### 习题
 #### [有顺序的依赖排序](https://www.luogu.com.cn/problem/U107394)
-cache容器由队列改为优先级队列
+buffer容器由队列改为优先级队列
 ```java
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -3864,7 +3864,7 @@ public class Main {
         int n=0;int m=0;
         in.nextToken();n=(int)in.nval;in.nextToken();m=(int)in.nval;
         ArrayList<ArrayList<Integer>> graph = new ArrayList<>();
-        PriorityQueue<Integer> cache = new PriorityQueue<>();
+        PriorityQueue<Integer> buffer = new PriorityQueue<>();
         int[] degree = new int[n + 1];
         //建图
         for(int i=0;i<n+1;i++){
@@ -3880,19 +3880,19 @@ public class Main {
         int anscnt=0;
         for(int i=1;i<n+1;i++){
             if(degree[i]==0){
-                cache.offer(i);
+                buffer.offer(i);
             }
         }
         int[] ans=new int[n];
         //依赖排序
-        while(!cache.isEmpty()){
-            Integer poll = cache.poll();
+        while(!buffer.isEmpty()){
+            Integer poll = buffer.poll();
             out.printf("%d ",poll);
             ans[anscnt++]=poll;
             for (Integer i : graph.get(poll)) {
                 degree[i]--;
                 if(degree[i]==0){
-                    cache.offer(i);
+                    buffer.offer(i);
                 }
             }
         }
@@ -4207,15 +4207,15 @@ class Solution {
 ## bfs
 ```json
 {
-    "宽度遍历":"mp memo_container cache_container",
+    "宽度遍历":"mp memo_container buffer_container midwear",
     "解决距离问题":"global"//一整层out
 }
 ```
-- mp遍历遍历完memo容器记入已经访问,加进cache容器里启动下一次遍历
-- 先自己进行第一次遍历,将头节点加进cache容器里才能启动out/in循环
+- mp遍历遍历完memo容器记入已经访问,加进buffer容器里启动下一次遍历
+- 先自己进行第一次遍历,将头节点加进buffer容器里才能启动out/in循环
 
 ### 多源bfs
-- 多个cache容器作用都是一样的就用一个即可
+- 多个buffer容器作用都是一样的就用一个即可
 
 ### 距离问题
 - 要求图边权相等
@@ -4232,8 +4232,8 @@ class Solution {
 ## dijkstra
 ```json
 {
-    "节点从未确定的集合通过中间层到以确定的集合":"midwear cache_container"
-     //两重贪心,父节点最短把我变短了进入cache,我又是cache最短的,进入S集合
+    "节点从未确定的集合通过中间层到以确定的集合":"midwear buffer_container midwear"
+     //两重贪心,父节点最短把我变短了进入buffer,我又是buffer最短的,进入S集合
 
 }
 ```
@@ -4271,21 +4271,21 @@ class Solution {
             graph.get(a).add(new int[]{b,c});
         }
         //
-        PriorityQueue<int[]> cache = new PriorityQueue<>(
+        PriorityQueue<int[]> buffer = new PriorityQueue<>(
                 (a,b)->{
                     return a[1]-b[1];
                 }
         );
         dist[k]=0;
         //坏堆问题
-        cache.offer(new int[]{k,0});
-        while(!cache.isEmpty()){
-            int[] poll = cache.poll();
+        buffer.offer(new int[]{k,0});
+        while(!buffer.isEmpty()){
+            int[] poll = buffer.poll();
             //out filter
             if(S[poll[0]]){
                 continue;
             }
-            //两重贪心,父节点最短把我变短了进入cache,我又是cache最短的,进入S集合
+            //两重贪心,父节点最短把我变短了进入buffer,我又是buffer最短的,进入S集合
             S[poll[0]]=true;
             for (int[] edge : graph.get(poll[0])) {
                 int v=edge[0];int w=edge[1];
@@ -4295,7 +4295,7 @@ class Solution {
                 if(tmp>=dist[v]) continue;
                 //这里一定要先更新dist因为优先级队列的性质只有加进去才会刷新
                 dist[v]=tmp;
-                cache.offer(new int[]{v,tmp});
+                buffer.offer(new int[]{v,tmp});
             }
         }
         int ans = Integer.MIN_VALUE;
@@ -4313,7 +4313,7 @@ class Solution {
 ## A*
 - 有dijkstra改编解决单单最短路径,启发式dj算法
 - dj算法是单源到所有点,为了加快找到目标点的最短路径
-优化中间层cache的cmp函数使得目标点在中间层中更靠前容易找到
+优化中间层buffer的cmp函数使得目标点在中间层中更靠前容易找到
 
 
 
@@ -4597,7 +4597,7 @@ class Solution {
 ```json
 {
      "滑动窗口":"partition_pointer nobacktracking_pointer",//维护的区域构建为[),左指针不回退
-     "积分再差分求k":"dr.∑∫",
+     "积分再差分求k":"relation.∑∫",
      "记录答案":"container.map_container"
 }
 
@@ -4649,7 +4649,7 @@ class Solution {
 # 单调栈
 ```json
 {
-    "解决凹凸问题":"dr.extrema",
+    "解决凹凸问题":"relation.extrema",
     "单调栈":"container",
     "重复元素修正":"reverse"//平定山峰从后往前遍历即可 1,2,2,2,0 最后一个2的答案0会直接向前传递所有2
 }
@@ -4667,7 +4667,7 @@ class Solution {
 ```json
 {
     "解决前缀查询问题":"prefix read",
-    "前缀树":"tree dr.prefix"
+    "前缀树":"tree relation.prefix"
 }
 - prefix read 使用场景为前缀查询 
 以前缀为查询条件的查询
@@ -4825,16 +4825,16 @@ class Solution {
         }
     }
     public static int find(int i){
-        ArrayDeque<Integer> cache = new ArrayDeque<>();
+        ArrayDeque<Integer> buffer = new ArrayDeque<>();
         int ans=0;
         int mp=i;
         while(father[mp]!=mp){
-            cache.push(mp);
+            buffer.push(mp);
             mp=father[mp];
         }
         ans=mp;
-        while(!cache.isEmpty()){
-            Integer pop = cache.pop();
+        while(!buffer.isEmpty()){
+            Integer pop = buffer.pop();
             father[pop]=ans;
         }
         return ans;
@@ -5350,7 +5350,7 @@ master公式 T(n)=2T(n/2)+O(n)  时间复杂度是O(nlogn)
 # 基数(桶)排序
 ```json
 {   "桶":"hub_container",//记忆要像桶这个模型倒入倒出起到集线器的作用
-    "前缀和函数优化桶":"dr.Σ∫",
+    "前缀和函数优化桶":"relation.Σ∫",
     "继承上一次排序的次序":"reverse"//因为前缀,所以排序的时候每个桶内先排大的,所以遍历原数组要从右往左遍历保证大的先排到,继承上次次序
 }
 ```
@@ -6592,8 +6592,8 @@ class Solution{
 ```json
 {
     "解决查询区间和问题":null,//前缀和解决查询区间和问题,实现原理是先积分,再积分函数相减得到区间和,∫f(b)-∫f(a) 得到a,b区间和
-    "积分数组":"dr.∫∑+.divide2subset sentry"
-    //dr.divide2subset i处积分值有i-1和arr[i]获得
+    "积分数组":"relation.∫∑+.divide2subset sentry"
+    //relation.divide2subset i处积分值有i-1和arr[i]获得
     //积分数组设置一个sum(0,)的sentry,因为经常需要查询[0,n]区间和问题方便查询
 }
 ```
@@ -6604,7 +6604,7 @@ class NumArray {
         //0sentry
         sum=new int[nums.length+1];
         for(int i=1;i<=nums.length;i++){
-            //dr.divide2subset
+            //relation.divide2subset
             sum[i]=sum[i-1]+nums[i-1];
         }
     }
@@ -6740,7 +6740,7 @@ class Solution {
 ```
 
 ### [良好上班的最长时间](https://leetcode.cn/problems/longest-well-performing-interval/)
-- 前缀和 data_mapping dr.continue_r nobacktracking_pointer map_container
+- 前缀和 data_mapping relation.continue_r nobacktracking_pointer map_container
 - 将>8映射到1 <=8映射到-1 
 - 最后原数组都是1,-1 所以生成的积分sum数组从0开始是"连续"的每次索引增加1 sum函数值仅能变化+1 -1,所以sum函数满足连续函数的介值定理
 - 因为每次遍历要寻找之前的所以用nobacktracking_pointer 不回退指针既优化了sum数组空间又解决了不访问之后数组的顺序问题
@@ -6784,13 +6784,13 @@ class Solution {
 # 差分微分
 
 
-# dr.prefix
+# relation.prefix
 
 ## 题目
 ### [接雨水](https://leetcode.cn/problems/trapping-rain-water/)
 ```json
 {
-    "前缀max后缀max":"dr.prefix+.divide2subset",
+    "前缀max后缀max":"relation.prefix+.divide2subset",
     "指针优化前后缀函数":"reduce_dim nobacktracking_pointer"
 }
 ```
@@ -6858,8 +6858,8 @@ https://www.bilibili.com/video/BV1Er421K7kF/
 https://oi-wiki.org/string/kmp/
 ```json
 {
-    "前缀算子π":"symmetry dr.prefix",
-    "π算子幂":"dr.divide2subset vector_space.pow_basis",
+    "前缀算子π":"symmetry relation.prefix",
+    "π算子幂":"relation.divide2subset vector_space.pow_basis",
     // "Π算子幂的边界判断":"vars_hubs move_pointer"
     //因为这俩很基础但在kmp体现的淋漓尽致所以指出来
 }
@@ -6884,7 +6884,7 @@ https://oi-wiki.org/string/kmp/
 ![alt text](image-7.png)
 发现成pow_basis幂级数关系,不用仔细考虑直接pow_basis上
 
-### symmetry dr.prefix
+### symmetry relation.prefix
 ![alt text](image-6.png)
 ![alt text](image-7.png)
 ```go
@@ -6961,7 +6961,7 @@ class Solution {
 # =================================================================== 动态规划
 - 动态规划就是将递归转化为数组(离散空间)上的算子例如数组上,所以任何动态规划都能转化成递归
 - 递归的某个子集重复计算且每个节点在一个数组(离散空间)上就可以转化成动态规划
-- dp=dc.divide2subset(dr.divide2subset)+重叠子问题+数组(离散空间)
+- dp=dc.divide2subset(relation.divide2subset)+重叠子问题+数组(离散空间)
 - 所以先写出来递归算法再把递归过程中的return转化为dp[i]=?; continue;在数组离散空间中反向迭代遍历即可
 
 # 一维动态规划
@@ -6996,7 +6996,7 @@ public static int fabbnoci(int n){
 ### [最低票价](https://leetcode.cn/problems/minimum-cost-for-tickets/)
 ```json
 {
-    "dp=dc.divide2subset(dr.divide2subset)+重叠子问题+数组(离散空间)":"dc.divide2subset dr.divide2subset"
+    "dp=dc.divide2subset(relation.divide2subset)+重叠子问题+数组(离散空间)":"dc.divide2subset relation.divide2subset"
 }
 ```
 - divide2subset子集分析
@@ -7060,7 +7060,7 @@ class Solution {
 ```
 
 ### [解码方法](https://leetcode.cn/problems/decode-ways)
-- dc.divide2subset dr.divide2subset state_filter reduce_dim
+- dc.divide2subset relation.divide2subset state_filter reduce_dim
 - divide2subset分析
 f(i)={
     1 if i=n;
