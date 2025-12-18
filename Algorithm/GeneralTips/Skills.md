@@ -650,6 +650,7 @@ f(N)={
 - 中间层
 - bfs和dijkstra都是T集合到S集合应用buffer容器作为中间层
 ## bfs
+- 未访问集合to收集集合,中间过程顺便mp遍历到visited改为true;
 未访问集合到已经访问且孩子也访问集合
 ## dijkstra
 T集合到S集合中间用buffer容器
