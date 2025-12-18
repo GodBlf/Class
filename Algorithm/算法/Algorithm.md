@@ -4211,8 +4211,31 @@ class Solution {
     "解决距离问题":"global"//一整层out
 }
 ```
+- 未访问集合to收集集合,中间过程顺便mp遍历到visited改为true;
 - mp遍历遍历完memo容器记入已经访问,加进buffer容器里启动下一次遍历
 - 先自己进行第一次遍历,将头节点加进buffer容器里才能启动out/in循环
+
+### 模板
+```cpp
+void bfs(vector<vector<int>>& graph, int root, vector<bool>& visited, vector<int>& S) {
+	visited[root] = true;
+	queue<int> buffer;
+	buffer.push(root);
+	while (!buffer.empty()) {
+		int front = buffer.front();
+		buffer.pop();
+		//to S集合
+		S.push_back(front);
+		for (auto& e : graph[front]) {
+			if (visited[e]) {
+				continue;
+			}
+			visited[e] = true;
+			buffer.push(e);
+		}
+	}
+}
+```
 
 ### 多源bfs
 - 多个buffer容器作用都是一样的就用一个即可
