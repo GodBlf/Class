@@ -3804,11 +3804,114 @@ class MedianFinder {
 - tree_arr.down 邻接表
 - link_arr 链式前向星
 
+### 习题
+### (down+up建图)[pintia 4.1列出叶子节点]
+```md
+4.1 列出叶结点
+分数 20
+作者 陈越
+单位 浙江大学
+
+对于给定的二叉树，本题要求你按从上到下、从左到右的顺序输出其所有叶结点。
+
+输入格式：
+首先第一行给出一个正整数 n（≤10），为树中结点总数。树中的结点从 0 到 n−1 编号。随后 n 行，每行给出一个对应结点左右孩子的编号。如果某个孩子不存在，则在对应位置给出 "-"。编号间以 1 个空格分隔。
+
+输出格式：
+在一行中按规定顺序输出叶结点的编号。编号间以 1 个空格分隔，行首尾不得有多余空格。
+
+输入样例：
+8
+1 -
+- -
+0 -
+2 7
+- -
+- -
+5 -
+4 6
+输出样例：
+4 1 5
+```
+- tree_arr.down+.up
+- 通过保存up信息实现从任意节点位置找到根节点
+```cpp
+#include<iostream>
+#include<vector>
+#include<stack>
+#include<string>
+#include<algorithm>
+#include <map>
+#include<queue>
+using namespace std;
+
+
+int main() {
+	cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	//
+	int n; cin >> n;
+	vector<vector<int>> tree(n, vector<int>(3, 0));
+    //0,1分别为左右孩子2是父节点up信息
+	for (int i = 0; i < n; i++) {
+		tree[i][2] = i;
+	}
+	for (int i = 0; i < n; i++) {
+		string left, right;
+		int l, r;
+		cin >> left >> right;
+		if (left == "-") {
+			l = -1;
+		}
+		else {
+			l = stoi(left);
+			tree[l][2] = i;
+		}
+		if (right == "-") {
+			r = -1;
+		}
+		else {
+			r = stoi(right);
+			tree[r][2] = i;
+		}
+		tree[i][0] = l; tree[i][1] = r;
+	}
+	int mp = 0;
+	while (true) {
+		if (tree[mp][2] == mp) {
+			break;
+		}
+		mp = tree[mp][2];
+	}
+	queue<int> buffer;
+	buffer.push(mp);
+	while (!buffer.empty()) {
+		int peek = buffer.front();
+		buffer.pop();
+		int l = tree[peek][0];
+		int r = tree[peek][1];
+		if (l != -1) {
+			buffer.push(l);
+		}
+		if (r != -1) {
+			buffer.push(r);
+		}
+		if (l == -1 && r == -1) {
+			cout << peek << " ";
+		}
+	}
+
+	
+
+	//
+}
+```
+
 ## 拓扑排序(依赖排序)
 ```json
 {
     "解决依赖排序问题":null,//应用于包依赖的排序,也可以叫依赖排序
-    "具体实现":"buffer_container midwear"//第一个指针用于遍历节点,container的指针来遍历收集结果
+    "具体实现":"buffer_container midwear"//未排序集合到0入度收集集合
 }
 ```
 - 将入度为零的点加入队列然后out/in再将弹出节点的chid节点入度全都-1后为0的加入队列
@@ -4204,6 +4307,27 @@ class Solution {
 #### [最小瓶颈树]()
 - 反证法:最小生成树=>最小瓶颈树(连通图的最大边值最小)
 
+## dfs
+```json
+{
+    "深搜":"function.divide tree.prune+.recover+.global memo_container"
+}
+```
+### 模板
+```cpp
+void dfs(vector<vector<int>> &graph, int root, vector<bool>& visited,vector<int>& collect) {
+	if (visited[root]) {
+		return;
+	}
+	visited[root] = true;
+	collect.push_back(root);
+	for (auto& e : graph[root]) {
+		dfs(graph, e, visited, collect);
+	}
+
+}
+```
+
 ## bfs
 ```json
 {
@@ -4241,9 +4365,34 @@ void bfs(vector<vector<int>>& graph, int root, vector<bool>& visited, vector<int
 - 多个buffer容器作用都是一样的就用一个即可
 
 ### 距离问题
-- 要求图边权相等
+- 要求无向图边权相等
 
-=
+#### 模板
+```cpp
+void bfs(vector<vector<int>>& graph, int root, vector<bool>& visited, vector<int>& S,int flag) {
+	visited[root] = true;
+	queue<int> buffer;
+	buffer.push(root);
+	while (!buffer.empty()) {
+		flag++;
+		for (int i = 0; i < buffer.size(); i++) {
+			int front = buffer.front();
+			buffer.pop();
+			//to S集合
+			S.push_back(front);
+			for (auto& e : graph[front]) {
+				if (visited[e]) {
+					continue;
+				}
+				visited[e] = true;
+				buffer.push(e);
+			}
+		}
+		
+	}
+}
+```
+
 
 
 ### 习题
@@ -4338,10 +4487,6 @@ class Solution {
 - dj算法是单源到所有点,为了加快找到目标点的最短路径
 优化中间层buffer的cmp函数使得目标点在中间层中更靠前容易找到
 
-
-
-## dfs
-- function.divide tree.prune+recover
 
 # ====================================================================================================================================== 高等数据结构
 
