@@ -1,5 +1,5 @@
-# C语法
-## 指针与引用
+
+# 指针与引用
 - java主引用数据类型辅基本数据类型,c正好相反
 - java中的引用数据类型在c中就是指针 Student* 可视作java中的类,c中的类是一个具体的变量
 例如java中的数组 Studeng[] 数组元素是一堆指向某块内存区域的指针 而c中Student*是元素是一块连续得内存区域里边就是Student
@@ -14,7 +14,7 @@ qsort(&arr[1],n-1,sizeof(Student),compare);
 ```
 - 指针相减 p+1 和 &p[1]一样 例如strstr,strtok中查找索引;
 
-## malloc 和new
+# malloc 和new
 Student[][] mat=new 
 
 ## malloc 堆和char str[44]
@@ -27,11 +27,23 @@ typedef struct element {
 	int val;
 	int index;
 }element;
+typedef struct node{
+	int v;
+	struct node* next;
+}node ;
 
 # c标准库
 ## 时间
 unix time_t->tm gmtime()->
 ## 字符串
+- strlen  
+- strcmp
+- strcmp(str1,str2) 1 前者greater  0一样大 -1 后者大 和 比较函数一样;
+- memset
+- sprintf 字符串拼接
+- strcpy(dest,src) 
+- strcat(dest,src) 将src追加到dest后彼岸
+- strstr(str,substr)在字符串中查找子串。如果找到，返回子串首地址；否则返回 NULL。
 字符串清空直接str[0]=0;
 .append -- sprintf+strcat  %lld
 .indexof -- strstr  返回的是一个指针 p-str指针相减是索引;
@@ -73,11 +85,18 @@ int  main() {
 System.arraycopy -- memcpy
 .fill -- memset 仅0可以
 
+### qsort
+int compare(const void * o1,const void * o2){
+    Student* s1=(Student * )o1;
+    Student* s2=(Student * )o2;
+    return s1->age-s2->age;
+}
+qsort(&arr[1],n-1,sizeof(Student),compare);
 
 ## I/O
 - reader.readLine() -- fgets() + strcspn()
 因为fgets会读入\n所以要用getchar过滤;
-- StringTokenizer--strtoken
+- StringTokenizer/StreamTokenizer--strtoken
 底层原理是在分割出加入'\0'所以可以token-str知道此时所在索引;
 str="hello fhhf",token=strtoken(str," ");token=strtoken(NULL," ");
 - 不建议使用scanf("%c")因为这个会读取\n等不良信息直接读取字符串;https://www.luogu.com.cn/problem/P1957
@@ -625,17 +644,21 @@ while(scanf!=EOF)来控制输入;
 - fgets(str,n,stdin) ab abc \n   "ab abc \n\0"   如果只读3个 "ab\0"
 去掉\n  可以  str[strcspn(str,'\n')]=\0;
 ## 字符串
-strlen  
+- strlen  
 - strcmp
-strcmp(str1,str2) 1 前者greater  0一样大 -1 后者大 和 比较函数一样;
+- strcmp(str1,str2) 1 前者greater  0一样大 -1 后者大 和 比较函数一样;
 - memset
-- sprintf
-- strcpy
+- sprintf 字符串拼接
+- strcpy(dest,src) 
+- strcat(dest,src) 将src追加到dest后彼岸
+- strstr(str,substr)在字符串中查找子串。如果找到，返回子串首地址；否则返回 NULL。
 ## math
 fabs()double abs () int
 ## 数组
 memset
 ## time;
+
+
 # 老翁凯C语言
 
 关系运算高于赋值低于算数运算
@@ -1123,5 +1146,4 @@ https://www.luogu.com.cn/contest/225636#problems
 https://www.luogu.com.cn/contest/234164#problems
 https://www.luogu.com.cn/contest/200845#problems
 
-# C语言标准库
-## 字符串
+
