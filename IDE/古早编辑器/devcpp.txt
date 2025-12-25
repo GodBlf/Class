@@ -23,3 +23,5 @@
 
 # 快捷键
 showcodecompletion提示改为ctrl+enter
+
+# 不建议使用万能头tm一堆bug老老实实写include
