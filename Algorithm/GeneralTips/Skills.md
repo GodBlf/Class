@@ -407,7 +407,7 @@ multidim->multi_return
 - 这是一个线性过程
 
 ### divide (divide to subset)分解到子集
-- divide 表示集合的划分 很自然的有分解到子集的意思
+- divide 表示集合的划分 很自然的有分解到子集的意思,partition是纯划分没有分解的意思
 将原集合问题分解为子集合问题:  P(n)=f(P(n-1),P(n-2),..) -> P=f(P)
 - f(S0)=∑f(Si)+f(Sb) 
 - 记忆图
