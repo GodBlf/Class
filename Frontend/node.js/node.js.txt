@@ -1,0 +1,6 @@
+js的虚拟机类似与java-jvm
+npm是下载js相关的包
+
+# 更新
+下载覆盖 改环境变量
+npm清理残留npm config delete prefix
