@@ -69,7 +69,7 @@ type这个是全等运算符,type Duration int  相当于Duration全等于int,�
 类型不能直接使用只能用他们创造新的变量例如 x:=&MyDVar{...},编译器会通过类型的信息给 变量分配空间
 - 函数也是个变量 func(int) int 是类型也存放在类型区
 func myfunction(x int) int{} 这是func(int) int 类型的一个实例变量
-
+- 函数调用底层是通过函数栈实现,调用函数入栈,return出栈.例如f(g(x)) ->f->g ; g return ->f ; f return ->
 ## pointer
 - 指针设计模式,不关心内部变量的创建直接传递来指针直接用
 - 控制反转:将组件之间依赖关系的创建和管理，以及程序流程的控制权，从应用程序代码本身转移到外部容器或框架。
