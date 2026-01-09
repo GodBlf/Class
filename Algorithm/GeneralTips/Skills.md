@@ -45,7 +45,8 @@ Skills->Algorithm ; Skills->JavaSE
     "set_theory":"math", //具体参见/Class/Math/集合论 
     "ram":"算法以计算机内存和集合论为基础",
     "var state":["variable is one field of memory","state is the variables' value " ],//variable是计算机内存ram的一块区域,具体取值是state,系统多个变量取值组合也可是系统整体状态
-    "function":"简单起见,类计算机io stack这种称作函数", 
+    "function":"简单起见,类计算机io stack这种称作函数,在计算机底层函数是通过函数栈来实现得", 
+    //函数调用底层是通过函数栈实现,调用函数入栈,return出栈.例如f(g(x)) ->f->g ; g return ->f ; f return ->
     "relation":"简单起见,类数学中研究的连续函数 order_set 点的集合叫做关系"
 }
 ```
