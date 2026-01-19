@@ -37,6 +37,7 @@
 - f2 shift f2 跳转问题
 
 # 工具栏快捷键
+- alt+f12 启动终端
 - alg+0 gitcommit
 - alt+9 git
 - alt+4,5,6 运行 debug 问题
