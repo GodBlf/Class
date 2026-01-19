@@ -55,27 +55,30 @@ gin框架路由仅注册传入回调函数,gin.run()路由请求方法再调用�
 
 
 
-# type-var pointer 类型-变量,依赖注入
-## type-var
+# type-var 
 - 变量
 变量就是内存ram中的一块区域
 var在内存中的大小表示包含什么变量,例如struct{int,string},在内存中很大var包含很多
-- 类型区
+- 类型
 为什么要有类型,因为方便编译器给变量分配内存空间,和运算规则;
 类型区存放着类型的信息有描述了某个变量的大小,适合的运算符等
 类型和 变量总是成对出现的,在项目中设计类型往往比变量重要
 - type运算符
 type这个是全等运算符,type Duration int  相当于Duration全等于int,将Duration类型再放到类型区中
 类型不能直接使用只能用他们创造新的变量例如 x:=&MyDVar{...},编译器会通过类型的信息给 变量分配空间
-- 函数也是个变量 func(int) int 是类型也存放在类型区
-func myfunction(x int) int{} 这是func(int) int 类型的一个实例变量
-- 函数调用底层是通过函数栈实现,调用函数入栈,return出栈.例如f(g(x)) ->f->g ; g return ->f ; f return ->
 ## pointer
+- 用有向图考虑 pvar-->var![alt text](image-2.png)
 - 指针设计模式,不关心内部变量的创建直接传递来指针直接用
 - 控制反转:将组件之间依赖关系的创建和管理，以及程序流程的控制权，从应用程序代码本身转移到外部容器或框架。
 直接用变量不关心创建,实现解耦
 - 依赖注入 (Dependency Injection - DI) 是一种设计模式，它的核心思想是：一个对象（或组件）不应该自行创建它所依赖的其他对象，而应该由外部注入(new函数传递参数)这些依赖。
 - new函数参数传递注入到结构体中实现依赖注入,wire框架实现具体的变量生成,符合ioc思想
+
+## 函数的底层也是变量
+- 因为函数和理论强相关详见(skills)
+- 函数也是个变量 func(int) int 是类型也存放在类型区
+func myfunction(x int) int{} 这是func(int) int 类型的一个实例变量
+- 函数调用底层是通过函数栈实现,调用函数入栈,return出栈.例如f(g(x)) ->f->g ; g return ->f ; f return ->
 
 ## lazy global
 - 有的时候注入的变量需要全局一份,可以通过lazy global来实现
