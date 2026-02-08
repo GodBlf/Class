@@ -14,6 +14,51 @@ Git Bash 是 Git 自带的一个命令行工具（CLI），它为 Windows 用户
 以下是关于 Git Bash 的详细讲解和使用教程：
 
 ---
+
+# 指针
+graph pointer
+head_pointer branch_pointer 
+commit:linknode
+
+# HEAD 指针
+git switch/checkout bugFix //头指针调到bugfix这个分支指针上
+
+# 分支指针
+## 创建
+git branch bugFix
+
+## 移动
+git branch -f main HEAD~3 //将main分支移动到HEAD向上偏移3的位置
+
+# 提交
+git commit 快照
+
+# 合并
+git switch main;git merge bugFix //讲bugFix合并到当前分支
+
+# 变基:线性合并
+git rebase main
+
+# 相对引用
+git checkout bugFix~2  //分支bugFix向上偏移2
+git checkout HEAD^ //HEAD指针指向的向上偏移1
+
+# 撤销
+## 分支移动+垃圾回收
+git reset main~1
+:
+git switch main~1;git branch -f main HEAD
+
+## 远程撤销
+git revert HEAD
+
+# 拷贝提交
+git cherry-pick branch1 branch2~1 branch3 //将3个提交按顺序增加到head指针处
+
+# 交互变基
+git rebase -i
+
+
 ## Git gpt
 ### 1. **Git Bash 的安装**
 - **下载**：从 [Git 官网](https://git-scm.com/) 下载适合你操作系统的 Git 安装包。
