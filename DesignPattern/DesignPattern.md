@@ -6,6 +6,8 @@
 ```go
 func NewXxxVar(&XxxCfg{})
 ```
+
+
 ## 函数生成器
 - 常用于钩子函数的注册
 - 解决的问题:钩子函数通常被框架限制类型所以,通过函数生成器闭包的形式可以传递额外自定义信息
@@ -50,9 +52,30 @@ gin框架路由仅注册传入回调函数,gin.run()路由请求方法再调用�
 - 解决的问题:钩子函数通常被框架限制类型所以,通过函数生成器闭包的形式可以传递额外自定义信息
 
 # singleton 单例设计模式
-- 设计global全局变量和initialize初始化函数,程序或者测试运行前加载initialize初始化全局变量和全局运行环境
-- 单例设计模式和依赖注入这两个互为反,全局的工具性的变量设置为单例执行前初始化,其他需要用到的时候在注入是依赖注入
+- 设计global全局变量和initialize初始化函数
+- 生成器new和init的区别是从无到有 和 对全局变量加信息
+## eager init
+- 对全局变量立即初始化
+## lazy init
+- 懒汉初始化,等到使用单例变量才初始化返回这个单例
+- 每次使用时假设未进行init,每次都init返回这个全局变量进行使用
+- go的 sync.once天然支持,在多协程（Goroutines）并发调用的情况下，sync.Once 保证了初始化逻辑（Do 内部的匿名函数）有且仅执行一次。
+```go
+var(
+    singleton *type
+    singleton_once sync.Once{}
+)
 
+func InitSingleton() *type{
+    //lazy init 懒初始化
+    singleton_once.Do(func(){
+        //...
+        sinleton=...
+    })
+    return singleton 
+}
+
+```
 
 
 # type-var 
@@ -80,7 +103,8 @@ type这个是全等运算符,type Duration int  相当于Duration全等于int,�
 func myfunction(x int) int{} 这是func(int) int 类型的一个实例变量
 - 函数调用底层是通过函数栈实现,调用函数入栈,return出栈.例如f(g(x)) ->f->g ; g return ->f ; f return ->
 
-## lazy global
+## dustbin
+### lazy global
 - 有的时候注入的变量需要全局一份,可以通过lazy global来实现
 - 用lazy global的方式实现优化依赖注入,将变量设置为懒全局变量仅在需要的时候使用,
 具体实现方式用new once方式实现
