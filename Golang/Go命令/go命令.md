@@ -27,7 +27,7 @@ go env -w GOPROXY=https://goproxy.cn,direct
 -v: 打印编译时所涉及的包名。
 -ldflags "-s -w": 减小可执行文件大小，去除调试信息。
 -tags <tag-name>: 根据构建标签选择性地编译代码。
-
+- go install 也能实现编译go build 和 go install 的核心区别在于编译后的成果物（Executable）放到了哪里。
 # go get
 下载添加依赖
 
