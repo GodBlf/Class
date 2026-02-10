@@ -27,29 +27,25 @@ func NewRegexFilterHook(pattern string) gin.HandlerFunc {
 gin.get("/",NewRegexFilterHook("test"))
 ```
 
-# hook(钩子)
+# callback(回调函数)
 - 框架
 you call library , framework call you
 you call library function,framework call your function
-框架是基于hook模式建立的
 
-- 系统运行时执行注册的hook函数
-```mermaid
-graph LR
-A(System)-->|call_back|B((Hook))
-A-->|call_back|C((Hook))
-A-->|call_back|D((....))
-E(HookRegister)
-B<-->E
-C<-->E
-D<-->E
-
+- 回调函数
+将函数作为参数传递,注册到框架中,框架触发后自动调用此函数
+形象:先注册好函数,等触发后在回来调用这个函数
+```go
+func NewFunc() gin.HandlerFunc{
+    return func(ctx *gin.Context){
+        //...
+    }
+}
+gin.Get("/",NewFunc())
+//...
+gin.Run(":8080")
 ```
 
-- callback实现
-gin框架路由仅注册传入回调函数,gin.run()路由请求方法再调用注册的回调函数,hook会传递一个框架参数方便hook函数和框架的通信
-
-- 解决的问题:钩子函数通常被框架限制类型所以,通过函数生成器闭包的形式可以传递额外自定义信息
 
 # singleton 单例设计模式
 - 设计global全局变量和initialize初始化函数
