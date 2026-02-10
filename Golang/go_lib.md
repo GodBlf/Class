@@ -6,7 +6,7 @@ wire(编译前依赖注入)需要自己梳理依赖关系
 dig(反射依赖注入)
 
 # 测试
-gomock(mock接口测试) testify(断言库)
+gomock(mock接口测试) testify(断言库) goconvey
 
 # 配置管理:
 viper
@@ -29,6 +29,7 @@ nhooyr/websocket
 
 # json:
 标准库-json
+字节: sonic
 序列化反序列化-easyjson
 解析string([]byte)-gjson
 
