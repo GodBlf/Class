@@ -17,7 +17,7 @@ pointer,move(汇编),ram等
 Skills->Algorithm ; Skills->JavaSE
 - math_refactor是公理体系的公理;Skills里的例如nobacktracking_pointer等都是定理
 
-# math_refactor
+# cs_axiom
 ```json
 {
     "set_theory":"math", //具体参见/Class/Math/集合论 
@@ -50,8 +50,6 @@ Skills->Algorithm ; Skills->JavaSE
     //type方便编译器分配给变量大小和运算规则,variable是计算机内存ram的一块区域,具体取值是state,系统多个变量取值组合也可是系统整体状态
     "pointer":"a var stores the memory address of another variable",
     //directed graph模型 方便变量的传递
-    //
-    //
     "function":"简单起见,类计算机io stack这种称作函数,在计算机底层函数是通过函数栈来实现得", 
     //函数调用底层是通过函数栈实现,调用函数入栈,return出栈.例如f(g(x)) ->f->g ; g return ->f ; f return ->
     "relation":"简单起见,类数学中研究的连续函数 order_set 点的集合叫做关系"
@@ -103,7 +101,7 @@ Skills->Algorithm ; Skills->JavaSE
 
 # arr
 - 抽象数组,将数组构造成很多数据结构
-- 本质是将数组的索引看作vertex
+- 本质是将数组的索引看作vertex,和graph图论相关
 
 ## link_arr
 - 将数组构造成链表结构方便用链表方法解题
@@ -380,13 +378,17 @@ public static void partition2(int[] arr, int l, int r, int x) {
 
 
 
-# 递归/分治(divide and conquer dc)
+# 递归/分治(recursion/divide and conquer)
 ```json
 {
-    "divide and conquer":"function tree",
+    "recursion/divide and conquer":"function tree",
 }
 ```
-- 递归函数本质就是在问题集合上的算子,这个集合是可分子集的
+## 
+- self-reference 自指一直是数学,逻辑学,哲学容易引发悖论的危险东西,递归就是函数的自指自然很难以理解,到目前位置都没找到好理论理解递归,我也叫他递归诅咒
+计算机的递归函数通过self-call调用自己,收敛,基例,实现良性的递归使用
+- 通过对计算机两大神器"函数"和"树"来理解递归
+- 递归函数本质就是在问题集合上的函数,这个集合是可分子集的
 ![alt text](image-13.png)
 - 先讨论1维
 再讨论多维
@@ -398,7 +400,6 @@ multidim->multi_return
 ## function (计算机函数层面)
 - 以下为构建dc的计算机函数的过程先divide to subset构建P=f(P) 再baseset 再考虑多返回多维问题
 之后再考虑计算机底层树函数栈的递归过程
-- 这是一个线性过程
 
 ### divide (divide to subset)分解到子集
 - divide 表示集合的划分 很自然的有分解到子集的意思,partition是纯划分没有分解的意思
@@ -658,7 +659,7 @@ f(N)={
 例如 归并排序题目先排序方便将来的统计
 例如 缺失的数字发货到对应位置方便将来状态直接划走
 
-# midwear
+# midware
 ![alt text](image-14.png)
 - 中间层:两个集合间通过中间层联系起来
 - bfs和dijkstra都是T集合到S集合应用buffer容器作为中间层
@@ -753,7 +754,7 @@ int main(){
 - 二维栈(最大频率栈),用栈,栈中元素是栈(栈套栈),类比向量空间
 
 ## buffer_container
-缓冲容器,经常作为midwear中间层使用
+缓冲容器,经常作为midware中间层使用
 ### start
 需要手动遍历将头节点放入buffer容器中才能启动out/in循环
 ### cache旧理解
