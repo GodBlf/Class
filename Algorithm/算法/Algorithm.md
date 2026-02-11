@@ -2621,7 +2621,7 @@ class Solution {
 ```
 
 #### [判断完全二叉树](https://leetcode.cn/problems/check-completeness-of-a-binary-tree/)
-- buffer_container midwear flag全局标记变量
+- buffer_container midware flag全局标记变量
 - 判断标准
 1. 左空右不空直接false
 2. 孩子不全(左有,或全没有)后边遇到的都是叶子节点用flag全局标记实现
@@ -3359,7 +3359,7 @@ class Solution {
 ## buffer实现bfs
 ```json
 {
-    "buffer队列容器实现":"buffer_container midwear"//out in
+    "buffer队列容器实现":"buffer_container midware"//out in
 }
 ```
 - 记入每一层buffer的数量每次刷新一层
@@ -3911,7 +3911,7 @@ int main() {
 ```json
 {
     "解决依赖排序问题":null,//应用于包依赖的排序,也可以叫依赖排序
-    "具体实现":"buffer_container midwear"//未排序集合到0入度收集集合
+    "具体实现":"buffer_container midware"//未排序集合到0入度收集集合
 }
 ```
 - 将入度为零的点加入队列然后out/in再将弹出节点的chid节点入度全都-1后为0的加入队列
@@ -4331,7 +4331,7 @@ void dfs(vector<vector<int>> &graph, int root, vector<bool>& visited,vector<int>
 ## bfs
 ```json
 {
-    "宽度遍历":"mp memo_container buffer_container midwear",
+    "宽度遍历":"mp memo_container buffer_container midware",
     "解决距离问题":"global"//一整层out
 }
 ```
@@ -4404,7 +4404,7 @@ void bfs(vector<vector<int>>& graph, int root, vector<bool>& visited, vector<int
 ## dijkstra
 ```json
 {
-    "节点从未确定的集合通过中间层到以确定的集合":"midwear buffer_container midwear"
+    "节点从未确定的集合通过中间层到以确定的集合":"midware buffer_container midware"
      //两重贪心,父节点最短把我变短了进入buffer,我又是buffer最短的,进入S集合
 
 }
