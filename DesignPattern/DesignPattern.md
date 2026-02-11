@@ -131,7 +131,7 @@ func NewServiceImpl(d InterfaceOrImpl){
 
 详见wire
 
-# midwear(中间层)
+# midware(中间层)
 - 封装具体实现,仅能通过中间层调用实现,实现抽象,扩展,通信,缓冲等
 
 ## 接口
@@ -141,7 +141,7 @@ abstract抽象中文垃圾翻译,改成摘要,提取一个物体的关键部分�
 - 给具体的变量实现加一个中间层,这个中间层是函数的集合,调用变量仅能通过接口 
 - 简化,从var operator tree角度思考面向接口编程
 - type之类的struct interface type []int等都是反应变量的内部情况包含什么,方法就是对应的operator
-- interface是一个tree他链接这多个实现的变量,父节点是midwear子节点是具体的实现
+- interface是一个tree他链接这多个实现的变量,父节点是midware子节点是具体的实现
 - 因为调用具体实现需要通过接口所以生成接口变量的New由配置好的wire框架实现,在wire框架中配置生成接口变量所需的所有实现和接口;
 
 ## 函数栈中间件
