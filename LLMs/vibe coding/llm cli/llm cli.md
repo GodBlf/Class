@@ -47,25 +47,181 @@ settings.json
 复制配置
 {
   "env": {
-    "ANTHROPIC_API_KEY": "粘贴为Claude Code专用分组令牌key",
-    "ANTHROPIC_BASE_URL": "https://sg.instcopilot-api.com",
-    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "32000",
-    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
-  },
-  "permissions": {
-    "allow": [],
-    "deny": []
-  },
-  "apiKeyHelper": "echo '粘贴为Claude Code专用分组令牌key'",
-  "model"="sonnet"
+    "ANTHROPIC_AUTH_TOKEN": "令牌key",
+    "ANTHROPIC_BASE_URL": "https://***.com"
+  }
 }
 
-4. claude 启动
+1. claude 启动
+
+
+# gemini cli
+- npm
+npm install -g @google/gemini-cli
+- config
+%userprofile%/.gemini 下的.env 和 settings.json
+
+```json
+{
+  "ide": {
+    "enabled": true
+  },
+  "security": {
+    "auth": {
+      "selectedType": "gemini-api-key"
+    }
+  }
+}
+```
+```.env
+GOOGLE_GEMINI_BASE_URL=https://.../gemini
+GEMINI_API_KEY=sk-...
+GEMINI_MODEL=gemini-3-pro-preview
+```
+
 
 # codex
 ## 配置
 - 配置文件位置%userprofile%/.codex 的 auth.json config.toml
 - 修改配置文件和环境变量可以使用第三方api
+```config.toml
+
+model_provider = "IkunCoding"
+model = "gpt-5.3-codex"
+model_reasoning_effort = "xhigh"
+
+web_search = "live"
+network_access = "enabled"
+
+disable_response_storage = true
+approval_policy = "untrusted"
+sandbox_mode = "danger-full-access"
+model_verbosity = "high"
+collaboration_mode = true
+model_supports_reasoning_summaries = true
+
+[model_providers.IkunCoding]
+name = "ikun"
+base_url = "https://newapi.sorai.me/v1"
+wire_api = "responses"
+requires_openai_auth = true
+
+[features]
+shell_snapshot_tool = true
+powershell_utf8 = true 
+shell_snapshot = true
+collaboration_modes = true
+steer = false
+unified_exec = false
+
+
+
+```
+```json
+{
+  "OPENAI_API_KEY": "粘贴为CodeX专用分组令牌key"
+}
+```
+
 ## node.js
 npm下载
 npm install -g @openai/codex
+
+## 命令
+- ! 命令行语句
+- @文件 常和 ctrl+j(回车) 搭配使用
+- esc esc回滚 搭配git回滚
+- ctrl + g 打开外部编辑器
+- shift tab 默认模式/plan 模式切换 ; 需要配置collaboration_modes = true
+
+
+- /resume 打开近期的对话
+- /agent 切换subagent
+### 上下文相关
+- /compact "压缩策略"
+- ctrl+t 预览上下文记录(ctrl+o是cc的)
+
+## ask-plan-edit mode
+- codex将ask和edit功能合为一体了
+
+# 外部编辑器配置
+- 方便编辑提示词
+- 快捷键 ctrl+g
+```md
+使用 Ctrl+G 打开外部编辑器 （Claude：就这？）
+windows 用户先设置编辑器 (举例使用记事本)
+
+- bash
+echo 'export EDITOR=notepad' >> ~/.bashrc
+source ~/.bashrc
+
+- powershell
+创建配置文件（如果已存在则不会覆盖）
+if (!(Test-Path $PROFILE)) { New-Item -Type File -Path $PROFILE -Force }
+
+打开配置文件
+
+notepad $PROFILE
+
+添加配置
+
+$env:EDITOR="notepad"
+
+重启 powershell
+```
+
+
+# ask-plan-edit mode
+- 软件开发流程
+分析项目->架构->代码实现
+## plan mode
+- plan mode很重要,用于新增重构等
+- llm交互询问,会给出实施方案,达成共识后再进入edit mode
+
+# 项目结构
+my-project/
+├── .agents/             # 存放核心逻辑（不常直接阅读）gemini-cli是.gemini/
+│   ├── skills/          # 各种技能定义
+│   └── agents/          # subagents
+├── AGENTS.md            # Agent 系统的全局说明（Codex 的导航地图） gemini-cli 是 GEMINI.md
+├── README.md            # 项目通用说明
+└── src/                 # 业务代码
+
+# AGENTS.md/GEMINI.md/CLAUDE.md
+- 是给llm-cli看的项目说明书,开发手册
+
+# skills
+my-tool/                   # skill包/
+├── SKILL.md               # SKILL.md (Required: instructions + metadata / 必需：说明 + 元数据)
+├── scripts/               # 脚本/ (Optional: executable code / 可选：可执行代码)
+├── references/            # 参考/ (Optional: documentation / 可选：文档)
+├── assets/                # 资产/ (Optional: templates, resources / 可选：模板、资源)
+└── agents/                # 代理人/
+    └── openai.yaml        # (Optional: appearance and dependencies / 可选：外观和依赖项)
+
+  
+- skill包名小写,SKILL.md文件大写,包结构和golang的包结构类似
+- SKILL.md文件元数据要包含name字段(值和包名一致),description字段
+- 例如 .agents/skills/pdf/SKILL.md
+```md
+---
+name: "pdf"
+description: "Use when tasks involve reading, creating, or reviewing PDF files where rendering and layout matter; prefer visual checks by rendering pages (Poppler) and use Python tools such as `reportlab`, `pdfplumber`, and `pypdf` for generation and extraction."
+---
+
+# PDF Skill
+
+## When to use
+
+## Workflow
+
+## ...
+
+## Final checks
+
+```
+
+# subagent
+- 不污染主进程上下文的隔离的子进程llm cli
+- 创建和skill类似 路径 /.agents/agents/subagent1.md 元数据包含name,description字段
+- /agent 切换subagent命令
