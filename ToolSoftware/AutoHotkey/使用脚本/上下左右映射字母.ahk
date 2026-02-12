@@ -1,0 +1,30 @@
+﻿; 禁用 CapsLock 原功能
+SetCapsLockState, AlwaysOff
+CapsLock::Return
+
+; 封装一个函数，用 CapsLock+方向键，根据 Shift/Ctrl 状态发送不同的组合
+CapsNav(key) {
+    ; 检查修饰键状态
+    shift := GetKeyState("Shift", "P")
+    ctrl  := GetKeyState("Ctrl", "P")
+
+    sendStr := ""
+    if (ctrl)
+        sendStr .= "^"
+    if (shift)
+        sendStr .= "+"
+
+    ; 拼接并发送
+    Send % sendStr "{" key "}"
+}
+
+; ---------------- 方向键/导航绑定 ----------------
+CapsLock & j::CapsNav("Left")
+CapsLock & l::CapsNav("Right")
+CapsLock & i::CapsNav("Up")
+CapsLock & k::CapsNav("Down")
+
+CapsLock & u::CapsNav("Home")
+CapsLock & o::CapsNav("End")
+CapsLock & h::CapsNav("PgUp")
+CapsLock & n::CapsNav("PgDn")
