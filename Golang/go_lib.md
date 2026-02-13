@@ -3,7 +3,7 @@ zap
 
 # 依赖注入:
 wire(编译前依赖注入)需要自己梳理依赖关系
-dig(反射依赖注入)
+fx(基于dig 运行时反射)
 
 # 测试
 gomock(mock接口测试) testify(断言库) goconvey
