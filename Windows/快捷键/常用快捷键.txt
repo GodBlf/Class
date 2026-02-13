@@ -32,6 +32,7 @@ win+x A 快速启动管理员powershell
 cmd / powershell
 shell:startup 打开开机自启文件夹
 control 控制面板
+env 打开环境变量
 
 # 资源管理器类
 alt+enter:打开文件属性
