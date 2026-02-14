@@ -127,21 +127,31 @@ unified_exec = false
 npm下载
 npm install -g @openai/codex
 
+## 历史对话记录
+
+
 ## 命令
 - ! 命令行语句
 - @文件 常和 ctrl+j(回车) 搭配使用
-- esc esc回滚 搭配git回滚
 - ctrl + g 打开外部编辑器
 - shift tab 默认模式/plan 模式切换 ; 需要配置collaboration_modes = true
-
-
-- /resume 打开近期的对话
+  
+- /new cc的/clear 清空上下文
 - /agent 切换subagent
+
+### 对话历史记录相关
+- /resume 打开近期的对话 /fork 分叉一个近期对话
+- 对话历史记录存在%userprofile%/.codex/sessions(存储详细)  和 %userprofile%/.codex/history.jsonl(存储概要)中
+- 终端丢失codex可以通过codex resume <SESSION_ID>,手动恢复对话 e.g. codex resume 019c511e-98fe-7ad1-9f90-ec45173b6cb0
+- codex fork <session_id> 可以分叉一个对话
+
 ### 上下文相关
 - /compact "压缩策略"
 - ctrl+t 预览上下文记录(ctrl+o是cc的)
+- esc esc回滚 搭配git回滚
 
-## ask-plan-edit mode
+
+## ask->plan->edit mode
 - codex将ask和edit功能合为一体了
 
 # 外部编辑器配置
@@ -169,14 +179,6 @@ $env:EDITOR="notepad"
 
 重启 powershell
 ```
-
-
-# ask-plan-edit mode
-- 软件开发流程
-分析项目->架构->代码实现
-## plan mode
-- plan mode很重要,用于新增重构等
-- llm交互询问,会给出实施方案,达成共识后再进入edit mode
 
 # 项目结构
 my-project/
@@ -225,3 +227,14 @@ description: "Use when tasks involve reading, creating, or reviewing PDF files w
 - 不污染主进程上下文的隔离的子进程llm cli
 - 创建和skill类似 路径 /.agents/agents/subagent1.md 元数据包含name,description字段
 - /agent 切换subagent命令
+
+# ask->plan->edit mode
+- 软件开发流程
+分析项目->架构->代码实现
+## plan mode
+- plan mode很重要,用于新增重构等
+- llm交互询问,会给出实施方案,达成共识后再进入edit mode
+
+# workflows
+- 构建项目AGENTS.md .agent/  .agents/skills  
+- ask->plan->edit
