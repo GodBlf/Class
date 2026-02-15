@@ -1,3 +1,6 @@
+# 后端开发常用库
+gin,gorm,zap,lumberjack,viper,fx,jwt,go-redis,tesify,gomock,json or sonic(bytedance/sonic),nhooyr
+
 # 日志
 zap lumberjack(日志切割)
 
