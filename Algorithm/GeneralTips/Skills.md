@@ -86,7 +86,10 @@ Skills->Algorithm ; Skills->JavaSE
 进行问题解决
 - 研究vertex集合和edge集合
 - edge可看作点集合到自身的映射 self operator
-### ring
+## DAG
+- 有向无环图
+
+## ring
 - 置换是集合x到自身的双射
 - 用图表示
 点是集合x 所有点都在环内的图是置换
@@ -679,7 +682,7 @@ http://xmuoj.com/problem/LQ386
 # container
 - 构造的所有容器都要全面维护,如果为空就要移出全面考虑,等boundary边界条件
 - 队列,栈,优先级队列等都是常用的container
-- problem->container->slice,map,tree,vertexedge...
+- problem->container->slice,map,tree,graph...
 ## new_container
 对某个对象进行操作的时候,最好把结果弄到一个new的对象上例如矩阵转置结果,new在一个新矩阵里否则原矩阵操作困难;
 ```c
