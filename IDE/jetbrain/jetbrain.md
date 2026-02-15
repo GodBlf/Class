@@ -17,8 +17,9 @@
 1. 万能快捷键 alt+enter
 2. f2找到下一个错误,shift+f2找到上一个错误
 3. .var  .if .arg
-5. fori  forr(逆序)   .for  .fori  .forr;
-例如对一个list集合的遍历  list.for  ; 
+5. golang .forr是常用的 .for是i:=range仅有索引 .forr是 i,v:=range 包含索引和值的迭代 
+java fori  forr(逆序)   .for  .fori  .forr; 例如对一个list集合的遍历  list.for  ; 
+                  
 1. ctrl z  ctrl shift z  ctrl c x v  ctrl /  ctrl b ctrl f r
 2. ctrl d  alt+shift+↑↓;
 3.  ctrl alt shift t   与 ctrl alt t 包围代码
@@ -35,6 +36,7 @@
 - ctrl+i 实现接口 implements,golangd直接点击
 - alt+ctlr+m 抽取方法
 - f2 shift f2 跳转问题
+- shift+f6重构 笔记本shift+f6失灵了改成 ctrl+shfit+f6
 
 # 工具栏快捷键
 - alt+f12 启动终端
