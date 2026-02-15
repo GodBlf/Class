@@ -6,3 +6,6 @@ unmarshal这一步必须封装在结构体可以用匿名结构体
 
 # gjson库
 对字符串json的轻量解析
+
+# sonic库
+- 用法和json库一样,性能提升
