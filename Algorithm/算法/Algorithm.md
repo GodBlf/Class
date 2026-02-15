@@ -6881,6 +6881,7 @@ public class Main {
 ```
 
 ### [累加和为k的子串数量](https://leetcode.cn/problems/subarray-sum-equals-k/)
+- map_container nb_pointer
 - 前缀和 nobacktracking_pointer 不回退指针既优化了sum数组空间又解决了顺序问题防止出现长度为0子串的情况,喵!
 ```java
 class Solution {
