@@ -1,5 +1,5 @@
 # 后端开发常用库
-gin,gorm,zap,lumberjack,viper,fx,jwt,go-redis,tesify,gomock,json or sonic(bytedance/sonic),nhooyr
+gin,gorm,zap,lumberjack,viper,fx,jwt,go-redis,tesify,gomock,json or sonic(bytedance/sonic),coder,samber/lo
 
 # 日志
 zap lumberjack(日志切割)
@@ -28,7 +28,8 @@ gin gorm gofram iris wire jwt
 gorm
 
 # websocket:
-nhooyr/websocket
+coder/websocket
+gorilla/websocket
 
 # json:
 标准库-json
@@ -44,6 +45,9 @@ eino go-openai
 
 # 命令行
 cobra
+
+# 流stream处理
+samber/lo
 
 # 
 API:

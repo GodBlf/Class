@@ -1,27 +1,44 @@
----
-{
-    "dependency":"class/java/java_se"
-}
----
-# goの简化
+
+# goBoot
 ```json
 {
-    "x:=&type{:}"//{}是在内存中生成变量var相当于java中的new 用json赋值方法
+    "x:=&type{:}"//{}是在内存中生成变量var相当于java中的new 用is赋值方法
 }
 
 ```
+### 赋值格式讨论
+- is格式, var is what/var : 7,
+```go
+tmp:=&user{
+    name: "mike",
+    age: 10,
+}
+```
+- json格式, 字段是字符串
+```json
+{
+    "name":"mike",
+    "age":12
+}
+```
+- yml格式, 极其简化字段和值都不考虑类型
+```yml
+redis: 
+    passwd: 123
+    db: 0
+```
 
-## dustbin
+### dustbin
 ```json
 {
     "x:=newfunc()":":=()", //1
-    "x:=&json{:}":":=&{}"//2
+    "x:=&is{:}":":=&{}"//2
     //都表示在内存ram中开辟变量var的意思
 }
 
 ```
 - go中()是函数 函数类型 {}是生成
-{}用json格式初始化 : 是 is
+{}用is格式初始化 : 是 is
 - 万能:= go强调变量名称弱化类型后置
 :=&struct{} go自动解引用指针推荐传指针
 :=newfunc() 因为go的临时内存无法寻址所以函数返回的直接:=不用考虑& 即便()出来是值也没关系传递的时候&取地址就可以;
@@ -60,67 +77,40 @@ Logger.Info(
 - 简化type struct type interface 里不用加var和func 因为外边已经有type了
 
 - 包一般小写命名
-## 字节
+### 字节
 golang以字节为底层很多都得转成底层[]byte进行操作
 - json.marshal()求结构体字节,[]byte()强转为字节
 - sha256.sum([]byte)加密某个字节
 
-# math_refactor
-```json
-{
-    "set":"math", //具体参见/Class/Math/集合论
-    "variable":"one of set",
-    "state":"variables'value" ,//一组变量具体取值的集合
-    "function":{
-        "math":"input and output",//数学函数映射定义 参数是变量的副本 stack in math
-        "stack":"operate and return when args'state"//底层函数栈,返回函数栈有值
-
-    }
-
-    //记忆:variable->state   function->math and stack->input output operate
-}
-```
-```json
-{
-    "set":"",
-    "variable and function set":"class",
-    "function set":"interface",
-    "variable set":"struct"
-}
-```
-
-# 语言设计哲学
-- Less can be more
-gofmt .go
-
-# 内存
-## java
+# 基础
+## 内存
+### java
 - java全是引用数据类型
 - java 直接new
-## := &
+### := &
 - go中常用值,仅传递参数和内存大的时候用指针
 h *IntHeap 指针声明
 *p 指针使用
 &p 指针获取
-### 逃逸分析
+#### 逃逸分析
 - go中内存栈和堆开辟内存会被编译器优化所以直接:=生成值
 ```golang
 p := Person{
     Name:"Jane",
-    Age:10        //json格式赋值
+    Age:10        //is格式赋值
 }
 f(&p)  //直接&变量使用指针
 
 ```
-### 最佳实践
-- x:=&json{:} x:=newfunc()
+#### 最佳实践
+- x:=&is{:} x:=newfunc()
 - //一般用指针直接:= & 不用new因为有逃逸分析
 p :=&Person{...}
 建议直接p:=&struct{}
 因为很多方法 的接受体值满足的可以用指针和值 指针满足的只能用指针
 - 结构体一般是值,函数参数和返回一般是结构体指针
 
-## make
+### make
 - 引用数据类型
 go中仅slice map chan 用make生成是引用数据类型
 - 在append等扩充slice返回新的slice要用引用的指针
@@ -131,20 +121,40 @@ func (h *IntHeap) Push(x any){
 
 }
 ```
-### 重新赋值
+#### 重新赋值
 因为slice是引用指向底层数组所以涉及增删改操作的底层会开辟新数组,所以返回新的引用要重新赋值
 - append  slices.delete insert replace
 - map不需要重新赋值因为开始就开辟了一个很大的数组不需要开辟新数组
 
 
 
-# 变量
-## 作用域
+## 变量
+### boot
+- var a int
+- var a int = 1
+- var a =1 //不推荐因为type很重要
+- a:=1
+- var(
+    a int =1 
+    b float=0.1
+    )
+- conn, err := net.Dial("tcp", "127.0.0.1:8080"); conn1, err := net.Dial("tcp", "127.0.0.1:8080")
+- conn, _ := net.Dial("tcp", "127.0.0.1:8080")
+- a,b=b,a
+### 作用域
 1）声明在函数内部，函数栈内局部变量
     2）声明在函数外部，是对当前包可见(包内所有.go文件都可见)的全局值，类似protect
     3）声明在函数外部且首字母大写是所有包可见的全局值,类似public
 
-## 声明
+- 减少变量作用域
+```go
+if a := 10; a >5 {
+    fmt.Println(a)
+    return
+}
+```
+
+### 声明
 - 后缀.var方便ide代码补全
 - 万能:=
 - var i int =1  var i =1  var()
@@ -154,19 +164,19 @@ var (
     j=1
 )
 ```
-## 全局变量
+### 全局变量
 - 在go文件zhong var i int  var()
 仅声明不赋值
 - 在init函数或者具体函数中初始化
 
-## 匿名变量_下划线
+### 匿名变量_下划线
 - 用于忽略值
 - 多值返回函数 可以 _,y=f(3,4) 忽略第一个返回值
 - 迭代器 for _,v := range slice 忽略迭代器索引仅用值
 
-# 函数
+## 函数
 - io stack
-## 函数类型
+### 函数类型
 - 算子输入变量输出变量 输入值输出值 func f(n int) int {} ; 变量n类型是int;f(n int)是算子输出的变量类型是int;
 所以参数有名称返回值不加名称,因为f(n int)本身就是变量
 - 多返回值是给error准备的
@@ -183,186 +193,51 @@ func(int, int) (int, int) or func(a,b int) (x,y int)
 - 代码美学(少写注释)+go强调变量名称 建议所有函数类型和定义都写上参数名称 返回值名称随意因为函数名称就是返回值名称
 func print(x int) int{}  func f(a,b int func(x int) int ) int{}
 
-## callback回调函数
-- go函数作为类型第一公民可以传入参数从而实现回调函数
+### 函数第一公民
 
-## 函数第一公民
-
-
-### 一、什么是“第一公民”？
-在编程语言领域，“第一公民（First-class citizen）”这个术语的意思是：
-> 某个实体（比如函数、对象等）在语言中可以像其他变量一样使用 —— 可以赋值给变量、作为参数传递、作为返回值返回等等。
-
-也就是说，如果一个元素（如函数）在语言中满足以下条件，就可以认为它是**第一公民**：
-1. **可以赋值给变量**
-2. **可以作为函数参数传递**
-3. **可以作为函数返回值返回**
-4. **可以存储到数据结构中**
-5. **可以在运行时创建**
-
----
-
-### 二、Golang 中的函数是“第一公民”的表现
-
-
-#### 1. **函数可以赋值给变量**
-```go
-package main
-
-import "fmt"
-
-func add(a, b int) int {
-    return a + b
-}
-
-func main() {
-    f := add // 将函数赋值给变量
-    fmt.Println(f(3, 4)) // 7
-}
-```
-
-#### 2. **函数可以作为参数传递**
-```go
-package main
-
-import "fmt"
-
-func compute(a, b int, op func(int, int) int) int {
-    return op(a, b)
-}
-
-func add(x, y int) int {
-    return x + y
-}
-
-func main() {
-    result := compute(3, 4, add)
-    fmt.Println(result) // 7
-}
-```
-
-#### 3. **函数可以作为返回值返回**
-```go
-package main
-
-import "fmt"
-
-func adder() func(int) int {
-    sum := 0
-    return func(x int) int {
-        sum += x
-        return sum
-    }
-}
-
-func main() {
-    posSum := adder()
-    fmt.Println(posSum(1)) // 1
-    fmt.Println(posSum(2)) // 3
-}
-```
-#### 3.5 **函数可以多返回值**
-```go
-func f(a, b int) (x, y int) {
-	x, y = b, a
-	return 
-}
-func ff(a, b int) (int, int) {
-	return b, a
-}
-
-func main() {
-	a, _ := f(3, 4) //用不到的用_占位
-	i1, i2 := ff(4, 4)
-	fmt.Printf("%d %d %d", a, i1, i2)
-}
-```
-
-上述例子中，`adder` 返回了一个匿名函数（闭包），并且这个函数引用了外部的 `sum` 变量，这也是 Golang 支持**闭包**的体现。
-
-#### 4. **函数可以存储在数据结构中**
-```go
-package main
-
-import "fmt"
-
-func main() {
-    ops := []func(int, int) int{
-        func(a, b int) int { return a + b },
-        func(a, b int) int { return a - b },
-    }
-
-    fmt.Println(ops[0](3, 4)) // 7
-    fmt.Println(ops[1](3, 4)) // -1
-}
-```
-
-#### 5. **可以在运行时定义新的函数（匿名函数）**
-```go
-package main
-
-import "fmt"
-
-func main() {
-    f := func(name string) {
-        fmt.Printf("Hello, %s\n", name)
-    }
-    f("Go") // Hello, Go
-}
-```
-
----
-
-### 三、为什么这很重要？
-- **灵活性**：函数作为值可以动态组合、传递，实现更通用的代码。
-- **高阶函数**：支持函数式编程的一些特性（虽然 Go 并不是纯函数式语言）。
-- **闭包**：函数内部可以捕获并访问外部变量，实现状态保持。
-- **回调机制**：用函数作为参数来实现事件驱动、策略模式等。
-
----
-
-### 四、小结
 说 **Go 中的函数是第一公民**，是因为它们拥有与其他类型一样的待遇：
 - 可以赋值给变量
-- 可以作为参数传递给其他函数
+- 可以作为参数传递给其他函数,从而实现回调函数callback
 - 可以从函数返回
 - 可以存在数组、map 等数据结构中
 - 可以在运行时动态创建（匿名函数）
 
 换句话说，**在 Go 中，函数是一种特殊的类型（`func`），和其他类型一样，可以被自由操作**。
 
----
 
-## 匿名函数
+
+### 匿名函数
 - 参见java的lambda表达式
 f=func(a,b int) int{
     return a+b
 }
 
-## 编译器内置函数
+### 编译器内置函数
 - len cap append copy delete
 - 速度快但是太底层len返回字节数等 常用len append 其他slices maps包有泛型函数
 
-## init函数
+### init函数
 - 包导入执行用于初始化
 
-## defer
-- 底层原理
+### defer
+- 栈
 return函数栈返回从下到上依次执行函数体内的defer语句
-延迟在return后执行,defer 常用于资源释放、panic 恢复
+延迟在return赋值后RETURN前执行,defer 常用于资源释放、panic 恢复
 当一个函数中有多个 defer 语句时，它们会被推送到一个栈上，并在函数即将返回时，按照 后进先出 (LIFO) 的顺序执行。
+- 立即赋值
+defer语句的参数是立即赋值的所以要用,func(){}()包裹
 
-# type
 ## 类型
-- int64 byte这些相当于在ram的定义区开辟了一个变量,这个变量记录了类型包含的内容,不能直接使用
-需要用他来在ram中创建变量
+为什么要有类型,因为方便编译器给变量分配内存空间,和运算规则;
+类型区存放着类型的信息有描述了某个变量的大小,适合的运算符等
+类型和 变量总是成对出现的,在项目中设计类型往往比变量重要
 
-## type 运算符
+### type 运算符
 type 类型1 类型2
 在ram定义区开辟一个类型1变量他和类型2变量全等
 例如 type time int64;  time类型和int64类型全等
 
-## struct结构体
+### struct结构体
 - struct{} 也是一种类型,是一种集合类型
 - 经常搭配type运算符使用定义新的类型
 ```go
@@ -395,124 +270,21 @@ func (h *IntHeap) Pop() any {
 }
 ```
 
-## 结构体
+### 结构体
 - variable set is struct
-### 结构体使用
-- :=&json{}格式初始化 最佳实践
+#### 结构体使用
+- :=&is{}格式初始化 最佳实践
 //一般用指针直接:= & 不用new因为有逃逸分析
 p :=&Person{...}
 - 直接p:=&struct{}
 函数传递参数自动解引用 (dereference)指针
 因为很多方法 的接口接受体值满足的可以用指针和值 指针满足的只能用指针
-### json格式讨论
-为什么json格式用:为变量初始化 因为=是赋值的意思 :是 is的意思
+
+#### is格式讨论
+为什么is格式用:为变量初始化 因为=是赋值的意思 :是 is的意思
 强调键值关系
 
-### 
-在 Go 语言中，`struct`（结构体）是一种用户自定义的复合数据类型，它允许你将不同类型的数据字段组合成一个单一的逻辑单元。结构体是 Go 语言中实现面向对象编程（OOP）思想（特别是组合优于继承）的基础。
-
-### 1. `struct` 的基本概念
-
-*   **定义：** 结构体是一个类型，它包含了一组字段（field），每个字段都有自己的名字和类型。
-*   **作用：** 用于组织和表示具有相关属性的数据。例如，你可以定义一个 `Person` 结构体来表示一个人，它可能包含 `Name` (姓名)、`Age` (年龄)、`City` (城市) 等字段。
-*   **值类型：** 结构体是值类型，这意味着当你将一个结构体变量赋值给另一个变量时，会创建一个副本。
-
-### 2. `struct` 的定义
-
-使用 `type` 关键字和 `struct` 关键字来定义一个结构体。
-
-```go
-// 定义一个名为 Person 的结构体
-type Person struct {
-    Name    string
-    Age     int
-    City    string
-    IsStudent bool // 布尔类型字段
-}
-
-// 定义一个名为 Point 的结构体
-type Point struct {
-    X int
-    Y int
-}
-```
-
-**字段说明：**
-*   每个字段都有一个名称和一个类型。
-*   字段名称的首字母大小写决定了其可见性：
-    *   **大写字母开头：** 公开的（`Public`），可以在包外部访问。
-    *   **小写字母开头：** 私有的（`Private`），只能在定义它的包内部访问。
-
-### 3. `struct` 的创建和初始化
-
-有多种方式可以创建和初始化结构体实例。
-
-#### 3.1. 声明并使用零值初始化
-
-当声明一个结构体变量时，它的所有字段都会被自动初始化为它们各自类型的**零值**（zero value）：
-*   `int`、`float` 类型为 `0`
-*   `string` 类型为 `""` (空字符串)
-*   `bool` 类型为 `false`
-*   指针类型为 `nil`
-
-```go
-var p1 Person // p1.Name = "", p1.Age = 0, p1.City = "", p1.IsStudent = false
-fmt.Println(p1) // { 0  false}
-```
-
-#### 3.2. 字段逐一赋值
-
-创建结构体实例后，可以逐个字段进行赋值。
-
-```go
-var p2 Person
-p2.Name = "Alice"
-p2.Age = 30
-p2.City = "New York"
-p2.IsStudent = true
-
-fmt.Println(p2) // {Alice 30 New York true}
-```
-
-#### 3.3. 使用结构体字面量（Literal）初始化
-
-这是最常用和推荐的方式。
-
-**方式一：按字段顺序赋值（不推荐，容易出错）**
-这种方式要求你严格按照结构体定义中字段的顺序来提供值。如果结构体定义发生变化，代码可能失效。
-
-```go
-p3 := Person{"Bob", 25, "London", false}
-fmt.Println(p3) // {Bob 25 London false}
-```
-
-**方式二：指定字段名赋值（推荐）**
-这种方式更清晰，且不依赖于字段的顺序。你可以只初始化部分字段，未初始化的字段会使用零值。
-
-```go
-p4 := Person{
-    Name: "Charlie",
-    Age:  35,
-    City: "Paris",
-} // p4.IsStudent 为 false (零值)
-fmt.Println(p4) // {Charlie 35 Paris false}
-
-p5 := Person{Name: "David"} // p5.Age=0, p5.City="", p5.IsStudent=false
-fmt.Println(p5) // {David 0  false}
-```
-
-#### 3.4. 使用 `new()` 函数创建指针
-
-`new()` 函数为指定类型分配内存，并返回一个指向该类型零值的指针。
-
-```go
-ptrP := new(Person) // ptrP 是一个 *Person 类型，指向一个零值 Person 结构体
-fmt.Println(*ptrP)  // { 0  false}
-ptrP.Name = "Eve"   // 也可以通过指针直接访问字段（Go 自动解引用）
-fmt.Println(ptrP.Name) // Eve
-```
-
-### 4. 访问结构体字段
+#### 4. 访问结构体字段
 
 使用点 `.` 操作符来访问结构体的字段。
 
@@ -532,7 +304,7 @@ ptrP := &Person{Name: "Grace"} // ptrP 是一个指向 Person 结构体的指针
 fmt.Println(ptrP.Name) // Grace (等同于 (*ptrP).Name)
 ```
 
-### 5. 结构体作为函数参数
+#### 5. 结构体作为函数参数
 
 当结构体作为函数参数传递时，默认是**传值**（pass by value）。这意味着函数会接收结构体的一个副本。如果想让函数修改原始结构体，需要传递结构体的**指针**。
 
@@ -558,7 +330,7 @@ func main() {
 }
 ```
 
-### 6. 匿名结构体（Anonymous Struct）
+#### 6. 匿名结构体（Anonymous Struct）
 
 匿名结构体是没有明确名称的结构体类型。它们通常用于一次性使用或作为函数的返回值。
 
@@ -592,7 +364,7 @@ config := GetConfig()
 fmt.Println(config.Host, config.Port) // localhost 8080
 ```
 
-### 7. 结构体嵌入（Embedded Structs / Composition）
+#### 7. 匿名字段/嵌入实现继承
 
 Go 语言没有继承的概念，但通过结构体嵌入（也称为组合或匿名字段）可以达到类似的效果。将一个结构体类型直接作为另一个结构体的字段，而不需要指定字段名。被嵌入的结构体的字段和方法会被“提升”到外部结构体，可以直接访问。
 
@@ -636,7 +408,7 @@ func main() {
 }
 ```
 
-### 8. 结构体标签（Struct Tags）
+#### 8. 结构体标签（Struct Tags）
 
 结构体标签是附加在结构体字段上的字符串元数据。它们通常用于反射（reflection）机制，为编码/解码（如 JSON, XML）、数据库映射等提供额外的信息。
 
@@ -670,7 +442,7 @@ func main() {
 }
 ```
 
-### 9. 结构体与方法（Methods）
+#### 9. 结构体与方法（Methods）
 
 虽然不是结构体本身的属性，但方法是 Go 语言中与结构体紧密结合的概念。你可以为任何类型（包括结构体）定义方法，从而为结构体添加行为。
 
@@ -702,30 +474,75 @@ func main() {
 }
 ```
 
-### 总结
 
-Go 语言的 `struct` 是构建复杂数据结构和实现面向对象风格编程的核心。通过组合（嵌入）、字段可见性、方法以及结构体标签，`struct` 提供了强大而灵活的数据组织和行为定义能力。理解并熟练使用 `struct` 是编写高效、可维护 Go 程序的关键。
-
-## any/interface{}
+### any/interface{}
 - any是interface{}别名 {}生成一个空接口
 - 参见java object
 
-## 接口
-- function set is interface
+### 接口
+type midwear
+- 接口嵌入
+```go
+// Sayer 接口
+type Sayer interface {
+    say()
+}
 
-## 面向接口编程
-- 参见java function set is interface 多态
+// Mover 接口
+type Mover interface {
+    move()
+}
 
+// 接口嵌套
+type animal interface {
+    Sayer
+    Mover
+}
+```
+#### 显式实现接口
+```go
+type router interface {
+    Route(path string)
+}
 
-## 面向对象编程
+type engine struct{}
 
+// 如果 engine 没有实现 Route 方法，下面这行在编译时就会报错：
+// cannot use &engine{} (value of type *engine) as router value in variable declaration: 
+// *engine does not implement router (missing method Route)
+var _ router = &engine{} 
 
+func (e *engine) Route(path string) {
+    fmt.Println("Routing to:", path)
+}
+```
 
-# comma ok
+## 泛型
+参数化类型
+```go
+func add[T int | float64](a, b T) T {
+	return a + b
+}
+type Number interface{
+	int | float64 | float32	
+}
+func sub[T Number] (a,b T) T{
+	return a - b
+}
+
+func main() {
+	tmp1 := add[int](1, 2)
+	tmp2:=sub[float64](3.3,2.1)
+	fmt.Println(tmp1)
+	fmt.Println(tmp2)
+}
+```
+
+## comma ok
 - map contains
 - 错误处理
 
-# goto
+## goto
 - 和java的循环标签类似
 ```go
 for true{
@@ -738,400 +555,34 @@ loop:
 
 ```
 
-# 类型转换
+
+## 类型转换
 Go语言中只有强制类型转换，没有隐式类型转换。该语法只能在两个类型之间支持相互转换的时候使用。
 
 强制类型转换的基本语法如下：  
 []byte(str string)
-## any interface{}
-- 参见java的Object
-- any是空接口的别名
+### any interface{}
 - 类型断言
-x.(int)
-
-# 异常处理
-
-## 1. Go 的异常处理理念
-
-Go 语言**不使用传统的 try...catch** 这种异常机制（如 Java），而是鼓励通过**多返回值（返回 error）**来处理错误。
-
-在 Go 语言中：
-- **正常的错误**（业务逻辑、输入不合法等）：用 `error` 类型返回
-- **严重的运行时错误**（数组越界、空指针等）：触发 **`panic`**
-- **在 panic 后想恢复程序**：使用 **`recover`**
-
-> Go 的设计思想是：**错误是值(error is value)**，应该显式返回并处理，而不是通过抛异常的方式隐藏。
-
----
-
-## 2. 基础错误处理（error 类型）
-
-`error` 是 Go 预定义的接口类型：
-
+v,ok:=x.(int)
 ```go
-type error interface {
-    Error() string
-}
+        x = "ms的go教程"
+       v, ok := x.(string)
+       if ok {
+           fmt.Println(v)
+       } else {
+           fmt.Println("类型断言失败")
+       }
 ```
 
-我们可以用 `errors.New` 或 `fmt.Errorf` 创建一个 error：
 
-```go
-package main
 
-import (
-    "errors"
-    "fmt"
-)
-
-func divide(a, b int) (int, error) {
-    if b == 0 {
-        return 0, errors.New("division by zero")
-    }
-    return a / b, nil
-}
-
-func main() {
-    result, err := divide(10, 0)
-    if err != nil {
-        fmt.Println("错误:", err)  // 错误: division by zero
-        return
-    }
-    fmt.Println("结果:", result)
-}
-```
-
-**特点：**
-- Go 倾向于让调用方主动检查 `err`
-- 错误是普通的值，可以赋值、传递、比较
-- 习惯写法：`if err != nil { ... }`
-
----
-
-## 3. `panic` 与 `recover`
-
-### 3.1 panic
-`panic` 表示**不可恢复的错误**（编程错误、无法预期的异常）。
-
-调用 `panic`：
-1. 立即停止当前函数后续代码
-2. 向调用栈**逐层向上**返回，执行各层 `defer`
-3. 最终退出程序，打印 panic 信息和堆栈
-
-示例：
-```go
-func testPanic() {
-    panic("something went wrong")
-}
-
-func main() {
-    fmt.Println("Before panic")
-    testPanic()
-    fmt.Println("After panic") // 不会执行
-}
-```
-
-### 3.2 recover
-`recover` 只能在 `defer` 中调用，用于**捕获 panic**，恢复程序执行。
-
-```go
-func main() {
-    defer func() {
-        if r := recover(); r != nil {
-            fmt.Println("捕获到panic:", r)
-        }
-    }()
-
-    fmt.Println("正常执行")
-    panic("出现严重错误！")
-    fmt.Println("这句不会执行")
-}
-```
-
-**注意事项：**
-- `recover()` 必须在 `defer` 中调用才有效
-- 如果未调用 `recover()`，程序崩溃
-- `recover()` 返回 `panic()` 的参数
-
----
-
-## 4. defer + panic + recover 结合示例
-
-```go
-package main
-
-import "fmt"
-
-func mayPanic() {
-    panic("bad thing happened")
-}
-
-func safeCall() {
-    defer func() {
-        if err := recover(); err != nil {
-            fmt.Println("恢复了:", err)
-        }
-    }()
-    mayPanic()
-    fmt.Println("这里不会执行")
-}
-
-func main() {
-    safeCall()
-    fmt.Println("main继续执行")
-}
-```
-
-输出：
-```
-恢复了: bad thing happened
-main继续执行
-```
-
----
-
-## 5. 常用错误处理模式
-
-### 5.1 早返回（fail fast）
-```go
-if err != nil {
-    return err
-}
-```
-
-### 5.2 自定义错误类型
-```go
-type MyError struct {
-    Code int
-    Msg  string
-}
-
-func (e MyError) Error() string {
-    return fmt.Sprintf("Code:%d, Msg:%s", e.Code, e.Msg)
-}
-
-func doSomething() error {
-    return MyError{Code: 404, Msg: "Not Found"}
-}
-```
-
-### 5.3 Wrapping Error（Go 1.13+）
-Go 1.13 引入了 `errors.Is`、`errors.As`、`%w`：
-
-```go
-import (
-    "errors"
-    "fmt"
-)
-
-var ErrNotFound = errors.New("not found")
-
-func find() error {
-    return fmt.Errorf("failed to find user: %w", ErrNotFound)
-}
-
-func main() {
-    err := find()
-    if errors.Is(err, ErrNotFound) {
-        fmt.Println("是 ErrNotFound 错误")
-    }
-}
-```
-
----
-
-## 6. 设计建议
-1. **业务错误**：使用 `error` 返回，调用方检查
-2. **程序员错误**：适当使用 `panic`
-3. 不要滥用 `panic` 作为流程控制
-4. 长调用链中，考虑错误封装（`fmt.Errorf("%w", err)`）
-5. 在公共库里**不要直接 panic**（除非无法恢复），把错误返回给调用者
-
----
-
-✅ **总结**
-- Go 错误处理以显式 `error` 返回为主
-- `panic` 用于不可恢复的严重错误
-- 可用 `recover` 捕获 panic
-- defer 常用于资源释放、panic 恢复
-- 养成`if err != nil`的习惯
-
----
-
-如果你需要的话，我可以帮你画一个 **Go 异常处理流程图**，帮你更直观理解。你要我画吗？
-
-# 单元测试
-- _test.go->TestFunction(t *testing.T)->测试数据
-- TestFunction是hook函数供测试框架回调
-## 1. Go 单元测试的基本规则
-
-在 Go 里，单元测试遵循以下约定（标准库 `testing`）：
-
-1. **测试文件命名**：文件名必须以 `_test.go` 结尾
-   例如被测试文件是 `calc.go`，测试文件通常叫 `calc_test.go`。
-
-2. **测试函数格式**：
-   - 函数名必须以 `Test` 为前缀，例如 `func TestAdd(t *testing.T)`
-   - 接收一个 `*testing.T` 类型的参数。
-   - 通过 `t.Errorf`、`t.Fatalf` 等方法报告失败。
-
-3. **运行测试**：
-   在当前目录运行：
-   ```bash
-   go test
-   ```
-   或带详细输出：
-   ```bash
-   go test -v
-   ```
-
----
-
-## 2. 简单示例
-
-假设我们有一个函数 `Add` 需要测试：
-
-`calc.go`
-```go
-package calc
-
-func Add(a, b int) int {
-    return a + b
-}
-```
-
-`calc_test.go`
-```go
-package calc
-
-import "testing"
-
-func TestAdd(t *testing.T) {
-    result := Add(2, 3)
-    expected := 5
-    if result != expected {
-        t.Errorf("Add(2, 3) = %d; expected %d", result, expected)
-    }
-}
-```
-
-运行：
-```bash
-go test
-```
-
----
-
-## 3. 表驱动测试（推荐 Go 风格）
-
-Go 常用“表驱动测试”来简化多组数据的校验：
-
-```go
-func TestAdd(t *testing.T) {
-    tests := []struct {
-        name     string
-        a, b     int
-        expected int
-    }{
-        {"positive numbers", 2, 3, 5},
-        {"with zero", 0, 5, 5},
-        {"negative numbers", -1, -2, -3},
-    }
-
-    for _, tt := range tests {
-        t.Run(tt.name, func(t *testing.T) {
-            if got := Add(tt.a, tt.b); got != tt.expected {
-                t.Errorf("Add(%d, %d) = %d, want %d", tt.a, tt.b, got, tt.expected)
-            }
-        })
-    }
-}
-```
-
-这里的 `t.Run` 类似于 JUnit 的 `@ParameterizedTest` 中子用例的概念。
-
----
-
-## 4. 断言库
-
-Go 标准库的 `testing` 并没有丰富的断言方法，常用第三方断言库，例如：
-
-- **testify**
-  安装：
-  ```bash
-  go get github.com/stretchr/testify/assert
-  //安装完后 go mod tidy引入依赖
-  ```
-  使用：
-  ```go
-  import (
-      "testing"
-      "github.com/stretchr/testify/assert"
-  )
-
-  func TestAdd(t *testing.T) {
-      assert.Equal(t, 5, Add(2, 3), "they should be equal")
-  }
-  ```
-
----
-
-## 5. Mock 与依赖隔离
-
-在 Go 里你可以通过接口 + 自定义实现来做 Mock，对应 JUnit 里 Mockito 的用法。
-常用工具库：
-- `github.com/stretchr/testify/mock`
-- `github.com/golang/mock/gomock`（官方推荐，功能强大）
-
-例如 gomock 使用步骤：
-```bash
-go install github.com/golang/mock/mockgen@latest
-mockgen -source=your_interface.go -destination=mock_interface.go -package=xxx
-```
-然后在测试中注入 Mock 对象。
-
----
-
-## 6. 基准测试（性能测试）
-
-Go 的 `testing` 还内置了 Benchmark：
-```go
-func BenchmarkAdd(b *testing.B) {
-    for i := 0; i < b.N; i++ {
-        Add(2, 3)
-    }
-}
-```
-运行：
-```bash
-go test -bench=.
-```
-
----
-
-## 7. 小结
-
-| Java / JUnit                 | Go / testing                 |
-|------------------------------|-----------------------------|
-| `@Test` 注解                 | `TestXxx(*testing.T)` 函数名约定 |
-| `assertEquals()` 等          | 手动 if 判断 / 第三方断言库     |
-| 参数化测试                   | 表驱动测试 + `t.Run`            |
-| Mockito / Stub               | 接口 + 手写 mock / gomock     |
-| Maven/Gradle 运行测试         | `go test` 命令                |
-
----
-
-如果你愿意，我可以帮你把你熟悉的一个 **JUnit 测试类** “翻译”成 Go 的单元测试版本，这样你可以更直观地对照两者的差异。
-
-你想让我给你做一个这样的 JUnit → Go 的对照示例吗？这样学习会更快。
-
-# 数据结构
+## 数据结构
 - 数据结构类不用方法 用对应包的工具函数操作 例如 slices maps strings 包
 
-## slice
-- 通过make创建引用数据类型
-
-### 底层
+### slice
+- 通过make创建引用数据类型 make([]int,size,capacity)
+- make([]int,2,15) //创建一个长度为2容量15的切片 相当于初始为 [0,0]
+#### 底层
 ![alt text](image.png)
 ![alt text](image-1.png)
 - 切片指针
@@ -1142,15 +593,15 @@ func (*h IntHeap) Push(x any) {
     *h=append(*h,x.(int))
 }
 ```
-### 重新赋值
+#### 重新赋值
 因为slice是引用指向底层数组所以涉及增删改操作的底层会开辟新数组,所以返回新的引用要重新赋值
 - append  slices.delete insert replace
 - map不需要重新赋值因为开始就开辟了一个很大的数组不需要开辟新数组
 
-### slices包
+#### slices包
 - len append
 - 增删改查
-#### 1. 背景
+##### 1. 背景
 
 从 **Go 1.21** 开始，Go 标准库新增了 [`slices`](https://pkg.go.dev/slices) 包，它提供了**针对任意切片的常用通用操作函数**。
 这些函数基于 Go 1.18 引入的 **泛型（Generics）** 实现，简化了日常对切片的排序、搜索、比较、复制、截断等操作。
@@ -1163,11 +614,11 @@ import "slices"
 
 ---
 
-#### 2. 函数列表与讲解
+##### 2. 函数列表与讲解
 
-##### 2.1 比较类函数
+###### 2.1 比较类函数
 
-###### `slices.Equal`
+####### `slices.Equal`
 ```go
 func Equal[S ~[]E, E comparable](s1, s2 S) bool
 ```
@@ -1192,7 +643,7 @@ func main() {
 
 ---
 
-###### `slices.EqualFunc`
+####### `slices.EqualFunc`
 ```go
 func EqualFunc[S1 ~[]E1, S2 ~[]E2, E1, E2 any](s1 S1, s2 S2, eq func(E1, E2) bool) bool
 ```
@@ -1210,9 +661,9 @@ fmt.Println(slices.EqualFunc(people1, people2, eq)) // true
 
 ---
 
-##### 2.2 排序类函数
+###### 2.2 排序类函数
 
-###### `slices.Sort`
+####### `slices.Sort`
 ```go
 func Sort[E constraints.Ordered](x []E)
 ```
@@ -1226,7 +677,7 @@ fmt.Println(nums) // [1 2 3]
 
 ---
 
-###### `slices.SortFunc`
+####### `slices.SortFunc`
 ```go
 func SortFunc[E any](x []E, cmp func(a, b E) int)
 ```
@@ -1244,7 +695,7 @@ slices.SortFunc(people, func(a, b string) int {
 
 ---
 
-###### `slices.SortStableFunc`
+####### `slices.SortStableFunc`
 稳定排序，比较方式同上，但稳定地保持相等元素原有顺序。
 
 ```go
@@ -1253,9 +704,9 @@ slices.SortStableFunc(data, cmp)
 
 ---
 
-##### 2.3 搜索类函数
+###### 2.3 搜索类函数
 
-###### `slices.BinarySearch`
+####### `slices.BinarySearch`
 ```go
 func BinarySearch[E constraints.Ordered](x []E, target E) (index int, found bool)
 ```
@@ -1269,7 +720,7 @@ idx, found := slices.BinarySearch(nums, 5)
 
 ---
 
-###### `slices.BinarySearchFunc`
+####### `slices.BinarySearchFunc`
 ```go
 func BinarySearchFunc[E any, T any](x []E, target T, cmp func(E, T) int) (int, bool)
 ```
@@ -1277,7 +728,7 @@ func BinarySearchFunc[E any, T any](x []E, target T, cmp func(E, T) int) (int, b
 
 ---
 
-###### `slices.Index`
+####### `slices.Index`
 ```go
 func Index[E comparable](s []E, v E) int
 ```
@@ -1285,7 +736,7 @@ func Index[E comparable](s []E, v E) int
 
 ---
 
-###### `slices.IndexFunc`
+####### `slices.IndexFunc`
 ```go
 func IndexFunc[E any](s []E, f func(E) bool) int
 ```
@@ -1293,7 +744,7 @@ func IndexFunc[E any](s []E, f func(E) bool) int
 
 ---
 
-###### `slices.LastIndex`
+####### `slices.LastIndex`
 ```go
 func LastIndex[E comparable](s []E, v E) int
 ```
@@ -1301,7 +752,7 @@ func LastIndex[E comparable](s []E, v E) int
 
 ---
 
-###### `slices.LastIndexFunc`
+####### `slices.LastIndexFunc`
 ```go
 func LastIndexFunc[E any](s []E, f func(E) bool) int
 ```
@@ -1309,9 +760,9 @@ func LastIndexFunc[E any](s []E, f func(E) bool) int
 
 ---
 
-##### 2.4 修改操作
+###### 2.4 修改操作
 
-###### `slices.Clone`
+####### `slices.Clone`
 ```go
 func Clone[S ~[]E, E any](s S) S
 ```
@@ -1319,7 +770,7 @@ func Clone[S ~[]E, E any](s S) S
 
 ---
 
-###### `slices.Concat`
+####### `slices.Concat`
 ```go
 func Concat[S ~[]E, E any](slices ...S) S
 ```
@@ -1327,7 +778,7 @@ func Concat[S ~[]E, E any](slices ...S) S
 
 ---
 
-###### `slices.Insert`
+####### `slices.Insert`
 ```go
 func Insert[S ~[]E, E any](s S, i int, v ...E) S
 ```
@@ -1335,7 +786,7 @@ func Insert[S ~[]E, E any](s S, i int, v ...E) S
 
 ---
 
-###### `slices.Delete`
+####### `slices.Delete`
 ```go
 func Delete[S ~[]E, E any](s S, i, j int) S
 ```
@@ -1343,7 +794,7 @@ func Delete[S ~[]E, E any](s S, i, j int) S
 
 ---
 
-###### `slices.Replace`
+####### `slices.Replace`
 ```go
 func Replace[S ~[]E, E any](s S, i, j int, v ...E) S
 ```
@@ -1351,7 +802,7 @@ func Replace[S ~[]E, E any](s S, i, j int, v ...E) S
 
 ---
 
-###### `slices.Clip`
+####### `slices.Clip`
 ```go
 func Clip[S ~[]E, E any](s S) S
 ```
@@ -1359,30 +810,30 @@ func Clip[S ~[]E, E any](s S) S
 
 ---
 
-##### 2.5 条件判断类操作
+###### 2.5 条件判断类操作
 
-###### `slices.Contains`
+####### `slices.Contains`
 检查切片是否包含某值。
 
-###### `slices.ContainsFunc`
+####### `slices.ContainsFunc`
 检查切片中是否存在满足条件的元素。
 
 ---
 
-##### 2.6 其他
+###### 2.6 其他
 
 （可能随 Go 版本增加更多方法）
 
 ---
 
-#### 3. 小结对比
+##### 3. 小结对比
 
 以前我们操作切片往往需要引入第三方库（如 `golang.org/x/exp/slices`），或手写一些基本的搜索、排序、比较函数。
 **Go 1.21 的内置 `slices` 包** 把这些高频操作纳入标准库，让代码简洁、可靠并且类型安全。
 
 ---
 
-##### 注意事项：
+###### 注意事项：
 1. **排序/二分查找前必须保证已有序**（或使用对应的 Sort 进行排序）。
 2. 大部分函数都会返回新的切片引用，需要用返回值覆盖原切片变量，否则修改无效。
 3. `Delete`、`Insert` 等会重新分配底层数组，可能影响性能；大量数据情况下应关注内存拷贝成本。
@@ -1391,8 +842,8 @@ func Clip[S ~[]E, E any](s S) S
 ---
 
 
-## map
-- 引用数据类型用make
+### map
+- 引用数据类型用make make(map[string]int,capacity)
 - comma ok 来判断是否有某个键
 ```go
 func main() {
@@ -1409,7 +860,7 @@ func main() {
 }
 ```
 
-### maps
+#### maps
 - delete len
 
 | 函数        | 作用                         | 备注 |
@@ -1425,15 +876,32 @@ func main() {
 
 - 参见cpp 值得contains函数需要遍历查询
 
-### set
+#### set
 - s:=make(map[int]any)
 用any 空接口代替值
 
-## range迭代器
+#### 并发安全的map
+- sync.Map
+```go
+    safemap := &sync.Map{}
+	safemap.Store("key1", "value1")
+	safemap.Store("key2", "value2")
+	value, ok := safemap.Load("key1")
+	if ok {
+		println(value.(string))
+	}
+	safemap.Range(func(key, value any) bool {
+		println(key.(string), value.(string))
+		return true
+	})
+	safemap.Delete("key1")
+```
+
+### range迭代器
 - for i,v:=range map/slice{}
 i索引v值 可用_忽略值
 
-## sort接口
+### sort接口
 - 参见 java的类比较方法和Comparable<>{}接口(lambda表达式简化)
 - 鸭子类型实现Len()int Less()bool Swap()函数
 ```go
@@ -1444,7 +912,7 @@ func (h IntHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 实现元素实现sort接口才可以用slices.sort排序否则用slices.sortfunc
 
 
-## cmp函数
+### cmp函数
 - slices.sortfunc
 - func(a,b T) int  -1a在左边 1a在右边 0相等 注意和sort接口的Less()bool不同
 ```go
@@ -1454,7 +922,7 @@ arr := make([]int, 34)
 	})
 ```
 
-### dustbin
+#### dustbin
 - ~~sort.slice 因为之前没有泛型性能不高所用用slices.sort替代~~
 ```go
 arr := make([]int, 2034)
@@ -1464,7 +932,7 @@ arr := make([]int, 2034)
 	})
 ```
 
-## heap
+### heap
 - 参见java PriorityQueue
 鸭子类型实现sort接口和heap接口
 type IntHeap []int 
@@ -1510,10 +978,10 @@ func main() {
 
 ```
 
-## list
+### list
 - 双端队列参见java linkedlist
 
-## string
+### string
 - []索引 有中文转换为[]rune
 - len(str)	返回字节长度
 - +或fmt.Sprintf	复杂拼接字符串建议用strings.Builder
@@ -1535,9 +1003,9 @@ cases.Title()（更推荐，来自 golang.org/x/text/cases）
 
 ---
 
-### 1. 内置函数
+#### 1. 内置函数
 
-#### `len(s)`
+##### `len(s)`
 - 返回字符串的 **字节数**（不是字符数）
 ```go
 package main
@@ -1557,14 +1025,14 @@ fmt.Println(len([]rune(str))) // 9
 
 ---
 
-### 2. `strings` 包常用函数
+#### 2. `strings` 包常用函数
 
 需要先导入：
 ```go
 import "strings"
 ```
 
-#### 2.1 基本查询
+##### 2.1 基本查询
 - `strings.Contains(s, substr)`
   判断 `s` 是否包含子串 `substr`
 ```go
@@ -1593,7 +1061,7 @@ strings.Index("golang", "lan") // 2
 
 ---
 
-#### 2.2 字符串大小写
+##### 2.2 字符串大小写
 - `strings.ToLower(s)` 转小写
 - `strings.ToUpper(s)` 转大写
 - `strings.Title(s)` 单词首字母大写（已废弃，不推荐）
@@ -1601,7 +1069,7 @@ strings.Index("golang", "lan") // 2
 
 ---
 
-#### 2.3 替换与重复
+##### 2.3 替换与重复
 - `strings.Replace(s, old, new, n)`
   将 s 中前 n 个 old 替换为 new，`n = -1` 表示全部替换
 ```go
@@ -1617,7 +1085,7 @@ strings.Repeat("na", 3) // "nanana"
 
 ---
 
-#### 2.4 分割与拼接
+##### 2.4 分割与拼接
 - `strings.Split(s, sep)`
   按 sep 分割字符串，返回切片
 ```go
@@ -1639,7 +1107,7 @@ strings.Fields("foo bar\tbaz\n") // []string{"foo", "bar", "baz"}
 
 ---
 
-#### 2.5 修剪
+##### 2.5 修剪
 - `strings.Trim(s, cutset)`
   去掉 s 首尾的 `cutset` 中的任意字符
 ```go
@@ -1655,20 +1123,20 @@ strings.Trim(" !!!Hello!!! ", " !") // "Hello"
 
 ---
 
-### 3. `strconv` 包（字符串与数值转换）
+#### 3. `strconv` 包（字符串与数值转换）
 
 导入：
 ```go
 import "strconv"
 ```
 
-#### 3.1 数字转字符串
+##### 3.1 数字转字符串
 ```go
 strconv.Itoa(123) // "123"
 strconv.FormatFloat(3.14159, 'f', 2, 64) // "3.14"
 ```
 
-#### 3.2 字符串转数字
+##### 3.2 字符串转数字
 ```go
 n, _ := strconv.Atoi("123") // n = 123
 f, _ := strconv.ParseFloat("3.14", 64) // f = 3.14
@@ -1677,7 +1145,7 @@ b, _ := strconv.ParseBool("true")      // b = true
 
 ---
 
-### 4. Rune 与 UTF-8 相关
+#### 4. Rune 与 UTF-8 相关
 Go 字符串是字节序列，如果含有中文等多字节字符，要按 **rune（Unicode code point）** 处理：
 
 ```go
@@ -1690,7 +1158,7 @@ fmt.Println(utf8.RuneCountInString(s)) // 2 rune
 
 ---
 
-### 5. 小结
+#### 5. 小结
 常用的字符串处理函数主要在：
 
 - **内置函数:** `len()`
@@ -1700,151 +1168,582 @@ fmt.Println(utf8.RuneCountInString(s)) // 2 rune
 
 ---
 
-### 底层
+#### 底层
 - string底层是一个[]byte 可转换为[]rune
 - rune类型是int32储存unicode字符 英文1字节 中文3-4字节
 - 操作字符串可以将string强制类型转换为[]byte() 如果要处理中文用[]rune()转换 然后用slice的函数去操作
 - len返回字节长度所以可以转换为[]rune再len 推荐用utf8.RuneCountInString(str)
 
 
-### strconv
-#### 3.1 数字转字符串
+#### strconv
+##### 3.1 数字转字符串
 ```go
 strconv.Itoa(123) // "123"
 strconv.FormatFloat(3.14159, 'f', 2, 64) // "3.14"
 ```
 
-#### 3.2 字符串转数字
+##### 3.2 字符串转数字
 ```go
 n, _ := strconv.Atoi("123") // n = 123
 f, _ := strconv.ParseFloat("3.14", 64) // f = 3.14
 b, _ := strconv.ParseBool("true")
 ```
-### strings.Builder
+
+#### strings.Builder
 - 参见java的StringBuilder
 - 用于字符串拼接
 - 常用方法WriteString String WriteByte WriteRune Write([]Byte)
+#### bytes.buffer
+- 缓冲区也可以实现strings.builder的功能,且常用
 
 
 
-
-
-
-## big包
+### big包
 - 参见java的BigInteger
 
-### big.Int
+#### big.Int
 - 内存大用指针接受
 - big.newint() .setstring(str)
 
-### 运算
+#### 运算
 z:=big.newint(0) z:=&big.Int{} 
 z.Add(x,y) z=x+y 内存直接覆盖到z性能更优
 
 
+# 高级
 
-# 网络编程
+## go并发编程
 
-## TCP
+### goroutine
+- tree
+- go func : 在主线程节点下给这个函数栈分配一个子节点线程
+树形结构考虑线程,go func在主线程节点分出一个子线程,子线程root下就是这个func函数
 
+### 并发控制
+##### waitgroup
+- 函数栈中间层实现并发控制
+- 树形结构考虑线程,go func在主线程节点分出一个子线程,子线程root下就是这个func函数,控制外移就是在root和func之间加一个中间控制函数
+- 匿名函数+defer实现并发控制外移(midwear 函数栈中间层设计)
+```函数栈
+root->root->
+↓
+midwear defer 
+↓         ↑
+child
 
-### 服务端
-- 用web框架例如gin
-
-### 客户端
-- 用resty cookiejar等客户端库
-- Get请求
+```
 ```go
-package main
+main{
+wg := &sync.WaitGroup{}
+	wg.Add(1)
+	go func() {
+		defer wg.Done() //闭包实现defer能够访问到wg变量
+		chatsession.ChatStream(ctx, "讲解算法中的二分答案法")
+	}()
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		chatsession.ChatStreamOut()
+	}()
+	wg.Wait()
 
-import (
-    "fmt"
-    "io"
-    "net/http"
-    "time"
+}
+```
+记得wg.add一定要在主线程加,最后要wg.wait
+
+### 锁
+- 多个协程同时共享一块内存会引发竞态问题
+- 优先使用原子操作>读写锁>互斥锁
+#### 互斥锁
+- 竞态问题
+互斥锁是一种常用的控制共享资源访问的方法，它能够保证同时只有一个goroutine可以访问共享资源。Go语言中使用sync包的Mutex类型来实现互斥锁。 
+```go
+var (
+	x int
+	lock *sync.Mutex = &sync.Mutex{}
 )
 
+func add() {
+	for i := 0; i < 5000; i++ {
+		lock.Lock()
+		x++
+		lock.Unlock()
+	}
+}
 func main() {
-    client := &http.Client{Timeout: 5 * time.Second} // 推荐设置超时
+	wg := &sync.WaitGroup{}
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		add()
+	}()
 
-    resp, err := client.Get("https://httpbin.org/get?name=go&age=10")
-    if err != nil {
-        fmt.Printf("GET请求失败: %v\n", err)
-        return
+	go func() {
+		defer wg.Done()
+		add()
+	}()
+	wg.Wait()
+	fmt.Println(x)
+}
+```
+
+
+#### 读写锁
+- 读并不会引发问题 读写 写写需要加锁
+- 适用于读多写少场景,提升性能
+```go
+var (
+	x      int
+	lock   *sync.Mutex   = &sync.Mutex{}
+	rwlock *sync.RWMutex = &sync.RWMutex{}
+)
+
+func write() {
+	// lock.Lock()   // 加互斥锁
+	rwlock.Lock() // 加写锁
+	x = x + 1
+	time.Sleep(10 * time.Millisecond) // 假设读操作耗时10毫秒
+	rwlock.Unlock()                   // 解写锁
+	// lock.Unlock()                     // 解互斥锁
+}
+
+func read() {
+	// lock.Lock()                  // 加互斥锁
+	rwlock.RLock()               // 加读锁
+	time.Sleep(time.Millisecond) // 假设读操作耗时1毫秒
+	rwlock.RUnlock()             // 解读锁
+	// lock.Unlock()                // 解互斥锁
+}
+
+func main() {
+	wg := &sync.WaitGroup{}
+	start := time.Now()
+	wg.Add(1010)
+	for i := 0; i < 10; i++ {
+		go func() {
+			defer wg.Done()
+			write()
+		}()
+	}
+
+	for i := 0; i < 1000; i++ {
+		go func() {
+			defer wg.Done()
+			read()
+		}()
+	}
+
+	wg.Wait()
+	end := time.Now()
+	fmt.Println(end.Sub(start))
+}
+```
+
+#### 原子操作
+- 对于基本数据类型提供的线程安全函数
+
+### channel
+- midwear
+- 协程通信,make(chan int,16)
+- <- chan int  chan int <-
+- error传递到通道里,实现错误返回,另一个线程函数检测到<-chan元素包含错误就直接break return
+- close(chan) 关闭通道
+- 判断通道是否关闭
+comma ok 和 for range 迭代一个channel
+- 循环取值
+```go
+func main() {
+    ch1 := make(chan int)
+    ch2 := make(chan int)
+    // 开启goroutine将0~100的数发送到ch1中
+    go func() {
+        for i := 0; i < 100; i++ {
+            ch1 <- i
+        }
+        close(ch1)
+    }()
+    // 开启goroutine从ch1中接收值，并将该值的平方发送到ch2中
+    go func() {
+        for {
+            i, ok := <-ch1 // 通道关闭后再取值ok=false
+            if !ok {
+                break
+            }
+            ch2 <- i * i
+        }
+        close(ch2)
+    }()
+    // 在主goroutine中从ch2中接收值打印
+    for i := range ch2 { // 通道关闭后会退出for range循环
+        fmt.Println(i)
     }
-    defer resp.Body.Close() // 务必关闭响应体
+}
+```
 
-    fmt.Printf("GET 响应状态: %s\n", resp.Status)
-    fmt.Printf("GET 响应头 Content-Type: %s\n", resp.Header.Get("Content-Type"))
-
-    body, err := io.ReadAll(resp.Body)
-    if err != nil {
-        fmt.Printf("读取响应体失败: %v\n", err)
-        return
+#### 单向通道
+- 防御性编程常用于函数参数,强制通道的方向
+```go
+// 生产者：只负责写 (chan<-)
+func produce(out chan<- int) {
+    for i := 0; i < 10; i++ {
+        out <- i
     }
-    fmt.Printf("GET 响应体:\n%s\n", string(body))
+    close(out) // 发送方负责关闭
+}
+
+// 消费者：只负责读 (<-chan)
+func consume(in <-chan int) {
+    for n := range in {
+        fmt.Println("接收到:", n)
+    }
+}
+
+func main() {
+    ch := make(chan int) // 声明时是双向的
+    go produce(ch)       // 隐式转换为 chan<-
+    consume(ch)          // 隐式转换为 <-chan
+}
+```
+
+### select
+- ifelse变体 vars_hubs
+- 阻塞协程只到通道有货或者都无执行default
+```go
+select{
+    case tmp:=<-ch1:
+        //...
+    case tmp:=<-ch2:
+        //...
+    case <-ch3:
+        //...
+    default:
+        //通道皆无货执行
+}
+```
+
+#### select-default 判满判空
+- select 就是ifelse 天然实现判断
+- 判满
+```go
+// 判断管道有没有存满
+func main() {
+   // 创建管道
+   output1 := make(chan string, 10)
+   // 子协程写数据
+   go write(output1)
+   // 取数据
+   for s := range output1 {
+      fmt.Println("res:", s)
+      time.Sleep(time.Second)
+   }
+}
+
+func write(ch chan string) {
+   for {
+      select {
+      // 写数据
+      case ch <- "hello":
+         fmt.Println("write hello")
+      default:
+         fmt.Println("channel full")
+      }
+      time.Sleep(time.Millisecond * 500)
+   }
+}
+```
+
+- 判空类似
+```go
+select{
+    case tmp:=<-ch:
+        //...
+    default:
+        //...
+}
+```
+
+## context
+- context变量继承关系通过函数栈确定
+- context变量包含 父context 和一个键值对 key any - value any
+#### 传递信息
+- 当函数调用链条过长context可以通过key-value和继承关系传递参数
+- gin中间件可以通过塞入gin.context key-value信息传递http信息
+```go
+//实现context继承
+func step1(ctx context.Context) context.Context {
+	ctx1 := context.WithValue(ctx, "key1", "value1")
+	return ctx1
+}
+func step2(ctx context.Context) context.Context {
+	ctx2 := context.WithValue(ctx, "key2", "value2")
+	return ctx2
+}
+
+func main() {
+	ctx := context.Background()
+	ctx_child := step1(ctx)
+	ctx_child_child := step2(ctx_child)
+	fmt.Println(ctx_child.Value("key1"))
+	fmt.Println(ctx_child_child.Value("key1"))//value函数可以查找到父context变量的key-value值
+	fmt.Println(ctx_child_child.Value("key2"))
 }
 
 ```
-- Post请求
+
+#### 协程取消
+- 通过select 管道实现协程取消
+- 
+##### timeout
+
 ```go
-package main
+{
+    go task1
 
-import (
-    "bytes"
-    "encoding/json"
-    "fmt"
-    "io"
-    "net/http"
-    "time"
-)
+    go task2
 
-type PostData struct {
-    Title  string `json:"title"`
-    Author string `json:"author"`
+    go task3
+
+    select{
+        case: <-context.Done()
+            logger.Error("time out",
+            zap.Err(errors.NewError("time out")))
+            return 
+        case: <-ch1
+
+        case: <-ch2
+
+        case: <-ch3
+    }
+}
+```
+```go
+func timeout(ctx context.Context) {
+	select {
+	    case <-ctx.Done():
+		    fmt.Println("超时了")
+	}
 }
 
 func main() {
-    client := &http.Client{Timeout: 5 * time.Second}
+	ctx0 := context.Background()
+	ctx, cancel := context.WithTimeout(ctx0, time.Millisecond*10)//继承自空context
+	defer cancel()
+	go timeout(ctx)
+	time.Sleep(time.Second)
+}
 
-    data := PostData{Title: "Go HTTP Client", Author: "Gopher"}
-    jsonData, _ := &json.Marshal(data)      //封装为json字节码
-    bodyReader := bytes.NewReader(jsonData) // 将JSON字节切片包装为io.Reader方便读取
+```
+- 如果继承的父context也有timeout时间和withtimeout()参数中时间少的继承
 
-    req, err := http.NewRequest("POST", "https://httpbin.org/post", bodyReader)
-    if err != nil {
-        fmt.Printf("创建POST请求失败: %v\n", err)
-        return
+
+```go
+func handler(w http.ResponseWriter, r *http.Request) {
+    // 创建一个 2 秒的超时 Context
+    这些语句时间约等于0s
+    ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
+    defer cancel()
+
+    resultCh := make(chan string, 1)
+
+    //主要耗时任务开另一个协程运行
+    go func() {
+        // 模拟耗时操作（比如访问数据库/外部服务）
+        time.Sleep(3 * time.Second)
+        resultCh <- "done"
+    }()
+    //
+    select {
+    case res := <-resultCh:
+        fmt.Fprintln(w, "result:", res)
+    case <-ctx.Done():
+        http.Error(w, "request timeout", http.StatusGatewayTimeout)
     }
-    req.Header.Set("Content-Type", "application/json") // 告知服务器是JSON
-
-    resp, err := client.Do(req)
-    if err != nil {
-        fmt.Printf("POST请求失败: %v\n", err)
-        return
-    }
-    defer resp.Body.Close()
-
-    fmt.Printf("POST 响应状态: %s\n", resp.Status)
-    body, _ := io.ReadAll(resp.Body)
-    fmt.Printf("POST 响应体:\n%s\n", string(body))
 }
 
 ```
 
-# path filepath
-| 特性                | path                  | filepath                |
-| ------------------- | --------------------- | ----------------------- |
-| 处理路径类型         | 通用的"/"分隔路径      | 操作系统文件系统路径     |
-| 路径分隔符           | 固定为 `/`             | 根据操作系统动态调整    |
-| 典型用途             | URL、资源路径          | 本地文件路径             |
-| 跨平台文件路径支持   | 否                    | 是                      |
-## path
+#### cancel
+```go
+func quxiao(ctx context.Context) {
+	select {
+	case <-ctx.Done():
+		fmt.Println("取消了")
+		return
+	}
+}
 
-## filepath
-### 树
-./logs/log
-project/logs/log
-第一个打头的是数的root节点0级
-不用纠结加不加. 谁打头就看作树的root节点用树来考虑filepath
+func main() {
+	ctx0 := context.Background()
+	ctx, cancel := context.WithCancel(ctx0)
+	defer cancel()
+	go quxiao(ctx)
+	cancel()
+}
+```
 
+## 反射
+- reflect包,反射主要用于解析变量类型和值 type-var
+
+### 动态更新
+```go
+var (
+	_all_user_field = util.GetGormFields(User{})
+)
+db.Select(_all_user_field)
+func GetGormFields(stc any) []string {
+    //解析stc结构体中字段的类型并返回[]string切片
+	typ := reflect.TypeOf(stc)
+	// 如果传的是指针类型，先解析指针获取基础类型
+	if typ.Kind() == reflect.Ptr {
+		typ = typ.Elem()
+	}
+
+	if typ.Kind() == reflect.Struct {
+		columns := make([]string, 0, typ.NumField())
+		for i := 0; i < typ.NumField(); i++ {
+			fieldType := typ.Field(i)
+			// 只关注可导出成员 (Public fields)
+			if fieldType.IsExported() {
+				// 如果 tag 标记为 "-", 则不做 ORM 映射的字段跳过
+				if fieldType.Tag.Get("gorm") == "-" {
+					continue
+				}
+
+				// 默认逻辑：如果没有 gorm Tag，则把驼峰命名转为蛇形命名
+				name := Camel2Snake(fieldType.Name)
+
+				// 如果存在 gorm Tag，尝试解析出其中的 column 定义
+				if len(fieldType.Tag.Get("gorm")) > 0 {
+					content := fieldType.Tag.Get("gorm")
+					if strings.HasPrefix(content, "column:") {
+						content = content[7:]
+						pos := strings.Index(content, ";")
+						if pos > 0 {
+							name = content[0:pos]
+						} else if pos < 0 {
+							name = content
+						}
+					}
+				}
+				columns = append(columns, name)
+			}
+		}
+		return columns
+	} else {
+		// 如果 stc 不是结构体则返回空切片
+		return nil
+	}
+}
+```
+
+# libs
+
+## error
+- 接口
+type error interface{
+    Error() string
+}
+
+- errors.new("**") 简单生成error 这个类型是errorstring
+- fmt.Errorf("%w",var) 包装上级error生成error
+函数,核心作用,类似操作 (传统)
+errors.Is,检查错误链中是否包含特定实例,err == target
+errors.As,检查错误链中是否包含特定类型并转换,"target, ok := err.(*Type)"
+errors.Unwrap,获得被包装的下一层错误,无直接对应
+errors.Join,将多个错误合并为一个,无直接对应
+```go
+//errors.Is
+    var ErrDatabase = errors.New("db error")
+    err := fmt.Errorf("extra context: %w", ErrDatabase)
+    if errors.Is(err, ErrDatabase) {
+        fmt.Println("这是数据库错误")
+    }
+
+//errors.As
+type QueryError struct {
+    SQL string
+}
+func (e *QueryError) Error() string { return "query fail" }
+
+var qErr *QueryError
+if errors.As(err, &qErr) { //注意这里是二级指针,因为*queryError满足error接口
+    // 如果匹配成功，qErr 会被自动赋值
+    fmt.Println("SQL 语句是:", qErr.SQL)
+}
+```
+
+### 链式调用error问题
+- 因为链式调用方法返回变量本身,Go 的哲学是 if err != nil，但如果在链式调用的每一层都写 if err，链条就断了。
+- 所以不返回error,都会有一个Err()函数返回当前链条的error信息
+- 常见与数据库操作中例如gorm,go-redis
+- err:=x.step1(one).step2(two).Err()
+
+## panic
+- 不可预料的致命异常 而error是业务逻辑一部分,例如数据库启动等基础设施报错直接panic,业务增删改查error
+- **panic就是return;recover是接受panic的返回值**,所以recover要在defer里这点和java一样,没有recover之前一直return
+```go
+func main() {         
+    defer func() {                 
+        if error:=recover();error!=nil{   
+            fmt.Println("出现了panic,使用reover获取信息:",error)   
+        }         
+    }()         
+    fmt.Println("11111111111")        
+    panic("出现panic")         
+    fmt.Println("22222222222") 
+ }
+// terminal: 1111111111111 \n 出现了panic,使用reover获取信息: 出现panic
+```
+
+- panic传递
+```go
+a->b(defer recover)->c->d(panic) : panic捕获后接着运行a函数
+```
+
+- defer中有panic 会丢失掉原先的panic
+```go
+func test() {
+    defer func() {
+        // defer panic 会打印
+        fmt.Println(recover())
+    }()
+
+    defer func() {
+        panic("defer panic")
+    }()
+
+    panic("test panic")
+}
+//defer panic
+```
+
+## bytes
+- []byte字节数组是golang数据传递的base
+
+## io
+### Reader接口
+- 此接口包含 Read([]byte) 函数可将reader变量信息读到字节数组中
+
+### Writer接口
+- 此接口包含 Write([]byte) 函数可以将字节数组写入writer变量
+
+## bufio
+- 对writer/reader 进行包装相当于加了层buffer midware
+buffer := &bytes.Buffer{}
+	writer := bufio.NewWriter(buffer)
+	reader := bufio.NewReader(buffer)
+包装完用法和writer/reader变量相同
+
+## templateBoot
+tmpl := "你是{{.name}}"
+	parse, err := template.New("my_template").Parse(tmpl)
+	if err != nil {
+		panic(err)
+	}
+	//buffer字节缓冲区相当于strings.builder容器
+	bf := &bytes.Buffer{}
+	parse.Execute(bf, map[string]any{
+		"name": "大学老师",
+	})
+	fmt.Println(bf.String())
+//字符串先解析(离散化)成模板,然后再再buffer中根据map拼接字符串存到buffer里
